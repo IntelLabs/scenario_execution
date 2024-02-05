@@ -37,9 +37,3 @@ jobs:
           PYTHON_PYLINT_CONFIG_FILE: .pylintrc
           LOG_FILE: super-linter.log
           CREATE_LOG_FILE: true
-      - name: Archive results
-        uses: actions/upload-artifact@v4
-        if: ${{ always() }}
-        with:
-          name: linter-report
-          path: super-linter.log
