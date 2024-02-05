@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: super-linter/super-linter@v5.7.2
-        with:
+        env:
           DEFAULT_BRANCH: main
           # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
