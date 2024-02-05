@@ -33,8 +33,8 @@ jobs:
           apt update
           apt install -y -qq --no-install-recommends enchant-2 git
           pip install -r docs/requirements.txt
-          sphinx-build -b linkcheck ./docs _build
-          sphinx-build -b spelling ./docs _build
+          sphinx-build -W -b linkcheck ./docs _build
+          sphinx-build -W -b spelling ./docs _build
           sphinx-build -M html ./docs _build
 
       - name: Upload artifact
