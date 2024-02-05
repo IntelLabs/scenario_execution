@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: |
           apt update
-          apt install -y --no-recommends enchant-2
+          apt install -y -qq --no-install-recommends enchant-2
           pip install -r docs/requirements.txt
           ls -la
           ls -la docs
