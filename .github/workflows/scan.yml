@@ -1,0 +1,39 @@
+---
+name: Scan
+on:
+  # Triggers the workflow on push or pull request events but
+  # only for the main branch
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  lint:
+    name: 'Super-linter'
+    runs-on: intellabs-01
+    container: 'ghcr.io/github/super-linter:v5.0.0'
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: super-linter/super-linter@v6.0.0
+        env:
+          DEFAULT_BRANCH: main
+          # To report GitHub Actions status checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_CLANG_FORMAT: true
+          VALIDATE_PYTHON_PYLINT: true
+          VALIDATE_YAML: true
+          VALIDATE_DOCKERFILE_HADOLINT: true
+          VALIDATE_MARKDOWN: true
+          VALIDATE_GITLEAKS: true
+          VALIDATE_GITHUB_ACTIONS: true
+          YAML_ERROR_ON_WARNING: false
+          PYTHON_PYLINT_CONFIG_FILE: .pylintrc
+          LOG_FILE: super-linter.log
+          CREATE_LOG_FILE: true

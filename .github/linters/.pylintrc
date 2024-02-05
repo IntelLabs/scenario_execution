@@ -1,0 +1,9 @@
+[MASTER]
+ignore-paths=.*/osc2_parsing/.*
+
+[MESSAGES CONTROL]
+max-line-length=140
+disable=no-self-use,anomalous-backslash-in-string,too-many-arguments,too-few-public-methods,too-many-instance-attributes,redefined-variable-type,unused-argument,bad-continuation,too-many-lines,too-many-branches,locally-disabled,too-many-locals,too-many-statements,duplicate-code,too-many-nested-blocks,fixme,useless-object-inheritance,no-else-raise,no-else-break,unnecessary-pass,no-else-return,super-with-arguments,no-else-continue,bad-option-value,consider-using-dict-items,consider-using-f-string,line-too-long,wrong-import-order,missing-function-docstring,missing-class-docstring,f-string-without-interpolation,import-error,missing-module-docstring,consider-using-with,unspecified-encoding
+ignored-modules=geometry_msgs,py_trees
+variable-rgx=[a-z0-9_]{1,40}$
+function-rgx=[a-z0-9_]{1,40}$
