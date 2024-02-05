@@ -31,6 +31,7 @@ jobs:
         shell: bash
         run: |
           ls -la
+          ls -la docs
           ls -la /
           sphinx-build -M html ./docs _build
       # - name: Upload artifact
