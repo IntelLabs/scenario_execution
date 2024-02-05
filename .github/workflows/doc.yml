@@ -30,6 +30,8 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          apt update
+          apt install -y -qq --no-install-recommends enchant-2 git
           pwd
           ls -la
           ls -la /ws
@@ -37,8 +39,6 @@ jobs:
           ls -la /__w/scenario_execution/scenario_execution/
           cd /__w/scenario_execution/scenario_execution/
           git log --quiet --no-color
-          apt update
-          apt install -y -qq --no-install-recommends enchant-2 git
           pip install -r docs/requirements.txt
           sphinx-build -W -b linkcheck ./docs _build
           sphinx-build -W -b spelling ./docs _build
