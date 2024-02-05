@@ -28,6 +28,8 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          ls -la
+          ls -la /
           sphinx-build -M html ./docs _build
       # - name: Upload artifact
       #   uses: actions/upload-pages-artifact@v1
