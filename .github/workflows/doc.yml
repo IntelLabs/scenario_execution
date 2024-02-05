@@ -33,10 +33,9 @@ jobs:
           apt update
           apt install -y -qq --no-install-recommends enchant-2
           pip install -r docs/requirements.txt
-          ls -la
-          ls -la docs
-          ls -la /
+          sphinx-build -b linkcheck ./docs _build          
           sphinx-build -M html ./docs _build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
