@@ -34,6 +34,7 @@ jobs:
           ls -la
           ls -la /ws
           ls -la /__w/scenario_execution/
+          ls -la /__w/scenario_execution/scenario_execution/
           apt update
           apt install -y -qq --no-install-recommends enchant-2 git
           pip install -r docs/requirements.txt
