@@ -1,0 +1,62 @@
+---
+name: 'Deploy Docs'
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'latest'
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: false
+
+jobs:
+  build_docs:
+    name: 'Build Docs'
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/sphinx-doc/sphinx:7.1.2
+      volumes:
+        - ${{ github.workspace }}:/ws
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        shell: bash
+        run: |
+          apt update
+          apt install -y -qq --no-install-recommends enchant-2
+          pip install -r docs/requirements.txt
+          sphinx-build -W -b linkcheck ./docs _build
+          sphinx-build -W -b spelling ./docs _build
+          sphinx-build -M html ./docs _build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: '_build/html'
+  deploy_publish_github_pages:
+    name: 'Deploy to GitHub Pages'
+    needs: build_docs
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/sphinx-doc/sphinx:7.1.2
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

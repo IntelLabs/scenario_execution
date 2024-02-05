@@ -1,0 +1,7 @@
+build/
+log/
+install/
+__pycache__/
+*.py[cod]
+.env
+venv/
