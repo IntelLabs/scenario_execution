@@ -7,4 +7,3 @@ disable=no-self-use,anomalous-backslash-in-string,too-many-arguments,too-few-pub
 ignored-modules=geometry_msgs,py_trees
 variable-rgx=[a-z0-9_]{1,40}$
 function-rgx=[a-z0-9_]{1,40}$
-extension-pkg-whitelist=cv2,pygame,numpy
