@@ -23,7 +23,7 @@ jobs:
     container:
       image: ghcr.io/sphinx-doc/sphinx:7.1.2
       volumes:
-        - ${{ github.workspace }}/Docs:/docs
+        - ${{ github.workspace }}/docs:/docs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
