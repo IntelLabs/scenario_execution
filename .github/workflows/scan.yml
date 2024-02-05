@@ -14,9 +14,9 @@ jobs:
     runs-on: intellabs-01
     container: 'ghcr.io/github/super-linter:v5.0.0'
     permissions:
-      contents: read
-      packages: read
-      statuses: write
+       contents: read
+       packages: read
+       statuses: write
     steps:
       - uses: actions/checkout@v4
         with:
