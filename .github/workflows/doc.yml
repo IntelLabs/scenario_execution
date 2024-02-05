@@ -30,6 +30,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          pip install -r docs/requirements.txt
           ls -la
           ls -la docs
           ls -la /
