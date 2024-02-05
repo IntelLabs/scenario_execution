@@ -11,7 +11,7 @@ on:
 jobs:
   lint:
     name: 'Super-linter'
-    runs-on: self-hosted
+    runs-on: intellabs-01
     container: 'ghcr.io/github/super-linter:v5.0.0'
     permissions:
       contents: read
