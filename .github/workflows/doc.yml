@@ -41,27 +41,22 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: '_build/html'
-
-  # # https://1cicd.intel.com/standards.html#standard-stage-names
-  # deploy_publish_github_pages:
-  #   name: 'Deploy to GitHub Pages'
-  #   needs: build_docs
-  #   if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
-  #   runs-on: intellabs-01
-  #   container:
-  #     image: 'amr-registry.caas.intel.com/heaven/sphinx-html-builder:latest'
-  #     credentials:
-  #       username: ${{ secrets.BUILD_USER }}
-  #       password: ${{ secrets.ARTIFACTORY_BUILD_AMSRL }}
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
-  #   permissions:
-  #     pages: write
-  #     id-token: write
-  #   steps:
-  #     - name: Setup Pages
-  #       uses: actions/configure-pages@v3
-  #     - name: Deploy to GitHub Pages
-  #       id: deployment
-  #       uses: actions/deploy-pages@v2
+  deploy_publish_github_pages:
+    name: 'Deploy to GitHub Pages'
+    needs: build_docs
+    if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/sphinx-doc/sphinx:7.1.2
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
