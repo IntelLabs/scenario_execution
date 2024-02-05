@@ -38,7 +38,7 @@ jobs:
           ls -la /__w/scenario_execution/
           ls -la /__w/scenario_execution/scenario_execution/
           #cd /__w/scenario_execution/scenario_execution/
-          cd /ws && git log --quiet --no-color
+          #cd /ws && git log --quiet --no-color
           pip install -r docs/requirements.txt
           sphinx-build -W -b linkcheck ./docs _build
           sphinx-build -W -b spelling ./docs _build
