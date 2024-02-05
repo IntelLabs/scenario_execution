@@ -12,7 +12,6 @@ multiline
 amsrl
 buildkit
 autoformatter
-nvidia
 behavior
 amr
 modularity
