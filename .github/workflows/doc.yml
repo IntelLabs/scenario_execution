@@ -36,7 +36,7 @@ jobs:
           ls -la /__w/scenario_execution/
           ls -la /__w/scenario_execution/scenario_execution/
           cd /__w/scenario_execution/scenario_execution/
-          git log --quiet --no-color --pretty=format:%(trailers:key=Co-Authored-By,separator=%x0A)%x0A%an%x0A%cn
+          git log --quiet --no-color
           apt update
           apt install -y -qq --no-install-recommends enchant-2 git
           pip install -r docs/requirements.txt
