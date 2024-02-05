@@ -21,7 +21,7 @@ In case of errors you can run the autoformatter by executing:
 Testing
 -------
 
-To run only specific tests:
+To run only specSSific tests:
 
 ::
 
