@@ -43,7 +43,7 @@ jobs:
           name: linter-report
           path: super-linter.log
   scan:
-    runs-on: [localbuild]
+    runs-on: intellabs-01
     needs: 
       - lint
     steps:
