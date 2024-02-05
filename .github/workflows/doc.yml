@@ -22,15 +22,13 @@ jobs:
     runs-on: intellabs-01
     container:
       image: ghcr.io/sphinx-doc/sphinx:7.1.2
-      volumes:
-        - ${{ github.workspace }}/docs:/docs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build
         shell: bash
         run: |
-          sphinx-build -M html /docs _build
+          sphinx-build -M html ./docs _build
       # - name: Upload artifact
       #   uses: actions/upload-pages-artifact@v1
       #   with:
