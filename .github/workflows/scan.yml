@@ -50,4 +50,3 @@ jobs:
           format: 'table'
           exit-code: '1'
           vuln-type: 'os,library'
-          list-all-pkgs: true
