@@ -37,3 +37,16 @@ jobs:
           PYTHON_PYLINT_CONFIG_FILE: .pylintrc
           LOG_FILE: super-linter.log
           CREATE_LOG_FILE: true
+  trivy:
+    name: Trivy
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.17.0
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          exit-code: '1'
+          vuln-type: 'os,library'
