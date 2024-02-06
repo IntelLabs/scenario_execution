@@ -47,6 +47,13 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
-          format: 'table'
+          format: 'json'
           exit-code: '1'
           vuln-type: 'os,library'
+          list-all-pkgs: true
+
+          
+          TRIVY_REPORT_FORMAT: 'template'
+          TRIVY_DEBUG: true
+          TRIVY_TEMPLATE: '@/templates/csv.tmpl'      
+          TRIVY_OUTPUT_FILE: 'trivy.csv'
