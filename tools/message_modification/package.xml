@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>message_modification</name>
-  <version>0.0.0</version>
+  <version>1.0.0</version>
   <description>Modification of message data</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
