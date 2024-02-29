@@ -1,0 +1,7 @@
+import osc.example
+
+
+scenario example_library:
+    do serial:
+        custom_action(data: 'foo')
+        emit end

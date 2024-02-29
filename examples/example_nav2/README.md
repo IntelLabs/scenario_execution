@@ -1,0 +1,23 @@
+# Example Navigation
+
+To run the Example Navigation 2 Scenario, first build the Example Navigation 2 Package:
+
+```bash
+colcon build --packages-up-to example_nav2
+```
+
+Source the workspace:
+
+```bash
+source install/setup.bash
+```
+
+Now, run the following command to launch the scenario:
+
+```bash
+ros2 launch tb4_bringup sim_nav_scenario_launch.py scenario:=examples/example_nav2/scenarios/example_nav2.osc
+```
+
+A turtlebot is initialsed with nav2 which drives to a point and back.
+
+For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intel-innersource.github.io/applications.robotics.mobile.scenario-execution/tutorials.html).

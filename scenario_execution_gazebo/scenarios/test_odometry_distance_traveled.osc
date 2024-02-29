@@ -1,0 +1,28 @@
+import osc.ros
+
+scenario test_odometry_distance_traveled:
+    robot1: differential_drive_robot
+
+    do parallel:
+        test: serial:
+            robot1.init_nav2() with:
+                keep(it.initial_pose.position.x == 0.0m)
+                keep(it.initial_pose.position.y == 0.0m)
+                keep(it.initial_pose.position.z == 0.0m)
+                keep(it.initial_pose.orientation.roll == 0.0rad)
+                keep(it.initial_pose.orientation.pitch == 0.0rad)
+                keep(it.initial_pose.orientation.yaw == 0.0rad)
+            robot1.nav_to_pose() with:
+                keep(it.goal_pose.position.x == 2.5m)
+                keep(it.goal_pose.position.y == 2.5m)
+                keep(it.goal_pose.position.z == 0.0m)
+                keep(it.goal_pose.orientation.roll == 0.0rad)
+                keep(it.goal_pose.orientation.pitch == 0.0rad)
+                keep(it.goal_pose.orientation.yaw == 0.0rad)
+        test2: serial:
+            robot1.odometry_distance_traveled() with:
+                keep(it.distance == 2m)
+            emit end
+        time_out: serial:
+            wait elapsed(30s)
+            time_out_shutdown: emit fail

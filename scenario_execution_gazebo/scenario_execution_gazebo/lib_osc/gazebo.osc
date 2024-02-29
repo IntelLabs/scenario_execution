@@ -1,0 +1,26 @@
+import osc.standard
+import osc.robotics
+
+action wait_for_sim:
+    # Wait for simulation to become active
+    world_name: string = 'default'
+
+action actor_exists:
+    entity_name: string
+    world_name: string = 'default'
+
+action amr_object.spawn:
+    # Spawn a simulation entity, uses namespace of entity
+    spawn_pose: pose_3d
+    world_name: string = 'default'
+    xacro_arguments: string = ''        # comma-separated list of argument key:=value pairs
+
+action amr_object.spawn_and_move:
+    # Spawn a simulation entity, uses namespace of entity
+    spawn_pose: pose_3d
+    trajectory: string                  # comma-separated list of trajectory poses
+    world_name: string = 'default'
+    xacro_arguments: string = ''        # comma-separated list of argument key:=value pairs
+
+action amr_object.delete:
+    world_name: string = 'default'

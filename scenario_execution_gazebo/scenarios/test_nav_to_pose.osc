@@ -1,0 +1,29 @@
+import osc.ros
+
+scenario test_nav_to_pose:
+    robot1: differential_drive_robot
+
+    event robot1_arrived
+    do parallel:
+        test: serial:
+            robot1.init_nav2() with:
+                keep(it.initial_pose.position.x == 0.0m)
+                keep(it.initial_pose.position.y == 0.0m)
+                keep(it.initial_pose.position.z == 0.01m)
+                keep(it.initial_pose.orientation.roll == 0.0rad)
+                keep(it.initial_pose.orientation.pitch == 0.0rad)
+                keep(it.initial_pose.orientation.yaw == 0.0rad)
+            robot1.nav_to_pose() with:
+                keep(it.goal_pose.position.x == 1.0m)
+                keep(it.goal_pose.position.y == 0.0m)
+                keep(it.goal_pose.position.z == 0.0m)
+                keep(it.goal_pose.orientation.roll == 0.0rad)
+                keep(it.goal_pose.orientation.pitch == 0.0rad)
+                keep(it.goal_pose.orientation.yaw == 0.0rad)
+            emit robot1_arrived
+        test_arrival: serial:
+            wait @test_nav_to_pose.robot1_arrived
+            emit end
+        time_out: serial:
+            wait elapsed(60s)
+            time_out_shutdown: emit fail

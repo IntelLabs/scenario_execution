@@ -1,0 +1,35 @@
+import osc.standard
+
+actor bullet_object:
+    model: string
+
+actor manipulator inherits bullet_object:
+    active_components: string   # components separated by a ;
+
+actor bullet_camera:
+    parent_body: string
+    parent_link: string
+    auto_rendering: bool
+    intrinsic_param: string     # intrinsic calibration matrix as string in the fx;0;cx;0;fy;cy;0;0;1
+
+action manipulator.spawn_robot
+
+action manipulator.send_joint_position:
+    component: string
+    position: string
+
+action manipulator.move_eef_through_poses:
+    component: string
+    link_name: string
+    threshold: length
+    poses: string               # list of poses as string in the form x1,y1,z1,roll1,pitch1,yaw1;x2,y2,z2,roll2,pitch2,yaw2;...
+
+action manipulator.move_gripper:
+    component: string
+    action_type: string
+
+action bullet_object.spawn_object:
+    position: string            
+    flags: string
+
+action bullet_camera.spawn_camera

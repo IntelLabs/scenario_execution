@@ -1,0 +1,6 @@
+import osc.helpers
+
+scenario example_ros_topic:
+    do serial:
+        log("Hello World")
+        emit end

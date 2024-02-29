@@ -1,0 +1,1 @@
+include scenario_execution_kube_bullet/lib_osc/*.osc

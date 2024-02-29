@@ -1,0 +1,8 @@
+import osc.standard
+
+enum door_mode : [close, moving, open, offline, unknown]
+
+action door_request:
+    #request door state
+    door_ids: string
+    door_mode: door_mode 

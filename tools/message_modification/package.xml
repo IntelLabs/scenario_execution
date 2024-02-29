@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>message_modification</name>
+  <version>0.0.0</version>
+  <description>Modification of message data</description>
+  <author email="scenario-execution@intel.com">Intel Labs</author>
+  <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
+  <license file="../../LICENSE">Apache-2.0</license>
+
+  <exec_depend>sensor_msgs</exec_depend>
+
+  <depend>rclpy</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

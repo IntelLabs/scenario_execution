@@ -1,0 +1,16 @@
+<library path="scenario_execution_rviz">
+  <class name="scenario_execution_rviz/Control"
+         type="scenario_execution_rviz::ControlPanel"
+         base_class_type="rviz_common::Panel">
+    <description>
+      A panel widget for controlling scenario execution
+    </description>
+  </class>
+  <class name="scenario_execution_rviz/Tree View"
+         type="scenario_execution_rviz::TreeView"
+         base_class_type="rviz_common::Panel">
+    <description>
+      A panel widget for visualizing state of scenario execution
+    </description>
+  </class>
+</library>

@@ -1,0 +1,22 @@
+import osc.ros
+
+scenario test_ros_topic_from_blackboard:
+    do parallel:
+        wait_for_msg: serial:
+            topic_to_blackboard() with:
+                keep(it.topic_name == '/bla')
+                keep(it.topic_type == 'std_msgs.msg.Bool')
+                keep(it.blackboard_variables == '/bla_blackboard')
+        publish_msg: serial:
+            wait_for_blackboard_variable() with:
+                keep(it.variable_name == '/bla_blackboard')
+            topic_from_blackboard() with:
+                keep(it.topic_name == '/final')
+                keep(it.topic_type == 'std_msgs.msg.Bool')
+                keep(it.blackboard_variable == '/bla_blackboard')
+            unset_blackboard_variable() with:
+                keep(it.key == '/bla_blackboard')
+            emit end
+        time_out: serial:
+            wait elapsed(30s)
+            time_out_shutdown: emit fail

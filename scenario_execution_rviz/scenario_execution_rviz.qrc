@@ -1,0 +1,10 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>icons/play.png</file>
+    <file>icons/stop.png</file>
+    <file>icons/check-o.png</file>
+    <file>icons/chevron-right-o.png</file>
+    <file>icons/close-o.png</file>
+    <file>icons/corner-down-right.png</file>
+</qresource>
+</RCC>

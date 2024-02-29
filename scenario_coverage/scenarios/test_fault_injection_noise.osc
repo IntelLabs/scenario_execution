@@ -1,0 +1,20 @@
+import osc.ros
+
+scenario nav2_simulation_fault_injection:
+    turtlebot4: differential_drive_robot with:
+        keep(it.model == 'topic:///robot_description')
+    do parallel:
+        test_drive: serial:
+            turtlebot4.init_nav2() with:
+                keep(it.initial_pose.position == position_3d(x: 0.0m, y: 0.0m))
+                #keep(it.use_initial_pose == false)
+            set_node_parameter() with:
+                keep(it.node_name == 'laserscan_modification')
+                keep(it.parameter_name == 'gaussian_noise_std_deviation')
+                keep(it.parameter_value in ['0.1','0.2', '0.5'])
+            turtlebot4.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
+            turtlebot4.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+            emit end
+        time_out: serial:
+            wait elapsed(240s)
+            emit fail

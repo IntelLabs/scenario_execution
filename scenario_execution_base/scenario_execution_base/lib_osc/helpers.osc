@@ -1,0 +1,21 @@
+###############
+# Base methods
+###############
+
+# # tag::library-base_methods[]
+# struct base_methods:
+#     # External methods that use python standard libraries
+#     def sqrt(value: float) -> float is external math.sqrt()
+
+#     # External methods that use scenario execution "external_methods" module
+#     def square(value: float) -> float is external scenario_execution.external_methods.power(2)
+#     def string_concat(string_1: string, string_2: string) -> string is external scenario_execution.external_methods.string_concat()
+# # end::library-base_methods[]
+
+action log:
+    msg: string
+
+action run_external_process:
+    # The actions reports running while the process is running and
+    # afterwards the result of the execution
+    command: string

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>scenario_execution_control</name>
+  <version>0.0.0</version>
+  <description>The scenario_execution_control package</description>
+  <author email="scenario-execution@intel.com">Intel Labs</author>
+  <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
+  <license file="../LICENSE">Apache-2.0</license>
+
+  <exec_depend>scenario_execution_interfaces</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  <exec_depend>scenario_execution</exec_depend>
+
+  <depend>rclpy</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
