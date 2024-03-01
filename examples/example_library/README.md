@@ -18,5 +18,5 @@ Now, run the following command to launch the scenario:
 ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_library/scenarios/example_library.osc
 ```
 
-For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intel-innersource.github.io/applications.robotics.mobile.scenario-execution/tutorials.html).
+For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intellabs.github.io/scenario_execution/tutorials.html).
 

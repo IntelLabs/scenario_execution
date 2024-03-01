@@ -33,4 +33,4 @@ To run the actual scenario, run the following command in a third terminal:
 ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_multi_robot/scenarios/example_multi_robot.osc
 ```
 
-For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intel-innersource.github.io/applications.robotics.mobile.scenario-execution/tutorials.html).
+For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intellabs.github.io/scenario_execution/tutorials.html).

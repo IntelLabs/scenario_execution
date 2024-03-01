@@ -1,6 +1,6 @@
 # Scenario Execution Base Package
 
-The "scenario_execution_base" package is the base package for scenario execution. It provides functionalities like parsing, py-trees creation and execution.
+The `scenario_execution_base` package is the base package for scenario execution. It provides functionalities like parsing, py-trees creation and execution.
 
 It provides the following scenario execution libraries:
 

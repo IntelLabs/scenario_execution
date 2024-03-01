@@ -23,7 +23,7 @@ release = '0.0.0'
 extensions = ['sphinx.ext.extlinks',
               'sphinxcontrib.spelling']
 
-extlinks = {'repo_link': ('https://github.com/intel-innersource/applications.robotics.mobile.scenario-execution/blob/main/%s', '%s')}
+extlinks = {'repo_link': ('https://github.com/intellabs/scenario_execution/blob/main/%s', '%s')}
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -31,8 +31,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 language = 'english'
 
 linkcheck_ignore = [
-    r'https://github.com/intel-innersource/applications.robotics.mobile.scenario-execution/.*',
-    r'https://github.intel.com/.*',
+    r'https://github.com/intellabs/scenario_execution/.*',
 ]
 
 spelling_word_list_filename = 'dictionary.txt'

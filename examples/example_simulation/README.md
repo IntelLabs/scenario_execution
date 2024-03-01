@@ -20,4 +20,4 @@ ros2 launch tb4_bringup sim_nav_scenario_launch.py scenario:=examples/example_si
 
 A turtlebot is initialsed with nav2 which drives to a point and back. During the ride an object is spawned in front of the turtlebot which will then drive around the object.
 
-For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intel-innersource.github.io/applications.robotics.mobile.scenario-execution/tutorials.html).
+For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intellabs.github.io/scenario_execution/tutorials.html).
