@@ -10,10 +10,23 @@ Preparations
 
 If not already installed, install the docker engine on your system
 according to the `installation
-instructions <https://docs.docker.com/engine/install/>`__.
+instructions <https://docs.docker.com/engine/install/>`__ or, if you
+need GPU support, follow the `nvidia installation
+instructions <https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html>`__.
+The recommended nvidia driver package is ``nvidia-driver-525``.
 
 Make sure you follow the `post installation
 steps <https://docs.docker.com/engine/install/linux-postinstall/>`__.
+
+Post-installation, you need to configure the proxy behavior of the
+docker daemon:
+
+.. code-block:: bash
+
+   sudo mkdir -p /etc/systemd/system/docker.service.d
+   sudo echo -e "[Service]\nEnvironment="HTTP_PROXY=http://proxy-chain.intel.com:911"\nEnvironment="HTTPS_PROXY=http://proxy-chain.intel.com:912"\nEnvironment="NO_PROXY=*.intel.com,127.0.0.0/8,localhost,127.0.0.1"" > /etc/systemd/system/docker.service.d/http-proxy.conf
+   sudo systemctl -q daemon-reload
+   sudo systemctl -q restart docker
 
 To make sure, that the docker daemon is properly set up, run
 
@@ -21,11 +34,24 @@ To make sure, that the docker daemon is properly set up, run
 
    docker run hello-world
 
-Install additional packages to build containers (buildkit).
+Install additional packages to build amsrl containers (buildkit).
 
 .. code-block:: bash
 
    sudo apt install docker-buildx-plugin
+
+Follow these
+`instructions <https://intel.sharepoint.com/sites/caascustomercommunity/SitePages/CaaS%20-%20Containers%20as%20a%20Service/News1915835.aspx#>`__
+for using the Intel image registry.
+
+Particularly, install the Intel internal CAs following these
+`instructions <https://github.intel.com/CaaS/public/blob/master/ca_install.md>`__.
+Now, you should be ready to login to be able to pull docker images.
+
+.. code-block:: bash
+
+   docker login ger-registry-pre.caas.intel.com
+
 
 .. note::
    In case you want to use the devcontainer with `Visual Studio
@@ -178,3 +204,8 @@ information of py_trees and parser:
 .. code-block:: bash
 
    ros2 run scenario_execution scenario_execution $(PATH_TO_SCENARIO_FILE) -t -d
+
+
+Using RVIZ to trigger scenario
+------------------------------
+

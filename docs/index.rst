@@ -29,7 +29,7 @@ gets cleaned up.
    setup
    how_to_run
    tutorials
-   actions
    architecture
-   openscenario2_support
+   libraries
    development
+   openscenario2_support

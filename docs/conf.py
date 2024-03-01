@@ -23,7 +23,7 @@ release = '0.0.0'
 extensions = ['sphinx.ext.extlinks',
               'sphinxcontrib.spelling']
 
-extlinks = {'repo_link': ('https://github.com/IntelLabs/scenario_execution/blob/main/%s', '%s')}
+extlinks = {'repo_link': ('https://github.com/intel-innersource/applications.robotics.mobile.scenario-execution/blob/main/%s', '%s')}
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -31,11 +31,11 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 language = 'english'
 
 linkcheck_ignore = [
-    r'https://github.com/IntelLabs/scenario_execution/.*',
+    r'https://github.com/intel-innersource/applications.robotics.mobile.scenario-execution/.*',
+    r'https://github.intel.com/.*',
 ]
 
 spelling_word_list_filename = 'dictionary.txt'
-spelling_ignore_contributor_names=False
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

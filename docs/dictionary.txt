@@ -12,6 +12,7 @@ multiline
 amsrl
 buildkit
 autoformatter
+nvidia
 behavior
 amr
 modularity
@@ -20,3 +21,11 @@ nav
 backend
 osc
 py
+vscode
+QoS
+dataset
+whitespace
+odometry
+tf
+amcl
+RViz
