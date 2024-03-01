@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Setup file for package example_simulation_nav2 """
 from glob import glob
 import os
 from setuptools import setup
