@@ -1,6 +1,6 @@
 # Example Navigation
 
-To run the Example multi robot scenario, first build the Package:
+To run the example multi robot scenario, first build the Package:
 
 ```bash
 colcon build --packages-up-to example_multi_robot
