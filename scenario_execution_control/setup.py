@@ -34,10 +34,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='TODO',
-    maintainer_email='TODO@TODO.com',
+    maintainer='Intel Labs',
+    maintainer_email='scenario-execution@intel.com',
     description='Scenario Execution Control',
-    license='TODO',
+    license='Apache License 2.0',
     entry_points={
         'console_scripts': [
             'scenario_execution_control = scenario_execution_control.scenario_execution_control_node:main',

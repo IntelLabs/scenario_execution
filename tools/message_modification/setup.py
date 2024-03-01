@@ -34,10 +34,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='TODO',
-    maintainer_email='TODO@TODO.com',
+    maintainer='Intel Labs',
+    maintainer_email='scenario-execution@intel.com',
     description='Message modification',
-    license='TODO',
+    license='Apache License 2.0',
     entry_points={
         'console_scripts': [
             'laserscan_modification = message_modification.laserscan_modification:main',

@@ -115,9 +115,9 @@ class ScenarioBatchExecution(object):
                 for line in output:
                     out.write(line + '\n')
             if ret:
-                print("### Process finished successfully.")
-            else:
                 print("### Process failed.")
+            else:
+                print("### Process finished successfully.")
 
         return True
 

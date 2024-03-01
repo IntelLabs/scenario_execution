@@ -32,10 +32,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='fpasch',
-    maintainer_email='frederik.pasch@intel.com',
+    maintainer='Intel Labs',
+    maintainer_email='scenario-execution@intel.com',
     description='Robotics Scenario Execution',
-    license='TODO: License declaration',
+    license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

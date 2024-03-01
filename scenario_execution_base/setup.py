@@ -34,10 +34,10 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     include_package_data=True,
-    maintainer='fpasch',
-    maintainer_email='frederik.pasch@intel.com',
+    maintainer='Intel Labs',
+    maintainer_email='scenario-execution@intel.com',
     description='Robotics Scenario Execution',
-    license='TODO: License declaration',
+    license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
@@ -45,9 +45,6 @@ setup(
         ],
         'scenario_execution.action_plugins': [
             'log = scenario_execution_base.behaviors.log:Log',
-            'wait_for_blackboard_variable = scenario_execution_base.base_action_plugins.wait_for_blackboard_variable:WaitForBlackboardVariable',
-            'set_blackboard_variable = scenario_execution_base.base_action_plugins.set_blackboard_variable:SetBlackboardVariable',
-            'unset_blackboard_variable = scenario_execution_base.base_action_plugins.unset_blackboard_variable:UnsetBlackboardVariable',
             'run_external_process = scenario_execution_base.behaviors.run_external_process:RunExternalProcess',
             'open_port = scenario_execution_base.behaviors.open_port:OpenPort',
             'wait_for_open_ports = scenario_execution_base.behaviors.wait_for_open_ports:WaitForOpenPorts',
@@ -56,7 +53,7 @@ setup(
             'helpers = scenario_execution_base.get_osc_library:get_helpers_library',
             'standard = scenario_execution_base.get_osc_library:get_standard_library',
             'robotics = scenario_execution_base.get_osc_library:get_robotics_library',
-            'distributed = scenario_execution_base.get_osc_library:get_distributed_library',
+            'networking = scenario_execution_base.get_osc_library:get_networking_library',
         ]
     },
 )

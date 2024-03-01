@@ -26,9 +26,7 @@ import py_trees
 from nav2_simple_commander.robot_navigator import TaskResult  # pylint: disable=import-error
 
 from .nav2_common import NamespaceAwareBasicNavigator
-
-from geometry_msgs.msg import PoseStamped
-from transforms3d.taitbryan import euler2quat
+from .nav2_common import get_pose_stamped
 
 
 class NavThroughPosesState(Enum):
@@ -61,26 +59,10 @@ class NavThroughPoses(py_trees.behaviour.Behaviour):
         if namespace_override:
             self.namespace = namespace_override
 
-        goal_poses_as_strings = goal_poses.split(';')
-
-        if not goal_poses_as_strings:
-            raise ValueError(f"Goal poses empty.")
-
-        self.goal_poses = []
-
-        for goal_pose_string in goal_poses_as_strings:
-            result = True
-            goal_split = goal_pose_string.split(',')
-            if len(goal_split) != 3:
-                result = False
-
-            if result:
-                goal = [float(goal_split[0]), float(goal_split[1]), 0., 0., 0., float(goal_split[2])]
-                self.goal_poses.append(goal)
-
-            if not result:
-                raise ValueError(
-                    f"Goal poses '{goal_poses} invalid ({goal_pose_string}). Expected format: x1,y1,yaw1;x2,y2,yaw2;... Units: m, rad")
+        if not isinstance(goal_poses, list):
+            raise TypeError(f'goal_poses needs to be list of position_3d, got {type(goal_poses)}.')
+        else:
+            self.goal_poses = goal_poses
 
     def setup(self, **kwargs):
         """
@@ -107,7 +89,7 @@ class NavThroughPoses(py_trees.behaviour.Behaviour):
             self.current_state = NavThroughPosesState.NAV_TO_GOAL
             goal_poses = []
             for pose in self.goal_poses:
-                goal_poses.append(NavThroughPoses.get_pose_stamped(self.nav.get_clock().now().to_msg(), pose))
+                goal_poses.append(get_pose_stamped(self.nav.get_clock().now().to_msg(), pose))
             self.feedback_message = "Execute navigation."  # pylint: disable= attribute-defined-outside-init
             go_to_pose_result = self.nav.goThroughPoses(goal_poses)
             if go_to_pose_result:
@@ -148,26 +130,3 @@ class NavThroughPoses(py_trees.behaviour.Behaviour):
             self.logger.error(f"Invalid state {self.current_state}")
 
         return result
-
-    @staticmethod
-    def get_pose_stamped(timestamp, pose_list: list):
-        """
-        Convert pose list to PoseStamped
-        """
-        pose = PoseStamped()
-        pose.header.frame_id = 'map'
-        pose.header.stamp = timestamp
-        pose.pose.position.x = pose_list[0]
-        pose.pose.position.y = pose_list[1]
-        pose.pose.position.z = pose_list[2]
-
-        # euler2quat() requires "zyx" convention,
-        # while in YAML, we define as pitch-roll-yaw (xyz), since it's more intuitive.
-        quaternion = euler2quat(pose_list[5],
-                                pose_list[4],
-                                pose_list[3])
-        pose.pose.orientation.w = quaternion[0]
-        pose.pose.orientation.x = quaternion[1]
-        pose.pose.orientation.y = quaternion[2]
-        pose.pose.orientation.z = quaternion[3]
-        return pose

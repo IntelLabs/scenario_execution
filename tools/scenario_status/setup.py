@@ -34,13 +34,13 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='fmirus',
-    maintainer_email='florian.mirus@intel.com',
+    maintainer='Intel Labs',
+    maintainer_email='scenario-execution@intel.com',
     description='Simple node to call a service to publish the py-trees-\
         behaviour tree to a topic, then subscribe to that topic and publish \
         changes in behaviour states as strings at the time they are \
         happening.',
-    license='TODO: License declaration',
+    license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

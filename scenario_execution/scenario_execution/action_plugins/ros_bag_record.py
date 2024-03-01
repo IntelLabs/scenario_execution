@@ -47,10 +47,13 @@ class RosBagRecord(RunExternalProcess):
 
     """
 
-    def __init__(self, name, destination_dir: str, topics: str, timestamp_suffix: bool, hidden_topics: bool, storage: str):
+    def __init__(self, name, destination_dir: str, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
         super().__init__(name)
+        if not isinstance(topics, list):
+            raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
+        else:
+            self.topics = topics
         self.destination_dir = destination_dir
-        self.topics = topics
         self.timestamp_suffix = timestamp_suffix
         self.include_hidden_topics = hidden_topics
         self.current_state = RosBagRecordActionState.WAITING_FOR_TOPICS
@@ -62,10 +65,6 @@ class RosBagRecord(RunExternalProcess):
         """
         set up
         """
-        topics_list = [s.strip() for s in self.topics.split(' ')]
-        if not topics_list:
-            raise ValueError("topics must not be empty.")
-
         if self.destination_dir:
             if not os.path.exists(self.destination_dir):
                 raise ValueError(
@@ -82,7 +81,7 @@ class RosBagRecord(RunExternalProcess):
         if self.storage:
             self.command.extend(["--storage", self.storage])
 
-        self.command.extend(["-o", self.bag_dir] + topics_list)
+        self.command.extend(["-o", self.bag_dir] + self.topics)
 
         self.logger.info(f'Command: {" ".join(self.command)}')
 

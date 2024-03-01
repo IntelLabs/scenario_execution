@@ -20,7 +20,6 @@ import py_trees
 from rclpy.qos import QoSProfile, DurabilityPolicy, HistoryPolicy
 import rclpy
 from rcl_interfaces.msg import Log
-from ast import literal_eval
 from py_trees.common import Status
 
 
@@ -32,14 +31,12 @@ class RosLogCheck(py_trees.behaviour.Behaviour):
         values [str]: Values to look for
     """
 
-    def __init__(self, name, values: str):
+    def __init__(self, name, values: list):
         super().__init__(name)
-        if values.startswith('['):
-            self.values = literal_eval(values)
-            if not isinstance(self.values, list):
-                raise TypeError(f'Value needs to be string or list of strings, got {type(values)}.')
+        if not isinstance(values, list):
+            raise TypeError(f'Value needs to be list of strings, got {type(values)}.')
         else:
-            self.values = [values]
+            self.values = values
 
         self.subscriber = None
         self.node = None

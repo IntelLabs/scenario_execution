@@ -35,7 +35,7 @@ action wait_for_data:
 
 action wait_for_topics:
     # wait for topics to get available
-    topics: string                                    # whitespace-separated list of topics
+    topics: list of topics                           
 
 action check_data:
     topic_name: string                                # name of the topic to connect to
@@ -96,14 +96,14 @@ action set_node_parameter:
 action record_bag:
     # Record a dataset
     destination_dir: string = '' # If destination dir is empty, the current directory is used
-    topics: string               # whitespace-separated list of topics
+    topics: list of topics
     timestamp_suffix: bool = true# Add a timestamp suffix to output directory name
     hidden_topics: bool = false  # whether to record hidden topics
     storage: string = ''         # storage type to use (empty string: use default)
 
 action log_check:
     # Check the log for specific output
-    values: string # string or list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
+    values: list of string # string to check for. If found, action succeeds
 
 action differential_drive_robot.init_nav2:
     initial_pose: pose_3d
@@ -119,7 +119,7 @@ action differential_drive_robot.nav_to_pose:
     monitor_progress: bool = true # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
 
 action differential_drive_robot.nav_through_poses:
-    goal_poses: string # poses as string: format x1,y1,yaw1;x2,y2,yaw2;...
+    goal_poses: list of pose_3d
     namespace_override: string = '' # if set, it's used as namespace (instead of the associated actor's name)
     monitor_progress: bool = true # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
 

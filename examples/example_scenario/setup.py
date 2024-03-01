@@ -27,15 +27,14 @@ setup(
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
-        ('share/' + PACKAGE_NAME, ['package.xml']),
         (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='TODO',
-    maintainer_email='TODO@intel.com',
+    maintainer='Intel Labs',
+    maintainer_email='scenario-execution@intel.com',
     description='TODO: Package description',
-    license='TODO: License declaration',
+    license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
     },

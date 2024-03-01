@@ -28,11 +28,13 @@ class RosTopicWaitForTopics(py_trees.behaviour.Behaviour):
         topics[str]: name of the topics to get available
     """
 
-    def __init__(self, topics: str):
+    def __init__(self, topics: list):
         super().__init__('RosTopicWaitForTopics')
-        self.topics = topics
+        if not isinstance(topics, list):
+            raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
+        else:
+            self.topics = topics
         self.node = None
-        self.topics_list = []
 
     def setup(self, **kwargs):
         """
@@ -45,10 +47,6 @@ class RosTopicWaitForTopics(py_trees.behaviour.Behaviour):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e  # 'direct cause' traceability
 
-        self.topics_list = [s.strip() for s in self.topics.split(' ')]
-        if not self.topics_list:
-            raise ValueError("topics must not be empty.")
-
     def update(self) -> py_trees.common.Status:
         """
         Publish the msg to topic
@@ -58,7 +56,7 @@ class RosTopicWaitForTopics(py_trees.behaviour.Behaviour):
         """
         available_topics = self.node.get_topic_names_and_types()
         available_topics = [seq[0] for seq in available_topics]
-        result = all(elem in available_topics for elem in self.topics_list)
+        result = all(elem in available_topics for elem in self.topics)
         if result:
             return py_trees.common.Status.SUCCESS
         else:

@@ -40,10 +40,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='xiyansu',
-    maintainer_email='xiyan.su@intel.com',
+    maintainer='Intel Labs',
+    maintainer_email='scenario-execution@intel.com',
     description='Package for scenario execution testing in gazebo',
-    license='TODO: License declaration',
+    license='Apache License 2.0',
     tests_require=['pytest'],
     include_package_data=True,
     entry_points={
