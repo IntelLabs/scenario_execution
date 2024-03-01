@@ -4,15 +4,12 @@ devcontainer
 rviz
 unmapped
 Structs
-kubernetes
 submodules
 namespace
 enums
 multiline
-amsrl
 buildkit
 autoformatter
-nvidia
 behavior
 amr
 modularity
