@@ -16,4 +16,4 @@
 
 
 def get_example_library():
-    return 'example_library', 'example_library.osc'
+    return 'example', 'example.osc'

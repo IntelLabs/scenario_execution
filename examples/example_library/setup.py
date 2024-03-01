@@ -28,9 +28,6 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
         (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
-        (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py')),
-        (os.path.join('share', PACKAGE_NAME, 'models'), glob('models/*.sdf')),
-        (os.path.join('share', PACKAGE_NAME, 'config'), glob('config/*.rviz'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
