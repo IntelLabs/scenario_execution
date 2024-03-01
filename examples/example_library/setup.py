@@ -33,7 +33,7 @@ setup(
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='TODO: Package description',
+    description='Scenario Execution Example Lirary',
     license='Apache License 2.0',
     tests_require=['pytest'],
     include_package_data=True,

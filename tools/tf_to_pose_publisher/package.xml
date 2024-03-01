@@ -3,7 +3,7 @@
 <package format="3">
   <name>tf_to_pose_publisher</name>
   <version>1.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Publish a tf transform to a pose topic</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../../LICENSE">Apache-2.0</license>
