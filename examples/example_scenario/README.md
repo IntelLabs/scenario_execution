@@ -3,7 +3,7 @@
 To run the Example Scenario, first build the Example Scenario Package:
 
 ```bash
-colcon build --packages-up-to example_scenario
+colcon build --packages-up-to scenario_execution
 ```
 
 Source the workspace:
