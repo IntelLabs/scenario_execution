@@ -12,7 +12,7 @@ To give an impression of the functionality of scenario execution, the following 
 Once the robot reaches a reference position and a box is spawned in front of the robot as an unmapped static obstacle that needs to be avoided.
 Upon arrival of the goal position, the scenario is ends with success and the simulation gets cleaned up.
 
-![scenario execution in action](Docs/images/scenario.gif "in action")
+![scenario execution in action](docs/images/scenario.gif "in action")
 
 ## Setup
 
