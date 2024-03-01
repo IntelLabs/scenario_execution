@@ -53,7 +53,6 @@ setup(
             'helpers = scenario_execution_base.get_osc_library:get_helpers_library',
             'standard = scenario_execution_base.get_osc_library:get_standard_library',
             'robotics = scenario_execution_base.get_osc_library:get_robotics_library',
-            'networking = scenario_execution_base.get_osc_library:get_networking_library',
         ]
     },
 )

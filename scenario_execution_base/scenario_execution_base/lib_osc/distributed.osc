@@ -1,9 +1,0 @@
-
-action open_port:
-    # Open a network port (e.g. for signaling)
-    port: int
-    address: string = '0.0.0.0'
-
-action wait_for_open_ports:
-    # wait for ports to open (e.g. for signaling)
-    targets: string

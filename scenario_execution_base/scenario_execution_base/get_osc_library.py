@@ -24,13 +24,6 @@ def get_robotics_library():
     return 'scenario_execution_base', 'robotics.osc'
 
 
-def get_networking_library():
-    """
-    getter for distributed library
-    """
-    return 'scenario_execution_base', 'distributed.osc'
-
-
 def get_helpers_library():
     """
     getter for helpers library
