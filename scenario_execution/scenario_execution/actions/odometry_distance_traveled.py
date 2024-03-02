@@ -26,9 +26,6 @@ import py_trees
 class OdometryDistanceTraveled(py_trees.behaviour.Behaviour):
     """
     Class to wait for a certain covered distance, based on odometry
-    Args:
-        distance [float]: expected distance traveled
-        namespace [str]: namspace of odom topic
     """
 
     def __init__(self, name, associated_actor, distance: float):

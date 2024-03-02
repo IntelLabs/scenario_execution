@@ -51,9 +51,6 @@ setup(
             'differential_drive_robot.nav_through_poses = scenario_execution.action_plugins.nav_through_poses:NavThroughPoses',
             'wait_for_data = scenario_execution.action_plugins.ros_topic_wait_for_data:RosTopicWaitForData',
             'check_data = scenario_execution.action_plugins.ros_topic_check_data:RosTopicCheckData',
-            'event_to_blackboard = scenario_execution.action_plugins.ros_event_to_blackboard:RosEventToBlackboard',
-            'topic_to_blackboard = scenario_execution.action_plugins.ros_topic_to_blackboard:RosTopicToBlackboard',
-            'topic_from_blackboard = scenario_execution.action_plugins.ros_topic_from_blackboard:RosTopicFromBlackboard',
             'service_call = scenario_execution.action_plugins.ros_service_call:RosServiceCall',
             'topic_publish = scenario_execution.action_plugins.ros_topic_publish:RosTopicPublish',
             'odometry_distance_traveled = '

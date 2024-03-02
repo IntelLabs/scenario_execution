@@ -5,7 +5,7 @@
 ## TL;DR
 
 Scenario execution is a backend- and middleware-agnostic library written in Python based on the generic scenario description language [OpenSCENARIO 2](https://www.asam.net/static_downloads/public/asam-openscenario/2.0.0/welcome.html) and [pytrees](https://py-trees.readthedocs.io/en/devel/).
-It reads a scenario definition from a file and then executes it, reusing available checks and behaviors. It is easily extendable through a library mechanism.
+It reads a scenario definition from a file and then executes it, reusing available checks and actions. It is easily extendable through a library mechanism.
 This separation of the scenario definition from implementation massively reduces the manual efforts of scenario creation.
 
 To give an impression of the functionality of scenario execution, the following animation shows an example scenario with a turtlebot-like robot in simulation using Nav2 to navigate towards a specified navigation goal in a simulated warehouse environment.

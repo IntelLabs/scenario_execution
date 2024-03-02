@@ -36,7 +36,7 @@ from .nav2_common import NamespaceAwareBasicNavigator, get_pose_stamped, Namespa
 
 class InitNav2State(Enum):
     """
-    States for executing a nav-to-pose with nav2
+    States for executing a initialization of nav2
     """
     IDLE = 1
     LOCALIZER_STATE_REQUESTED = 2
@@ -54,14 +54,7 @@ class InitNav2State(Enum):
 
 class InitNav2(py_trees.behaviour.Behaviour):
     """
-    Class to navigate to a pose
-
-    Args:
-        initial_pose: a 6 numbers list in str form containing the initial pose of the entity
-            in the shape of [x, y, z. roll, pitch, yaw].
-        goal_pose: a 6 numbers list in str form containing the goal pose of the entity
-            in the shape of [x, y, z. roll, pitch, yaw].
-
+    Class to initialize nav2
     """
 
     def __init__(self, name, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):

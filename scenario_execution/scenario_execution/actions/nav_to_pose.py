@@ -44,11 +44,6 @@ class NavToPoseState(Enum):
 class NavToPose(py_trees.behaviour.Behaviour):
     """
     Class to navigate to a pose
-
-    Args:
-        goal_pose: a 6 numbers list in str form containing the goal pose of the entity
-            in the shape of [x, y, z. roll, pitch, yaw].
-
     """
 
     def __init__(self, name: str, associated_actor, goal_pose: list, monitor_progress: bool, action_topic: str, namespace_override: str) -> None:

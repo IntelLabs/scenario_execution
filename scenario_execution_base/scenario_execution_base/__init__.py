@@ -16,14 +16,14 @@
 
 """Main entry point for the scenario execution base package """
 
-from . import behaviors
+from . import actions
 from . import utils
 from . import model
 from scenario_execution_base.scenario_execution import ScenarioExecution
 from scenario_execution_base.utils.logging import BaseLogger, Logger
 
 __all__ = [
-    'behaviors',
+    'actions',
     'utils',
     'model',
     'BaseLogger',

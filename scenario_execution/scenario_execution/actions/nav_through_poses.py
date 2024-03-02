@@ -41,11 +41,6 @@ class NavThroughPosesState(Enum):
 class NavThroughPoses(py_trees.behaviour.Behaviour):
     """
     Class to navigate through poses
-
-    Args:
-        goal_pose: a 6 numbers list in str form containing the goal pose of the entity
-            in the shape of [x, y, z. roll, pitch, yaw].
-
     """
 
     def __init__(self, name: str, associated_actor, goal_poses: list, monitor_progress: bool, namespace_override: str):

@@ -16,14 +16,12 @@
 
 """ Main entry for scenario execution """
 
-from . import action_plugins
-from . import external_methods
+from . import actions
 from .logging_ros import RosLogger
 from .scenario_execution_ros import ROSScenarioExecution
 
 __all__ = [
-    'action_plugins',
-    'external_methods',
+    'actions',
     'RosLogger',
     'ROSScenarioExecution'
 ]

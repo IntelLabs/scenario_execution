@@ -15,15 +15,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import py_trees
-from py_trees.common import Access
+from py_trees.common import Access, Status
 from pkg_resources import iter_entry_points
 
 import inspect
 
 from scenario_execution_base.model.types import EventReference, CoverDeclaration, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral
 from scenario_execution_base.model.model_base_visitor import ModelBaseVisitor
-from scenario_execution_base.behaviors import TopicPublish
-from scenario_execution_base.behaviors import TopicEquals
 from scenario_execution_base.model.error import OSC2ParsingError
 
 
@@ -39,6 +37,72 @@ def create_py_tree(model, logger):
         )
         return None
     return [scenario]
+
+
+class TopicEquals(py_trees.behaviour.Behaviour):
+    """
+    Class to listen to a topic in Blackboard and check if it equals the defined message
+
+    Args:
+        key [str]: topic to listen to
+        msg [str]: target message to match
+        namespace [str]: namespace of the key
+    """
+
+    def __init__(self, key: str, msg: str, namespace: str = None):
+        super().__init__(self.__class__.__name__)
+
+        self.namespace = namespace
+        self.key = key
+        self.msg = msg
+
+        self.client = self.attach_blackboard_client(namespace=self.namespace)
+        self.client.register_key(self.key, access=Access.READ)
+
+    def update(self):
+        """
+        Check the message on the topic equals the target message
+        """
+        msg_on_blackboard = self.client.get(self.key)
+        if msg_on_blackboard == self.msg:
+            return Status.SUCCESS
+        return Status.RUNNING
+
+
+class TopicPublish(py_trees.behaviour.Behaviour):
+    """
+    Class to publish a message to a topic
+
+    Args:
+        key [str]: topic to publish on
+        msg [str]: message to publish on that topic
+        namespace [str]: namespace of the key
+    """
+
+    def __init__(self, name: "TopicPublish", key: str, msg: str, namespace: str = None):
+        super().__init__(name)
+
+        self.namespace = namespace
+        self.key = key
+        self.msg = msg
+
+        self.client = self.attach_blackboard_client(namespace=self.namespace)
+        self.client.register_key(self.key, access=Access.WRITE)
+
+    def setup(self, **kwargs):
+        """
+        Setup empty topic on blackboard
+
+        This is to prevent the "Reader" from reading before the topic exists.
+        """
+        self.client.set(self.key, '')
+
+    def update(self):
+        """
+        publish the message to topic
+        """
+        self.client.set(self.key, self.msg)
+        return Status.SUCCESS
 
 
 class ModelToPyTree(object):

@@ -21,7 +21,7 @@ from datetime import datetime
 from enum import Enum
 
 import py_trees
-from scenario_execution_base.behaviors import RunExternalProcess
+from scenario_execution_base.actions import RunExternalProcess
 import shutil
 import signal
 
@@ -38,13 +38,6 @@ class RosBagRecordActionState(Enum):
 class RosBagRecord(RunExternalProcess):
     """
     Class to execute ros bag recording
-
-    Args:
-        destination_dir [str]: destination directory
-        topics [str]: topics to record
-        timestamp_suffix [bool]: add timestamp suffix to output dir?
-        hidden_topics [bool]: whether to record hidden topics
-
     """
 
     def __init__(self, name, destination_dir: str, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
