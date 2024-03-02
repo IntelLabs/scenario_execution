@@ -52,7 +52,7 @@ class InitNav2State(Enum):
 
 class InitNav2(py_trees.behaviour.Behaviour):
     """
-    Class for initializing nav2 by setting an initial pose and activate required nodes """
+    Class for initializing nav2 by setting an initial pose and activate required nodes
 
     """
 
@@ -89,7 +89,7 @@ class InitNav2(py_trees.behaviour.Behaviour):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e  # 'direct cause' traceability
+            raise KeyError(error_message) from e
 
         self.tf_buffer = Buffer()
         self.tf_listener = NamespacedTransformListener(

@@ -81,7 +81,7 @@ class GazeboSpawnActor(RunExternalProcess):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e  # 'direct cause' traceability
+            raise KeyError(error_message) from e
 
         self.logger = get_logger(self.name)
         self.utils = SpawnUtils(logger=self.logger)

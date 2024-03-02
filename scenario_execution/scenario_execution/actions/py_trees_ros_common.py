@@ -24,6 +24,7 @@ class SubscriberHandler(py_trees_ros.subscribers.Handler):
     """
     overrides Handler
     """
+
     def __init__(self,
                  name: str,
                  topic_name: str,
@@ -46,7 +47,7 @@ class SubscriberHandler(py_trees_ros.subscribers.Handler):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e  # 'direct cause' traceability
+            raise KeyError(error_message) from e
         self.subscriber = self.node.create_subscription(  # pylint: disable= attribute-defined-outside-init
             msg_type=self.topic_type,
             topic=self.topic_name,

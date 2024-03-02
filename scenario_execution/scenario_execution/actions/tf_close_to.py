@@ -79,7 +79,7 @@ class TfCloseTo(py_trees.behaviour.Behaviour):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e  # 'direct cause' traceability
+            raise KeyError(error_message) from e
 
         try:
             self.marker_handler = kwargs['marker_handler']
@@ -87,7 +87,7 @@ class TfCloseTo(py_trees.behaviour.Behaviour):
             error_message = "didn't find 'marker_handler' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__
             )
-            raise KeyError(error_message) from e  # 'direct cause' traceability
+            raise KeyError(error_message) from e
         self.feedback_message = f"Waiting for transform map --> base_link"  # pylint: disable= attribute-defined-outside-init
         self.tf_buffer = Buffer()
         tf_prefix = self.namespace
