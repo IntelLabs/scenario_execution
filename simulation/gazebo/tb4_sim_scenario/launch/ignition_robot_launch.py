@@ -50,8 +50,8 @@ for pose_element in ['x', 'y', 'z', 'yaw']:
 def generate_launch_description():
 
     # Directories
-    pkg_tb4_bringup = get_package_share_directory(
-        'tb4_bringup')
+    pkg_tb4_sim_scenario = get_package_share_directory(
+        'tb4_sim_scenario')
     pkg_turtlebot4_ignition_bringup = get_package_share_directory(
         'turtlebot4_ignition_bringup')
     pkg_irobot_create_common_bringup = get_package_share_directory(
@@ -63,7 +63,7 @@ def generate_launch_description():
     # turtlebot4_ros_ign_bridge_launch = PathJoinSubstitution(
     # [pkg_turtlebot4_ignition_bringup, 'launch', 'ros_ign_bridge.launch.py'])
     turtlebot4_ros_ign_bridge_launch = PathJoinSubstitution(
-        [pkg_tb4_bringup, 'launch', 'ros_ign_bridge.launch.py'])
+        [pkg_tb4_sim_scenario, 'launch', 'ros_ign_bridge.launch.py'])
 
     turtlebot4_node_launch = PathJoinSubstitution(
         [pkg_turtlebot4_ignition_bringup, 'launch', 'turtlebot4_nodes.launch.py'])
@@ -75,7 +75,7 @@ def generate_launch_description():
         [pkg_irobot_create_ignition_bringup, 'launch', 'create3_ignition_nodes.launch.py'])
 
     robot_description_launch = PathJoinSubstitution(
-        [pkg_tb4_bringup, 'launch', 'robot_description.launch.py'])
+        [pkg_tb4_sim_scenario, 'launch', 'robot_description.launch.py'])
 
     # Parameters
     param_file_cmd = DeclareLaunchArgument(

@@ -1,9 +1,9 @@
 # Example Navigation
 
-To run the example multi robot scenario, first build the Package:
+To run the example multi robot scenario, build the `tb4_sim_scenario` package:
 
 ```bash
-colcon build --packages-up-to example_multi_robot
+colcon build --packages-up-to tb4_sim_scenario
 ```
 
 Source the workspace:
@@ -18,19 +18,19 @@ Note: due to an [issue](https://github.com/turtlebot/turtlebot4_simulator/issues
 Launch the simulation and spawn the first robot by running the following command:
 
 ```bash
-ros2 launch tb4_bringup sim_nav_scenario_launch.py scenario_execution:=False scenario:=foo yaw:=3.14
+ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario_execution:=False scenario:=foo yaw:=3.14
 ```
 
 To spawn the second robot, run the following command in a new terminal:
 
 ```bash
-ros2 launch tb4_bringup ignition_robot_launch.py namespace:=turtlebot2 x:=-3.0 y:=1.5 yaw:=-1.57
+ros2 launch tb4_sim_scenario ignition_robot_launch.py namespace:=turtlebot2 x:=-3.0 y:=1.5 yaw:=-1.57
 ```
 
 To run the actual scenario, run the following command in a third terminal:
 
 ```bash
-ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_multi_robot/scenarios/example_multi_robot.osc
+ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_multi_robot/example_multi_robot.osc
 ```
 
 For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intellabs.github.io/scenario_execution/tutorials.html).

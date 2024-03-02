@@ -45,8 +45,8 @@ def generate_launch_description():
     # Directories
     pkg_turtlebot4_ignition_bringup = get_package_share_directory(
         'turtlebot4_ignition_bringup')
-    pkg_tb4_bringup = get_package_share_directory(
-        'tb4_bringup')
+    pkg_tb4_sim_scenario = get_package_share_directory(
+        'tb4_sim_scenario')
     pkg_turtlebot4_ignition_gui_plugins = get_package_share_directory(
         'turtlebot4_ignition_gui_plugins')
     pkg_turtlebot4_description = get_package_share_directory(
@@ -83,7 +83,7 @@ def generate_launch_description():
     # Ignition gazebo
     ignition_gazebo = ExecuteProcess(
         cmd=['ruby', '/usr/bin/ign', 'gazebo', [PathJoinSubstitution(
-            [pkg_tb4_bringup, 'worlds', LaunchConfiguration('world')]), '.sdf'], '-v', '4', '-r', '-s', '--force-version', '6'],
+            [pkg_tb4_sim_scenario, 'worlds', LaunchConfiguration('world')]), '.sdf'], '-v', '4', '-r', '-s', '--force-version', '6'],
         output='screen',
         additional_env=env,
         on_exit=Shutdown(),

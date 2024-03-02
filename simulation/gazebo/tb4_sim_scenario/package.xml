@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>tb4_bringup</name>
+  <name>tb4_sim_scenario</name>
   <version>1.0.0</version>
-  <description>TurtleBot 4 Ignition Simulator bringup</description>
+  <description>TurtleBot 4 Simulation Scenario Execution</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../../../LICENSE">Apache-2.0</license>

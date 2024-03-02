@@ -53,7 +53,7 @@ for pose_element in ['x', 'y', 'z', 'yaw']:
 def generate_launch_description():
 
     # Directories
-    pkg_tb4_bringup = get_package_share_directory('tb4_bringup')
+    pkg_tb4_sim_scenario = get_package_share_directory('tb4_sim_scenario')
     pkg_tb4_nav = get_package_share_directory('turtlebot4_navigation')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
 
@@ -66,7 +66,7 @@ def generate_launch_description():
             'map': PathJoinSubstitution([pkg_tb4_nav, 'maps', map_yaml]),
             'use_sim_time': 'True',
             'use_composition': 'False',
-            'params_file': PathJoinSubstitution([pkg_tb4_bringup, 'params', 'nav2_params.yaml']),
+            'params_file': PathJoinSubstitution([pkg_tb4_sim_scenario, 'params', 'nav2_params.yaml']),
             'autostart': 'True'}.items()
     )
 

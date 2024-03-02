@@ -15,7 +15,7 @@ source install/setup.bash
 Now, run the following command to launch the scenario:
 
 ```bash
-ros2 launch tb4_bringup sim_nav_scenario_launch.py scenario:=examples/example_simulation/scenarios/example_simulation.osc
+ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_simulation/scenarios/example_simulation.osc
 ```
 
 A turtlebot is initialsed with nav2 which drives to a point and back. During the ride an object is spawned in front of the turtlebot which will then drive around the object.

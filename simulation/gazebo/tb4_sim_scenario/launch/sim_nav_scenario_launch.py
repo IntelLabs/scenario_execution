@@ -27,7 +27,7 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 def generate_launch_description():
 
-    tb4_bringup_dir = get_package_share_directory('tb4_bringup')
+    tb4_sim_scenario_dir = get_package_share_directory('tb4_sim_scenario')
     scenario_execution_dir = get_package_share_directory('scenario_execution')
     message_modification_dir = get_package_share_directory('message_modification')
     gazebo_tf_publisher_dir = get_package_share_directory('gazebo_tf_publisher')
@@ -52,18 +52,18 @@ def generate_launch_description():
         description='Whether to inject sensor faults to scan message')
 
     ignition = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_bringup_dir, 'launch', 'ignition_launch.py'])]),
+        PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'ignition_launch.py'])]),
     )
 
     robot_spawn = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_bringup_dir, 'launch', 'ignition_robot_launch.py'])]),
+        PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'ignition_robot_launch.py'])]),
         launch_arguments=[
             ('scan_topic', LaunchConfiguration('sim_scan_topic')),
         ]
     )
 
     nav2_bringup = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_bringup_dir, 'launch', 'nav2_launch.py'])]),
+        PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'nav2_launch.py'])]),
     )
 
     groundtruth_publisher = IncludeLaunchDescription(

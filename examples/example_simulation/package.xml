@@ -12,7 +12,7 @@
   <depend>scenario_execution_rviz</depend>
   <depend>scenario_execution_gazebo</depend>
   <depend>gazebo_tf_publisher</depend>
-  <depend>tb4_bringup</depend>
+  <depend>tb4_sim_scenario</depend>
   <depend>navigation2</depend>
   <depend>nav2_bringup</depend>
 

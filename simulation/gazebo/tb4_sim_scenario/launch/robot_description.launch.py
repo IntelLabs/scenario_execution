@@ -40,8 +40,8 @@ ARGUMENTS = [
 
 
 def generate_launch_description():
-    pkg_tb4_bringup = get_package_share_directory('tb4_bringup')
-    xacro_file = PathJoinSubstitution([pkg_tb4_bringup,
+    pkg_tb4_sim_scenario = get_package_share_directory('tb4_sim_scenario')
+    xacro_file = PathJoinSubstitution([pkg_tb4_sim_scenario,
                                        'urdf',
                                        'turtlebot4.urdf.xacro'])
     namespace = LaunchConfiguration('namespace')

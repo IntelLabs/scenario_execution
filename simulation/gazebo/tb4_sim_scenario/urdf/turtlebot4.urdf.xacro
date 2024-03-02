@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <robot name="turtlebot4" xmlns:xacro="http://ros.org/wiki/xacro">
   <!-- Base create3 model -->
-  <xacro:include filename="$(find tb4_bringup)/urdf/create3.urdf.xacro" />
+  <xacro:include filename="$(find tb4_sim_scenario)/urdf/create3.urdf.xacro" />
   <xacro:include filename="$(find turtlebot4_description)/urdf/sensors/rplidar.urdf.xacro" />
   <xacro:include filename="$(find turtlebot4_description)/urdf/sensors/oakd.urdf.xacro" />
   <xacro:include filename="$(find turtlebot4_description)/urdf/sensors/camera_bracket.urdf.xacro" />

@@ -59,6 +59,6 @@ Modules
 - ``scenario_execution_interfaces``: Provides ROS2 `interfaces <https://docs.ros.org/en/rolling/Concepts/Basic/About-Interfaces.html>`__, more specifically, messages and services, which are used to interface ROS2 with the ``scenario_execution_control`` package.
 - ``scenario_execution_rviz``: Contains several `rviz <https://github.com/ros2/rviz>`__ plugins for visualizing and controlling scenarios when working with ROS2.
 - ``simulation/gazebo_tf_publisher``: Publish ground truth transforms from simulation within TF.
-- ``simulation/tb4_bringup``: Run `Turtlebot4 <https://turtlebot.github.io/turtlebot4-user-manual/software/turtlebot4_simulator.html>`_ within simulation, controlled by scenario execution.
+- ``simulation/tb4_sim_scenario``: Run `Turtlebot4 <https://turtlebot.github.io/turtlebot4-user-manual/software/turtlebot4_simulator.html>`_ within simulation, controlled by scenario execution.
 - ``tools/message_modification``: ROS2 nodes to modify messages.
 - ``tools/scenario_status``: Publish the current scenario status on a topic (e.g. to be capture within a ROS bag).

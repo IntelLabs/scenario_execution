@@ -148,7 +148,7 @@ Create Navigation Scenario
 --------------------------
 
 A simple example scenario for spawning a simulated Turtlebot4 in Gazebo
-and control it with Nav2, can be found in :repo_link:`examples/example_nav2/scenarios/example_nav2.osc`.
+and control it with Nav2, can be found in :repo_link:`examples/example_nav2/example_nav2.osc`.
 
 This scenario files looks as follows:
 
@@ -206,7 +206,7 @@ To try this example, run
 
 .. code-block:: bash
 
-   ros2 launch tb4_bringup sim_nav_scenario_launch.py scenario:=examples/example_nav2/scenarios/example_nav2.osc headless:=False
+   ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_nav2/example_nav2.osc headless:=False
 
 and you should see something like this
 
@@ -220,7 +220,7 @@ the scenario file as described above and then run
 
 .. code-block:: bash
 
-   ros2 launch tb4_bringup sim_nav_scenario_launch.py scenario:=examples/example_nav2/scenarios/example_nav2.osc headless:=False slam:=True
+   ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_nav2/example_nav2.osc headless:=False slam:=True
 
 and you should see something like this
 
@@ -281,4 +281,4 @@ To try this example, run
 
 .. code-block:: bash
 
-    ros2 launch tb4_bringup sim_nav_scenario_launch.py scenario:=examples/example_simulation/scenarios/example_simulation.osc headless:=False
+    ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_simulation/scenarios/example_simulation.osc headless:=False

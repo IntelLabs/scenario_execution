@@ -25,7 +25,7 @@ class GazeboTFPublisher : public rclcpp::Node {
   rclcpp::Publisher<tf2_msgs::msg::TFMessage>::SharedPtr mPublisher;
   std::string ign_pose_topic;
   std::string base_frame_id;
-  std::vector<int> robot_frame_ids;
+  std::vector<unsigned int> robot_frame_ids;
   std::string previous_frame_id;
 
   void IgnCB(const ignition::msgs::Pose_V &poses);
@@ -51,7 +51,7 @@ void GazeboTFPublisher::IgnCB(const ignition::msgs::Pose_V &poses) {
     if (poses.pose(i).name() == base_frame_id) {
       // each robot_frame_id is expected to have corresponding
       // base_link_id -1 in ignition pose topic.
-      int robot_frame_id = poses.pose(i).id() - 1;
+      unsigned int robot_frame_id = poses.pose(i).id() - 1;
       if (std::find(robot_frame_ids.begin(), robot_frame_ids.end(),
                     robot_frame_id) == robot_frame_ids.end()) {
         // storing each unique id into robot_frame_ids
