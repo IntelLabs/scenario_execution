@@ -55,7 +55,7 @@ Use this code to see a launch of this tutorial:
 .. code-block:: bash
 
    colcon build --packages-up-to examples && source install/setup.bash \
-   && ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/scenarios/example_log.osc
+   && ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/example_log.osc
 
 .. _scenario_library:
 
