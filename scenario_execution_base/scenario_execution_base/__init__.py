@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""Main entry point for the scenario execution base package """
-
 from . import actions
 from . import utils
 from . import model

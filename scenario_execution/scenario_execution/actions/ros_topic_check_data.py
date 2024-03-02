@@ -14,30 +14,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Scenario execution plugin to check data on a ros topic """
-
 import importlib
 import py_trees_ros  # pylint: disable=import-error
-from scenario_execution.action_plugins.conversions import get_qos_preset_profile, \
+from scenario_execution.actions.conversions import get_qos_preset_profile, \
     get_comparison_operator, get_clearing_policy
 
 
 class RosTopicCheckData(py_trees_ros.subscribers.CheckData):
     """
     Class to check if the message on ROS topic equals to the target message
-
-    Args:
-        topic_name: name of the topic to connect to
-        topic_type: class of the message type (e.g. std_msgs.msg.String)
-        qos_profile: qos profile for the subscriber
-        variable_name: name of the variable to check
-        expected_value: expected value of the variable
-        comparison_operator: one from the python `operator module`_
-        fail_if_no_data: py_trees.common.Status.FAILURE instead
-                         of py_trees.common.Status.RUNNING if there is no data yet
-        fail_if_bad_comparison: py_trees.common.Status.FAILURE instead of
-                         py_trees.common.Status.RUNNING if comparison failed
-        clearing_policy: when to clear the data
     """
 
     def __init__(self,

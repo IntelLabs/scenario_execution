@@ -14,9 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""
-Behavior to set a ros node parameter
-"""
 from ast import literal_eval
 
 from .ros_service_call import RosServiceCall
@@ -26,11 +23,6 @@ from rcl_interfaces.msg import ParameterType
 class RosSetNodeParameter(RosServiceCall):
     """
     class for setting a node parameter
-
-    Args:
-        node_name: [str]: name of the node
-        parameter_name: [str]: name of the parameter
-        parameter_value: [str]: new value of the parameter
     """
 
     def __init__(self, name, node_name: str, parameter_name: str, parameter_value: str):

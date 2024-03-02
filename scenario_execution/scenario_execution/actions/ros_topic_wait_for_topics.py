@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Scenario execution plugin to wait for ros topics to get available """
-
 import py_trees
 from rclpy.node import Node
 
@@ -23,9 +21,6 @@ from rclpy.node import Node
 class RosTopicWaitForTopics(py_trees.behaviour.Behaviour):
     """
     Class to check if ROS topic are available
-
-    Args:
-        topics[str]: name of the topics to get available
     """
 
     def __init__(self, topics: list):

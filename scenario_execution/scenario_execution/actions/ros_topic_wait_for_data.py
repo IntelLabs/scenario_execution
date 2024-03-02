@@ -14,11 +14,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Scenario execution plugin to wait for data on a ros topic """
-
 import importlib
 import py_trees
-from scenario_execution.action_plugins.conversions import get_qos_preset_profile, get_clearing_policy
+from scenario_execution.actions.conversions import get_qos_preset_profile, get_clearing_policy
 import typing
 import rclpy.qos
 from .py_trees_ros_common import SubscriberHandler

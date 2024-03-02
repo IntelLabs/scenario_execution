@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Scenario execution plugin to run an external command """
-
 import py_trees  # pylint: disable=import-error
 import subprocess  # nosec B404
 from threading import Thread

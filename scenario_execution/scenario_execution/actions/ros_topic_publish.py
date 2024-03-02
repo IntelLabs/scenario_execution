@@ -14,9 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""
-Behavior to publish a msg on ROS topic
-"""
 import importlib
 from ast import literal_eval
 
@@ -26,18 +23,12 @@ from rclpy.node import Node
 import py_trees
 from py_trees.common import Status
 
-from scenario_execution.action_plugins.conversions import get_qos_preset_profile
+from scenario_execution.actions.conversions import get_qos_preset_profile
 
 
 class RosTopicPublish(py_trees.behaviour.Behaviour):
     """
     class for publish a message on a ROS topic
-
-    Args:
-        topic_name [str]: name of the topic to connect to
-        topic_type [str]: class of the message type (e.g. std_msgs.msg.String)
-        qos_profile [str]: qos profile for the subscriber
-        value [str]: expected value of the variable
     """
 
     def __init__(self, name, topic_type: str, topic_name: str, qos_profile: str, value: str

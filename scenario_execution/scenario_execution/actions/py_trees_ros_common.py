@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Class for recording a ros bag """
-
 import py_trees
 import py_trees_ros  # pylint: disable=import-error
 import typing
@@ -26,7 +24,6 @@ class SubscriberHandler(py_trees_ros.subscribers.Handler):
     """
     overrides Handler
     """
-
     def __init__(self,
                  name: str,
                  topic_name: str,

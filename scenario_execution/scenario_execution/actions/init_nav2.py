@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Class for initializing nav2 by setting an initial pose and activate required nodes """
-
 from enum import Enum
 
 
@@ -54,7 +52,8 @@ class InitNav2State(Enum):
 
 class InitNav2(py_trees.behaviour.Behaviour):
     """
-    Class to initialize nav2
+    Class for initializing nav2 by setting an initial pose and activate required nodes """
+
     """
 
     def __init__(self, name, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):

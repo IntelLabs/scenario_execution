@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Scenario execution plugin for waiting for a certain covered distance, based on odometry """
 from math import sqrt
 import rclpy
 from rclpy.logging import get_logger

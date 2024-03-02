@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Scenario execution plugin for navigating through poses """
-
 from enum import Enum
 
 from rclpy.node import Node

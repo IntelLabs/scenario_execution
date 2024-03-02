@@ -3,7 +3,7 @@
 <package format="3">
   <name>scenario_execution</name>
   <version>1.0.0</version>
-  <description>ROS Scenario Execution</description>
+  <description>Scenario Execution for ROS</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../LICENSE">Apache-2.0</license>

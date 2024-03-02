@@ -1,3 +1,4 @@
+# Copyright 2021 Samsung Research America
 # Copyright (C) 2024 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,8 +14,6 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-
-""" Subclass of BasicNavigator to support namespaces """
 
 from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped
 from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy

@@ -14,15 +14,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""behaviors module"""
-
 from .bool_expression import BoolExpression
 from .topic_equals import TopicEquals
 from .topic_publish import TopicPublish
 from .run_external_process import RunExternalProcess
 
 __all__ = [
-    'BoolExpression',
     'TopicEquals',
     'TopicPublish',
     'RunExternalProcess',

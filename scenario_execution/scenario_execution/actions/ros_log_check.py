@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Scenario execution plugin to wait for a specific string in the ros log """
-
 import py_trees
 from rclpy.qos import QoSProfile, DurabilityPolicy, HistoryPolicy
 import rclpy
@@ -26,9 +24,6 @@ from py_trees.common import Status
 class RosLogCheck(py_trees.behaviour.Behaviour):
     """
     Class for scanning the ros log for specific content
-
-    Args:
-        values [str]: Values to look for
     """
 
     def __init__(self, name, values: list):

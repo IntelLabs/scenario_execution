@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Scenario execution plugin to put ros data into the blackboard """
 from ast import literal_eval
 import importlib
 from enum import Enum
@@ -37,11 +36,6 @@ class ServiceCallActionState(Enum):
 class RosServiceCall(py_trees.behaviour.Behaviour):
     """
     ros service call behavior
-
-    Args:
-        service_name: name of the topic to connect to
-        service_type: The service type
-        call: call content
     """
 
     def __init__(self, name, service_name: str, service_type: str, data: str):

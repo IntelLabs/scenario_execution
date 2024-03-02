@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Module for checking a robot is close to a reference point using localization"""
-
 from math import sqrt
 
 import rclpy
@@ -28,18 +26,12 @@ from geometry_msgs.msg import PoseStamped
 from tf2_ros.buffer import Buffer
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 
-from scenario_execution.action_plugins.nav2_common import NamespacedTransformListener
+from scenario_execution.actions.nav2_common import NamespacedTransformListener
 
 
 class TfCloseTo(py_trees.behaviour.Behaviour):
     """
     class for distance condition in ROS Gazebo simulation
-
-    Args:
-        namespace [str]: name of the robot
-        reference_point [str]: target point to measure distance from \
-            in the form of 3 number array: [pos_x, pos_y, pos_z]
-        threshold [str]: threshold to the reference point
     """
 
     def __init__(

@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Class for recording a ros bag """
-
 import os
 from datetime import datetime
 from enum import Enum
