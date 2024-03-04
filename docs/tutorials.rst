@@ -114,7 +114,7 @@ behavior works. In this case, the behavior prints the message on the screen
 and then returns success. Please refer to the ``py_trees`` `documentation <https://py-trees.readthedocs.io/en/devel/>`_ for details.
 
 After we wrote the library, we need to add it to the
-``scenario_execution.action_plugins`` and ``scenario_execution.osc_libraries`` entry points, so that the parser can
+``scenario_execution.actions`` and ``scenario_execution.osc_libraries`` entry points, so that the parser can
 find it.
 
 Open up the setup file for your Python package ``setup.py`` and add these lines to the
@@ -123,7 +123,7 @@ entry_points section.
 .. code-block::
 
   entry_points={
-   'scenario_execution.action_plugins': [
+   'scenario_execution.actions': [
        'custom_action = example_library.custom_action:CustomAction',
    ],
     'scenario_execution.osc_libraries': [

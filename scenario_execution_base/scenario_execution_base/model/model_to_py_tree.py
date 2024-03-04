@@ -186,7 +186,7 @@ class ModelToPyTree(object):
             final_args = node.get_resolved_value()
 
             available_plugins = []
-            for entry_point in iter_entry_points(group='scenario_execution.action_plugins', name=None):
+            for entry_point in iter_entry_points(group='scenario_execution.actions', name=None):
                 # self.logger.debug(f'entry_point.name is {entry_point.name}')
                 if entry_point.name == behavior_name:
                     available_plugins.append(entry_point)

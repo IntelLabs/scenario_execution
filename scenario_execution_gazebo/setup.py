@@ -46,7 +46,7 @@ setup(
     license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
-        'scenario_execution.action_plugins': [
+        'scenario_execution.actions': [
             'osc_object.spawn = scenario_execution_gazebo.gazebo_spawn_actor:GazeboSpawnActor',
             'actor_exists = scenario_execution_gazebo.gazebo_actor_exists:GazeboActorExists',
             'osc_object.delete = scenario_execution_gazebo.gazebo_delete_actor:GazeboDeleteActor',

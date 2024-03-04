@@ -31,7 +31,7 @@ The entry points are defined like this:
 .. code-block::
 
   entry_points={
-   'scenario_execution.action_plugins': [
+   'scenario_execution.actions': [
        'custom_action = example_library.custom_action:CustomAction',
    ],
     'scenario_execution.osc_libraries': [

@@ -43,7 +43,7 @@ setup(
         'console_scripts': [
             'scenario_execution_base = scenario_execution_base.scenario_execution:main',
         ],
-        'scenario_execution.action_plugins': [
+        'scenario_execution.actions': [
             'log = scenario_execution_base.actions.log:Log',
             'run_external_process = scenario_execution_base.actions.run_external_process:RunExternalProcess',
         ],

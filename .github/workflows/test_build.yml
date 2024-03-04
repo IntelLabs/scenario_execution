@@ -25,6 +25,7 @@ jobs:
           rosdep update --rosdistro=humble 
           rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
           pip3 install -r requirements.txt
+          pip3 install pytest-cov
       - name: Build
         shell: bash
         run: |

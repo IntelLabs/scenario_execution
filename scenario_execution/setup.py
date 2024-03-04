@@ -45,21 +45,21 @@ setup(
         'console_scripts': [
             'scenario_execution = scenario_execution.scenario_execution_ros:main',
         ],
-        'scenario_execution.action_plugins': [
-            'differential_drive_robot.init_nav2 = scenario_execution.action_plugins.init_nav2:InitNav2',
-            'differential_drive_robot.nav_to_pose = scenario_execution.action_plugins.nav_to_pose:NavToPose',
-            'differential_drive_robot.nav_through_poses = scenario_execution.action_plugins.nav_through_poses:NavThroughPoses',
-            'wait_for_data = scenario_execution.action_plugins.ros_topic_wait_for_data:RosTopicWaitForData',
-            'check_data = scenario_execution.action_plugins.ros_topic_check_data:RosTopicCheckData',
-            'service_call = scenario_execution.action_plugins.ros_service_call:RosServiceCall',
-            'topic_publish = scenario_execution.action_plugins.ros_topic_publish:RosTopicPublish',
+        'scenario_execution.actions': [
+            'differential_drive_robot.init_nav2 = scenario_execution.actions.init_nav2:InitNav2',
+            'differential_drive_robot.nav_to_pose = scenario_execution.actions.nav_to_pose:NavToPose',
+            'differential_drive_robot.nav_through_poses = scenario_execution.actions.nav_through_poses:NavThroughPoses',
+            'wait_for_data = scenario_execution.actions.ros_topic_wait_for_data:RosTopicWaitForData',
+            'check_data = scenario_execution.actions.ros_topic_check_data:RosTopicCheckData',
+            'service_call = scenario_execution.actions.ros_service_call:RosServiceCall',
+            'topic_publish = scenario_execution.actions.ros_topic_publish:RosTopicPublish',
             'odometry_distance_traveled = '
-            'scenario_execution.action_plugins.odometry_distance_traveled:OdometryDistanceTraveled',
-            'set_node_parameter = scenario_execution.action_plugins.ros_set_node_parameter:RosSetNodeParameter',
-            'record_bag = scenario_execution.action_plugins.ros_bag_record:RosBagRecord',
-            'wait_for_topics = scenario_execution.action_plugins.ros_topic_wait_for_topics:RosTopicWaitForTopics',
-            'log_check = scenario_execution.action_plugins.ros_log_check:RosLogCheck',
-            'differential_drive_robot.tf_close_to = scenario_execution.action_plugins.tf_close_to:TfCloseTo',
+            'scenario_execution.actions.odometry_distance_traveled:OdometryDistanceTraveled',
+            'set_node_parameter = scenario_execution.actions.ros_set_node_parameter:RosSetNodeParameter',
+            'record_bag = scenario_execution.actions.ros_bag_record:RosBagRecord',
+            'wait_for_topics = scenario_execution.actions.ros_topic_wait_for_topics:RosTopicWaitForTopics',
+            'log_check = scenario_execution.actions.ros_log_check:RosLogCheck',
+            'differential_drive_robot.tf_close_to = scenario_execution.actions.tf_close_to:TfCloseTo',
         ],
         'scenario_execution.osc_libraries': [
             'ros = '
