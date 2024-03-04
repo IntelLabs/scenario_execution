@@ -59,4 +59,5 @@ jobs:
       - name: Test
         shell: bash
         run: |
+          pip3 install bandit
           bandit -c .github/bandit.yaml -r .
