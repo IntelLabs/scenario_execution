@@ -1,7 +1,4 @@
 import osc.standard
 
-actor amr_object:
-    model: string # model for simulation
-
-actor differential_drive_robot inherits amr_object:
+actor differential_drive_robot inherits osc_actor:
     namespace: string = ''

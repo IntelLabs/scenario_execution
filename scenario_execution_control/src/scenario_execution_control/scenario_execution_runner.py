@@ -25,7 +25,7 @@ from scenario_execution_control.application_runner import ApplicationRunner  # p
 
 class ScenarioExecutionRunner(ApplicationRunner):
     """
-    Executes scenario runner
+    Executes scenario execution
     """
 
     def __init__(self, status_updated_fct, log_fct):  # pylint: disable=too-many-arguments

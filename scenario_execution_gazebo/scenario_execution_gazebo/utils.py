@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Utils Class for parsing/handling model/mesh/sdf files"""
-
 import os
 import subprocess  # nosec B404
 import glob

@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Loggers for scenario execution """
-
 
 class BaseLogger(object):
     """

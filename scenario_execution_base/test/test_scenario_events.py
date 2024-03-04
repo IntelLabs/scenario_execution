@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Test for scenario_execution
+Test predefined events
 """
 import unittest
 from scenario_execution_base import ScenarioExecution
@@ -25,7 +25,7 @@ from scenario_execution_base.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
 
     def setUp(self) -> None:

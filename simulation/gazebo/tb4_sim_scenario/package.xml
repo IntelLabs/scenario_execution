@@ -16,6 +16,8 @@
   <depend>gazebo_tf_publisher</depend>
   <depend>scenario_execution</depend>
   <depend>message_modification</depend>
+  <depend>tf_to_pose_publisher</depend>
+  
   
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

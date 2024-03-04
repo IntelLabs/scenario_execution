@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Class for delete an entity in Gazebo """
-
 
 import py_trees
 from enum import Enum
@@ -36,9 +34,6 @@ class DeleteActionState(Enum):
 class GazeboDeleteActor(RunExternalProcess):
     """
     Class to delete an entity in Ignition
-
-    Args:
-        entity_name [str]: name of actor to delete
 
     """
 

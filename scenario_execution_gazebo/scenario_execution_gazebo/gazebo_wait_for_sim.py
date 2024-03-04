@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Class to wait for sim to start """
-
 import py_trees
 from enum import Enum
 
@@ -35,10 +33,6 @@ class WaitForSimulationActionState(Enum):
 class GazeboWaitForSim(RunExternalProcess):
     """
     Class to wait for the simulation to become active
-
-    Args:
-        world_name [str]: name of simulation world
-
     """
 
     def __init__(self, name, world_name: str, **kwargs):

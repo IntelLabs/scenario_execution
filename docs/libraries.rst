@@ -37,12 +37,9 @@ Run an external process. Reports `running` while the process has not finished.
 Actors
 ^^^^^^
 
-``amr_object``
-""""""""""""""
-
 ``differential_drive_robot``
 """"""""""""""""""""""""""""
-
+A differential drive robot actor.
 
 ``osc.ros``
 -----------
@@ -198,7 +195,7 @@ Waits for an actor to exist within simulation.
 - ``entity_name``: Entity name within simulation
 - ``world_name: string``: Gazebo world name (default: ``default``)
 
-``amr_object.spawn()``
+``osc_object.spawn()``
 """"""""""""""""""""""
 
 Spawn an actor within simulation by using the ``model`` and ``namespace`` of the associated actor.
@@ -207,17 +204,7 @@ Spawn an actor within simulation by using the ``model`` and ``namespace`` of the
 - ``world_name: string``: Gazebo world name (default: ``default``)
 - ``xacro_arguments: string``: Comma-separated list of argument key:=value pairs
 
-``amr_object.spawn_and_move()``
-"""""""""""""""""""""""""""""""
-
-Spawn a moving simulation entity, uses namespace of entity.
-
-- ``spawn_pose: pose_3d``: Pose of the spawned actor.
-- ``trajectory: string``: Comma-separated list of trajectory poses
-- ``world_name: string``: Gazebo world name (default: ``default``)
-- ``xacro_arguments: string``: Comma-separated list of argument key:=value pairs
-
-``amr_object.delete()``
+``osc_object.delete()``
 """""""""""""""""""""""
 
 Delete an object from the simulation.

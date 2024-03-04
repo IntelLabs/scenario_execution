@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Test for scenario_execution
+Test event parsing
 """
 import unittest
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser

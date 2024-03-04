@@ -14,25 +14,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" load osc import libs """
-
-
 def get_robotics_library():
-    """
-    getter for amr library
-    """
     return 'scenario_execution_base', 'robotics.osc'
 
 
 def get_helpers_library():
-    """
-    getter for helpers library
-    """
     return 'scenario_execution_base', 'helpers.osc'
 
 
 def get_standard_library():
-    """
-    getter for standard library
-    """
     return 'scenario_execution_base', 'standard.osc'

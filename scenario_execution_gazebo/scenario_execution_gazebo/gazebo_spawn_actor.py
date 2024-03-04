@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Class for spawn an entity in Gazebo """
-
 import subprocess  # nosec B404
 from enum import Enum
 
@@ -45,22 +43,15 @@ class GazeboSpawnActor(RunExternalProcess):
     """
     Class to spawn an entity into simulation
 
-    Args:
-        entity_name [str]: name of spawned entity
-        model_file [str]: model file name
-        spawn_pose: a 6 numbers list in str form containing the spawn pose of the entity
-            in the shape of [x, y, z. roll, pitch, yaw].
-            Please pay attention to the Tait-Bryan euler angles ranges.
-
     """
 
-    def __init__(self, name, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, **kwargs):
+    def __init__(self, name, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str, **kwargs):
         """
         init
         """
         super().__init__(name, "")
         self.entity_name = associated_actor["name"]
-        self.model_file = associated_actor["model"]
+        self.model_file = model
         self.spawn_pose = spawn_pose
         self.world_name = world_name
         self.xacro_arguments = xacro_arguments

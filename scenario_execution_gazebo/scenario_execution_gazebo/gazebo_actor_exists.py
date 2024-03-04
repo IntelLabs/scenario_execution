@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Class to check the existance of an actor in Gazebo """
-
 from scenario_execution_base.actions import RunExternalProcess
 
 import py_trees
@@ -36,9 +34,6 @@ class ActorExistsActionState(Enum):
 class GazeboActorExists(RunExternalProcess):
     """
     Class to check existance of an entity in Ignition
-
-    Args:
-        entity_name [str]: name of actor to check
 
     """
 

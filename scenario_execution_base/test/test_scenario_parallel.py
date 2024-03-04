@@ -14,6 +14,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""
+Test parallel parsing
+"""
 import unittest
 
 from scenario_execution_base.scenario_execution import ScenarioExecution

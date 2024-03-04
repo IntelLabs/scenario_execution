@@ -13,15 +13,3 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-
-""" Main entry point for the scenario_execution_gazebo package """
-
-from .gazebo_spawn_actor import GazeboSpawnActor
-from .gazebo_delete_actor import GazeboDeleteActor
-from .gazebo_actor_exists import GazeboActorExists
-
-__all__ = [
-    'GazeboSpawnActor',
-    'GazeboActorExists',
-    'GazeboDeleteActor',
-]

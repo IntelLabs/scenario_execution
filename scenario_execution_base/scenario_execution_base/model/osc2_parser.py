@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Parser for openscenario 2 files """
 import sys
 import re
 

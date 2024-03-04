@@ -2,7 +2,7 @@
 <package format="3">
   <name>scenario_execution_control</name>
   <version>1.0.0</version>
-  <description>The scenario_execution_control package</description>
+  <description>Scenario Execution Control</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../LICENSE">Apache-2.0</license>

@@ -154,7 +154,7 @@ def main(args=None):
         scenario_execution_control.get_logger().info("User requested shut down.")
     finally:
         if scenario_execution_control._scenario_execution.is_running():  # pylint: disable=protected-access
-            scenario_execution_control.get_logger().info("Scenario Runner still running. Shutting down.")
+            scenario_execution_control.get_logger().info("Scenario Execution still running. Shutting down.")
             scenario_execution_control._scenario_execution.shutdown()  # pylint: disable=protected-access
         del scenario_execution_control
 

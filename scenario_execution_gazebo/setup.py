@@ -42,16 +42,14 @@ setup(
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='Package for scenario execution testing in gazebo',
+    description='Scenario Execution library for Gazebo',
     license='Apache License 2.0',
     tests_require=['pytest'],
-    include_package_data=True,
     entry_points={
         'scenario_execution.action_plugins': [
-            'amr_object.spawn = scenario_execution_gazebo.gazebo_spawn_actor:GazeboSpawnActor',
-            'amr_object.spawn_and_move = scenario_execution_gazebo.gazebo_spawn_moving_actor:GazeboSpawnMovingActor',
+            'osc_object.spawn = scenario_execution_gazebo.gazebo_spawn_actor:GazeboSpawnActor',
             'actor_exists = scenario_execution_gazebo.gazebo_actor_exists:GazeboActorExists',
-            'amr_object.delete = scenario_execution_gazebo.gazebo_delete_actor:GazeboDeleteActor',
+            'osc_object.delete = scenario_execution_gazebo.gazebo_delete_actor:GazeboDeleteActor',
             'wait_for_sim = scenario_execution_gazebo.gazebo_wait_for_sim:GazeboWaitForSim',
         ],
         'scenario_execution.osc_libraries': [

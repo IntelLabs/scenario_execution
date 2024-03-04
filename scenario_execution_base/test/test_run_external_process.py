@@ -23,7 +23,7 @@ from scenario_execution_base.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestScenarioExecutionSuccess(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     @classmethod

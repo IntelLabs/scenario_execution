@@ -1,6 +1,6 @@
 # Turtlebot4 Simulation Scenario Execution
 
-Package includes launch files to start the Gazebo Simulator, spawn the Turtlebot 4 and execute a scenario.
+The `tb_sim_scenario` package provides launch files and parameter files to start the Gazebo Simulator, spawn the Turtlebot 4 and execute a scenario.
 
 ## Launch and arguments
 

@@ -3,8 +3,7 @@ import osc.gazebo
 
 scenario nav2_simulation_nav_to_pose:
     turtlebot4: differential_drive_robot
-    box: amr_object with:
-        keep(it.model == 'example_simulation://models/box.sdf')
+    box: osc_object
     do parallel:
         test_drive: serial:
             turtlebot4.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
@@ -21,6 +20,7 @@ scenario nav2_simulation_nav_to_pose:
                         spawn_pose: pose_3d(
                             position: position_3d(x: 2.0m, y: -2.0m, z: 0.1m),
                             orientation: orientation_3d(yaw: 0.0rad)),
+                        model: 'example_simulation://models/box.sdf',
                         world_name: 'maze')
             emit end
         time_out: serial:

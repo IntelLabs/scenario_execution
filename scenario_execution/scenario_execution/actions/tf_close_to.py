@@ -143,7 +143,7 @@ class TfCloseTo(py_trees.behaviour.Behaviour):
 
     def get_robot_pose_from_tf(self):
         '''
-        function to ge pose of the robot (i.e., the base_link frame) with
+        function to get pose of the robot (i.e., the base_link frame) with
         respect to the map frame via tf
 
         returns:

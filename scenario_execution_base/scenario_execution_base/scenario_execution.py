@@ -14,9 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""
-Base class for scenario execution
-"""
 import os
 import sys
 import time
@@ -50,10 +47,6 @@ class ScenarioExecution(object):
     Base class for scenario execution.
     Override method run() and method setup_behaviour_tree() to adapt to other middlewares.
     This class can also be executed standalone
-
-    Args:
-        setup_timeout [float]: timeout in sec for setup
-        tick_tock_period [float]: py_trees ticking period in seconds
     """
 
     def __init__(self,

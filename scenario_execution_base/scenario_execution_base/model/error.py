@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Errors for scenario execution """
-
 
 from antlr4 import ParserRuleContext
 

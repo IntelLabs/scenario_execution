@@ -1,3 +1,4 @@
+# Copyright (C) 2024 Intel Corporation
 # Copyright 2023 Clearpath Robotics, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

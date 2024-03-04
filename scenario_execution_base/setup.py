@@ -46,8 +46,6 @@ setup(
         'scenario_execution.action_plugins': [
             'log = scenario_execution_base.actions.log:Log',
             'run_external_process = scenario_execution_base.actions.run_external_process:RunExternalProcess',
-            'open_port = scenario_execution_base.actions.open_port:OpenPort',
-            'wait_for_open_ports = scenario_execution_base.actions.wait_for_open_ports:WaitForOpenPorts',
         ],
         'scenario_execution.osc_libraries': [
             'helpers = scenario_execution_base.get_osc_library:get_helpers_library',

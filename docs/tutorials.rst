@@ -245,8 +245,7 @@ during the scenario
 
 .. code-block::
 
-    box: amr_object with:
-        keep(it.model == 'example_simulation://models/box.sdf')
+    box: osc_object
 
 Next, we’ll have a look at how to spawn the box when the robot reaches a
 certain location. The following scenario snippet shows, how this is
@@ -267,6 +266,7 @@ done.
                 spawn_pose: pose_3d(
                     position: position_3d(x: 2.0m, y: -2.0m, z: 0.1m),
                     orientation: orientation_3d(yaw: 0.0rad)),
+                model: 'example_simulation://models/box.sdf',
                 world_name: 'maze')
 
 First, we wrap the navigation part in the first branch of a parallel

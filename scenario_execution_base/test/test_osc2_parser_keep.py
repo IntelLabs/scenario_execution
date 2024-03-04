@@ -14,6 +14,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""
+Test keep parsing
+"""
 import unittest
 
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
@@ -23,29 +26,24 @@ from antlr4.InputStream import InputStream
 
 class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
-    """
-    Unit test for osc2_parser
-    """
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test'))
 
     def test_keep_override(self):
         scenario_content = """
-actor amr_object:
-    model: string
+actor osc_object
     
-actor differential_drive_robot inherits amr_object:
+actor differential_drive_robot inherits osc_object:
     namespace: string = ''
 
 scenario nav2_simulation_nav_to_pose:
     turtlebot4: differential_drive_robot with:
         keep(it.namespace == 'test')
-        keep(it.model == 'topic:///robot_description')
 """
         parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertEqual(errors, 0)
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
         robot = model._ModelElement__children[2]._ModelElement__children[0].get_resolved_value()
-        self.assertEqual({'namespace': 'test', 'model': 'topic:///robot_description'}, robot)
+        self.assertEqual({'namespace': 'test'}, robot)

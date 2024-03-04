@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Test for osc2_parser
+Test parameter parsing
 """
 import unittest
 

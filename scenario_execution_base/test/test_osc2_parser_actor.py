@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Test for osc2_parser
+Test actor parsing
 """
 import unittest
 
@@ -26,9 +26,6 @@ from antlr4.InputStream import InputStream
 
 class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
-    """
-    Unit test for osc2_parser
-    """
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test'))

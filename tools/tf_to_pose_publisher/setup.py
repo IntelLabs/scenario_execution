@@ -34,7 +34,7 @@ setup(
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='TODO: Package description',
+    description='Publish a tf transform to a pose topic',
     license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={

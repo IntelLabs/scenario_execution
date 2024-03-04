@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Test for osc2_parser
+Test behavior invocation parsing
 """
 import unittest
 
@@ -26,23 +26,20 @@ from antlr4.InputStream import InputStream
 
 class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
-    """
-    Unit test for osc2_parser
-    """
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test'))
 
     def test_behavior_invocation_param_override(self):
         scenario_content = """
-actor amr_object:
+actor osc_object:
     name: string = 'amr'
     model_file: string = 'amr'
 
 struct pose_3d:
     x: string = 'x_val'
 
-action amr_object.spawn:
+action osc_object.spawn:
     spawn_pose: pose_3d
     world_name: string = 'default'
     namespace: string = ''
@@ -51,7 +48,7 @@ action amr_object.spawn:
     xacro_arguments: string = ''        # comma-separated list of argument key:=value pairs
 
 scenario test:
-    test_obstacle1: amr_object with:
+    test_obstacle1: osc_object with:
         keep(it.name == 'test_obstacle1')
         keep(it.model_file == 'test_model')
     do parallel:
@@ -70,14 +67,14 @@ scenario test:
 
     def test_behavior_named_arg(self):
         scenario_content = """
-actor amr_object
+actor osc_object
 
-action amr_object.spawn:
+action osc_object.spawn:
     param1: string = 'val1'
     param2: string = 'val2'
 
 scenario test:
-    test_obstacle1: amr_object
+    test_obstacle1: osc_object
     do parallel:
         spawn_it: test_obstacle1.spawn(param1: 'override1')
 """
@@ -92,12 +89,12 @@ scenario test:
 
     def test_behavior_from_base_actor(self):
         scenario_content = """
-actor amr_object
+actor osc_object
 
-action amr_object.spawn:
+action osc_object.spawn:
     param1: string
 
-actor robot inherits amr_object
+actor robot inherits osc_object
 
 scenario test:
     test_obstacle1: robot
@@ -111,13 +108,13 @@ scenario test:
 
     def test_behavior_invalid_param_name(self):
         scenario_content = """
-actor amr_object
+actor osc_object
 
-action amr_object.spawn:
+action osc_object.spawn:
     name: string = 'NOTALLOWED'
 
 scenario test:
-    test_obstacle1: amr_object
+    test_obstacle1: osc_object
     do parallel:
         spawn_it: test_obstacle1.spawn(param1: 'override1')
 """
@@ -128,14 +125,14 @@ scenario test:
 
     def test_behavior_invalid_param_associated_actor(self):
         scenario_content = """
-actor amr_object
+actor osc_object
 
-action amr_object.spawn:
+action osc_object.spawn:
     associated_actor: string = 'NOTALLOWED'
     param1: string
 
 scenario test:
-    test_obstacle1: amr_object
+    test_obstacle1: osc_object
     do parallel:
         spawn_it: test_obstacle1.spawn(param1: 'override1')
 """
@@ -370,7 +367,7 @@ unit m          of length is SI(m: 1, factor: 1)
 type angle is SI(rad: 1)
 unit rad    of angle is SI(rad: 1, factor: 1)
 
-actor amr_object:
+actor osc_object:
     model: string
 
 struct position_3d:
@@ -387,10 +384,10 @@ struct pose_3d:
     position: position_3d
     orientation: orientation_3d
 
-action amr_object.spawn:
+action osc_object.spawn:
     spawn_pose: pose_3d
 
-actor differential_drive_robot inherits amr_object:
+actor differential_drive_robot inherits osc_object:
     namespace: string = ''
 
 scenario nav2_simulation_nav_to_pose:
