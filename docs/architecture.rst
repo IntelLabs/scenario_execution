@@ -2,7 +2,7 @@ Architecture
 ============
 
 
-.. figure:: images/graphs/scenario_execution_structure.png
+.. figure:: images/scenario_execution_structure.png
    :alt: Architecture of Scenario Execution
 
    Architecture of Scenario Execution
