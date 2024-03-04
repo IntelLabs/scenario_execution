@@ -90,9 +90,9 @@ jobs:
             find . -name "package.xml" -print0 | 
             while IFS= read -r -d '' line; do 
               if [[ $line != *scenario_execution_rviz* ]]; then   
-                DIR=$(dirname $line)
+                DIR="$(dirname $line)"
                 echo "Processing package at $DIR"
-                ros_license_toolkit $DIR
+                ros_license_toolkit "$DIR"
               fi
             done
             
