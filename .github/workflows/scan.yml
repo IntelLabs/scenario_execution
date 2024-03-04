@@ -93,15 +93,3 @@ jobs:
                 ros_license_toolkit $(dirname "$i")
               fi
             done
-
-
-            find . -name "package.xml" | while IFS= read -r pkg_file; do
-              pkg_dir=$(dirname "$pkg_file")
-              pkg_name=$(basename "$pkg_dir")
-              if [ "$pkg_name" = "scenario_execution_rviz" ]; then
-                echo "Skipping package $pkg_name"
-                continue
-              fi
-              echo "Processing package at $pkg_dir"
-              ros_license_toolkit "$pkg_dir"
-            done
