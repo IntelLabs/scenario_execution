@@ -25,7 +25,7 @@ from rclpy.logging import get_logger
 from rclpy.node import Node
 import py_trees
 from scenario_execution_base.actions import RunExternalProcess
-from scenario_execution_gazebo.utils import SpawnUtils
+from .utils import SpawnUtils
 
 
 class SpawnActionState(Enum):
