@@ -30,7 +30,6 @@ from antlr4.InputStream import InputStream
 class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
 
-
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test'))
         self.scenario_execution = ScenarioExecution(debug=True, log_model=True, live_tree=True, scenario='test.osc', test_output="")
