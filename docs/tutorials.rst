@@ -62,7 +62,7 @@ Use this code to see a launch of this tutorial:
 .. code-block:: bash
 
    colcon build --packages-up-to scenario_execution && source install/setup.bash \
-   && ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/example_log.osc
+   && ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/hello_world.osc
 
 .. _scenario_library:
 
@@ -239,7 +239,7 @@ and you should see something like this
 Create Navigation Scenario with Obstacle
 ----------------------------------------
 
-In this section, we’ll extend the previous example and use the :repo_link:`scenario_execution/action_plugins/tf_close_to.py`.
+In this section, we’ll extend the previous example and use the :repo_link:`scenario_execution/actions/tf_close_to.py`.
 to spawn a static obstacle in front of the robot once it reaches a
 user-specified reference point. The corresponding scenario can be found
 in :repo_link:`examples/example_simulation/scenarios/example_simulation.osc`.

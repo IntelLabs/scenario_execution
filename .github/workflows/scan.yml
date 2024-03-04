@@ -50,3 +50,13 @@ jobs:
           format: 'table'
           exit-code: '1'
           vuln-type: 'os,library'
+  bandit:
+    name: Bandit
+    runs-on: intellabs-01
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Test
+        shell: bash
+        run: |
+          bandit -c .github/bandit.yaml -r .
