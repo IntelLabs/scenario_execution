@@ -14,6 +14,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+#
+# License: BSD
+#   https://raw.githubusercontent.com/splintered-reality/py_trees_ros/devel/LICENSE
+#
+
 import py_trees
 import py_trees_ros  # pylint: disable=import-error
 import typing
@@ -55,3 +60,44 @@ class SubscriberHandler(py_trees_ros.subscribers.Handler):
             qos_profile=self.qos_profile,
             callback_group=rclpy.callback_groups.ReentrantCallbackGroup()
         )
+
+
+class SubscriberWaitForData(SubscriberHandler):
+    """
+    overrides WaitForData
+    """
+
+    def __init__(self,
+                 name: str,
+                 topic_name: str,
+                 topic_type: typing.Any,
+                 qos_profile: rclpy.qos.QoSProfile,
+                 clearing_policy: py_trees.common.ClearingPolicy
+                 ):
+        """
+        overrides WaitForData
+        """
+        super().__init__(
+            name=name,
+            topic_name=topic_name,
+            topic_type=topic_type,
+            qos_profile=qos_profile,
+            clearing_policy=clearing_policy
+        )
+
+    def update(self):
+        """
+        Returns:
+            :class:`~py_trees.common.Status`: :attr:`~py_trees.common.Status.RUNNING` (no data) or :attr:`~py_trees.common.Status.SUCCESS`
+        """
+        self.logger.debug("%s.update()]" % self.__class__.__name__)
+        with self.data_guard:
+            if self.msg is None:  # pylint: disable= access-member-before-definition
+                self.feedback_message = "no message received yet"  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.RUNNING
+            else:
+                self.feedback_message = "got incoming"  # pylint: disable= attribute-defined-outside-init
+                if self.clearing_policy == py_trees.common.ClearingPolicy.ON_SUCCESS:
+                    self.msg = None  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.SUCCESS
+

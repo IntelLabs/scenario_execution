@@ -19,48 +19,7 @@ import py_trees
 from scenario_execution.actions.conversions import get_qos_preset_profile, get_clearing_policy
 import typing
 import rclpy.qos
-from .py_trees_ros_common import SubscriberHandler
-
-
-class SubscriberWaitForData(SubscriberHandler):
-    """
-    overrides WaitForData
-    """
-
-    def __init__(self,
-                 name: str,
-                 topic_name: str,
-                 topic_type: typing.Any,
-                 qos_profile: rclpy.qos.QoSProfile,
-                 clearing_policy: py_trees.common.ClearingPolicy
-                 ):
-        """
-        overrides WaitForData
-        """
-        super().__init__(
-            name=name,
-            topic_name=topic_name,
-            topic_type=topic_type,
-            qos_profile=qos_profile,
-            clearing_policy=clearing_policy
-        )
-
-    def update(self):
-        """
-        Returns:
-            :class:`~py_trees.common.Status`: :attr:`~py_trees.common.Status.RUNNING` (no data) or :attr:`~py_trees.common.Status.SUCCESS`
-        """
-        self.logger.debug("%s.update()]" % self.__class__.__name__)
-        with self.data_guard:
-            if self.msg is None:  # pylint: disable= access-member-before-definition
-                self.feedback_message = "no message received yet"  # pylint: disable= attribute-defined-outside-init
-                return py_trees.common.Status.RUNNING
-            else:
-                self.feedback_message = "got incoming"  # pylint: disable= attribute-defined-outside-init
-                if self.clearing_policy == py_trees.common.ClearingPolicy.ON_SUCCESS:
-                    self.msg = None  # pylint: disable= attribute-defined-outside-init
-                return py_trees.common.Status.SUCCESS
-
+from .py_trees_ros_common import SubscriberWaitForData
 
 class RosTopicWaitForData(SubscriberWaitForData):
     """
