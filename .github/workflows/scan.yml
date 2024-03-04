@@ -86,7 +86,7 @@ jobs:
         shell: bash
         run: |
             find . -name "package.xml"
-            git config --global --add safe.directory /__w/scenario_execution/
+            git config --global --add safe.directory /__w/scenario_execution/scenario_execution
             find . -name "package.xml" -print0 | 
             while IFS= read -r -d '' line; do 
                 DIR=$(dirname $line)
