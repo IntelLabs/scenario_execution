@@ -19,8 +19,8 @@ jobs:
           submodules: true
       - name: Setup Dependencies
         run: |
-          apt install -y python3-pip
           apt update
+          apt install -y python3-pip
           xargs -a deb_requirements.txt apt install -y --no-install-recommends
           rosdep update --rosdistro=humble 
           rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
