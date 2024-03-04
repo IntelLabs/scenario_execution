@@ -100,4 +100,3 @@ class SubscriberWaitForData(SubscriberHandler):
                 if self.clearing_policy == py_trees.common.ClearingPolicy.ON_SUCCESS:
                     self.msg = None  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.SUCCESS
-
