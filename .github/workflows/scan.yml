@@ -86,12 +86,14 @@ jobs:
         shell: bash
         run: |
             git config --global --add safe.directory /__w/scenario_execution/scenario_execution
-            find . -name "package.xml" -print0 | 
-            while IFS= read -r -d '' line; do 
-              if [[ $line != "*scenario_execution_rviz*" ]]; then   
-                DIR="$(dirname $line)"
-                echo "Processing package at $DIR"
-                ros_license_toolkit "$DIR"
+            find . -name "package.xml" | while IFS= read -r pkg_file; do
+              pkg_dir=$(dirname "$pkg_file")
+              pkg_name=$(basename "$pkg_dir")
+              if [ "$pkg_name" = "scenario_execution_rviz" ]; then
+                echo "Skipping package $pkg_name"
+                continue
               fi
+              echo "Processing package at $pkg_dir"
+              ros_license_toolkit "$pkg_dir"
             done
             
