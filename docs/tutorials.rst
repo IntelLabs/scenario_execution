@@ -6,55 +6,62 @@ Code for all tutorials is available in :repo_link:`examples`.
 Define and Execute Scenario
 ---------------------------
 
-To create a scenario in OpenSCENARIO 2.0 syntax, first create a file
+To create a scenario in OpenSCENARIO 2 syntax, first create a file
 with the extension ``.osc``. Input the following code in the file.
 
 .. code-block::
 
    # import the libraries with import expression
+   import osc.standard
    import osc.helpers
 
    # declare the scenario by the syntax: "scenario scenario_name:"
    scenario example_ros_topic:
        # define the content of the scenario with "do_directive"
-       do serial:
-           # log a message on the screen with "log" action from the built-in library
-           log("Hello World")
-           # emit the "end" event to signalize the end of the scenario
-           emit end
+       do serial: # execute children one after the other
+           log("Hello World!") # log a message on the screen with "log" action from the built-in library
+           wait elapsed(3s)   # wait three seconds
+           log("Good Bye!")         # log another message
 
-The first line ``import osc.helpers`` will import the integrated library
-``helpers.osc`` from the package “scenario_execution_base”. All the
-OpenSCENARIO 2.0 definitions defined in the file will be imported.
+The first two lines ``import osc.standard`` and ``import osc.helpers`` will import the named libraries that provide required definitions. In this example ``helpers`` library provides the ``log`` action and ``standard`` provides the definition of the `s` unit to specify seconds.
 
 .. note::
-   Comments in OpenSCENARIO 2.0 always start with hashtag “#”.
+   Comments in OpenSCENARIO 2 always start with hashtag “#”.
 
-Then, declare a scenario with the name ``example_ros_topic``. The following colon states that all following and indented lines
-are part of it. The action of the scenario is defined in the ``do`` directive.
+Then, a scenario with the name ``hello_world`` get declared. The following colon states that all following and indented lines
+are part of it. The single top-level action of the scenario is defined in the ``do`` directive.
 The term ``serial`` states that the included actions will be executed in sequence.
 
 .. note::
-   OpenSCENARIO 2.0 supports the following compositions:
+   OpenSCENARIO 2 supports the following compositions:
 
    * ``parallel``: execute actions in parallel, continue afterwards
    * ``serial``: execute actions, one after the other
    * ``one_of``: execute actions in parallel, continue after one finished
 
-Use the ``log`` action defined within the imported library to log a message ``Hello World!`` on the
-screen. After the ``log`` action is invoked, the scenario emits an ``end`` event to tell the scenario execution to shut down
-and return success on the scenario. On the other hand, if you want to define a condition where the scenario fails, use
-``emit fail`` to shut down the scenario execution and return failure.
+Use the ``log`` action, defined within the imported library, to log a message ``Hello World!`` on the
+screen. After the ``log`` action is invoked, the ``wait`` directive makes the scenario execution to wait for 3 seconds. Afterwards another ``log`` action is triggered and the scenario ends afterwards.
 
 .. note::
-   Scenario execution uses the predefined events ``end`` and ``fail`` to detect success or failure of a scenario.
+   Scenario execution uses the predefined events ``end`` and ``fail`` to detect success or failure of a scenario. If no ``emit end`` or ``emit fail`` is defined, a success is assumed.
 
+.. note::
+    It is good practive to define a timeout action in parallel to the expected actions within a scenario.
+
+    .. code-block::
+        scenario example:
+            do parallel:
+                serial:
+                    ...
+                serial:
+                    wait elapsed(60s)
+                    emit fail
 
 Use this code to see a launch of this tutorial:
 
 .. code-block:: bash
 
-   colcon build --packages-up-to examples && source install/setup.bash \
+   colcon build --packages-up-to scenario_execution && source install/setup.bash \
    && ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/example_log.osc
 
 .. _scenario_library:
@@ -62,12 +69,12 @@ Use this code to see a launch of this tutorial:
 Create Scenario Library
 -----------------------
 
-To add new features ti scenario execution, extensions libraries can be created. An extension library typically provides one or more
-OpenSCENARIO 2.0 definition files and might additionally provide action implementations.
+To add new features to scenario execution, extensions libraries can be created. An extension library typically provides one or more
+OpenSCENARIO 2 definition files and might additionally provide action implementations.
 
 To show how to create such a library for scenario execution, we will add a ``custom_action`` action as an example.
 
-First, we need to define the ``custom_action`` in a OpenSCENARIO 2.0 file.
+First, we need to define the ``custom_action`` in a OpenSCENARIO 2 file.
 
 .. code-block::
 
@@ -99,7 +106,7 @@ Then, we can write the implementation of action plugin in Python.
 In the example, we created a custom action plugin to print a message on the
 screen. The first step is to create a ``py_trees`` behavior for the action
 plugin. First, override the ``__init__()`` function to accept the parsed
-parameter from the action plugin. Beside the fixed parameter ``name`` all parameters defined within the OpenSCENARIO 2.0 file
+parameter from the action plugin. Beside the fixed parameter ``name`` all parameters defined within the OpenSCENARIO 2 file
 are handed over to `__init__`. 
 The action plugin ``custom_action`` only defines one parameter ``data``, so the behavior only has to accept ``data`` as an
 argument. Then, override the ``update()`` function to define how the

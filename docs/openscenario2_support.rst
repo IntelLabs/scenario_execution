@@ -1,5 +1,5 @@
-OpenSCENARIO 2.0 Support
-========================
+OpenSCENARIO 2 Support
+======================
 
 General
 -------
@@ -22,7 +22,7 @@ In the following the supported features are described.
 Supported keywords
 ------------------
 
-In the following the OpenSCENARIO 2.0 keywords are listed with their current support status.
+In the following the OpenSCENARIO 2 keywords are listed with their current support status.
 
 
 ======================= ==================== =============================

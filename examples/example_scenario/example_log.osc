@@ -1,6 +1,8 @@
+import osc.standard
 import osc.helpers
 
-scenario example_ros_topic:
+scenario hello_world:
     do serial:
-        log("Hello World")
-        emit end
+        log("Hello World!")
+        wait elapsed(3s)
+        log("Good Bye!")

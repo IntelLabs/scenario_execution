@@ -1,7 +1,7 @@
 Libraries
 =========
 
-Beside ``osc.standard`` provided by OpenSCENARIO 2.0, multiple libraries are provided with scenario execution.
+Beside ``osc.standard`` provided by OpenSCENARIO 2, multiple libraries are provided with scenario execution.
 
 - ``osc.helpers`` Helpers Library
 - ``osc.robotics``: Robotics Library
