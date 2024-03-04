@@ -87,6 +87,14 @@ jobs:
         run: |
             find . -name "package.xml"
             git config --global --add safe.directory /__w/scenario_execution/
+            for i in $(find . -name "package.xml"); do
+              if [[ $i != *scenario_execution_rviz* ]]; then   
+                echo "Processing package at $i"
+                ros_license_toolkit $(dirname "$i")
+              fi
+            done
+
+
             find . -name "package.xml" | while IFS= read -r pkg_file; do
               pkg_dir=$(dirname "$pkg_file")
               pkg_name=$(basename "$pkg_dir")
