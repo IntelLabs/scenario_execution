@@ -23,19 +23,7 @@ jobs:
           apt update
           xargs -a deb_requirements.txt apt install -y --no-install-recommends
           rosdep update --rosdistro=humble 
-          rosdep install --rosdistro=humble --from-paths \
-          scenario_execution_interfaces \
-          tools/scenario_status \
-          tools/message_modification \
-          scenario_execution_gazebo \
-          scenario_execution_rviz \
-          scenario_execution_control \
-          scenario_execution_kubernetes \
-          --from-paths dependencies/py_trees \
-          --from-paths dependencies/py_trees_ros \
-          --ignore-src \
-          --skip-keys scenario_execution_base scenario_execution \
-          -y
+          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
           pip3 install -r requirements.txt
       - name: Build
         shell: bash
