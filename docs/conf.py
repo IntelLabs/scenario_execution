@@ -35,6 +35,7 @@ linkcheck_ignore = [
 ]
 
 spelling_word_list_filename = 'dictionary.txt'
+spelling_ignore_contributor_names=True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
