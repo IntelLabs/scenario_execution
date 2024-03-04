@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import py_trees  # pylint: disable=import-error
-import subprocess
+import subprocess  # nosec B404
 from threading import Thread
 from collections import deque
 
