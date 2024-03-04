@@ -86,7 +86,7 @@ jobs:
         shell: bash
         run: |
             find . -name "package.xml"
-            ros_license_toolkit
+            ros_license_toolkit ./scenario_execution_base/package.xml
             find . -name "package.xml" | while IFS= read -r pkg_file; do
               pkg_dir=$(dirname "$pkg_file")
               pkg_name=$(basename "$pkg_dir")
