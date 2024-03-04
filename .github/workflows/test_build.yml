@@ -1,0 +1,74 @@
+---
+name: test-build
+on:
+  # Triggers the workflow on push or pull request events but
+  # only for the main branch
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  vanilla-build:
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup Dependencies
+        run: |
+          apt install -y python3-pip
+          apt update
+          xargs -a deb_requirements.txt apt install -y --no-install-recommends
+          rosdep update --rosdistro=humble 
+          rosdep install --rosdistro=humble --from-paths \
+          scenario_execution_interfaces \
+          tools/scenario_status \
+          tools/message_modification \
+          scenario_execution_gazebo \
+          scenario_execution_rviz \
+          scenario_execution_control \
+          scenario_execution_kubernetes \
+          --from-paths dependencies/py_trees \
+          --from-paths dependencies/py_trees_ros \
+          --ignore-src \
+          --skip-keys scenario_execution_base scenario_execution \
+          -y
+          pip3 install -r requirements.txt
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test
+        shell: bash
+        run: |
+          Xvfb :1 -screen 0 1600x1200x16  &
+          export DISPLAY=:1.0
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=99
+          export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+          x2goglx2 colcon test --packages-select \
+          scenario_execution_base \
+          scenario_execution \
+          scenario_execution_gazebo \
+          scenario_coverage \
+          --event-handlers console_direct+ \
+          --return-code-on-test-failure \
+          --pytest-with-coverage \
+          --pytest-args \
+          --junit-xml=TEST.xml
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@283dea176069279a9076e77b548668a8e4f0c31b
+        if: always()
+        with:
+          files: |
+            scenario_execution_base//TEST.xml
+            scenario_execution//TEST.xml
+            scenario_execution_gazebo//TEST.xml
+            scenario_coverage//TEST.xml
