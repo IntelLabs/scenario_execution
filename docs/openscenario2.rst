@@ -1,5 +1,5 @@
-OpenSCENARIO 2 Support
-======================
+OpenSCENARIO 2
+==============
 
 General
 -------
@@ -19,7 +19,7 @@ In the following the supported features are described.
 .. role:: raw-html(raw)
    :format: html
 
-Supported keywords
+Supported features
 ------------------
 
 In the following the OpenSCENARIO 2 keywords are listed with their current support status.

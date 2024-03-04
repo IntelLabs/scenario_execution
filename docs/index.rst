@@ -32,4 +32,4 @@ gets cleaned up.
    architecture
    libraries
    development
-   openscenario2_support
+   openscenario2
