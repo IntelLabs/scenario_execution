@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 jobs:
   vanilla-build:
-    runs-on: intellabs-01
+    runs-on: ubuntu-22.04
     container:
       image: osrf/ros:humble-desktop
     steps:
