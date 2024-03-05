@@ -4,12 +4,10 @@ devcontainer
 rviz
 unmapped
 Structs
-kubernetes
 submodules
 namespace
 enums
 multiline
-amsrl
 buildkit
 autoformatter
 behavior
@@ -20,3 +18,11 @@ nav
 backend
 osc
 py
+vscode
+QoS
+dataset
+whitespace
+odometry
+tf
+amcl
+RViz

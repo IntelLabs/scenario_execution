@@ -50,3 +50,50 @@ jobs:
           format: 'table'
           exit-code: '1'
           vuln-type: 'os,library'
+  bandit:
+    name: Bandit
+    runs-on: intellabs-01
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Test
+        shell: bash
+        run: |
+          pip3 install bandit
+          bandit -c .github/bandit.yaml -r .
+  license:
+    name: License check
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Prepare System
+        shell: bash
+        run: |
+          apt update
+          apt install -y python3-pip
+          pip3 install ros-license-toolkit 
+          apt install -y golang-go
+          go version
+          go install github.com/google/addlicense@latest
+      - name: Check for license tags
+        shell: bash
+        run: |
+            find . -type f \( -name "*.py" -o -name "*.cpp" -o -name "*.h" \) -exec "$HOME"/go/bin/addlicense -check {} +
+      - name: Run ros_license_toolkit for each Package
+        shell: bash
+        run: |
+            git config --global --add safe.directory /__w/scenario_execution/scenario_execution
+            find . -name "package.xml" | while IFS= read -r pkg_file; do
+              pkg_dir=$(dirname "$pkg_file")
+              pkg_name=$(basename "$pkg_dir")
+              if [ "$pkg_name" = "scenario_execution_rviz" ]; then
+                echo "Skipping package $pkg_name"
+                continue
+              fi
+              echo "Processing package at $pkg_dir"
+              ros_license_toolkit "$pkg_dir"
+            done
+            

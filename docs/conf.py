@@ -14,8 +14,8 @@ project = "Scenario Execution"
 copyright = f"{datetime.datetime.now()}, Intel"
 author = "Intel"
 
-version = '0.0.0'
-release = '0.0.0'
+version = '1.0.0'
+release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -23,7 +23,7 @@ release = '0.0.0'
 extensions = ['sphinx.ext.extlinks',
               'sphinxcontrib.spelling']
 
-extlinks = {'repo_link': ('https://github.com/IntelLabs/scenario_execution/blob/main/%s', '%s')}
+extlinks = {'repo_link': ('https://github.com/intellabs/scenario_execution/blob/main/%s', '%s')}
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -31,7 +31,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 language = 'english'
 
 linkcheck_ignore = [
-    r'https://github.com/IntelLabs/scenario_execution/.*',
+    r'https://github.com/intellabs/scenario_execution/.*',
 ]
 
 spelling_word_list_filename = 'dictionary.txt'

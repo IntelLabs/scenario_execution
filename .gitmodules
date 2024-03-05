@@ -1,0 +1,6 @@
+[submodule "dependencies/py_trees_ros"]
+	path = dependencies/py_trees_ros
+	url = https://github.com/splintered-reality/py_trees_ros.git
+[submodule "dependencies/py_trees"]
+	path = dependencies/py_trees
+	url = https://github.com/splintered-reality/py_trees.git

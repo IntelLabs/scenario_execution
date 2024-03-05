@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>scenario_execution_rviz</name>
+  <version>0.0.1</version>
+  <description>The scenario_execution_rviz package</description>
+  <author email="scenario-execution@intel.com">Intel Labs</author>
+  <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
+  <license file="../LICENSE">Apache-2.0</license>
+  <license file="LICENSE_MIT">MIT</license>
+
+  <depend>rclcpp</depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rviz_common</depend>
+
+  <build_depend>qtbase5-dev</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>scenario_execution_interfaces</build_depend>
+  <build_depend>py_trees_ros_interfaces</build_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>scenario_execution_interfaces</exec_depend>
+  <exec_depend>py_trees_ros_interfaces</exec_depend>
+  <exec_depend>libqt5-core</exec_depend>
+  <exec_depend>libqt5-gui</exec_depend>
+  <exec_depend>libqt5-widgets</exec_depend>
+  
+  <export>
+      <build_type>ament_cmake</build_type>
+  </export>
+</package>

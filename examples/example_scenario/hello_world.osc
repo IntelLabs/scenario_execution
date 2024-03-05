@@ -1,0 +1,8 @@
+import osc.standard
+import osc.helpers
+
+scenario hello_world:
+    do serial:
+        log("Hello World!")
+        wait elapsed(3s)
+        log("Good Bye!")

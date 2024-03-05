@@ -1,0 +1,8 @@
+
+action log:
+    # Print out a message
+    msg: string # Message to print
+
+action run_external_process:
+    # Run an external process
+    command: string # Command to execute

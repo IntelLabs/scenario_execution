@@ -1,0 +1,4 @@
+import osc.standard
+
+actor differential_drive_robot inherits osc_actor:
+    namespace: string = ''
