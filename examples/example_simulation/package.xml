@@ -10,7 +10,6 @@
 
   <depend>scenario_execution</depend>
   <depend>scenario_execution_gazebo</depend>
-  <depend>gazebo_tf_publisher</depend>
   <depend>tb4_sim_scenario</depend>
 
   <exec_depend>rclpy</exec_depend>
