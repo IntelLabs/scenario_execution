@@ -1,6 +1,7 @@
 # Scenario Execution
 
-[![Super-Linter](https://github.com/IntelLabs/Scenario_Execution/actions/workflows/scan.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![Super-Linter](https://github.com/IntelLabs/Scenario_Execution/actions/workflows/scan.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/{owner}/{repo}/badge)](https://securityscorecards.dev/viewer/?uri=github.com/{owner}/{repo})
+
 
 Scenario execution is a backend- and middleware-agnostic library written in Python based on the generic scenario description language [OpenSCENARIO 2](https://www.asam.net/static_downloads/public/asam-openscenario/2.0.0/welcome.html) and [pytrees](https://py-trees.readthedocs.io/en/devel/).
 It reads a scenario definition from a file and then executes it, reusing available checks and actions. It is easily extendable through a library mechanism.
