@@ -12,6 +12,10 @@ Upon arrival of the goal position, the scenario ends and the simulation gets cle
 
 ![scenario execution in action](docs/images/scenario.gif "in action")
 
+## Documentation
+
+Please find the documentation [here](https://intellabs.github.io/scenario_execution).
+
 ## Setup
 
 ### Installation from source as ROS 2 workspace

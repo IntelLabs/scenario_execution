@@ -26,7 +26,7 @@ with the extension ``.osc``. Input the following code in the file.
 The first two lines ``import osc.standard`` and ``import osc.helpers`` will import the named libraries that provide required definitions. In this example ``helpers`` library provides the ``log`` action and ``standard`` provides the definition of the `s` unit to specify seconds.
 
 .. note::
-   Comments in OpenSCENARIO 2 always start with hashtag “#”.
+   Comments in OpenSCENARIO 2 always start with ``#``.
 
 Then, a scenario with the name ``hello_world`` get declared. The following colon states that all following and indented lines
 are part of it. The single top-level action of the scenario is defined in the ``do`` directive.

@@ -47,6 +47,8 @@ Scenario Parsing
 
    Architecture of Scenario Parsing
 
+The Internal Model Builder, implemented as a Model Listener does an initial check of the model by checking for supported language features. The Internal Model Resolver, implemented as a Model Visitor is used for type/variable resolving and does an in depth consistency check of the model.
+
 
 Modules
 -------
