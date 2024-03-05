@@ -35,7 +35,7 @@ To run only specific tests:
 Developing and Debugging with Visual Studio Code
 ------------------------------------------------
 
-To prevent certain issues, please use the following command for building (remove /build and /install if another command was used before).
+To prevent certain issues, please use the following command for building (remove `/build` and `/install`` if another command was used before).
 
 .. code-block:: bash
 
@@ -59,21 +59,6 @@ Add the following entry to the "configurations" element within the previously cr
                "args": ["-o", "TEST_SCENARIO.osc"],
            }
 
-
-To execute the debug configuration either switch to debug view (on the left) and click on "play" or press F5.
-  
-On the first run, there will be errors because of missing dependencies. Within the terminal showing the errors, run:
-
-.. code-block:: bash
-
-   source /opt/ros/humble/setup.bash
-   source install/setup.bash
-
-Afterwards, press F5 again and the execution should succeed. You can now add breakpoints etc.
-
-Execute Tests
-^^^^^^^^^^^^^
-
 Create an `.env` file by executing:
 
 .. code-block:: bash
@@ -93,10 +78,19 @@ In vscode, open user settings and enable the following settings:
    "python.terminal.activateEnvInCurrentTerminal": true
 
 
+To execute the debug configuration either switch to debug view (on the left) and click on "play" or press F5.
 
-Creating an Action
+
+Best known Methods
 ------------------
 
--  If an action setup() should fail, raise an exception
--  Use a state machine, if multiple steps are required
--  Implement a ``cleanup`` method to cleanup on scenario end.
+Implement an Action
+^^^^^^^^^^^^^^^^^^^
+
+- If an action's ``setup()`` fails, raise an exception
+- Use a state machine, if multiple steps are required
+- Implement a ``cleanup()`` method to cleanup on scenario end.
+- For debugging/logging:
+   - Make use of ``self.feedback_message``
+   - Make use of ``kwargs['logger']``, available in ``setup()``
+   - If you want to draw markers for RViz, use ``kwargs['marker_handler']``, available in ``setup()`` (with ROS backend)

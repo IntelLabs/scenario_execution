@@ -39,7 +39,7 @@ setup(
     include_package_data=True,
     entry_points={
         'scenario_execution.actions': [
-            'custom_action = example_library.custom_action:CustomAction',
+            'custom_action = example_library.actions.custom_action:CustomAction',
         ],
         'scenario_execution.osc_libraries': [
             'example = example_library.get_osc_library:get_example_library',

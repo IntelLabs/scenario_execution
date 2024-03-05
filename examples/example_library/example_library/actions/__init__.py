@@ -13,7 +13,3 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-
-
-def get_example_library():
-    return 'example_library', 'example.osc'
