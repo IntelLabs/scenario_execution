@@ -39,7 +39,7 @@ jobs:
           CREATE_LOG_FILE: true
   trivy:
     name: Trivy
-    runs-on: ubuntu-22.04
+    runs-on: intellabs-01
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
