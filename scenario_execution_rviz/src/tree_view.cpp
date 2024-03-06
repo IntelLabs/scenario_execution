@@ -34,7 +34,7 @@ TreeView::TreeView(QWidget *parent) : rviz_common::Panel(parent) {
   mTreeView->setColumnWidth(1, 200);
 
   QStringList columnNames;
-  columnNames << "Event"
+  columnNames << "Action"
               << "Feedback";
   mTreeView->setHeaderLabels(columnNames);
   collapsedStates = new QMap<QString, bool>;
