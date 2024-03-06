@@ -18,8 +18,8 @@ concurrency:
 
 jobs:
   build_docs:
-    runs-on: intellabs-01
     name: 'Build Docs'
+    runs-on: intellabs-01
     container:
       image: ghcr.io/sphinx-doc/sphinx:7.1.2
       volumes:
