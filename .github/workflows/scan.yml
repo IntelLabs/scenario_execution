@@ -8,6 +8,7 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+permissions: read-all
 jobs:
   lint:
     name: 'Super-linter'
