@@ -28,9 +28,10 @@ setup(
     version='1.0.0',
     packages=[PACKAGE_NAME],
     data_files=[
-        ('share/ament_index/resource_index/packages', ['resource/' + PACKAGE_NAME]),
-        (os.path.join('share', PACKAGE_NAME), ['package.xml']),
-        (os.path.join('share', PACKAGE_NAME), glob('launch/*launch.py'))
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + PACKAGE_NAME]),
+        ('share/' + PACKAGE_NAME, ['package.xml']),
+        (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -44,5 +45,4 @@ setup(
             'scenario_list_publisher = scenario_execution_control.scenario_list_publisher:main'
         ],
     },
-    package_dir={'': 'src'},
 )
