@@ -290,3 +290,58 @@ To try this example, run
 .. code-block:: bash
 
     ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_simulation/scenarios/example_simulation.osc headless:=False
+
+Create Scenarios with Variations
+--------------------------------
+In this example, we'll demonstrate how to generate and run multiple scenarios using only one scenario definition.
+
+For this we'll use the  :repo_link:`scenario_coverage/scenario_coverage/scenario_variation`. to save the intermediate scenario models in ``.sce`` extension file and then use :repo_link:`scenario_coverage/scenario_coverage/scenario_batch_execution` to execute each generated scenario.
+
+The scenario file looks as follows:
+
+.. code-block::
+
+    import osc.helpers
+
+    scenario test_log:
+        do serial:
+            log() with:
+                keep(it.msg in ["foo", "bar"])
+            emit end
+
+Here, a simple scenario variation example using log action plugin is created and two messages ``foo`` and
+``bar`` using the array syntax are passed.
+
+As this is not a concrete scenario, ``scenario_execution`` won't be able to execute it. Instead we'll use ``scenario_variation`` from the ``scenario_coverage`` package to generate all variations and save them to intermediate scenario model files with ``.sce`` extension.
+Afterwards we could either use ``scenario_execution`` to run each created scenario manually or make use of ``scenario_batch_execution`` which reads all scenarios within a directory and executes them one after the other.
+
+Now, lets try to run this scenario. To do this, first build Packages ``scenario_execution`` and ``scenario_coverage``:
+
+.. code-block::
+
+    colcon build --packages-up-to scenario_execution && colcon build --packages-up-to scenario_coverage
+
+
+* Now, ``create intermediate scenarios`` with ``.sce`` extension using the command:
+
+.. code-block:: bash
+
+    ros2 run scenario_coverage scenario_variation -o examples/example_scenario_variation/example_scenario_variation.osc
+
+In the command mentioned above we passed the scenario file as the parameter. You can also specify the output directory for the scenario files using the ``-t`` option. If not specified, the default folder ``out`` will be created in the current working directory.
+
+* Next, ``run scenario files`` with following command.
+
+.. code-block:: bash
+
+    python scenario_coverage/scenario_coverage/scenario_batch_execution.py -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} test_output:={JUNITXML}
+
+Let's break down this command.
+In the first part we're using python to run the Python file ``scenario_batch_execution``. This Python file requires the following parameters to execute.
+
+    1. Directory where the scenario files ``.sce`` were saved as the input option ``-i``.
+    2. Directory where the output ``log`` and ``xml`` files will be saved as the output option ``-o``.
+    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} test_output:={JUNITXML}``.
+
+
+Finally, The output of the above command will display two values ``foo`` and ``bar`` on the terminal along with the success message.
