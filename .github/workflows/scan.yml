@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           fetch-depth: 0
-      - uses: super-linter/super-linter@v6.0.0
+      - uses: super-linter/super-linter@e0fc164bba85f4b58c6cd17ba1dfd435d01e8a06 #v6.3.0
         env:
           DEFAULT_BRANCH: main
           # To report GitHub Actions status checks
@@ -45,7 +45,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@062f2592684a31eb3aa050cc61e7ca1451cecd3d #v0.18.0
         with:
           scan-type: 'fs'
           format: 'table'
