@@ -297,7 +297,7 @@ In this example, we'll demonstrate how to run a batch of scenario using only one
 
 For this we'll use the  :repo_link:`scenario_coverage/scenario_coverage/scenario_variation`. to save the intermediate scenario models in ``.sce`` extension file and then use :repo_link:`scenario_coverage/scenario_coverage/scenario_batch_execution` to execute each generated scenario.
 
-This scenario files looks as follows:
+The scenario file looks as follows:
 
 .. code-block::
 
@@ -312,9 +312,14 @@ This scenario files looks as follows:
 Here, a simple scenario variation example using log action plugin is created and two messages ``foo`` and
 ``bar`` using the array syntax are passed.
 
-Now, lets try to run this scenario. To do this, we need to execute two commands.
+Now, lets try to run this scenario. To do this, first build Packages ``scenario_execution`` and ``scenario_coverage``:
 
-* First ``create intermediate scenarios`` with ``.sce`` extension using the command:
+.. code-block::
+
+    colcon build --packages-up-to scenario_execution && colcon build --packages-up-to scenario_coverage
+
+
+* Now, ``create intermediate scenarios`` with ``.sce`` extension using the command:
 
 .. code-block:: bash
 
@@ -322,7 +327,7 @@ Now, lets try to run this scenario. To do this, we need to execute two commands.
 
 In the command mentioned above we passed the scenario file as the parameter. You can also specify the output directory for the scenario files using the ``-t`` option. If not specified, the default folder ``out`` will be created in the current working directory.
 
-* Second ``run scenario files`` with following command.
+* Next, ``run scenario files`` with following command.
 
 .. code-block:: bash
 
