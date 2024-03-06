@@ -1,0 +1,7 @@
+import osc.helpers
+
+scenario example_variation:
+    do serial:
+        log() with:
+            keep(it.msg in ["foo", "bar"])
+        emit end
