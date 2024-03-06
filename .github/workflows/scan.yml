@@ -8,6 +8,7 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+permissions: read-all
 jobs:
   lint:
     name: 'Super-linter'
@@ -16,12 +17,12 @@ jobs:
     permissions:
       contents: read
       packages: read
-      statuses: write
+      # statuses: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           fetch-depth: 0
-      - uses: super-linter/super-linter@v6.0.0
+      - uses: super-linter/super-linter@e0fc164bba85f4b58c6cd17ba1dfd435d01e8a06 #v6.3.0
         env:
           DEFAULT_BRANCH: main
           # To report GitHub Actions status checks
@@ -42,9 +43,9 @@ jobs:
     runs-on: intellabs-01
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@062f2592684a31eb3aa050cc61e7ca1451cecd3d #v0.18.0
         with:
           scan-type: 'fs'
           format: 'table'
@@ -55,11 +56,11 @@ jobs:
     runs-on: intellabs-01
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       - name: Test
         shell: bash
         run: |
-          pip3 install bandit
+          pip3 install "bandit==1.7.7"
           bandit -c .github/bandit.yaml -r .
   license:
     name: License check
@@ -68,7 +69,7 @@ jobs:
       image: osrf/ros:humble-desktop
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       - name: Prepare System
         shell: bash
         run: |
@@ -77,7 +78,7 @@ jobs:
           pip3 install ros-license-toolkit 
           apt install -y golang-go
           go version
-          go install github.com/google/addlicense@latest
+          go install github.com/google/addlicense@v1.1.1
       - name: Check for license tags
         shell: bash
         run: |
