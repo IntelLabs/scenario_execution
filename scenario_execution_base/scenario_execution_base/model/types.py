@@ -88,8 +88,7 @@ class ModelElement(object):
 
     def get_children(self):
         if self.__children is not None:
-            for child in self.__children:
-                yield child
+            yield from self.__children
 
     def get_child(self, i):
         return self.__children[i]
