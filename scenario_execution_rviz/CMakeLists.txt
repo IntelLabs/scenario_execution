@@ -21,7 +21,8 @@ find_package(Qt5 REQUIRED Core Widgets)
 set(QT_LIBRARIES Qt5::Widgets)
 
 set(SRC_FILES src/indicator_widget.cpp
-              src/control_panel.cpp)
+              src/control_panel.cpp
+              src/tree_view.cpp)
 
 qt5_add_resources(SRC_FILES scenario_execution_rviz.qrc)
 
