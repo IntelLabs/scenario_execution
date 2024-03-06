@@ -16,6 +16,7 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: false
 
+permissions: read-all
 jobs:
   build_docs:
     name: 'Build Docs'
