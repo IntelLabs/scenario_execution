@@ -29,9 +29,6 @@ information of py_trees and parser:
    ros2 run scenario_execution scenario_execution $(PATH_TO_SCENARIO_FILE) -t -d
 
 
-Using RVIZ to trigger scenario
-------------------------------
-
 Visualize Scenario with PyTrees ROS Viewer
 ------------------------------------------
 
@@ -80,7 +77,7 @@ Example:
 
 .. code-block:: bash
 
-      ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/scenarios/example_log.osc
+      ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/hello_word.osc
 
 .. figure:: images/py_tree_viewer.png
    :alt: Behavior Tree Viewer 
