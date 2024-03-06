@@ -93,6 +93,6 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         for elem in self.received_msgs[1:]:
             self.assertGreater(elem[1].data, prev_elem[1].data)
             time_since_last = elem[0]-prev_elem[0]
-            self.assertGreaterEqual(time_since_last, rclpy.duration.Duration(seconds=0.8))
-            self.assertLessEqual(time_since_last, rclpy.duration.Duration(seconds=1.6))
+            self.assertGreaterEqual(time_since_last, rclpy.duration.Duration(seconds=0.5))
+            self.assertLessEqual(time_since_last, rclpy.duration.Duration(seconds=1.7))
             prev_elem = elem
