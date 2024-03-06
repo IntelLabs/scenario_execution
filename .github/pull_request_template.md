@@ -13,8 +13,7 @@ Your PR fulfills the following requirements:
 - [ ] [Issue](https://github.com/IntelLabs/scenario_execution/issues) created that explains the change and why it's needed
 - [ ] Tests are part of the PR (for bug fixes / features)
 - [ ] [Docs](https://intellabs.github.io/scenario_execution/) reviewed and added / updated if needed (for bug fixes / features)
-- [ ] PR conforms to Coding Conventions, i.e., `make format` ran locally
-- [ ] Lint (`make pylint`) passes locally
+- [ ] Format and Lint checks (`make check`) pass locally
 - [ ] PR applies Apache 2.0 License to all code files
 
 # Pull request type
