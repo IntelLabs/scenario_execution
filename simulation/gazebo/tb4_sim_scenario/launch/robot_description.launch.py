@@ -24,7 +24,7 @@ from launch.substitutions import Command, PathJoinSubstitution
 from launch.substitutions.launch_configuration import LaunchConfiguration
 
 from launch_ros.actions import Node
-
+from launch_ros.descriptions import ParameterValue
 
 ARGUMENTS = [
     DeclareLaunchArgument('model', default_value='standard',
@@ -54,10 +54,10 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
-            {'robot_description': Command([
+            {'robot_description': ParameterValue(Command([
                 'xacro', ' ', xacro_file, ' ',
                 'gazebo:=ignition', ' ',
-                'namespace:=', namespace])},
+                'namespace:=', namespace]), value_type=str)},
         ],
         remappings=[
             ('/tf', 'tf'),
