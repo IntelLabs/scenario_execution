@@ -1,0 +1,28 @@
+# Example Scenario Variation
+
+To run the Example Scenario Variation with scenario, first build the `example_scenario_variation` Package:
+
+```bash
+colcon build --packages-up-to example_scenario_variation
+```
+
+Source the workspace:
+
+```bash
+source install/setup.bash
+```
+
+Now, run the following commands one by one to launch the scenario:
+
+First
+
+```bash
+ros2 run scenario_coverage scenario_variation -o examples/example_scenario_variation/scenarios/example_scenario_variation.osc
+```
+Second
+
+```bash
+python scenario_coverage/scenario_coverage/scenario_batch_execution.py -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} test_output:={JUNITXML}
+```
+
+For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intellabs.github.io/scenario_execution/tutorials.html).
