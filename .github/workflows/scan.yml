@@ -60,7 +60,7 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          pip3 install bandit
+          pip3 install "bandit==1.7.7"
           bandit -c .github/bandit.yaml -r .
   license:
     name: License check
