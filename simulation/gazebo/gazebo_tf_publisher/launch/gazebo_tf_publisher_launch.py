@@ -24,7 +24,6 @@ from launch_ros.actions import Node, PushRosNamespace
 def generate_launch_description():
     namespace = LaunchConfiguration("namespace")
     use_namespace = LaunchConfiguration("use_namespace")
-    start_rviz = LaunchConfiguration("start_rviz")
     ign_pose_topic = LaunchConfiguration("ign_pose_topic")
     base_frame_id = LaunchConfiguration("base_frame_id")
     ld = LaunchDescription(
@@ -32,11 +31,6 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "use_namespace",
                 description="Execute all nodes/topics within /namespace namespace",
-                default_value="False",
-            ),
-            DeclareLaunchArgument(
-                "start_rviz",
-                description="Wether to start rviz2",
                 default_value="False",
             ),
             DeclareLaunchArgument(
@@ -65,16 +59,6 @@ def generate_launch_description():
                         parameters=[
                             {"ign_pose_topic": ign_pose_topic},
                             {"base_frame_id": base_frame_id},
-                        ],
-                    ),
-                    Node(
-                        package="rviz2",
-                        name="rviz2",
-                        executable="rviz2",
-                        condition=IfCondition(start_rviz),
-                        remappings=[
-                            ("/tf", "tf"),
-                            ("/tf_static", "tf_static"),
                         ],
                     ),
                 ]
