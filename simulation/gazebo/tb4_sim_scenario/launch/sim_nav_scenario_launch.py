@@ -30,6 +30,7 @@ def generate_launch_description():
     tb4_sim_scenario_dir = get_package_share_directory('tb4_sim_scenario')
     scenario_execution_dir = get_package_share_directory('scenario_execution')
     message_modification_dir = get_package_share_directory('message_modification')
+    gazebo_tf_publisher_dir = get_package_share_directory('gazebo_tf_publisher')
     tf_to_pose_publisher_dir = get_package_share_directory('tf_to_pose_publisher')
 
     scenario = LaunchConfiguration('scenario')
@@ -63,6 +64,13 @@ def generate_launch_description():
 
     nav2_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'nav2_launch.py'])]),
+    )
+
+    groundtruth_publisher = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(gazebo_tf_publisher_dir, 'launch', 'gazebo_tf_publisher_launch.py')),
+        launch_arguments=[
+            ('ign_pose_topic', ['/world/', world, '/dynamic_pose/info']),
+        ]
     )
 
     scan_modification = IncludeLaunchDescription(
@@ -102,6 +110,7 @@ def generate_launch_description():
     ld.add_action(ignition)
     ld.add_action(robot_spawn)
     ld.add_action(nav2_bringup)
+    ld.add_action(groundtruth_publisher)
     ld.add_action(scan_modification)
     ld.add_action(scenario_exec)
     ld.add_action(tf_to_pose)
