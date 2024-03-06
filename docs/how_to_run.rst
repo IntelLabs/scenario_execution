@@ -77,7 +77,7 @@ Example:
 
 .. code-block:: bash
 
-      ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/hello_word.osc
+      ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/hello_world.osc
 
 .. figure:: images/py_tree_viewer.png
    :alt: Behavior Tree Viewer 
