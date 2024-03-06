@@ -14,6 +14,9 @@ jobs:
     runs-on: intellabs-01
     container:
       image: osrf/ros:humble-desktop
+    permissions:
+      checks: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
