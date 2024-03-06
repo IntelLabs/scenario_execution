@@ -139,7 +139,7 @@ class ModelToPyTree(object):
                 raise ValueError(
                     f"Could not add scenario {scenario_name}. Scenario {self.root_behavior.name} already defined.")
 
-            self.root_behavior = py_trees.composites.Sequence(name=scenario_name)
+            self.root_behavior = py_trees.composites.Sequence(name=scenario_name, memory=True)
             self.__cur_behavior = self.root_behavior
 
             super().visit_scenario_declaration(node)
@@ -147,11 +147,11 @@ class ModelToPyTree(object):
         def visit_do_member(self, node: DoMember):
             composition_operator = node.composition_operator
             if composition_operator == "serial":
-                behavior = py_trees.composites.Sequence(name=node.name)
+                behavior = py_trees.composites.Sequence(name=composition_operator, memory=True)
             elif composition_operator == "parallel":
-                behavior = py_trees.composites.Parallel(name=node.name, policy=py_trees.common.ParallelPolicy.SuccessOnAll())
+                behavior = py_trees.composites.Parallel(name=composition_operator, policy=py_trees.common.ParallelPolicy.SuccessOnAll())
             elif composition_operator == "one_of":
-                behavior = py_trees.composites.Parallel(name=node.name, policy=py_trees.common.ParallelPolicy.SuccessOnOne())
+                behavior = py_trees.composites.Parallel(name=composition_operator, policy=py_trees.common.ParallelPolicy.SuccessOnOne())
             else:
                 raise NotImplementedError(f"scenario operator {composition_operator} not yet supported.")
 
@@ -216,7 +216,10 @@ class ModelToPyTree(object):
             plugin_args = inspect.getfullargspec(behavior_cls.__init__).args
             plugin_args.remove("self")
 
-            final_args["name"] = node.name
+            if node.name is None:
+                final_args["name"] = behavior_name
+            else:
+                final_args["name"] = node.name
 
             if node.actor:
                 final_args["associated_actor"] = node.actor.get_resolved_value()
