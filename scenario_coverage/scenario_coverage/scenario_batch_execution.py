@@ -41,21 +41,21 @@ class ScenarioBatchExecution(object):
         print(f"Detected {len(self.scenarios)} scenarios.")
         self.launch_command = args.launch_command
         if self.get_launch_command("", "") is None:
-            raise ValueError("Launch command does not contain {SCENARIO} and {JUNITXML}: " + " ".join(args.launch_command))
+            raise ValueError("Launch command does not contain {SCENARIO} and {OUTPUT_DIR}: " + " ".join(args.launch_command))
         print(f"Launch command: {self.launch_command}")
 
-    def get_launch_command(self, scenario_name, junitxml):
+    def get_launch_command(self, scenario_name, output_dir):
         launch_command = deepcopy(self.launch_command)
         scenario_replaced = False
-        junitxml_replaced = False
+        output_dir_replaced = False
         for i in range(0, len(launch_command)):  # pylint: disable=consider-using-enumerate
             if "{SCENARIO}" in launch_command[i]:
                 launch_command[i] = launch_command[i].replace('{SCENARIO}', scenario_name)
                 scenario_replaced = True
-            if "{JUNITXML}" in launch_command[i]:
-                launch_command[i] = launch_command[i].replace('{JUNITXML}', junitxml)
-                junitxml_replaced = True
-        if scenario_replaced and junitxml_replaced:
+            if "{OUTPUT_DIR}" in launch_command[i]:
+                launch_command[i] = launch_command[i].replace('{OUTPUT_DIR}', output_dir_replaced)
+                output_dir_replaced = True
+        if scenario_replaced and output_dir_replaced:
             return launch_command
         else:
             return None
@@ -128,7 +128,7 @@ def main():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--scenario-dir', type=str, help='Directory containing the scenarios')
-    parser.add_argument('-o', '--output-dir', type=str, help='Directory containing the output', default='out')
+    parser.add_argument('-l', '--output-dir', type=str, help='Directory containing the output', default='out')
     parser.add_argument('launch_command', nargs='+')
     args = parser.parse_args(sys.argv[1:])
 

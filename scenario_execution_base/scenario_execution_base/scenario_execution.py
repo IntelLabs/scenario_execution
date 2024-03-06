@@ -230,7 +230,7 @@ class ScenarioExecution(object):
                         out.write(f'  </testcase>\n')
                     out.write("</testsuite>\n")
             except Exception as e:  # pylint: disable=broad-except
-                self.logger.error(f"Could not write junitxml {self.test_output}: {e}")
+                self.logger.error(f"Could not write results to {self.test_output}: {e}")
 
     def pre_tick_handler(self, behaviour_tree):
         """
@@ -280,11 +280,11 @@ class ScenarioExecution(object):
     def parse_args(args):
         parser = argparse.ArgumentParser()
         parser.add_argument('-d', '--debug', action='store_true', help='debugging output')
-        parser.add_argument('-o', '--log-model', action='store_true',
+        parser.add_argument('-l', '--log-model', action='store_true',
                             help='Produce tree output of parsed openscenario2 content')
         parser.add_argument('-t', '--live-tree', action='store_true',
                             help='For debugging: Show current state of py tree')
-        parser.add_argument('-j', '--test-output', type=str, help='Write test output to file.')
+        parser.add_argument('-o', '--output-dir', type=str, help='Directory for output (e.g. test results)')
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
         args = parser.parse_args(args)
         return args
