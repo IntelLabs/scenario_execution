@@ -120,9 +120,9 @@ Record a ros bag, stored in output_dir defined by command-line parameter (defaul
 
 ``log_check()``
 """""""""""""""
-Wait for specific output in ROS log (i.e. `/rosout` topic).
+Wait for specific output in ROS log (i.e. `/rosout` topic). If any of the entries within ``values`` the action succeeds.
 
-- ``values: string``: string or list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
+- ``values: list of string``: list of strings to check for.
 
 ``differential_drive_robot.init_nav2()``
 """"""""""""""""""""""""""""""""""""""""
