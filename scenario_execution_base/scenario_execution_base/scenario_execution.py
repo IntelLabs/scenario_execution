@@ -286,7 +286,7 @@ class ScenarioExecution(object):
                             help='For debugging: Show current state of py tree')
         parser.add_argument('-o', '--output-dir', type=str, help='Directory for output (e.g. test results)')
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
-        args = parser.parse_args(args)
+        args, _ = parser.parse_known_args(args)
         return args
 
 

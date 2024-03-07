@@ -101,7 +101,8 @@ action record_bag:
     storage: string = ''         # storage type to use (empty string: use default)
 
 action log_check:
-    # Check the log for specific output
+    # Check the ROS log for specific output
+    module_name: string = '' # If specified, a matching message must also match the module name
     values: list of string # string to check for. If found, action succeeds
 
 action differential_drive_robot.init_nav2:

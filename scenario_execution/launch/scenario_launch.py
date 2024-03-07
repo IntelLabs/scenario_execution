@@ -43,7 +43,7 @@ def generate_launch_description():
                               description='log parsed model'),
         DeclareLaunchArgument('scenario_execution', default_value='True',
                               description='Wether to execute scenario execution'),
-        DeclareLaunchArgument('scenario_status', default_value='True',
+        DeclareLaunchArgument('scenario_status', default_value='False',
                               description='Wether to execute scenario status'),
         DeclareLaunchArgument('log_level', default_value='info',
                               description='Log level for scenario execution'),

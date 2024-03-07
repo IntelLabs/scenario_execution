@@ -122,7 +122,8 @@ Record a ROS bag, stored in directory ``output_dir`` defined by command-line par
 """""""""""""""
 Wait for specific output in ROS log (i.e. `/rosout` topic). If any of the entries within ``values`` the action succeeds.
 
-- ``values: list of string``: list of strings to check for.
+- ``module_name: string``: if specified, a matching message must also match the module name (default: empty)
+- ``values: list of string``: list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
 
 ``differential_drive_robot.init_nav2()``
 """"""""""""""""""""""""""""""""""""""""
