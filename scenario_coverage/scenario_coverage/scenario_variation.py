@@ -23,14 +23,14 @@ import yaml
 
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.model.model_resolver import resolve_internal_model
-from scenario_execution_base.model.types import RelationExpression, ListExpression, print_tree, serialize
+from scenario_execution_base.model.types import RelationExpression, ListExpression, BehaviorInvocation, print_tree, serialize
 from scenario_execution_base.utils.logging import Logger
 
 
 class ScenarioVariation(object):
 
     def __init__(self, output_dir, scenario, log_model, debug) -> None:
-        self.logger = Logger('scenario_variation')
+        self.logger = Logger('scenario_variation', )
         self.output_dir = output_dir
         self.scenario = scenario
         self.log_model = log_model
@@ -45,7 +45,7 @@ class ScenarioVariation(object):
         for child in list_expression.get_children():
             variation = deepcopy(base_element)
             variation.set_children(child)
-            variations.append(variation)
+            variations.append((variation, child))
         return variations
 
     def run(self) -> bool:
@@ -80,17 +80,35 @@ class ScenarioVariation(object):
                     return elem
         return None
 
+    def get_element_fully_qualified_name(self, element):
+        def get_name(elem):
+            if elem.name:
+                return elem.name
+            else:
+                name = elem.__class__.__name__
+                if elem.has_siblings():
+                    idx = list(elem.get_parent().get_children()).index(elem)
+                    name += f"[{idx}]"
+                return name
+        
+        fqn = get_name(element)
+        tmp = element.get_parent()
+        while tmp:
+            fqn = get_name(tmp) + "." + fqn
+            tmp = tmp.get_parent()
+        return fqn
+                
     def generate_concrete_models(self, model):
-        models = [model]
+        models = [(model, [])] # model and variation description as tuple
         while True:
             # The following loop always looks at the first element in models.
             # If it contains a variation_element the element is removed and the
             # resulting models are appended at the back.
-            variation_element = self.get_next_variation_element(models[0])
+            variation_element = self.get_next_variation_element(models[0][0])
             if variation_element is None:
-                print("No further variation")
+                self.logger.debug("No further variation")
                 return models
-            print(f"Creating models for variation model {variation_element}")
+            self.logger.info(f"Creating models for variation model {variation_element}")
             # remove model with variation from list
             model = models[0]
             models.remove(model)
@@ -102,26 +120,31 @@ class ScenarioVariation(object):
             # set resolved variations in copies of original model
             variations = self.get_variations(variation_element)
             for variation in variations:
-                parent.set_children(variation)
+                parent.set_children(variation[0])
                 variation_model = deepcopy(model)
+                description = f"{self.get_element_fully_qualified_name(variation[0])}=={variation[1].get_resolved_value()}"
+                variation_model[1].append(description)
                 models.append(variation_model)
-                parent.delete_child(variation)
+                parent.delete_child(variation[0])
 
     def save_resulting_scenarios(self, models):
         idx = 0
         file_path = os.path.join(self.output_dir, os.path.splitext(os.path.basename(self.scenario))[0])
         for model in models:
-            print("-----------------")
-            test_resolve = deepcopy(model)
-            serialize_data = serialize(model)['CompilationUnit']['_children']
+            self.logger.debug("-----------------")
+            test_resolve = deepcopy(model[0])
+            serialize_data = serialize(model[0])['CompilationUnit']['_children']
             success = resolve_internal_model(test_resolve, self.logger, False)
             if not success:
-                print(f"Error: model is not resolvable.")
+                self.logger.error(f"Error: model is not resolvable.")
                 return False
-            print_tree(model, self.logger)
+            if self.debug:
+                print_tree(model[0], self.logger)
             filename = file_path + str(idx) + '.sce'
-            print(f"Storing model in {filename}")
+            self.logger.info(f"Storing model in {filename}")
             with open(filename, 'w') as output:
+                for desc in model[1]:
+                    output.write(f"#{desc}\n")
                 yaml.safe_dump(serialize_data, output, sort_keys=False)
             idx += 1
         return True
