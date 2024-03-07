@@ -56,7 +56,7 @@ Add the following entry to the "configurations" element within the previously cr
                "program": "./install/scenario_execution/lib/scenario_execution/scenario_execution",
                "console": "integratedTerminal",
                "cwd": "${workspaceFolder}",
-               "args": ["-o", "TEST_SCENARIO.osc"],
+               "args": ["-l", "TEST_SCENARIO.osc"],
            }
 
 Create an `.env` file by executing:
