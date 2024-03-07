@@ -21,7 +21,7 @@ def combine_xml_files(input_dir, output_dir):
     combined_root.set("time", str(total_time))
     
     # Convert combined_root to a string and replace '><' with '>\n<'
-    combined_str = ET.tostring(combined_root, encoding="utf-8", method="xml").decode("utf-8").replace('><', '>\n<')
+    combined_str = ET.tostring(combined_root, encoding="utf-8", method="xml", xml_declaration=True).decode("utf-8").replace('><', '>\n<')
     
     # Write the combined XML to a file with proper indentation
     with open(output_dir, "wb") as combined_file:
