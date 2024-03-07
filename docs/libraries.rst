@@ -123,7 +123,8 @@ Record a ROS bag.
 """""""""""""""
 Wait for specific output in ROS log (i.e. `/rosout` topic).
 
-- ``values: string``: string or list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
+- ``module_name: string``: string
+- ``values: string``: list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
 
 ``differential_drive_robot.init_nav2()``
 """"""""""""""""""""""""""""""""""""""""

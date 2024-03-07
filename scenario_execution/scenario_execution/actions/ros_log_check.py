@@ -26,7 +26,7 @@ class RosLogCheck(py_trees.behaviour.Behaviour):
     Class for scanning the ros log for specific content
     """
 
-    def __init__(self, name, values: list):
+    def __init__(self, name, values: list, module_name):
         super().__init__(name)
         if not isinstance(values, list):
             raise TypeError(f'Value needs to be list of strings, got {type(values)}.')
@@ -36,6 +36,7 @@ class RosLogCheck(py_trees.behaviour.Behaviour):
         self.subscriber = None
         self.node = None
         self.found = False
+        self.module_name = module_name
 
     def setup(self, **kwargs):
         """
@@ -75,8 +76,9 @@ class RosLogCheck(py_trees.behaviour.Behaviour):
             return Status.RUNNING
 
     def _callback(self, msg):
-        for val in self.values:
-            if val in msg.msg:
-                self.feedback_message = f"Found string '{val}' in '{msg.msg}'"  # pylint: disable= attribute-defined-outside-init
-                self.found = True
-                break
+        if self.module_name == msg.name:
+            for val in self.values:
+                if val in msg.msg:
+                    self.feedback_message = f"Found string '{val}' in '{msg.msg}'"  # pylint: disable= attribute-defined-outside-init
+                    self.found = True
+                    break

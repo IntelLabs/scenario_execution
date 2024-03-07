@@ -103,6 +103,7 @@ action record_bag:
 
 action log_check:
     # Check the log for specific output
+    module_name: string
     values: list of string # string to check for. If found, action succeeds
 
 action differential_drive_robot.init_nav2:
