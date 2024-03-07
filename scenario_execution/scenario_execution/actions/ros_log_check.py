@@ -79,6 +79,8 @@ class RosLogCheck(py_trees.behaviour.Behaviour):
             return Status.RUNNING
 
     def _callback(self, msg):
+        if self.found is None:
+            return
         if msg.name == self.node.get_name():  # skip own logs
             return
 
@@ -88,6 +90,5 @@ class RosLogCheck(py_trees.behaviour.Behaviour):
         for val in self.values:
             if val in msg.msg:
                 self.feedback_message = f"Found string '{val}' in '{msg}'"  # pylint: disable= attribute-defined-outside-init
-                if self.found is False:
-                    self.found = True
+                self.found = True
                 break
