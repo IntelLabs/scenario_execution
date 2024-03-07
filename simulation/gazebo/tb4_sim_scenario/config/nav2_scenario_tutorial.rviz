@@ -23,8 +23,6 @@ Panels:
     Splitter Ratio: 0.5
   - Class: nav2_rviz_plugins/Navigation 2
     Name: Navigation 2
-  - Class: scenario_execution_rviz/Tree View
-    Name: Tree View
   - Class: scenario_execution_rviz/Scenario View
     Name: Scenario View
 Visualization Manager:
@@ -988,8 +986,6 @@ Window Geometry:
   Selection:
     collapsed: false
   Tool Properties:
-    collapsed: false
-  Tree View:
     collapsed: false
   Views:
     collapsed: true
