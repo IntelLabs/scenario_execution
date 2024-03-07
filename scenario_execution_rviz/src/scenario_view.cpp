@@ -189,4 +189,5 @@ void ScenarioView::requestBtPublishing() {
 } // end namespace scenario_execution_rviz
 
 #include <pluginlib/class_list_macros.hpp>
-PLUGINLIB_EXPORT_CLASS(scenario_execution_rviz::ScenarioView, rviz_common::Panel)
+PLUGINLIB_EXPORT_CLASS(scenario_execution_rviz::ScenarioView,
+                       rviz_common::Panel)
