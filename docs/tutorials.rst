@@ -326,7 +326,7 @@ Now, lets try to run this scenario. To do this, first build Packages ``scenario_
 
 .. code-block:: bash
 
-    scenario_variation -l examples/example_scenario_variation/example_scenario_variation.osc
+    scenario_variation examples/example_scenario_variation/example_scenario_variation.osc
 
 In the command mentioned above we passed the scenario file as the parameter. You can also specify the output directory for the scenario files using the ``-t`` option. If not specified, the default folder ``out`` will be created in the current working directory.
 

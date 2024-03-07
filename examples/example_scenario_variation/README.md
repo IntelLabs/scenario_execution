@@ -17,7 +17,7 @@ Now, run the following commands one by one to launch the scenario:
 First
 
 ```bash
-scenario_variation -l examples/example_scenario_variation/example_scenario_variation.osc
+scenario_variation examples/example_scenario_variation/example_scenario_variation.osc
 ```
 Second
 

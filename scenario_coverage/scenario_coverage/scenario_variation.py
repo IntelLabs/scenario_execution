@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 # Copyright (C) 2024 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,8 +15,6 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-
-#! /usr/bin/env python3
 
 import os
 import sys
