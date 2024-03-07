@@ -17,7 +17,7 @@ Now, run the following commands one by one to launch the scenario:
 First
 
 ```bash
-ros2 run scenario_coverage scenario_variation -o examples/example_scenario_variation/example_scenario_variation.osc
+ros2 run scenario_coverage scenario_variation -l examples/example_scenario_variation/example_scenario_variation.osc
 ```
 Second
 
