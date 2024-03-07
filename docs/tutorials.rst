@@ -326,7 +326,7 @@ Now, lets try to run this scenario. To do this, first build Packages ``scenario_
 
 .. code-block:: bash
 
-    ros2 run scenario_coverage scenario_variation -o examples/example_scenario_variation/example_scenario_variation.osc
+    scenario_variation examples/example_scenario_variation/example_scenario_variation.osc
 
 In the command mentioned above we passed the scenario file as the parameter. You can also specify the output directory for the scenario files using the ``-t`` option. If not specified, the default folder ``out`` will be created in the current working directory.
 
@@ -334,14 +334,14 @@ In the command mentioned above we passed the scenario file as the parameter. You
 
 .. code-block:: bash
 
-    python scenario_coverage/scenario_coverage/scenario_batch_execution.py -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} test_output:={JUNITXML}
+    scenario_batch_execution -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
 
 Let's break down this command.
-In the first part we're using python to run the Python file ``scenario_batch_execution``. This Python file requires the following parameters to execute.
+In the first part we run the executable ``scenario_batch_execution``. This requires the following parameters to execute.
 
     1. Directory where the scenario files ``.sce`` were saved as the input option ``-i``.
     2. Directory where the output ``log`` and ``xml`` files will be saved as the output option ``-o``.
-    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} test_output:={JUNITXML}``.
+    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}``.
 
 
 Finally, The output of the above command will display two values ``foo`` and ``bar`` on the terminal along with the success message.
