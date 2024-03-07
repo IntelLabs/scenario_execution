@@ -87,3 +87,27 @@ scenario test_run_external_process:
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()
         self.assertTrue(ret)
+
+    def test_multi_element_command(self):
+        scenario_content = """
+import osc.standard
+import osc.helpers
+
+scenario test_run_external_process:
+    do parallel:
+        serial:
+            run_external_process('sleep 2')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            time_out_shutdown: emit fail
+"""
+        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertEqual(errors, 0)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        self.assertIsNotNone(model)
+        scenarios = create_py_tree(model, self.parser.logger)
+        self.assertIsNotNone(scenarios)
+        self.scenario_execution.scenarios = scenarios
+        ret = self.scenario_execution.run()
+        self.assertTrue(ret)
