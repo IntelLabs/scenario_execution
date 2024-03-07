@@ -1,8 +1,7 @@
 import osc.ros
 
 scenario nav2_simulation_fault_injection:
-    turtlebot4: differential_drive_robot with:
-        keep(it.model == 'topic:///robot_description')
+    turtlebot4: differential_drive_robot
     do parallel:
         test_drive: serial:
             turtlebot4.init_nav2() with:
