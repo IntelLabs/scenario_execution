@@ -170,7 +170,7 @@ class ModelElement(object):
 
     def delete_child(self, child):
         self.__children.remove(child)
-        
+
     def has_siblings(self):
         if self.get_parent():
             return self.get_parent().get_child_count() > 1

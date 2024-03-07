@@ -90,16 +90,16 @@ class ScenarioVariation(object):
                     idx = list(elem.get_parent().get_children()).index(elem)
                     name += f"[{idx}]"
                 return name
-        
+
         fqn = get_name(element)
         tmp = element.get_parent()
         while tmp:
             fqn = get_name(tmp) + "." + fqn
             tmp = tmp.get_parent()
         return fqn
-                
+
     def generate_concrete_models(self, model):
-        models = [(model, [])] # model and variation description as tuple
+        models = [(model, [])]  # model and variation description as tuple
         while True:
             # The following loop always looks at the first element in models.
             # If it contains a variation_element the element is removed and the
