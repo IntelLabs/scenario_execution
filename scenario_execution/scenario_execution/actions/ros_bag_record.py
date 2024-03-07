@@ -57,7 +57,7 @@ class RosBagRecord(RunExternalProcess):
         """
         if "output_dir" not in kwargs:
             raise ValueError("output_dir not defined.")
-        
+
         if kwargs['output_dir']:
             if not os.path.exists(kwargs['output_dir']):
                 raise ValueError(

@@ -24,6 +24,7 @@ from copy import deepcopy
 import signal
 import shutil
 
+
 class ScenarioBatchExecution(object):
 
     def __init__(self, args) -> None:
@@ -74,7 +75,7 @@ class ScenarioBatchExecution(object):
 
         for scenario in self.scenarios:
             output_file_path = os.path.join(self.output_dir, os.path.splitext(os.path.basename(scenario))[0])
-            
+
             if not os.path.isdir(output_file_path):
                 os.mkdir(output_file_path)
 
