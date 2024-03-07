@@ -40,6 +40,7 @@ setup(
     entry_points={
         'console_scripts': [
             'scenario_variation = scenario_coverage.scenario_variation:main',
+            'scenario_batch_execution = scenario_coverage.scenario_batch_execution:main',
         ],
     },
 )
