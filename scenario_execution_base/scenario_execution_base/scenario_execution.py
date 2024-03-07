@@ -54,14 +54,14 @@ class ScenarioExecution(object):
                  log_model: bool,
                  live_tree: bool,
                  scenario: str,
-                 test_output: str,
+                 output_dir: str,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_tock_period: float = 0.1) -> None:
         self.debug = debug
         self.log_model = log_model
         self.live_tree = live_tree
         self.scenario = scenario
-        self.test_output = test_output
+        self.output_dir = output_dir
         self.logger = self._get_logger()
 
         if self.debug:
@@ -210,8 +210,8 @@ class ScenarioExecution(object):
         self.results.append(result)
 
     def report_results(self):
-        if self.test_output and self.results:
-            self.logger.info(f"Writing results to {self.test_output}...")
+        if self.output_dir and self.results:
+            self.logger.info(f"Writing results to {self.output_dir}...")
             failures = 0
             overall_time = timedelta(0)
             for result in self.results:
@@ -219,7 +219,7 @@ class ScenarioExecution(object):
                     failures += 1
                 overall_time += result[4]
             try:
-                with open(self.test_output, 'w') as out:
+                with open(self.output_dir, 'w') as out:
                     out.write('<?xml version="1.0" encoding="utf-8"?>\n')
                     out.write(
                         f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')
@@ -230,7 +230,7 @@ class ScenarioExecution(object):
                         out.write(f'  </testcase>\n')
                     out.write("</testsuite>\n")
             except Exception as e:  # pylint: disable=broad-except
-                self.logger.error(f"Could not write results to {self.test_output}: {e}")
+                self.logger.error(f"Could not write results to {self.output_dir}: {e}")
 
     def pre_tick_handler(self, behaviour_tree):
         """
@@ -299,7 +299,7 @@ def main():
                                            log_model=args.log_model,
                                            live_tree=args.live_tree,
                                            scenario=args.scenario,
-                                           test_output=args.test_output)
+                                           output_dir=args.output_dir)
 
     result = scenario_execution.parse()
     if result:
