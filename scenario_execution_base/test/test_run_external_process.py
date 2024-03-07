@@ -88,7 +88,6 @@ scenario test_run_external_process:
         ret = self.scenario_execution.run()
         self.assertTrue(ret)
 
-    @unittest.skip(reason="requires fix")
     def test_multi_element_command(self):
         scenario_content = """
 import osc.standard
