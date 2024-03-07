@@ -24,6 +24,8 @@ from threading import Thread
 from collections import deque
 from copy import deepcopy
 import signal
+from defusedxml.ElementTree import parse
+import xml.etree.ElementTree as ET
 
 
 class ScenarioBatchExecution(object):
@@ -119,9 +121,46 @@ class ScenarioBatchExecution(object):
             if ret:
                 print("### Process failed.")
             else:
+                self.combine_result_report()
                 print("### Process finished successfully.")
-
         return True
+    
+    def combine_result_report(self):
+        total_time = 0.0
+        number_of_xml_files = 0
+        combined_root = ET.Element("combined_testsuite")
+        input_dir = self.output_dir
+        print(os.listdir(input_dir), 'os.listdir(input_dir)')
+        for filename in os.listdir(input_dir):
+                if filename.endswith(".xml"):
+                    number_of_xml_files+=1
+                    file_path = os.path.join(input_dir, filename)
+                    print(file_path)
+                    
+                    tree = parse(file_path)
+                    root = tree.getroot()
+                    time = float(root.attrib.get("time", 0))
+                    total_time += time
+                    # error = int(root.attrib.get("errors"))
+                    # number_of_errors += error
+                    # failure = int(root.attrib.get("failures"))
+                    # number_of_failures += failure
+
+                    testcase = root.find(".//testcase")
+                    combined_root.append(testcase)
+
+        # Update the time attribute of the combined root element
+        combined_root.set("time", str(total_time))
+        combined_root.set("errors", str(0))
+        combined_root.set("failures", str(0))
+        combined_root.set("tests", str(number_of_xml_files))
+        
+        # Convert combined_root to a string and replace '><' with '>\n<'
+        combined_str = ET.tostring(combined_root, encoding="utf-8", method="xml", xml_declaration=True).decode("utf-8").replace('><', '>\n<')
+        output_file = os.path.join(input_dir, "combined_results.xml")
+
+        with open(output_file, "wb") as combined_file:
+            combined_file.write(combined_str.encode("utf-8"))
 
 
 def main():

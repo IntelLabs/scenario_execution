@@ -23,7 +23,6 @@ import py_trees
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.utils.logging import Logger
 from scenario_execution_base.model.model_file_loader import ModelFileLoader
-import xml.etree.ElementTree as ET
 
 
 class LastSnapshotVisitor(py_trees.visitors.DisplaySnapshotVisitor):
@@ -234,39 +233,6 @@ class ScenarioExecution(object):
             except Exception as e:  # pylint: disable=broad-except
                 self.logger.error(f"Could not write results to {self.output_dir}: {e}")
 
-    def combine_result_report(self):
-        self.logger.info("combining the reports")
-        total_time = 0.0
-        combined_root = ET.Element("combined_testsuite")
-        input_dir = os.path.dirname(self.output_dir)
-        
-        for filename in os.listdir(input_dir):
-            if filename.endswith(".xml"):
-                file_path = os.path.join(input_dir, filename)
-                print(file_path)
-                
-                tree = ET.parse(file_path)
-                root = tree.getroot()
-                time = float(root.attrib.get("time", 0))
-                total_time += time
-                combined_root.append(root)
-
-        # Update the time attribute of the combined root element
-        combined_root.set("time", str(self.total_time))
-        
-        # Convert combined_root to a string and replace '><' with '>\n<'
-        combined_str = ET.tostring(combined_root, encoding="utf-8", method="xml", xml_declaration=True).decode("utf-8").replace('><', '>\n<')
-
-        
-        output_file_path = os.path.join(input_dir, 'combined_results.xml')
-        
-        # Write the combined XML to a file with proper indentation
-        with open(output_file_path, "wb") as combined_file:
-            combined_file.write(combined_str.encode("utf-8"))
-        
-        self.logger.info(f"Combined XML written to {output_file_path}")
-
-
     def pre_tick_handler(self, behaviour_tree):
         """
         Things to do before a round of ticking
@@ -340,7 +306,6 @@ def main():
     if result:
         result = scenario_execution.run()
     scenario_execution.report_results()
-    scenario_execution.combine_result_report()
     if result:
         sys.exit(0)
     else:
