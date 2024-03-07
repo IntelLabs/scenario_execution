@@ -123,7 +123,7 @@ Record a ROS bag.
 """""""""""""""
 Wait for specific output in ROS log (i.e. `/rosout` topic).
 
-- ``module_name: string``: if a module_name is specified a matching message must also match a module name (default: ``''``)
+- ``module_name: string``: if specified, a matching message must also match the module name (default: empty)
 - ``values: list of string``: list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
 
 ``differential_drive_robot.init_nav2()``
