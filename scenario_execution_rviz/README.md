@@ -7,7 +7,7 @@ The `scenario_execution_rviz` package provides [rviz](https://github.com/ros2/rv
 The Scenario View panel shows the behavior tree of the running scenario. The panel is accessible under Panels :arrow_right: Add new panel :arrow_right: scenario_execution_rviz :arrow_right: ScenarioView.
 The following image shows a snapshot of the rviz plugin during a run of the [example_nav2](../examples/example_nav2/example_nav2.osc) scenario:
 
-![tree_example.png](../docs/images/tree_example.png)
+![tree_example.png](../docs/images/scenario_view_example.png)
 
 ### Known Issues
 
