@@ -32,7 +32,7 @@ def generate_launch_description():
     log_level = LaunchConfiguration('log_level')
     scenario_execution = LaunchConfiguration('scenario_execution')
     scenario_status = LaunchConfiguration('scenario_status')
-    test_output = LaunchConfiguration('test_output')
+    output_dir = LaunchConfiguration('output_dir')
 
     return LaunchDescription([
         DeclareLaunchArgument('scenario', description='Scenario file to execute'),
@@ -47,7 +47,7 @@ def generate_launch_description():
                               description='Wether to execute scenario status'),
         DeclareLaunchArgument('log_level', default_value='info',
                               description='Log level for scenario execution'),
-        DeclareLaunchArgument('test_output', description='Test output file', default_value=''),
+        DeclareLaunchArgument('output_dir', description='Test output file', default_value=''),
 
         Node(
             package='scenario_execution',
@@ -61,7 +61,7 @@ def generate_launch_description():
                 'debug': debug,
                 'live_tree': live_tree,
                 'log_model': log_model,
-                'test_output': test_output,
+                'output_dir': output_dir,
                 'scenario': scenario
             }],
             on_exit=Shutdown()),

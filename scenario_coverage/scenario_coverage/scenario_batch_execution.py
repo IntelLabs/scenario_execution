@@ -53,7 +53,7 @@ class ScenarioBatchExecution(object):
                 launch_command[i] = launch_command[i].replace('{SCENARIO}', scenario_name)
                 scenario_replaced = True
             if "{OUTPUT_DIR}" in launch_command[i]:
-                launch_command[i] = launch_command[i].replace('{OUTPUT_DIR}', output_dir_replaced)
+                launch_command[i] = launch_command[i].replace('{OUTPUT_DIR}', output_dir)
                 output_dir_replaced = True
         if scenario_replaced and output_dir_replaced:
             return launch_command
@@ -128,7 +128,7 @@ def main():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--scenario-dir', type=str, help='Directory containing the scenarios')
-    parser.add_argument('-l', '--output-dir', type=str, help='Directory containing the output', default='out')
+    parser.add_argument('-o', '--output-dir', type=str, help='Directory containing the output', default='out')
     parser.add_argument('launch_command', nargs='+')
     args = parser.parse_args(sys.argv[1:])
 
