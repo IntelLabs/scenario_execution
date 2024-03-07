@@ -111,7 +111,7 @@ Set a parameter of a node.
 ``record_bag()``
 """"""""""""""""
 
-Record a ros bag, stored in output_dir defined by command-line parameter (default: '.')
+Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: '.')
 
 - ``topics: list of string``: List of topics to capture
 - ``timestamp_suffix: bool``: Add a timestamp suffix to output directory name (default: ``true``)
