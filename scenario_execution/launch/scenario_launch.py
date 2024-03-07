@@ -47,7 +47,7 @@ def generate_launch_description():
                               description='Wether to execute scenario status'),
         DeclareLaunchArgument('log_level', default_value='info',
                               description='Log level for scenario execution'),
-        DeclareLaunchArgument('output_dir', description='Test output file', default_value=''),
+        DeclareLaunchArgument('output_dir', description='Output directory', default_value=''),
 
         Node(
             package='scenario_execution',
