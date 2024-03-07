@@ -63,7 +63,6 @@ class ScenarioExecution(object):
         self.scenario = scenario
         self.output_dir = output_dir
         self.logger = self._get_logger()
-        self.total_time = 0.0
 
         if self.debug:
             py_trees.logging.level = py_trees.logging.Level.DEBUG
