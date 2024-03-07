@@ -8,7 +8,6 @@ scenario nav2_simulation_fault_injection:
             turtlebot4.init_nav2() with:
                 keep(it.initial_pose.position == position_3d(x: 0.0m, y: 0.0m))
             record_bag() with:
-                keep(it.destination_dir == '/transfer')
                 keep(it.topics == '/scenario_status /robot_pose_loc /robot_pose_gt /cmd_vel /amcl_pose /odom /tf /tf_static') # whitespace-separated list of topics
             set_node_parameter() with:
                 keep(it.node_name == 'laserscan_modification')

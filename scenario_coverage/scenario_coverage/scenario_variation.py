@@ -29,9 +29,9 @@ from scenario_execution_base.utils.logging import Logger
 
 class ScenarioVariation(object):
 
-    def __init__(self, target_dir, scenario, log_model, debug) -> None:
+    def __init__(self, output_dir, scenario, log_model, debug) -> None:
         self.logger = Logger('scenario_variation')
-        self.target_dir = target_dir
+        self.output_dir = output_dir
         self.scenario = scenario
         self.log_model = log_model
         self.debug = debug
@@ -109,7 +109,7 @@ class ScenarioVariation(object):
 
     def save_resulting_scenarios(self, models):
         idx = 0
-        file_path = os.path.join(self.target_dir, os.path.splitext(os.path.basename(self.scenario))[0])
+        file_path = os.path.join(self.output_dir, os.path.splitext(os.path.basename(self.scenario))[0])
         for model in models:
             print("-----------------")
             test_resolve = deepcopy(model)
@@ -134,14 +134,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', action='store_true', help='debugging output')
     parser.add_argument('-l', '--log-model', action='store_true', help='Produce tree output of parsed model content')
-    parser.add_argument('-t', '--target-dir', type=str, help='Target directory for concrete scenarios', default='out')
+    parser.add_argument('-o', '--output-dir', type=str, help='Output directory for concrete scenarios', default='out')
     parser.add_argument('scenario', type=str, help='abstract scenario file')
     args = parser.parse_args(sys.argv[1:])
 
-    if not os.path.isdir(args.target_dir):
-        os.mkdir(args.target_dir)
+    if not os.path.isdir(args.output_dir):
+        os.mkdir(args.output_dir)
 
-    scenario_variation = ScenarioVariation(args.target_dir, args.scenario, args.log_model, args.debug)
+    scenario_variation = ScenarioVariation(args.output_dir, args.scenario, args.log_model, args.debug)
     if scenario_variation.run():
         sys.exit(0)
     else:

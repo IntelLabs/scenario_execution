@@ -63,7 +63,7 @@ Wait for a specific data on a ROS topic.
 
 Wait for topics to get available (i.e. publisher gets available).
 
-- ``topics: string``: Whitespace-separated list of topics
+- ``topics: list of string``: List of topics to wait for
 
 
 ``check_data()``
@@ -111,10 +111,9 @@ Set a parameter of a node.
 ``record_bag()``
 """"""""""""""""
 
-Record a ROS bag.
+Record a ros bag, stored in output_dir defined by command-line parameter (default: '.')
 
-- ``destination_dir: string``: The destination for the ROS bag (if empty, the current directory is used)
-- ``topics: string``: Whitespace-separated list of topics to capture
+- ``topics: list of string``: List of topics to capture
 - ``timestamp_suffix: bool``: Add a timestamp suffix to output directory name (default: ``true``)
 - ``hidden_topics: bool``: Whether to record hidden topics (default: ``false``)
 - ``storage: string``: Storage type to use (empty string: use ROS bag record default)

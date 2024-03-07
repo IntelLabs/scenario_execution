@@ -18,7 +18,7 @@
 import py_trees
 from enum import Enum
 
-from scenario_execution_base.actions import RunExternalProcess
+from scenario_execution_base.actions.run_external_process import RunExternalProcess
 
 
 class DeleteActionState(Enum):

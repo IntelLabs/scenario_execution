@@ -334,14 +334,14 @@ In the command mentioned above we passed the scenario file as the parameter. You
 
 .. code-block:: bash
 
-    python scenario_coverage/scenario_coverage/scenario_batch_execution.py -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} test_output:={JUNITXML}
+    python scenario_coverage/scenario_coverage/scenario_batch_execution.py -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={JUNITXML}
 
 Let's break down this command.
 In the first part we're using python to run the Python file ``scenario_batch_execution``. This Python file requires the following parameters to execute.
 
     1. Directory where the scenario files ``.sce`` were saved as the input option ``-i``.
     2. Directory where the output ``log`` and ``xml`` files will be saved as the output option ``-o``.
-    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} test_output:={JUNITXML}``.
+    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={JUNITXML}``.
 
 
 Finally, The output of the above command will display two values ``foo`` and ``bar`` on the terminal along with the success message.
