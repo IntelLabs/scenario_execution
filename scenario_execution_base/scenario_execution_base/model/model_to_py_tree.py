@@ -235,7 +235,7 @@ class ModelToPyTree(object):
                 log_name = final_args["name"]
             else:
                 log_name = type(node).__name__
-            self.logger.info(
+            self.logger.debug(
                 f"Instantiate action '{log_name}', plugin '{behavior_name}' with:\nArguments: {final_args}")
             try:
                 instance = behavior_cls(**final_args)
