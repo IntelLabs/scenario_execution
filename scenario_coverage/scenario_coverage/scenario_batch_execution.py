@@ -78,10 +78,7 @@ class ScenarioBatchExecution(object):
         for scenario in self.scenarios:
             output_file_path = os.path.join(self.output_dir, os.path.splitext(os.path.basename(scenario))[0])
 
-            if not os.path.isdir(output_file_path):
-                os.mkdir(output_file_path)
-
-            launch_command = self.get_launch_command(scenario, output_file_path)
+            launch_command = self.get_launch_command(scenario, output_file_path + '_result.xml')
             output = deque()
             log_cmd = " ".join(launch_command)
             print(f"### For scenario {scenario}, executing process: '{log_cmd}'")
@@ -116,9 +113,8 @@ class ScenarioBatchExecution(object):
             ret = process.returncode
 
             print(f"### Storing results in {self.output_dir}...")
-            shutil.copyfile(scenario, os.path.join(output_file_path, 'scenario.sce'))
 
-            with open(os.path.join(output_file_path, 'log.txt'), 'w') as out:
+            with open(output_file_path + '.log', 'w') as out:
                 for line in output:
                     out.write(line + '\n')
             if ret:
