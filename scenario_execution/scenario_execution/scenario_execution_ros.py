@@ -39,13 +39,13 @@ class ROSScenarioExecution(ScenarioExecution):
         log_model = args.log_model
         live_tree = args.live_tree
         scenario = args.scenario
-        test_output = args.test_output
+        output_dir = args.output_dir
 
         # override commandline by ros parameters
         self.node.declare_parameter('debug', False)
         self.node.declare_parameter('log_model', False)
         self.node.declare_parameter('live_tree', False)
-        self.node.declare_parameter('test_output', "")
+        self.node.declare_parameter('output_dir', "")
         self.node.declare_parameter('scenario', "")
 
         if self.node.get_parameter('debug').value:
@@ -56,9 +56,9 @@ class ROSScenarioExecution(ScenarioExecution):
             live_tree = self.node.get_parameter('live_tree').value
         if self.node.get_parameter('scenario').value:
             scenario = self.node.get_parameter('scenario').value
-        if self.node.get_parameter('test_output').value:
-            test_output = self.node.get_parameter('test_output').value
-        super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario=scenario, test_output=test_output)
+        if self.node.get_parameter('output_dir').value:
+            output_dir = self.node.get_parameter('output_dir').value
+        super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario=scenario, output_dir=output_dir)
 
     def _get_logger(self):
         """

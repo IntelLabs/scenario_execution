@@ -133,7 +133,7 @@ def main():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', action='store_true', help='debugging output')
-    parser.add_argument('-o', '--log-model', action='store_true', help='Produce tree output of parsed model content')
+    parser.add_argument('-l', '--log-model', action='store_true', help='Produce tree output of parsed model content')
     parser.add_argument('-t', '--target-dir', type=str, help='Target directory for concrete scenarios', default='out')
     parser.add_argument('scenario', type=str, help='abstract scenario file')
     args = parser.parse_args(sys.argv[1:])
