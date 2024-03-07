@@ -68,7 +68,7 @@ def deserialize(elem):
     return result
 
 
-class ModelElement(object):
+class ModelElement(object):  # pylint: disable=too-many-public-methods
     def __init__(self, name=""):
         self.__context = None  # For error logging only
         self.__line = None
