@@ -14,31 +14,31 @@
 //
 //  SPDX-License-Identifier: Apache-2.0
 
-#include "tree_view.h"
+#include "scenario_view.h"
 #include "indicator_widget.h"
 
 using std::placeholders::_1;
 
 namespace scenario_execution_rviz {
 
-TreeView::TreeView(QWidget *parent) : rviz_common::Panel(parent) {
+ScenarioView::ScenarioView(QWidget *parent) : rviz_common::Panel(parent) {
   QVBoxLayout *layout = new QVBoxLayout;
 
   QFormLayout *formLayout = new QFormLayout;
 
   QHBoxLayout *rowLayout = new QHBoxLayout;
-  mTreeView = new QTreeWidget();
-  mTreeView->setColumnCount(3);
-  mTreeView->setColumnHidden(2, true);
-  mTreeView->setColumnWidth(0, 200);
-  mTreeView->setColumnWidth(1, 200);
+  mScenarioView = new QTreeWidget();
+  mScenarioView->setColumnCount(3);
+  mScenarioView->setColumnHidden(2, true);
+  mScenarioView->setColumnWidth(0, 200);
+  mScenarioView->setColumnWidth(1, 200);
 
   QStringList columnNames;
   columnNames << "Action"
               << "Feedback";
-  mTreeView->setHeaderLabels(columnNames);
+  mScenarioView->setHeaderLabels(columnNames);
   collapsedStates = new QMap<QString, bool>;
-  rowLayout->addWidget(mTreeView);
+  rowLayout->addWidget(mScenarioView);
 
   formLayout->addRow(rowLayout);
 
@@ -47,9 +47,9 @@ TreeView::TreeView(QWidget *parent) : rviz_common::Panel(parent) {
   setLayout(layout);
 
   // user input
-  connect(mTreeView, SIGNAL(itemCollapsed(QTreeWidgetItem *)), this,
+  connect(mScenarioView, SIGNAL(itemCollapsed(QTreeWidgetItem *)), this,
           SLOT(handleItemCollapsed(QTreeWidgetItem *)));
-  connect(mTreeView, SIGNAL(itemExpanded(QTreeWidgetItem *)), this,
+  connect(mScenarioView, SIGNAL(itemExpanded(QTreeWidgetItem *)), this,
           SLOT(handleItemExpanded(QTreeWidgetItem *)));
 
   timer = new QTimer(this);
@@ -59,24 +59,24 @@ TreeView::TreeView(QWidget *parent) : rviz_common::Panel(parent) {
   qDebug() << "initialisation done";
 }
 
-void TreeView::onInitialize() {
+void ScenarioView::onInitialize() {
   _node = getDisplayContext()->getRosNodeAbstraction().lock()->get_raw_node();
 
   mBehaviorTreeSubscriber =
       _node->create_subscription<py_trees_ros_interfaces::msg::BehaviourTree>(
           "/bt_snapshot_rviz", 10,
-          std::bind(&TreeView::behaviorTreeChanged, this, _1));
+          std::bind(&ScenarioView::behaviorTreeChanged, this, _1));
 
   mOpenSnapshotStreamClient =
       _node->create_client<py_trees_ros_interfaces::srv::OpenSnapshotStream>(
           "/scenario_execution/snapshot_streams/open");
 }
 
-void TreeView::handleItemCollapsed(QTreeWidgetItem *collapsedItem) {
+void ScenarioView::handleItemCollapsed(QTreeWidgetItem *collapsedItem) {
   collapsedStates->insert(collapsedItem->text(2), false);
 }
 
-void TreeView::handleItemExpanded(QTreeWidgetItem *expandedItem) {
+void ScenarioView::handleItemExpanded(QTreeWidgetItem *expandedItem) {
   collapsedStates->insert(expandedItem->text(2), true);
 }
 
@@ -93,25 +93,25 @@ int searchBehavior(const QString *child_id,
   return childPosition;
 }
 
-void TreeView::behaviorTreeChanged(
+void ScenarioView::behaviorTreeChanged(
     const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr msg) {
   if (treeWidgetBuilt == false || msg->changed == true) {
     QList<QTreeWidgetItem *> items;
-    mTreeView->clear();
+    mScenarioView->clear();
     populateTree(items, msg);
-    mTreeView->insertTopLevelItems(0, items);
+    mScenarioView->insertTopLevelItems(0, items);
 
     // expand everything if its run forthe first time
     // else only expand already expanded item
     if (treeWidgetBuilt) {
       for (auto const &item : items) {
         if (collapsedStates->value(item->text(2))) {
-          mTreeView->expandItem(item);
+          mScenarioView->expandItem(item);
         }
       }
     } else {
       for (auto const &item : items) {
-        mTreeView->expandItem(item);
+        mScenarioView->expandItem(item);
       }
     }
 
@@ -128,7 +128,7 @@ void TreeView::behaviorTreeChanged(
   timer->start();
 }
 
-void TreeView::populateTree(
+void ScenarioView::populateTree(
     QList<QTreeWidgetItem *> &items,
     const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr msg) {
   QList<ConvertedBehavior *> mBehaviorList;
@@ -171,7 +171,7 @@ void TreeView::populateTree(
   }
 }
 
-void TreeView::requestBtPublishing() {
+void ScenarioView::requestBtPublishing() {
   if (!mOpenSnapshotStreamClient->wait_for_service(
           std::chrono::milliseconds(50))) {
     RCLCPP_WARN(
@@ -189,4 +189,5 @@ void TreeView::requestBtPublishing() {
 } // end namespace scenario_execution_rviz
 
 #include <pluginlib/class_list_macros.hpp>
-PLUGINLIB_EXPORT_CLASS(scenario_execution_rviz::TreeView, rviz_common::Panel)
+PLUGINLIB_EXPORT_CLASS(scenario_execution_rviz::ScenarioView,
+                       rviz_common::Panel)

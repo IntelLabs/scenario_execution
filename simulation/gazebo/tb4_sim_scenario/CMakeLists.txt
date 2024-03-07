@@ -11,7 +11,7 @@ find_package(ament_cmake REQUIRED)
 find_package(ros_ign_interfaces REQUIRED)
 
 install(
-  DIRECTORY launch params worlds urdf
+  DIRECTORY config launch params worlds urdf
   DESTINATION share/${PROJECT_NAME}
 )
 

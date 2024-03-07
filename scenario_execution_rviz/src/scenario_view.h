@@ -60,10 +60,10 @@ namespace scenario_execution_rviz {
 
 class IndicatorWidget;
 
-class TreeView : public rviz_common::Panel {
+class ScenarioView : public rviz_common::Panel {
   Q_OBJECT
 public:
-  TreeView(QWidget *parent = 0);
+  ScenarioView(QWidget *parent = 0);
 
 protected Q_SLOTS:
   void requestBtPublishing();
@@ -85,7 +85,7 @@ protected:
 
   rclcpp::Node::SharedPtr _node;
 
-  QTreeWidget *mTreeView;
+  QTreeWidget *mScenarioView;
   TreeModel *mTreeModel;
   bool treeWidgetBuilt = false;
   QTimer *timer;
