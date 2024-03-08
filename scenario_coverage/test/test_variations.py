@@ -123,49 +123,55 @@ scenario test:
         self.assertEqual(6, len(models))
 
         # Model 1
-        model = copy.deepcopy(models[0])
+        model = copy.deepcopy(models[0][0])
         ret = resolve_internal_model(model, Logger('test'), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
         self.assertEqual(value, {'param1': 'A1', 'param2': 'B1'})
+        self.assertEqual(len(models[0][1]), 2)
 
         # Model 2
-        model = copy.deepcopy(models[1])
+        model = copy.deepcopy(models[1][0])
         ret = resolve_internal_model(model, Logger('test'), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
         self.assertEqual(value, {'param1': 'A1', 'param2': 'B2'})
+        self.assertEqual(len(models[0][1]), 2)
 
         # Model 3
-        model = copy.deepcopy(models[2])
+        model = copy.deepcopy(models[2][0])
         ret = resolve_internal_model(model, Logger('test'), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
         self.assertEqual(value, {'param1': 'A1', 'param2': 'B3'})
+        self.assertEqual(len(models[0][1]), 2)
 
         # Model 4
-        model = copy.deepcopy(models[3])
+        model = copy.deepcopy(models[3][0])
         ret = resolve_internal_model(model, Logger('test'), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
         self.assertEqual(value, {'param1': 'A2', 'param2': 'B1'})
+        self.assertEqual(len(models[0][1]), 2)
 
         # Model 5
-        model = copy.deepcopy(models[4])
+        model = copy.deepcopy(models[4][0])
         ret = resolve_internal_model(model, Logger('test'), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
         self.assertEqual(value, {'param1': 'A2', 'param2': 'B2'})
+        self.assertEqual(len(models[0][1]), 2)
 
         # Model 6
-        model = copy.deepcopy(models[5])
+        model = copy.deepcopy(models[5][0])
         ret = resolve_internal_model(model, Logger('test'), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
         self.assertEqual(value, {'param1': 'A2', 'param2': 'B3'})
+        self.assertEqual(len(models[0][1]), 2)
