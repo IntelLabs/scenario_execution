@@ -33,6 +33,42 @@ def print_tree(elem, logger, whitespace=""):
             print_tree(child, logger, whitespace + "  ")
 
 
+def to_string(elem):
+    if isinstance(elem, (str, int, float, bool)):
+        return str(elem)
+    elif isinstance(elem, StringLiteral):
+        return elem.value
+    output = f"{elem.__class__.__name__}("
+    first = True
+    for attr in vars(elem):
+        if not attr.startswith('_') and attr != "iter":
+            attr_val = getattr(elem, attr)
+            if not attr_val:
+                continue
+            if first:
+                first = False
+            else:
+                output += ", "
+            output += attr
+
+            output += "=" + to_string(attr_val)
+    if elem.get_child_count():
+        if not first:
+            output += ", "
+        output += "children=["
+        first = True
+    for child in elem.get_children():
+        if first:
+            first = False
+        else:
+            output += ", "
+        output += to_string(child)
+    if elem.get_child_count():
+        output += "]"
+    output += ")"
+    return output
+
+
 def serialize(elem):
     result = {}
     children = elem.get_children()

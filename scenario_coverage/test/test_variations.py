@@ -65,7 +65,7 @@ scenario test:
         self.assertEqual(2, len(models))
 
         # Model 1
-        model = copy.deepcopy(models[0])
+        model = copy.deepcopy(models[0][0])
         ret = resolve_internal_model(model, Logger('test'), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[3]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
@@ -73,7 +73,7 @@ scenario test:
         self.assertEqual(value, {'param1': {'member1': 'test1', 'member2': {'base1': 'foo1', 'base2': 'predefined'}}})
 
         # Model 2
-        model = copy.deepcopy(models[1])
+        model = copy.deepcopy(models[1][0])
         ret = resolve_internal_model(model, Logger('test'), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[3]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]

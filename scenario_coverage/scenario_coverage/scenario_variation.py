@@ -25,7 +25,7 @@ import yaml
 
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.model.model_resolver import resolve_internal_model
-from scenario_execution_base.model.types import RelationExpression, ListExpression, print_tree, serialize
+from scenario_execution_base.model.types import RelationExpression, ListExpression, FieldAccessExpression, Expression, print_tree, serialize, to_string
 from scenario_execution_base.utils.logging import Logger
 
 
@@ -124,8 +124,9 @@ class ScenarioVariation(object):
             for variation in variations:
                 parent.set_children(variation[0])
                 variation_model = deepcopy(model)
-                description = f"{self.get_element_fully_qualified_name(variation[0])}=={variation[1].get_resolved_value()}"
-                variation_model[1].append(description)
+
+                fqn = self.get_element_fully_qualified_name(variation[0])
+                variation_model[1].append((fqn, variation[0]))
                 models.append(variation_model)
                 parent.delete_child(variation[0])
 
@@ -134,19 +135,33 @@ class ScenarioVariation(object):
         file_path = os.path.join(self.output_dir, os.path.splitext(os.path.basename(self.scenario))[0])
         for model in models:
             self.logger.debug("-----------------")
-            test_resolve = deepcopy(model[0])
             serialize_data = serialize(model[0])['CompilationUnit']['_children']
-            success = resolve_internal_model(test_resolve, self.logger, False)
+            if self.debug:
+                print_tree(model[0], self.logger)
+            success = resolve_internal_model(model[0], self.logger, False)
             if not success:
                 self.logger.error(f"Error: model is not resolvable.")
                 return False
-            if self.debug:
-                print_tree(model[0], self.logger)
+
+            # create description
+            variation_descriptions = []
+            for descr, entry in model[1]:
+                if isinstance(entry, Expression):
+                    val = None
+                    for child in entry.get_children():
+                        if not isinstance(child, FieldAccessExpression):
+                            val = child
+                    if val is None:
+                        raise ValueError("Could not find value.")
+                    value_string = to_string(val)
+                else:
+                    raise ValueError("Can not write variation description")
+                variation_descriptions.append(f"{descr}=={value_string}")
             filename = file_path + str(idx) + '.sce'
             self.logger.info(f"Storing model in {filename}")
             with open(filename, 'w') as output:
-                for desc in model[1]:
-                    output.write(f"#{desc}\n")
+                for descr in variation_descriptions:
+                    output.write(f"#{descr}\n")
                 yaml.safe_dump(serialize_data, output, sort_keys=False)
             idx += 1
         return True
