@@ -1,16 +1,14 @@
 import osc.ros
 import osc.gazebo
 
-scenario nav2_simulation_nav_to_pose:
+scenario example_simulation:
     robot: differential_drive_robot
-    box: simulation_object
+    box: sim_object
     do parallel:
         test_drive: serial:
             robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
             parallel:
-                serial:
-                    robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
-                    robot.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+                robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
                 serial:
                     robot.tf_close_to(
                         reference_point: position_3d(x: 1.5m, y: -1.5m),
