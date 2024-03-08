@@ -14,16 +14,22 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+
+import os
 import unittest
 import rclpy
+import threading
 from scenario_execution import ROSScenarioExecution
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.model.model_to_py_tree import create_py_tree
 from scenario_execution_base.utils.logging import Logger
+from ament_index_python.packages import get_package_share_directory
 from antlr4.InputStream import InputStream
 
+os.environ["PYTHONUNBUFFERED"] = '1'
 
-class TestScenarioExecutionSuccess(unittest.TestCase):
+
+class TestScenarioExectionSuccess(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     @classmethod
@@ -34,24 +40,63 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
     def tearDownClass(cls):
         rclpy.shutdown()
 
-    def setUp(self) -> None:
+    def setUp(self):
+        self.received_msgs = []
+        self.node = rclpy.create_node('test_node')
+
+        self.executor = rclpy.executors.MultiThreadedExecutor()
+        self.executor.add_node(self.node)
+        self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
+        self.executor_thread.start()
+
+        self.callback_group = rclpy.callback_groups.ReentrantCallbackGroup()
+        self.srv = self.node.create_timer(1, self.callback)
+
+        self.scenario_dir = get_package_share_directory('scenario_execution')
         self.parser = OpenScenario2Parser(Logger('test'))
         self.scenario_execution = ROSScenarioExecution()
 
-    def test_failure(self):
-        scenario_content = """
-import osc.standard
-import osc.helpers
+    def tearDown(self):
+        self.node.destroy_node()
 
-scenario test_run_external_process:
+    def callback(self):
+        self.node.get_logger().info("ERROR")
+
+    def test_success(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_log_check:
     do parallel:
         serial:
-            run_external_process() with:
-                keep(it.command == 'false')
+            log_check(values: ['ERROR'])
             emit end
         time_out: serial:
             wait elapsed(10s)
-            time_out_shutdown: emit fail
+            emit fail
+"""
+        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertEqual(errors, 0)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        self.assertIsNotNone(model)
+        scenarios = create_py_tree(model, self.parser.logger)
+        self.assertIsNotNone(scenarios)
+        self.scenario_execution.scenarios = scenarios
+        ret = self.scenario_execution.run()
+        self.assertTrue(ret)
+
+    def test_timeout(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_log_check:
+    do parallel:
+        serial:
+            log_check(values: ['UNKNOWN'])
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
 """
         parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertEqual(errors, 0)
@@ -63,20 +108,18 @@ scenario test_run_external_process:
         ret = self.scenario_execution.run()
         self.assertFalse(ret)
 
-    def test_success(self):
+    def test_module_success(self):
         scenario_content = """
-import osc.standard
-import osc.helpers
+import osc.ros
 
-scenario test_run_external_process:
+scenario test_log_check:
     do parallel:
         serial:
-            run_external_process() with:
-                keep(it.command == 'true')
+            log_check(module_name: 'test_node', values: ['ERROR'])
             emit end
         time_out: serial:
-            wait elapsed(10s)
-            time_out_shutdown: emit fail
+            wait elapsed(3s)
+            emit fail
 """
         parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertEqual(errors, 0)
@@ -88,19 +131,18 @@ scenario test_run_external_process:
         ret = self.scenario_execution.run()
         self.assertTrue(ret)
 
-    def test_multi_element_command(self):
+    def test_module_timeout(self):
         scenario_content = """
-import osc.standard
-import osc.helpers
+import osc.ros
 
-scenario test_run_external_process:
+scenario test_log_check:
     do parallel:
         serial:
-            run_external_process('sleep 2')
+            log_check(module_name: 'UNKNOWN', values: ['ERROR'])
             emit end
         time_out: serial:
-            wait elapsed(10s)
-            time_out_shutdown: emit fail
+            wait elapsed(3s)
+            emit fail
 """
         parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertEqual(errors, 0)
@@ -110,4 +152,4 @@ scenario test_run_external_process:
         self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()
-        self.assertTrue(ret)
+        self.assertFalse(ret)

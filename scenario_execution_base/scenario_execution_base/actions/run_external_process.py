@@ -30,7 +30,7 @@ class RunExternalProcess(py_trees.behaviour.Behaviour):
 
     def __init__(self, name, command=None):
         super().__init__(name)
-        self.command = command
+        self.command = command.split(" ") if isinstance(command, str) else command
         self.executed = False
         self.process = None
         self.log_stdout_thread = None
