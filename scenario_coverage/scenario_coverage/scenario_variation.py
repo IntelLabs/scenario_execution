@@ -25,7 +25,7 @@ import yaml
 
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.model.model_resolver import resolve_internal_model
-from scenario_execution_base.model.types import RelationExpression, ListExpression, BehaviorInvocation, print_tree, serialize
+from scenario_execution_base.model.types import RelationExpression, ListExpression, print_tree, serialize
 from scenario_execution_base.utils.logging import Logger
 
 
