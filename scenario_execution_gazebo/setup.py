@@ -47,9 +47,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'scenario_execution.actions': [
-            'osc_object.spawn = scenario_execution_gazebo.actions.gazebo_spawn_actor:GazeboSpawnActor',
+            'sim_object.spawn = scenario_execution_gazebo.actions.gazebo_spawn_actor:GazeboSpawnActor',
             'actor_exists = scenario_execution_gazebo.actions.gazebo_actor_exists:GazeboActorExists',
-            'osc_object.delete = scenario_execution_gazebo.actions.gazebo_delete_actor:GazeboDeleteActor',
+            'sim_object.delete = scenario_execution_gazebo.actions.gazebo_delete_actor:GazeboDeleteActor',
             'wait_for_sim = scenario_execution_gazebo.actions.gazebo_wait_for_sim:GazeboWaitForSim',
         ],
         'scenario_execution.osc_libraries': [
