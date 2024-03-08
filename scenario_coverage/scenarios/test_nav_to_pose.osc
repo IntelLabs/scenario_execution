@@ -4,9 +4,7 @@ scenario nav2_simulation_nav_to_pose:
     robot: differential_drive_robot
     do parallel:
         test_drive: serial:
-            robot.init_nav2() with:
-                keep(it.initial_pose.position == position_3d(x: 0.0m, y: 0.0m))
-                #keep(it.use_initial_pose == false)
+            robot.init_nav2(pose_3d(osition_3d(x: 0.0m, y: 0.0m)))
             robot.nav_to_pose() with:
                 keep(it.goal_pose in [
                     pose_3d(position: position_3d(x: 3.0m, y: -3.0m), orientation: orientation_3d(yaw: 0.0rad)),

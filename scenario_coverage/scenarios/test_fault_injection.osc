@@ -4,18 +4,13 @@ scenario nav2_simulation_fault_injection:
     robot: differential_drive_robot
     do parallel:
         test_drive: serial:
-            robot.init_nav2() with:
-                keep(it.initial_pose.position == position_3d(x: 0.0m, y: 0.0m))
-            record_bag() with:
-                keep(it.destination_dir == '/transfer')
-                keep(it.topics == '/scenario_status /robot_pose_loc /robot_pose_gt /cmd_vel /amcl_pose /odom /tf /tf_static') # whitespace-separated list of topics
-            set_node_parameter() with:
-                keep(it.node_name == 'laserscan_modification')
-                keep(it.parameter_name == 'gaussian_noise_std_deviation')
+            robot.init_nav2(pose_3d(osition_3d(x: 0.0m, y: 0.0m)))
+            record_bag(topics: ['/scenario_status', '/robot_pose_loc', '/robot_pose_gt', '/cmd_vel', '/amcl_pose', '/odom', '/tf', '/tf_static'])
+            set_node_parameter(node_name: 'laserscan_modification',
+                               parameter_name: 'gaussian_noise_std_deviation') with:
                 keep(it.parameter_value in ['0.0', '0.1', '0.2', '0.5'])
-            set_node_parameter() with:
-                keep(it.node_name == 'laserscan_modification')
-                keep(it.parameter_name == 'random_drop_percentage')
+            set_node_parameter(node_name: 'laserscan_modification',
+                               parameter_name: 'random_drop_percentage') with:
                 keep(it.parameter_value in ['0.0', '0.1','0.5', '0.9'])
             robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
             robot.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
