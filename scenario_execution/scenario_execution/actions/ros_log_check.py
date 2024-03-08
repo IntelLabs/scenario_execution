@@ -71,7 +71,7 @@ class RosLogCheck(py_trees.behaviour.Behaviour):
             py_trees.common.Status if found
         """
         if self.found is None:
-            self.found = False # first update() tick, start checking logs
+            self.found = False  # first update() tick, start checking logs
 
         if self.found:
             return Status.SUCCESS
