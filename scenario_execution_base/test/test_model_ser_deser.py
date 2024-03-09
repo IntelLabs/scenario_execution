@@ -22,7 +22,6 @@ import unittest
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.utils.logging import BaseLogger, Logger
 from scenario_execution_base.model.types import print_tree, serialize, deserialize
-import os
 from antlr4.InputStream import InputStream
 
 
