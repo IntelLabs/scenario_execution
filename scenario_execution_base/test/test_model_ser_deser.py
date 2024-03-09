@@ -45,6 +45,7 @@ class DebugLogger(BaseLogger):
     def error(self, msg: str) -> None:
         self.logs.append(msg)
 
+
 class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
 
@@ -62,7 +63,7 @@ scenario test:
     do serial:
         log("foo")
         emit end
-"""        
+"""
         parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertEqual(errors, 0)
         model = self.parser.load_internal_model(parsed_tree, "test.osc", False, False)
