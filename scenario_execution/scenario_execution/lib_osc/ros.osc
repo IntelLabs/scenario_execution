@@ -94,9 +94,8 @@ action set_node_parameter:
     parameter_value: string                           # new value of the parameter
 
 action record_bag:
-    # Record a dataset
-    destination_dir: string = '' # If destination dir is empty, the current directory is used
-    topics: list of topics
+    # Record a dataset, stored in output_dir defined by command-line parameter (default: '.')
+    topics: list of topics       # Topics to records, if empty all topics are recorded
     timestamp_suffix: bool = true# Add a timestamp suffix to output directory name
     hidden_topics: bool = false  # whether to record hidden topics
     storage: string = ''         # storage type to use (empty string: use default)
