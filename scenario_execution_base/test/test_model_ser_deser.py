@@ -19,12 +19,12 @@ Test for Intermediate Scenario model Serialization and Deserialization
 """
 import unittest
 
-from scenario_coverage.scenario_variation import ScenarioVariation
+from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.model.model_file_loader import ModelFileLoader
 from scenario_execution_base.utils.logging import BaseLogger, Logger
-from scenario_execution_base.model.types import print_tree
-import tempfile
+from scenario_execution_base.model.types import print_tree, serialize, deserialize
 import os
+from antlr4.InputStream import InputStream
 
 
 class DebugLogger(BaseLogger):
@@ -45,82 +45,37 @@ class DebugLogger(BaseLogger):
     def error(self, msg: str) -> None:
         self.logs.append(msg)
 
-    def count_lines(self):
-        return len(self.logs)
-
-
 class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
-    def setUp(self) -> None:
-        self.tmpdir = tempfile.TemporaryDirectory()
 
-    def run_coverage(self, scenario_content):
-        fp = tempfile.NamedTemporaryFile(suffix='.osc', mode='w', delete=False)
-        fp.write(scenario_content)
-        fp.close()
-        coverage = ScenarioVariation(self.tmpdir.name, fp.name, False, False)
-        model = coverage.load_model()
-        del fp
-        return model, coverage
+    def setUp(self) -> None:
+        self.parser = OpenScenario2Parser(Logger('test'))
 
     def test_serialize(self):
         scenario_content = """
-import osc.standard
+import osc.helpers
 
 action log:
     msg: string
 
 scenario test:
     do serial:
-        log() with:
-            keep(it.msg in ["foo", "bar"])
+        log("foo")
         emit end
-"""
-        # serialize
-        model, coverage = self.run_coverage(scenario_content)
+"""        
+        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertEqual(errors, 0)
+        model = self.parser.load_internal_model(parsed_tree, "test.osc", False, False)
         self.assertIsNotNone(model)
-        models = coverage.generate_concrete_models(model)
-        self.assertIsNotNone(models)
-        self.assertEqual(2, len(models))
-        result = coverage.save_resulting_scenarios(models)
-        self.assertTrue(result)
+        serialize_data = serialize(model)['CompilationUnit']['_children']
+        self.assertGreater(len(serialize_data), 0)
+        deserialized_model = deserialize(serialize_data)
 
-        # deserialize
-        dir_content = os.listdir(self.tmpdir.name)
-        scenarios = []
-        for entry in dir_content:
-            if entry.endswith(".sce"):
-                scenarios.append(os.path.join(self.tmpdir.name, entry))
-        self.assertEqual(2, len(scenarios))
-        print(scenarios)
-        scenario0 = None
-        scenario1 = None
-        for scenario in scenarios:
-            if scenario.endswith("0.sce"):
-                scenario0 = scenario
-            if scenario.endswith("1.sce"):
-                scenario1 = scenario
-        parser = ModelFileLoader(Logger('test'))
-        models_deserialized = []
-        model0 = parser.load_file(scenario0, False)
-        models_deserialized.append(model0)
-        model1 = parser.load_file(scenario1, False)
-        models_deserialized.append(model1)
-        self.assertIsNotNone(models_deserialized)
-        self.assertEqual(2, len(models_deserialized))
+        # validate model
+        deserialize_model_logger = DebugLogger('out')
+        input_model_logger = DebugLogger('in')
+        print_tree(deserialized_model, deserialize_model_logger)
+        print_tree(model, input_model_logger)
+        self.assertListEqual(deserialize_model_logger.logs, input_model_logger.logs)
 
-        # validate models
-        deserialize_model_0 = DebugLogger('deserialize_model_0')
-        base_model_0 = DebugLogger('base_model_0')
-        print_tree(models_deserialized[0], deserialize_model_0)
-        print_tree(models[0], base_model_0)
-        self.assertListEqual(deserialize_model_0.logs, base_model_0.logs)
-
-        deserialize_model_1 = DebugLogger('deserialize_model_1')
-        base_model_1 = DebugLogger('base_model_1')
-        print_tree(models_deserialized[1], deserialize_model_1)
-        print_tree(models[1], base_model_1)
-        self.assertListEqual(deserialize_model_1.logs, base_model_1.logs)
-
-        # test model lines
-        self.assertGreater(deserialize_model_0.count_lines(), 0)
+        self.assertGreater(len(deserialize_model_logger.logs), 0)
