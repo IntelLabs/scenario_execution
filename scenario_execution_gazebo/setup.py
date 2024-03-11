@@ -17,14 +17,14 @@
 """ Setup python package """
 from glob import glob
 import os
-from setuptools import setup
+from setuptools import find_packages, setup
 
 PACKAGE_NAME = 'scenario_execution_gazebo'
 
 setup(
     name=PACKAGE_NAME,
     version='1.0.0',
-    packages=[PACKAGE_NAME],
+    packages=find_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
@@ -45,6 +45,7 @@ setup(
     description='Scenario Execution library for Gazebo',
     license='Apache License 2.0',
     tests_require=['pytest'],
+    include_package_data=True,
     entry_points={
         'scenario_execution.actions': [
             'sim_object.spawn = scenario_execution_gazebo.actions.gazebo_spawn_actor:GazeboSpawnActor',
