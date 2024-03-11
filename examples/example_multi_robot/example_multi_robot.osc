@@ -1,15 +1,15 @@
 import osc.ros
 
 scenario nav2_simulation_nav_to_pose:
-    turtlebot4: differential_drive_robot
+    robot: differential_drive_robot
     do parallel:
         serial:
             parallel:   
                 test_drive: serial:
-                    turtlebot4.init_nav2(initial_pose: pose_3d(position: position_3d(), orientation: orientation_3d(yaw: 3.14rad)))
-                    turtlebot4.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
+                    robot.init_nav2(initial_pose: pose_3d(position: position_3d(), orientation: orientation_3d(yaw: 3.14rad)))
+                    robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
                 serial:
-                    turtlebot4.tf_close_to() with:
+                    robot.tf_close_to() with:
                         keep(it.reference_point.x == -1.5m)
                         keep(it.reference_point.y == 0.0m)
                         keep(it.threshold == 0.35m)

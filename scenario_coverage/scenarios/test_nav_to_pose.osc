@@ -1,13 +1,11 @@
 import osc.ros
 
 scenario nav2_simulation_nav_to_pose:
-    turtlebot4: differential_drive_robot
+    robot: differential_drive_robot
     do parallel:
         test_drive: serial:
-            turtlebot4.init_nav2() with:
-                keep(it.initial_pose.position == position_3d(x: 0.0m, y: 0.0m))
-                #keep(it.use_initial_pose == false)
-            turtlebot4.nav_to_pose() with:
+            robot.init_nav2(pose_3d(osition_3d(x: 0.0m, y: 0.0m)))
+            robot.nav_to_pose() with:
                 keep(it.goal_pose in [
                     pose_3d(position: position_3d(x: 3.0m, y: -3.0m), orientation: orientation_3d(yaw: 0.0rad)),
                     pose_3d(position: position_3d(x: 3.0m, y: 3.0m), orientation: orientation_3d(yaw: 0.0rad))

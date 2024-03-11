@@ -1,6 +1,8 @@
 import osc.standard
 import osc.robotics
 
+actor sim_object
+
 action wait_for_sim:
     # Wait for simulation to become active
     world_name: string = 'default'      # simulation world name
@@ -10,13 +12,13 @@ action actor_exists:
     entity_name: string                 # name of the actor within simulation
     world_name: string = 'default'      # simulation world name
 
-action osc_object.spawn:
+action sim_object.spawn:
     # Spawn a simulation entity, uses namespace of entity
     spawn_pose: pose_3d                 # position at which the object gets spawned
     world_name: string = 'default'      # simulation world name
     model: string                       # model definition
     xacro_arguments: string = ''        # comma-separated list of argument key:=value pairs
 
-action osc_object.delete:
+action sim_object.delete:
     # Delete an actor from simulation
     world_name: string = 'default'      # simulation world name

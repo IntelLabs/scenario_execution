@@ -13,3 +13,11 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
+
+""" Main entry for scenario execution gazebo"""
+
+from . import actions
+
+__all__ = [
+    'actions'
+]
