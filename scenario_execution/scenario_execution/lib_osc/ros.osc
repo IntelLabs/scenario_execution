@@ -48,39 +48,10 @@ action check_data:
     fail_if_bad_comparison: bool = true               # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
     clearing_policy: clearing_policy = clearing_policy!on_initialise     # when to clear the data
 
-action topic_to_blackboard:
-    topic_name: string                                # name of the topic to connect to
-    topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
-    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
-    blackboard_variables: string                      # blackboard variable string or dict (names (keys) - message subfields (values)), use a value of None to indicate the entire message
-    initialise_variables: string = '{}'               # initialise the blackboard variables to some defaults
-    clearing_policy: clearing_policy = clearing_policy!on_initialise     # when to clear the data
-
-action event_to_blackboard:
-    topic_name: string                                # name of the topic to connect to
-    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
-    variable_name: string                             # name of the variable to check
-
-action topic_from_blackboard:
-    topic_name: string                                # name of the topic to connect to
-    topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
-    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the publisher
-    blackboard_variable: string                       # name of the variable on the blackboard (can be nested)
-
 action service_call:
     service_name: string                              # name of the service to connect to
     service_type: string                              # class of the message type (e.g. std_srvs.msg.Empty)
     data: string                                      # call content
-
-action wait_for_blackboard_variable:
-    variable_name: string                             # name of the service to connect to
-
-action set_blackboard_variable:
-    variable_name: string                             # name of the blackboard variable
-    variable_value: string                            # value of the variable to set
-
-action unset_blackboard_variable:
-    key: string                             # name of the blackboard variable
 
 action topic_publish:
     topic_name: string                                # name of the topic to connect to
