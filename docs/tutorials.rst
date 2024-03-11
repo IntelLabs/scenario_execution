@@ -322,7 +322,7 @@ Now, lets try to run this scenario. To do this, first build Packages ``scenario_
     colcon build --packages-up-to scenario_execution && colcon build --packages-up-to scenario_coverage
 
 
-* Now, ``create intermediate scenarios`` with ``.sce`` extension using the command:
+* Now, create intermediate scenarios with ``.sce`` extension using the command:
 
 .. code-block:: bash
 
