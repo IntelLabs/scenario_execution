@@ -18,7 +18,7 @@
 import py_trees
 from enum import Enum
 
-from scenario_execution_base.actions import RunExternalProcess
+from scenario_execution_base.actions import RunProcess
 
 
 class DeleteActionState(Enum):
@@ -31,7 +31,7 @@ class DeleteActionState(Enum):
     FAILURE = 4
 
 
-class GazeboDeleteActor(RunExternalProcess):
+class GazeboDeleteActor(RunProcess):
     """
     Class to delete an entity in Ignition
 
