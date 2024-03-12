@@ -14,7 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from scenario_execution_base.actions import RunExternalProcess
+from scenario_execution_base.actions.run_external_process import RunExternalProcess
 
 import py_trees
 from enum import Enum

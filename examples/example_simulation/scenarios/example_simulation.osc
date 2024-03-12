@@ -1,18 +1,16 @@
 import osc.ros
 import osc.gazebo
 
-scenario nav2_simulation_nav_to_pose:
-    turtlebot4: differential_drive_robot
-    box: osc_object
+scenario example_simulation:
+    robot: differential_drive_robot
+    box: sim_object
     do parallel:
-        test_drive: serial:
-            turtlebot4.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+        serial:
+            robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
             parallel:
+                robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
                 serial:
-                    turtlebot4.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
-                    turtlebot4.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
-                serial:
-                    turtlebot4.tf_close_to(
+                    robot.tf_close_to(
                         reference_point: position_3d(x: 1.5m, y: -1.5m),
                         threshold: 0.4m,
                         robot_frame_id: 'turtlebot4_base_link_gt')

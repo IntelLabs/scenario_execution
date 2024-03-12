@@ -122,7 +122,7 @@ class ScenarioExecution(object):
                     display_blackboard=True
                 ))
         try:
-            self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, **kwargs)
+            self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, output_dir=self.output_dir, **kwargs)
             return True
         except RuntimeError:
             self.logger.error('Setup Timeout exceeded. Aborting...')
@@ -211,7 +211,7 @@ class ScenarioExecution(object):
 
     def report_results(self):
         if self.output_dir and self.results:
-            self.logger.info(f"Writing results to {self.output_dir}...")
+            self.logger.info(f"Writing results to '{self.output_dir}'...")
             failures = 0
             overall_time = timedelta(0)
             for result in self.results:
@@ -219,7 +219,7 @@ class ScenarioExecution(object):
                     failures += 1
                 overall_time += result[4]
             try:
-                with open(self.output_dir, 'w') as out:
+                with open(os.path.join(self.output_dir, 'test.xml'), 'w') as out:
                     out.write('<?xml version="1.0" encoding="utf-8"?>\n')
                     out.write(
                         f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')
@@ -230,7 +230,7 @@ class ScenarioExecution(object):
                         out.write(f'  </testcase>\n')
                     out.write("</testsuite>\n")
             except Exception as e:  # pylint: disable=broad-except
-                self.logger.error(f"Could not write results to {self.output_dir}: {e}")
+                self.logger.error(f"Could not write results to '{self.output_dir}': {e}")
 
     def pre_tick_handler(self, behaviour_tree):
         """

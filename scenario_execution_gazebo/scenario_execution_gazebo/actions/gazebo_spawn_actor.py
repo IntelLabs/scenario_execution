@@ -24,7 +24,7 @@ from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy, QoSReli
 from rclpy.logging import get_logger
 from rclpy.node import Node
 import py_trees
-from scenario_execution_base.actions import RunExternalProcess
+from scenario_execution_base.actions.run_external_process import RunExternalProcess
 from .utils import SpawnUtils
 
 

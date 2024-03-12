@@ -16,7 +16,7 @@ with the extension ``.osc``. Input the following code in the file.
    import osc.helpers
 
    # declare the scenario by the syntax: "scenario scenario_name:"
-   scenario example_ros_topic:
+   scenario hello_world:
        # define the content of the scenario with "do_directive"
        do serial: # execute children one after the other
            log("Hello World!") # log a message on the screen with "log" action from the built-in library
@@ -224,7 +224,28 @@ and you should see something like this
    Turtlebot4 NAV2 scenario
 
 In case you want to run the navigation with SLAM instead of AMCL, update
-the scenario file as described above and then run
+the above described scenario by setting the ``use_initial_pose`` to ``False``:
+
+::
+
+    import osc.ros
+
+    scenario nav2_simulation_nav_to_pose:
+        robot: differential_drive_robot
+        do parallel:
+            test_drive: serial:
+                robot.init_nav2(
+                    initial_pose: pose_3d(position_3d(x: 0.0m, y: 0.0m)),
+                    use_initial_pose: false)
+                robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
+                robot.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+                emit end
+            time_out: serial:
+                wait elapsed(120s)
+                emit fail
+
+
+Then, run:
 
 .. code-block:: bash
 
@@ -322,7 +343,7 @@ Now, lets try to run this scenario. To do this, first build Packages ``scenario_
     colcon build --packages-up-to scenario_execution && colcon build --packages-up-to scenario_coverage
 
 
-* Now, ``create intermediate scenarios`` with ``.sce`` extension using the command:
+* Now, create intermediate scenarios with ``.sce`` extension using the command:
 
 .. code-block:: bash
 
