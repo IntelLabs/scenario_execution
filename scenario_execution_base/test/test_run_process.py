@@ -43,10 +43,10 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
 import osc.standard
 import osc.helpers
 
-scenario test_run_external_process:
+scenario test_run_process:
     do parallel:
         serial:
-            run_external_process() with:
+            run_process() with:
                 keep(it.command == 'false')
             emit end
         time_out: serial:
@@ -68,10 +68,10 @@ scenario test_run_external_process:
 import osc.standard
 import osc.helpers
 
-scenario test_run_external_process:
+scenario test_run_process:
     do parallel:
         serial:
-            run_external_process() with:
+            run_process() with:
                 keep(it.command == 'true')
             emit end
         time_out: serial:
@@ -93,10 +93,10 @@ scenario test_run_external_process:
 import osc.standard
 import osc.helpers
 
-scenario test_run_external_process:
+scenario test_run_process:
     do parallel:
         serial:
-            run_external_process('sleep 2')
+            run_process('sleep 2')
             emit end
         time_out: serial:
             wait elapsed(10s)

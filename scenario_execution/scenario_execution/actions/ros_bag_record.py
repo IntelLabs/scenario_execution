@@ -19,7 +19,7 @@ from datetime import datetime
 from enum import Enum
 
 import py_trees
-from scenario_execution_base.actions.run_external_process import RunExternalProcess
+from scenario_execution_base.actions.run_process import RunProcess
 import shutil
 import signal
 
@@ -33,7 +33,7 @@ class RosBagRecordActionState(Enum):
     FAILURE = 5
 
 
-class RosBagRecord(RunExternalProcess):
+class RosBagRecord(RunProcess):
     """
     Class to execute ros bag recording
     """
