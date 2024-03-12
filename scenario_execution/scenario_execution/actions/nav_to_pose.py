@@ -23,7 +23,6 @@ from rclpy.action import ActionClient
 import py_trees
 
 from .nav2_common import get_pose_stamped
-from nav2_simple_commander.robot_navigator import BasicNavigator
 from nav2_msgs.action import NavigateToPose
 from action_msgs.msg import GoalStatus
 

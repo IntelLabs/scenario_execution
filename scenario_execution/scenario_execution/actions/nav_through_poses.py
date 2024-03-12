@@ -21,7 +21,7 @@ from rclpy.duration import Duration
 
 import py_trees
 
-from nav2_simple_commander.robot_navigator import TaskResult, BasicNavigator  # pylint: disable=import-error
+from nav2_simple_commander.robot_navigator import TaskResult  # pylint: disable=import-error
 
 from .nav2_common import NamespaceAwareBasicNavigator
 from .nav2_common import get_pose_stamped
@@ -125,5 +125,5 @@ class NavThroughPoses(py_trees.behaviour.Behaviour):
         return result
 
     def cleanup(self):
-        nav = BasicNavigator()
-        nav.cancelTask()
+        self.logger.info('Canceling current task.')
+        self.nav.cancelTask()
