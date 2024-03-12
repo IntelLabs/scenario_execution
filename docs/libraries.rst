@@ -23,10 +23,10 @@ For debugging purposes, log a string using the available log mechanism.
 
 - ``msg: string``: String to log
 
-``run_external_process()``
+``run_process()``
 """"""""""""""""""""""""""
 
-Run an external process. Reports `running` while the process has not finished.
+Run an process. Reports `running` while the process has not finished.
 
 - ``command: string``: Command to execute
 
