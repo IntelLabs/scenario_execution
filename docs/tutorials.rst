@@ -366,3 +366,48 @@ In the first part we run the executable ``scenario_batch_execution``. This requi
 
 
 Finally, The output of the above command will display two values ``foo`` and ``bar`` on the terminal along with the success message.
+
+Control Scenarios with Rviz
+--------------------------------
+In this example, let's learn how to control multiple scenarios directly from ``RVIZ`` control panel.
+
+We'll use :repo_link:`examples/example_scenario_control/` as the base package to launch scenes turtlebot4 inside the ``maze`` simulation environment.
+
+You can add your custom scenario files to the scenario folder inside the package. However, for this tutorial, we'll use the existing scenarios present there. Let's run an example.
+
+First, build the package using the following command:
+
+.. code-block:: bash
+
+    colcon build --packages-up-to examples/example_scenario_control
+
+Now, run the following command to launch the simulation:
+
+.. code-block:: bash
+
+    ros2 launch example_scenario_control example_scenario_control_launch.py
+
+Both Gazebo and Rviz will launch. Now, you can use the control panel to select a specific scenario from the drop-down list. Run it by clicking the play icon, as shown in the figure below:
+
+.. figure:: images/example_scenario_control_1.png
+   :alt: scenario control start
+
+   Scenario Control Start
+
+When the scenario starts, the small circle will turn green, as shown below:
+
+.. figure:: images/example_scenario_control_2.png
+   :alt: scenario control running
+
+   Scenario Control Running
+
+In this tutorial, we have three scenarios. The first, ``init_nav2``, initializes the robot. The other two, ``nav_to_paose_1`` and ``nav_to_pose_2``, navigate the robot to specific poses.
+
+After completing the initialization scenario, you can run any of the ``nav_to_pose`` scenarios using the drop-down menu.
+
+.. note::
+
+    When the scenario is running, clicking the stop/pause button will terminate that scenario. Then, you can start the same scenario again or choose another one.
+
+
+
