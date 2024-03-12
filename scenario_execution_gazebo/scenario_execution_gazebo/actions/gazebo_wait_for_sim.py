@@ -17,7 +17,7 @@
 import py_trees
 from enum import Enum
 
-from scenario_execution_base.actions import RunProcess
+from scenario_execution_base.actions.run_process import RunProcess
 
 
 class WaitForSimulationActionState(Enum):

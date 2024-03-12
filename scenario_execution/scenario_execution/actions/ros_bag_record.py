@@ -19,7 +19,7 @@ from datetime import datetime
 from enum import Enum
 
 import py_trees
-from scenario_execution_base.actions import RunProcess
+from scenario_execution_base.actions.run_process import RunProcess
 import shutil
 import signal
 
@@ -38,13 +38,12 @@ class RosBagRecord(RunProcess):
     Class to execute ros bag recording
     """
 
-    def __init__(self, name, destination_dir: str, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
+    def __init__(self, name, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
         super().__init__(name)
         if not isinstance(topics, list):
             raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
         else:
             self.topics = topics
-        self.destination_dir = destination_dir
         self.timestamp_suffix = timestamp_suffix
         self.include_hidden_topics = hidden_topics
         self.current_state = RosBagRecordActionState.WAITING_FOR_TOPICS
@@ -56,15 +55,18 @@ class RosBagRecord(RunProcess):
         """
         set up
         """
-        if self.destination_dir:
-            if not os.path.exists(self.destination_dir):
+        if "output_dir" not in kwargs:
+            raise ValueError("output_dir not defined.")
+
+        if kwargs['output_dir']:
+            if not os.path.exists(kwargs['output_dir']):
                 raise ValueError(
-                    f"Specified destination dir '{self.destination_dir}' does not exist")
-            self.bag_dir = self.destination_dir + '/'
-        self.bag_dir += self.get_scenario_name()
+                    f"Specified destination dir '{kwargs['output_dir']}' does not exist")
+            self.bag_dir = kwargs['output_dir'] + '/'
+        self.bag_dir += "rosbag2"
 
         if self.timestamp_suffix:
-            self.bag_dir += '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+            self.bag_dir += '_' + datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
 
         self.command = ["ros2", "bag", "record"]
         if self.include_hidden_topics:
