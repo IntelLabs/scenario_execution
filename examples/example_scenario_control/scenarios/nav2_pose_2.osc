@@ -1,6 +1,6 @@
 import osc.ros
 
-scenario nav2_simulation_nav_to_pose:
+scenario nav2_simulation_nav_to_pose_2:
     turtlebot4: differential_drive_robot
     do parallel:
         test_drive: serial:
