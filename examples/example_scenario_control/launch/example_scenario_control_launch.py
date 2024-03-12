@@ -23,6 +23,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
+
 def generate_launch_description():
 
     tb4_sim_scenario_dir = get_package_share_directory('tb4_sim_scenario')
@@ -30,16 +31,16 @@ def generate_launch_description():
     example_scenario_control_dir = get_package_share_directory('example_scenario_control')
     scenario_dir = LaunchConfiguration('scenario_dir')
     rviz_config = LaunchConfiguration('rviz_config')
-    
+
     arg_scenario_dir = DeclareLaunchArgument('scenario_dir', default_value=os.path.join(
         example_scenario_control_dir, 'scenarios'), description='default directory of the scenarios')
-    
+
     arg_rviz_config = DeclareLaunchArgument('rviz_config', default_value=PathJoinSubstitution(
         [example_scenario_control_dir, 'rviz', 'example_control.rviz']), description='default directory of the scenarios')
-    
+
     tb4_sim_scenario = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'sim_nav_scenario_launch.py'])]),
-        launch_arguments= {'scenario_execution' : 'False', 'scenario' : []}.items()
+        launch_arguments={'scenario_execution': 'False', 'scenario': []}.items()
     )
 
     rviz = LaunchDescription([

@@ -25,8 +25,8 @@ Panels:
     Name: Navigation 2
   - Class: scenario_execution_rviz/Control
     Name: Control
-  - Class: scenario_execution_rviz/Tree View
-    Name: Tree View
+  - Class: scenario_execution_rviz/Scenario View
+    Name: Scenario View
 Visualization Manager:
   Class: ""
   Displays:
@@ -670,7 +670,7 @@ Window Geometry:
     collapsed: false
   Tool Properties:
     collapsed: false
-  Tree View:
+  Scenario View:
     collapsed: false
   Views:
     collapsed: true
