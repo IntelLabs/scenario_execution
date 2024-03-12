@@ -20,12 +20,12 @@ from threading import Thread
 from collections import deque
 
 
-class RunExternalProcess(py_trees.behaviour.Behaviour):
+class RunProcess(py_trees.behaviour.Behaviour):
     """
-    Class to execute an external process. It finishes when the process finishes
+    Class to execute an process. It finishes when the process finishes
 
     Args:
-        command[str]: external command to execute
+        command[str]: command to execute
     """
 
     def __init__(self, name, command=None):
@@ -39,7 +39,7 @@ class RunExternalProcess(py_trees.behaviour.Behaviour):
 
     def update(self) -> py_trees.common.Status:
         """
-        Start/monitor external process
+        Start/monitor process
 
         return:
             py_trees.common.Status
