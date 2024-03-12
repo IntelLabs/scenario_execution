@@ -17,7 +17,7 @@
 import py_trees
 from enum import Enum
 
-from scenario_execution_base.actions.run_external_process import RunExternalProcess
+from scenario_execution_base.actions.run_process import RunProcess
 
 
 class WaitForSimulationActionState(Enum):
@@ -30,7 +30,7 @@ class WaitForSimulationActionState(Enum):
     FAILURE = 4
 
 
-class GazeboWaitForSim(RunExternalProcess):
+class GazeboWaitForSim(RunProcess):
     """
     Class to wait for the simulation to become active
     """

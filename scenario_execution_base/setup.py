@@ -45,7 +45,7 @@ setup(
         ],
         'scenario_execution.actions': [
             'log = scenario_execution_base.actions.log:Log',
-            'run_external_process = scenario_execution_base.actions.run_external_process:RunExternalProcess',
+            'run_process = scenario_execution_base.actions.run_process:RunProcess',
         ],
         'scenario_execution.osc_libraries': [
             'helpers = scenario_execution_base.get_osc_library:get_helpers_library',
