@@ -180,5 +180,4 @@ class NavToPose(py_trees.behaviour.Behaviour):
         self.feedback = msg.feedback
 
     def cleanup(self):
-        nav = BasicNavigator()
-        nav.cancelTask()
+        self.cancel_task()
