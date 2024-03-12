@@ -21,12 +21,11 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-
+from launch_ros.actions import Node
 
 def generate_launch_description():
 
     tb4_sim_scenario_dir = get_package_share_directory('tb4_sim_scenario')
-    nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     scenario_execution_control_dir = get_package_share_directory('scenario_execution_control')
     example_scenario_control_dir = get_package_share_directory('example_scenario_control')
     scenario_dir = LaunchConfiguration('scenario_dir')
@@ -43,10 +42,15 @@ def generate_launch_description():
         launch_arguments= {'scenario_execution' : 'False', 'scenario' : []}.items()
     )
 
-    nav2_bringup_rviz = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([nav2_bringup_dir, 'launch', 'rviz_launch.py'])]),
-        launch_arguments=[('rviz_config', rviz_config)]
-    )
+    rviz = LaunchDescription([
+        Node(
+            package='rviz2',
+            namespace='',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d', rviz_config]
+        )
+    ])
 
     scenario_execution_control = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(scenario_execution_control_dir, 'launch', 'scenario_execution_control_launch.py')),
@@ -59,5 +63,5 @@ def generate_launch_description():
     ])
     ld.add_action(scenario_execution_control)
     ld.add_action(tb4_sim_scenario)
-    ld.add_action(nav2_bringup_rviz)
+    ld.add_action(rviz)
     return ld
