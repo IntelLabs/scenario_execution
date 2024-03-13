@@ -123,3 +123,7 @@ class NavThroughPoses(py_trees.behaviour.Behaviour):
             self.logger.error(f"Invalid state {self.current_state}")
 
         return result
+
+    def cleanup(self):
+        self.logger.info('Canceling current task.')
+        self.nav.cancelTask()
