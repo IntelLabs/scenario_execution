@@ -25,7 +25,6 @@ from collections import deque
 from copy import deepcopy
 import signal
 from defusedxml import ElementTree as ETparse
-ETparse.defuse_stdlib()
 import xml.etree.ElementTree as ET # nosec B405
 
 
