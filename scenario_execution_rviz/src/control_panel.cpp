@@ -51,7 +51,7 @@
 using std::placeholders::_1;
 namespace scenario_execution_rviz {
 
-ControlPanel::ControlPanel(QWidget *parent) : rviz_common::Panel(parent) {
+ScenarioControl::ScenarioControl(QWidget *parent) : rviz_common::Panel(parent) {
   QVBoxLayout *layout = new QVBoxLayout;
 
   QFormLayout *formLayout = new QFormLayout;
@@ -80,7 +80,7 @@ ControlPanel::ControlPanel(QWidget *parent) : rviz_common::Panel(parent) {
   setScenarioExecutionStatus(false);
 }
 
-void ControlPanel::onInitialize() {
+void ScenarioControl::onInitialize() {
   _node = getDisplayContext()->getRosNodeAbstraction().lock()->get_raw_node();
 
   mExecuteScenarioClient =
@@ -91,15 +91,15 @@ void ControlPanel::onInitialize() {
   mScenarioExecutionStatusSubscriber = _node->create_subscription<
       scenario_execution_interfaces::msg::ScenarioExecutionStatus>(
       "/scenario_execution_control/status", 10,
-      std::bind(&ControlPanel::scenarioExecutionStatusChanged, this, _1));
+      std::bind(&ScenarioControl::scenarioExecutionStatusChanged, this, _1));
   rclcpp::QoS static_QoS = rclcpp::QoS(1).transient_local();
   mScenarioSubscriber = _node->create_subscription<
       scenario_execution_interfaces::msg::ScenarioList>(
       "/scenario_execution_control/available_scenarios", static_QoS,
-      std::bind(&ControlPanel::scenariosChanged, this, _1));
+      std::bind(&ScenarioControl::scenariosChanged, this, _1));
 }
 
-void ControlPanel::scenarioExecuteButtonClicked() {
+void ScenarioControl::scenarioExecuteButtonClicked() {
   if (!mScenarioIsRunning) {
     for (auto const &scenario : mScenarios->scenarios) {
       if (QString::fromStdString(scenario.name) ==
@@ -129,7 +129,7 @@ void ControlPanel::scenarioExecuteButtonClicked() {
   }
 }
 
-void ControlPanel::scenarioExecutionStatusChanged(
+void ScenarioControl::scenarioExecutionStatusChanged(
     const scenario_execution_interfaces::msg::ScenarioExecutionStatus::SharedPtr
         msg) {
   bool isRunning = false;
@@ -155,7 +155,7 @@ void ControlPanel::scenarioExecutionStatusChanged(
   updateScenarioExecutionRunning(isRunning);
 }
 
-void ControlPanel::updateScenarioExecutionRunning(bool isRunning) {
+void ScenarioControl::updateScenarioExecutionRunning(bool isRunning) {
   mScenarioIsRunning = isRunning;
   if (isRunning) {
     QPixmap pixmapStop(":/icons/stop.png");
@@ -168,13 +168,13 @@ void ControlPanel::updateScenarioExecutionRunning(bool isRunning) {
   }
 }
 
-void ControlPanel::setScenarioExecutionStatus(bool active) {
+void ScenarioControl::setScenarioExecutionStatus(bool active) {
   mScenarioSelection->setEnabled(active);
   mTriggerScenarioButton->setEnabled(active);
   mIndicatorWidget->setEnabled(active);
 }
 
-void ControlPanel::scenariosChanged(
+void ScenarioControl::scenariosChanged(
     const scenario_execution_interfaces::msg::ScenarioList::SharedPtr msg) {
   auto currentSelection = mScenarioSelection->currentText();
   mScenarios = msg;
@@ -199,5 +199,5 @@ void ControlPanel::scenariosChanged(
 } // end namespace scenario_execution_rviz
 
 #include <pluginlib/class_list_macros.hpp>
-PLUGINLIB_EXPORT_CLASS(scenario_execution_rviz::ControlPanel,
+PLUGINLIB_EXPORT_CLASS(scenario_execution_rviz::ScenarioControl,
                        rviz_common::Panel)

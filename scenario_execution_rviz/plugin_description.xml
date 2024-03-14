@@ -1,6 +1,6 @@
 <library path="scenario_execution_rviz">
-  <class name="scenario_execution_rviz/Control"
-         type="scenario_execution_rviz::ControlPanel"
+  <class name="scenario_execution_rviz/Scenario Control"
+         type="scenario_execution_rviz::ScenarioControl"
          base_class_type="rviz_common::Panel">
     <description>
       A panel widget for controlling scenario execution
