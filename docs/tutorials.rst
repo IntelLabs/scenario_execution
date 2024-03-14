@@ -407,7 +407,6 @@ After completing the initialization scenario, you can run any of the ``nav_to_po
 
 .. note::
 
-    When the scenario is running, clicking the stop/pause button will terminate that scenario. Then, you can start the same scenario again or choose another one.
+    While the scenario is running, you can click the stop/pause button to terminate it. Afterwards, you have the option to either start the same scenario again or choose another one.
 
-
-
+Currently, terminating the scenario will not stop the ongoing navigation, and the robot will continue to move towards its goal pose. However, please note that this behavior will be addressed in future updates.
