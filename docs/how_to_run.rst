@@ -85,3 +85,38 @@ Example:
 
 Please note that this method has been tested on Ubuntu 22.04. If you are using any other distribution, please ensure that 
 PyQtEngine works on your machine and render web pages correctly.
+
+Scenario Coverage
+-----------------
+``Scenario Coverage`` is a tool designed to run variations of a scenario from a single scenario definition. It offers a fast and efficient method to test scenario with different attribute values, streamlining the development and testing process.
+
+Below are the steps to run a scenario using ``scenario_coverage``..
+
+First, build the packages:
+
+.. code-block:: bash
+
+   colcon build --packages-up-to scenario_coverage
+   source install/setup.bash
+
+Then, generate the scenario files for each variation of scenario  using the ``scenario_variation`` executable, you can pass your own custom scenario as an input. For this exercise, we will use a scenario present in  :repo_link:`examples/example_scenario_variation/`.
+
+.. code-block:: bash
+
+   scenario_variation examples/example_scenario_variation/example_scenario_variation.osc
+
+This will save scenario variation files with the ``.sce`` extension in the ``out`` folder within the current working directory.
+
+Now to execute all scenario variation, simply run the sscenario_coverage executable. This command will process all scenarios files present in the ``out`` folder and execute the scenes accordingly.
+
+.. code-block:: bash
+
+   scenario_batch_execution -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+
+above command requires three arguments.
+
+    1. Directory where the scenario files ``.sce`` were saved as the input option ``-i``.
+    2. Directory where the output ``log`` and ``xml`` files will be saved as the output option ``-o``.
+    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}``.
+
+Finally, The output of the above command will display two values ``foo`` and ``bar`` on the terminal along with the success message.
