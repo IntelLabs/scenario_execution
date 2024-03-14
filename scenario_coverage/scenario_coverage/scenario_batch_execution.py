@@ -24,7 +24,8 @@ from threading import Thread
 from collections import deque
 from copy import deepcopy
 import signal
-import shutil
+from defusedxml import ElementTree as ETparse
+import xml.etree.ElementTree as ET # nosec B405
 
 
 class ScenarioBatchExecution(object):
@@ -77,10 +78,8 @@ class ScenarioBatchExecution(object):
 
         for scenario in self.scenarios:
             output_file_path = os.path.join(self.output_dir, os.path.splitext(os.path.basename(scenario))[0])
-
             if not os.path.isdir(output_file_path):
                 os.mkdir(output_file_path)
-
             launch_command = self.get_launch_command(scenario, output_file_path)
             output = deque()
             log_cmd = " ".join(launch_command)
@@ -116,17 +115,55 @@ class ScenarioBatchExecution(object):
             ret = process.returncode
 
             print(f"### Storing results in {self.output_dir}...")
-            shutil.copyfile(scenario, os.path.join(output_file_path, 'scenario.sce'))
 
-            with open(os.path.join(output_file_path, 'log.txt'), 'w') as out:
+            with open(output_file_path + '.log', 'w') as out:
                 for line in output:
                     out.write(line + '\n')
             if ret:
                 print("### Process failed.")
             else:
                 print("### Process finished successfully.")
-
+        self.combine_test_xml()
         return True
+
+    def combine_test_xml(self):
+        print(f"### Writing combined tests to '{self.output_dir}/test.xml'.....")
+        new_root = ET.Element('testsuite')
+        total_time = 0
+        total_errors = 0
+        total_failures = 0
+        total_tests = 0
+        for scenario in self.scenarios:
+            variation = os.path.splitext(os.path.basename(scenario))[0]
+            for filename in os.listdir(os.path.join(self.output_dir, variation)):
+                if filename.endswith("test.xml"):
+                    file_path = os.path.join(self.output_dir, variation, filename)
+                    try:
+                        tree = ETparse.parse(file_path)
+                        root = tree.getroot()
+                    except FileNotFoundError:
+                        print(f"### File {file_path} not found")
+                        return
+                    except ETparse.ParseError:
+                        print(f"### Error XML file {file_path} could not be parsed")
+                        return
+                    if root is not None:
+                        total_errors += int(root.attrib.get('errors', 0))
+                        total_failures += int(root.attrib.get('failures', 0))
+                        total_time += float(root.attrib.get('time', 0))
+                        total_tests += int(root.attrib.get('tests', 0))
+                        for testcase in root.findall('testcase'):
+                            testcase.set('name', str(variation))
+                            new_root.append(testcase)
+                    else:
+                        print(f"### XML file has no 'testsuite' element. {file_path}")
+        new_root.set('errors', str(total_errors))
+        new_root.set('failures', str(total_failures))
+        new_root.set('time', str(total_time))
+        new_root.set('tests', str(total_tests))
+        combined_tests = ET.ElementTree(new_root)
+        ET.indent(combined_tests, space="\t", level=0)
+        combined_tests.write(os.path.join(self.output_dir, "test.xml"), encoding='utf-8', xml_declaration=True)
 
 
 def main():
