@@ -25,6 +25,7 @@ from collections import deque
 from copy import deepcopy
 import signal
 from defusedxml import ElementTree as ETparse
+defusedxml.defuse_stdlib()
 import xml.etree.ElementTree as ET
 
 
