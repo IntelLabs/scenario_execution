@@ -71,3 +71,11 @@ jobs:
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
             scenario_output/test.xml
+      - name: Publish Scenario Results
+        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+        if: always()
+        with:
+          check_run: false
+          files: |
+            scenario_output/test.xml
+      
