@@ -107,7 +107,7 @@ Then, generate the scenario files for each variation of scenario  using the ``sc
 
 This will save scenario variation files with the ``.sce`` extension in the ``out`` folder within the current working directory.
 
-Now to execute all scenario variation, simply run the sscenario_coverage executable. This command will process all scenarios files present in the ``out`` folder and execute the scenes accordingly.
+Now to execute all scenario variation, simply run the scenario_coverage executable. This command will process all scenarios files present in the ``out`` folder and execute the scenes accordingly.
 
 .. code-block:: bash
 
