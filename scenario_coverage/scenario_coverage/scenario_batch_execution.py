@@ -26,7 +26,7 @@ from copy import deepcopy
 import signal
 from defusedxml import ElementTree as ETparse
 ETparse.defuse_stdlib()
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET # nosec B404
 
 
 class ScenarioBatchExecution(object):
