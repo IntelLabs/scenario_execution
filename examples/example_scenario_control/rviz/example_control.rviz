@@ -23,8 +23,8 @@ Panels:
     Splitter Ratio: 0.5
   - Class: nav2_rviz_plugins/Navigation 2
     Name: Navigation 2
-  - Class: scenario_execution_rviz/Control
-    Name: Control
+  - Class: scenario_execution_rviz/Scenario Control
+    Name: Scenario Control
   - Class: scenario_execution_rviz/Scenario View
     Name: Scenario View
 Visualization Manager:
@@ -654,7 +654,7 @@ Visualization Manager:
       Y: 0
     Saved: ~
 Window Geometry:
-  Control:
+  Scenario Control:
     collapsed: false
   Displays:
     collapsed: false
