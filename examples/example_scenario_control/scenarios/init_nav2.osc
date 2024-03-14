@@ -1,0 +1,11 @@
+import osc.ros
+
+scenario initialize_nav2:
+    turtlebot4: differential_drive_robot
+    do parallel:
+        test_drive: serial:
+            turtlebot4.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+            emit end
+        time_out: serial:
+            wait elapsed(60s)
+            emit fail

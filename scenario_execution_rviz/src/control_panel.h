@@ -37,10 +37,10 @@ namespace scenario_execution_rviz {
 
 class IndicatorWidget;
 
-class ControlPanel : public rviz_common::Panel {
+class ScenarioControl : public rviz_common::Panel {
   Q_OBJECT
 public:
-  ControlPanel(QWidget *parent = 0);
+  ScenarioControl(QWidget *parent = 0);
 
 protected Q_SLOTS:
   void scenarioExecuteButtonClicked();
