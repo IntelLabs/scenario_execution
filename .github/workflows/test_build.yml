@@ -51,15 +51,6 @@ jobs:
           --return-code-on-test-failure \
           --pytest-args \
           --junit-xml=TEST.xml
-      - name: Test examples
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          source install/setup.bash
-          export -n CYCLONEDDS_URI
-          export ROS_DOMAIN_ID=2
-          scenario_variation examples/example_scenario_variation/example_scenario_variation.osc
-          scenario_batch_execution -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
         if: always()
@@ -71,10 +62,24 @@ jobs:
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
             scenario_output/test.xml
+      - name: Test Scenarios
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          Xvfb :1 -screen 0 800x600x16 &
+          export LD_PRELOAD=/usr/local/lib/x86_64-linux-gnu/libGL.so.1
+          export DISPLAY=:1.0
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=2
+          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+          scenario_variation examples/example_nav2/example_nav2.osc
+          x2goglx2 scenario_batch_execution -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Publish Scenario Results
         uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
         if: always()
         with:
+          check_name: Scenario Results
           check_run: false
           files: |
             scenario_output/test.xml
