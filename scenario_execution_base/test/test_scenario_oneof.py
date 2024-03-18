@@ -50,7 +50,7 @@ scenario test:
         self.assertEqual(errors, 0)
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
-        scenarios = create_py_tree(model, self.parser.logger)
+        scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
 

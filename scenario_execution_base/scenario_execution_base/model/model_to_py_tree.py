@@ -25,11 +25,11 @@ from scenario_execution_base.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution_base.model.error import OSC2ParsingError
 
 
-def create_py_tree(model, logger):
+def create_py_tree(model, logger, log_tree):
     model_to_py_tree = ModelToPyTree(logger)
     scenario = None
     try:
-        scenario = model_to_py_tree.build(model)
+        scenario = model_to_py_tree.build(model, log_tree)
     except OSC2ParsingError as e:
         logger.error(
             f'Error while creating tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n'
@@ -110,7 +110,7 @@ class ModelToPyTree(object):
     def __init__(self, logger):
         self.logger = logger
 
-    def build(self, tree):
+    def build(self, tree, log_tree):
         if tree.find_children_of_type(CoverDeclaration):
             raise ValueError("Model still contains CoverageDeclarations.")
         behavior_builder = self.BehaviorInit(self.logger)
@@ -118,7 +118,7 @@ class ModelToPyTree(object):
 
         behavior_tree = behavior_builder.get_behavior_tree()
 
-        if behavior_tree:
+        if behavior_tree and log_tree:
             print(py_trees.display.ascii_tree(behavior_tree))
 
         return behavior_tree

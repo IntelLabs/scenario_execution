@@ -44,7 +44,7 @@ scenario test:
         self.assertEqual(errors, 0)
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
-        model = create_py_tree(model, self.parser.logger)
+        model = create_py_tree(model, self.parser.logger, False)
         self.assertIsNotNone(model)
 
     def test_wait_invalid(self):
@@ -61,7 +61,7 @@ scenario test:
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
 
-        scenarios = create_py_tree(model, self.parser.logger)
+        scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertIsNone(scenarios)
 
     def test_wait_invalid_literal(self):
@@ -75,7 +75,7 @@ scenario test:
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
 
-        model = create_py_tree(model, self.parser.logger)
+        model = create_py_tree(model, self.parser.logger, False)
         self.assertIsNone(model)
 
     def test_wait_invalid_literal2(self):
@@ -89,5 +89,5 @@ scenario test:
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
 
-        model = create_py_tree(model, self.parser.logger)
+        model = create_py_tree(model, self.parser.logger, False)
         self.assertIsNone(model)

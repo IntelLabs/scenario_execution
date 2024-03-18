@@ -1093,6 +1093,8 @@ class OpenSCENARIO2Parser (Parser):
             localctx.exception = re
             self._errHandler.reportError(self, re)
             self._errHandler.recover(self, re)
+        except KeyboardInterrupt:
+            pass
         finally:
             self.exitRule()
         return localctx

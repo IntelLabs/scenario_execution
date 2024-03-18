@@ -87,7 +87,11 @@ class ROSScenarioExecution(ScenarioExecution):
         return:
             True if all scenarios are executed successfully
         """
-        executor = rclpy.executors.MultiThreadedExecutor()
+        try:
+            executor = rclpy.executors.MultiThreadedExecutor()
+        except Exception as e:
+            print(f"FAILURE {e}")
+            return False
         marker_handler = MarkerHandler(self.node)
         executor.add_node(self.node)
 
@@ -126,7 +130,8 @@ class ROSScenarioExecution(ScenarioExecution):
                 self.logger.info(f"Scenario '{tree.name}' succeeded.")
             else:
                 self.logger.error(f"Scenario '{tree.name}' failed.")
-                self.logger.error(self.last_snapshot_visitor.last_snapshot)
+                if self.log_model:
+                    self.logger.error(self.last_snapshot_visitor.last_snapshot)
 
             self.add_result((tree.name, self.blackboard.fail, "execution failed",
                             self.last_snapshot_visitor.last_snapshot, datetime.now() - start))
@@ -146,7 +151,7 @@ def main():
 
     if result:
         result = ros_scenario_execution.run()
-    rclpy.shutdown()
+    rclpy.try_shutdown()
     ros_scenario_execution.report_results()
     if result:
         sys.exit(0)
