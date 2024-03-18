@@ -129,4 +129,17 @@
               scenario_variation_test/test.xml
               scenario_multi_robot_test/test.xml
               scenario_control_test/test.xml
+        - name: Upload Scenario Results
+          uses: actions/upload-artifact@v2
+          if: always()
+          with:
+            name: junit-reports
+            path: |
+              example_scenario_test/test.xml
+              example_nav2_test/test.xml
+              example_simulation_test/test.xml
+              example_library_test/test.xml
+              scenario_variation_test/test.xml
+              scenario_multi_robot_test/test.xml
+              scenario_control_test/test.xml
   
