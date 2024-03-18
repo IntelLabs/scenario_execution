@@ -153,6 +153,8 @@ class ScenarioExecution(object):
         return:
             True if no errors occured during parsing
         """
+        if self.scenario is None:
+            return False
         file_extension = os.path.splitext(self.scenario)[1]
         if file_extension == '.osc':
             parser = OpenScenario2Parser(self.logger)
