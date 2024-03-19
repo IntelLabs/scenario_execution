@@ -134,6 +134,7 @@
           with:
             check_name: Scenario Results
             check_run: false
+            action_fail: true
             files: |
               example_scenario_test/test.xml
               example_nav2_test/test.xml
@@ -142,6 +143,7 @@
               scenario_variation_test/test.xml
               scenario_multi_robot_test/test.xml
               scenario_control_test/test.xml
+            # Check test results and fail if necessary
         - name: Upload Scenario Results
           uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
           if: always()
