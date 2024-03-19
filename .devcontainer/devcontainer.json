@@ -1,0 +1,49 @@
+{
+    "name": "Scenario Execution Development Container",
+    "privileged": true,
+    "remoteUser": "ros",
+    "build": {
+        "context": "..",
+        "dockerfile": "Dockerfile",
+        "args": {
+            "USERNAME": "ros"
+            "http_proxy": "${env:http_proxy}",
+            "https_proxy": "${env:https_proxy}",
+            "no_proxy": "${env:no_proxy}",
+            "NO_PROXY": "${env:NO_PROXY}",
+            //"APT_MIRROR": "my_apt_mirror" // you can add more build arguments, for instance a apt mirror
+        }
+    },
+    "workspaceFolder": "/workspace",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+    "customizations": {
+        "vscode": {
+            "extensions":[
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-themes",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "twxs.cmake",
+                "donjayamanne.python-extension-pack",
+                "eamodio.gitlens",
+                "ms-iot.vscode-ros"
+            ]
+        }
+    },
+    "containerEnv": {
+        "DISPLAY": "unix:0",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+        "ROS_DOMAIN_ID": "${env:ROS_DOMAIN_ID}",
+        "NVIDIA_VISIBLE_DEVICES": "all",
+        "NVIDIA_DRIVER_CAPABILITIES": "all"
+    },
+    "runArgs": [
+        "--net=host",
+        "--runtime=nvidia",
+        "-e", "DISPLAY=${env:DISPLAY}"
+    ],
+    "mounts": [
+       "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+        "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached"
+    ],
+}
