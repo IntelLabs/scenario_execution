@@ -3,22 +3,32 @@ Architecture
 
 
 .. figure:: images/scenario_execution_structure.png
+   :alt: Overview of Scenario Execution
+
+   Overview of Scenario Execution
+
+Scenario execution is built as a Python library on top of two open-source components: the generic scenario description language `OpenSCENARIO 2 <https://www.asam.net/index.php?eID=dumpFile&t=f&f=3460&token=14e7c7fab9c9b75118bb4939c725738fa0521fe9>`_ and `PyTrees  <https://py-trees.readthedocs.io/en/devel/introduction.html>`_.
+In general, the user defines a scenario in the OpenSCENARIO 2 language, scenario execution parses the scenario, translates it to a behavior tree, executes it and finally gathers the test results.
+
+
+.. figure:: images/scenario_execution_arch.png
    :alt: Architecture of Scenario Execution
 
    Architecture of Scenario Execution
 
-The scenario execution contains several sub-packages, namely
+Our implementation is highly modular separating the core components from simulation- and/or middleware-specific modules realized through a plugin-based approach. 
+In principle, any additional feature that is required by a specific scenario and that can be implemented in Python could be realized as additional library.
+A library typically provides an OpenSCENARIO 2 file with additional definitions and may provide code implementing additional functionality such as conditions or actions.
 
--  `scenario_execution_base <#scenario-execution-base-package>`__
--  `scenario_execution <#scenario-execution-package>`__
--  `scenario_execution_gazebo <#scenario-execution-gazebo-package>`__
--  `scenario_execution_control <#scenario-execution-control-package>`__
--  `scenario_execution_interfaces <#scenario-execution-interfaces-package>`__
--  `scenario_execution_rviz <#scenario-execution-rviz-package>`__
--  `scenario_execution_kubernetes <#scenario-execution-kubernetes-package>`__
+Currently, the following sub-packages and libraries are available:
 
-The architecture aims at modularity with each package implementing a
-specific functionality.
+-  :repo_link:`scenario_execution_base`
+-  :repo_link:`scenario_execution`
+-  :repo_link:`scenario_execution_gazebo`
+-  :repo_link:`scenario_execution_control`
+-  :repo_link:`scenario_execution_interfaces`
+-  :repo_link:`scenario_execution_rviz`
+
 
 Design for Modularity
 ---------------------
