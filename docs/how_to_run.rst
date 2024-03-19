@@ -49,7 +49,21 @@ Make sure you have installed the necessary `Visual Studio Code <https://code.vis
 Open Scenario Execution in Development Container
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Open the root folder of the `scenario execution repository <https://github.com/intellabs/scenario_execution>`_ in Visual Studio Code and click the blue item in the lower left corner
+First, build the packages:
+
+.. code-block:: bash
+
+   colcon build
+
+Now, open the root folder of the `scenario execution repository <https://github.com/intellabs/scenario_execution>`_ in Visual Studio Code by running 
+
+.. code-block:: bash
+
+   code /path/to/scenario_execution
+
+in a terminal.
+Make sure, that your ``ROS_DOMAIN_ID`` is properly set in the terminal you start Visual Studio Code from.
+Then, click the blue item in the lower left corner
 
 .. figure:: images/vscode1.png
    :alt: Visual Studio Code item
