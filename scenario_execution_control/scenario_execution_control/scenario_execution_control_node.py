@@ -59,6 +59,10 @@ class ScenarioExecutionControl(Node):
             Empty,
             '/scenario_execution_control/stop_scenario',
             self.stop_scenario)
+        self.declare_parameter('output_directory', '.')
+        self.output_directory = ""
+        if self.get_parameter('output_directory').value:
+            self.output_directory = "-o " + self.get_parameter('output_directory').value
 
     def scenario_execution_log(self, log):  # pylint: disable=no-self-use
         """
@@ -130,7 +134,7 @@ class ScenarioExecutionControl(Node):
 
         # execute scenario
         self.shutdown_requested = False
-        scenario_executed = self._scenario_execution.execute_scenario(current_req.scenario_file)
+        scenario_executed = self._scenario_execution.execute_scenario(current_req.scenario_file, self.output_directory)
         if not scenario_executed:
             self.get_logger().warn("Unable to execute scenario.")
 

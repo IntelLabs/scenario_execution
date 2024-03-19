@@ -24,6 +24,9 @@ def generate_launch_description():
         launch.actions.DeclareLaunchArgument(
             'scenario_dir', description='Directory containing osc2 scenario files'),
 
+        launch.actions.DeclareLaunchArgument(
+            'output_dir', default_value="", description='Directory for output (e.g. test results)'),
+
         launch_ros.actions.Node(
             package='scenario_execution_control',
             executable='scenario_execution_control',
@@ -31,6 +34,9 @@ def generate_launch_description():
             output='screen',
             emulate_tty='True',
             on_exit=launch.actions.Shutdown(),
+            parameters=[
+                {'output_directory': launch.substitutions.LaunchConfiguration('output_dir')},
+            ]
         ),
         launch_ros.actions.Node(
             package='scenario_execution_control',

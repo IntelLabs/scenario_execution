@@ -34,10 +34,10 @@ class ScenarioExecutionRunner(ApplicationRunner):
             log_fct,
             "Executing scenario ")
 
-    def execute_scenario(self, scenario_file):
+    def execute_scenario(self, scenario_file, output_dir):
         """
         Executes scenario
         """
-        cmdline = ["ros2", "run", "scenario_execution", "scenario_execution", scenario_file]
+        cmdline = ["ros2", "run", "scenario_execution", "scenario_execution", scenario_file, output_dir]
 
         return self.execute(cmdline, env=os.environ)
