@@ -114,8 +114,9 @@
             export -n CYCLONEDDS_URI
             export ROS_DOMAIN_ID=2
             export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-            scenario_variation -o scenario_multi_robot_out examples/example_multi_robot/example_multi_robot.osc
-            scenario_batch_execution -i scenario_multi_robot_out -o scenario_multi_robot_test -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+            ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario_execution:=False scenario:=foo yaw:=3.14 &
+            ros2 launch tb4_sim_scenario ignition_robot_launch.py namespace:=turtlebot2 x:=-3.0 y:=1.5 yaw:=-1.57 &
+            scenario_batch_execution -i examples/example_multi_robot/ -o scenario_multi_robot_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
         - name: Test Example Scenario Control
           shell: bash
           run: |
@@ -142,7 +143,7 @@
               scenario_multi_robot_test/test.xml
               scenario_control_test/test.xml
         - name: Upload Scenario Results
-          uses: actions/upload-artifact@v2
+          uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
           if: always()
           with:
             name: junit-reports
