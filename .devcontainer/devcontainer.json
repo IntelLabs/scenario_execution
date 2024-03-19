@@ -11,7 +11,6 @@
             "https_proxy": "${env:https_proxy}",
             "no_proxy": "${env:no_proxy}",
             "NO_PROXY": "${env:NO_PROXY}",
-            //"APT_MIRROR": "my_apt_mirror" // you can add more build arguments, for instance a apt mirror
         }
     },
     "workspaceFolder": "/workspace",
