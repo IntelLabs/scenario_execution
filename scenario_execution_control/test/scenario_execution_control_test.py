@@ -1,3 +1,20 @@
+#!/usr/bin/env python
+# Copyright (C) 2024 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import rclpy
 from rclpy.node import Node
 from scenario_execution_interfaces.srv import ExecuteScenario
@@ -5,7 +22,6 @@ from scenario_execution_interfaces.msg import ScenarioExecutionStatus
 import time
 import argparse
 import sys
-
 
 
 class ScenarioExecutionControlTest(Node):
@@ -31,8 +47,8 @@ class ScenarioExecutionControlTest(Node):
             '/scenario_execution_control/status',
             self.scenario_execution_status_callback,
             10)
-        self.subscription
         self.scenario_status = None
+        self.future = None
 
     def execute_scenario(self, scenario_file):
         self.req.scenario.name = "test_scenario"
@@ -60,7 +76,7 @@ def main(args=None):
     """
     args = ScenarioExecutionControlTest.parse_args(sys.argv[1:])
     rclpy.init()
-    service_timeout = 60 # seconds
+    service_timeout = 60  # seconds
     scenario_execute_control_test = ScenarioExecutionControlTest(service_timeout)
     if not scenario_execute_control_test.execute_scenario_client.service_is_ready():
         sys.exit(1)
@@ -72,8 +88,8 @@ def main(args=None):
         rclpy.spin_once(scenario_execute_control_test, timeout_sec=0.1)
         if scenario_execute_control_test.future.done():
             try:
-                response = scenario_execute_control_test.future.result()
-            except Exception as e:
+                scenario_execute_control_test.future.result()
+            except RuntimeError as e:
                 scenario_execute_control_test.get_logger().info(f'Service call failed: {e}')
                 sys.exit(1)
             else:
