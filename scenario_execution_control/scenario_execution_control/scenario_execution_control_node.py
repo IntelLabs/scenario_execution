@@ -59,7 +59,7 @@ class ScenarioExecutionControl(Node):
             Empty,
             '/scenario_execution_control/stop_scenario',
             self.stop_scenario)
-        self.declare_parameter('output_directory', '.')
+        self.declare_parameter('output_directory', "")
         self.output_directory = ""
         if self.get_parameter('output_directory').value:
             self.output_directory = "-p output_dir:=" + self.get_parameter('output_directory').value
