@@ -37,79 +37,79 @@
             source /opt/ros/humble/setup.bash
             colcon build --continue-on-error
             source install/setup.bash
-        # - name: Test
-        #   shell: bash
-        #   run: |
-        #     source /opt/ros/humble/setup.bash
-        #     source install/setup.bash
-        #     export -n CYCLONEDDS_URI
-        #     export ROS_DOMAIN_ID=2
-        #     colcon test --packages-select \
-        #     scenario_execution_base \
-        #     scenario_execution \
-        #     scenario_execution_gazebo \
-        #     scenario_coverage \
-        #     --event-handlers console_direct+ \
-        #     --return-code-on-test-failure \
-        #     --pytest-args \
-        #     --junit-xml=TEST.xml
-        # - name: Publish Test Results
-        #   uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
-        #   if: always()
-        #   with:
-        #     comment_mode: always
-        #     check_run: false
-        #     files: |
-        #       scenario_execution_base//TEST.xml
-        #       scenario_execution//TEST.xml
-        #       scenario_execution_gazebo//TEST.xml
-        #       scenario_coverage//TEST.xml
-        # - name: Test Example Scenario
-        #   shell: bash
-        #   run: |
-        #     source /opt/ros/humble/setup.bash
-        #     source install/setup.bash
-        #     #shellcheck disable=SC1083
-        #     scenario_batch_execution -i examples/example_scenario/ -o example_scenario_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-        # - name: Test Example Nav2
-        #   shell: bash
-        #   run: |
-        #     source /opt/ros/humble/setup.bash
-        #     source install/setup.bash
-        #     Xvfb :1 -screen 0 800x600x16 &
-        #     export DISPLAY=:1.0
-        #     export -n CYCLONEDDS_URI
-        #     export ROS_DOMAIN_ID=2
-        #     export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-        #     # shellcheck disable=SC1083
-        #     scenario_batch_execution -i examples/example_nav2/ -o example_nav2_test -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-        # - name: Test Example Simulation
-        #   shell: bash
-        #   run: |
-        #     source /opt/ros/humble/setup.bash
-        #     source install/setup.bash
-        #     Xvfb :1 -screen 0 800x600x16 &
-        #     export DISPLAY=:1.0
-        #     export -n CYCLONEDDS_URI
-        #     export ROS_DOMAIN_ID=2
-        #     export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-        #     # shellcheck disable=SC1083
-        #     scenario_batch_execution -i examples/example_simulation/scenarios -o example_simulation_test -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR} 
-        # - name: Test Example Library
-        #   shell: bash
-        #   run: |
-        #     source /opt/ros/humble/setup.bash
-        #     source install/setup.bash
-        #     # shellcheck disable=SC1083
-        #     scenario_batch_execution -i examples/example_library/scenarios -o example_library_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-        # - name: Test Example Variation
-        #   shell: bash
-        #   run: |
-        #     source /opt/ros/humble/setup.bash
-        #     source install/setup.bash
-        #     scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
-        #     # shellcheck disable=SC1083
-        #     scenario_batch_execution -i scenario_variation_out -o scenario_variation_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        - name: Test
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            export -n CYCLONEDDS_URI
+            export ROS_DOMAIN_ID=2
+            colcon test --packages-select \
+            scenario_execution_base \
+            scenario_execution \
+            scenario_execution_gazebo \
+            scenario_coverage \
+            --event-handlers console_direct+ \
+            --return-code-on-test-failure \
+            --pytest-args \
+            --junit-xml=TEST.xml
+        - name: Publish Test Results
+          uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+          if: always()
+          with:
+            comment_mode: always
+            check_run: false
+            files: |
+              scenario_execution_base//TEST.xml
+              scenario_execution//TEST.xml
+              scenario_execution_gazebo//TEST.xml
+              scenario_coverage//TEST.xml
+        - name: Test Example Scenario
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            #shellcheck disable=SC1083
+            scenario_batch_execution -i examples/example_scenario/ -o example_scenario_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        - name: Test Example Nav2
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            Xvfb :1 -screen 0 800x600x16 &
+            export DISPLAY=:1.0
+            export -n CYCLONEDDS_URI
+            export ROS_DOMAIN_ID=2
+            export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+            # shellcheck disable=SC1083
+            scenario_batch_execution -i examples/example_nav2/ -o example_nav2_test -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        - name: Test Example Simulation
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            Xvfb :1 -screen 0 800x600x16 &
+            export DISPLAY=:1.0
+            export -n CYCLONEDDS_URI
+            export ROS_DOMAIN_ID=2
+            export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+            # shellcheck disable=SC1083
+            scenario_batch_execution -i examples/example_simulation/scenarios -o example_simulation_test -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR} 
+        - name: Test Example Library
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            # shellcheck disable=SC1083
+            scenario_batch_execution -i examples/example_library/scenarios -o example_library_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        - name: Test Example Variation
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
+            # shellcheck disable=SC1083
+            scenario_batch_execution -i scenario_variation_out -o scenario_variation_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
         - name: Test Example Scenario Control
           shell: bash
           run: |
@@ -122,7 +122,7 @@
             export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
             mkdir scenario_control_test
             python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenario_execution_control.osc &
-            timeout 180 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario:=scenario_execution_control/test/ output_dir:=scenario_control_test
+            timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/ output_dir:=scenario_control_test || true
         - name: Test Example MultiRobot
           shell: bash
           run: |
@@ -137,33 +137,33 @@
             ros2 launch tb4_sim_scenario ignition_robot_launch.py namespace:=turtlebot2 x:=-3.0 y:=1.5 yaw:=-1.57 &
             # shellcheck disable=SC1083
             scenario_batch_execution -i examples/example_multi_robot/ -o scenario_multi_robot_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-        # - name: Publish Scenario Results
-        #   uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
-        #   if: always()
-        #   with:
-        #     check_name: Scenario Results
-        #     check_run: false
-        #     action_fail: true
-        #     comment_mode: always
-        #     files: |
-        #       example_scenario_test/test.xml
-        #       example_nav2_test/test.xml
-        #       example_simulation_test/test.xml
-        #       example_library_test/test.xml
-        #       scenario_variation_test/test.xml
-        #       scenario_multi_robot_test/test.xml
-        #       scenario_control_test/test.xml
-        # - name: Upload Scenario Results
-        #   uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
-        #   if: always()
-        #   with:
-        #     name: junit-reports
-        #     path: |
-        #       example_scenario_test/test.xml
-        #       example_nav2_test/test.xml
-        #       example_simulation_test/test.xml
-        #       example_library_test/test.xml
-        #       scenario_variation_test/test.xml
-        #       scenario_multi_robot_test/test.xml
-        #       scenario_control_test/test.xml
+        - name: Publish Scenario Results
+          uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+          if: always()
+          with:
+            check_name: Scenario Results
+            check_run: false
+            action_fail: true
+            comment_mode: always
+            files: |
+              example_scenario_test/test.xml
+              example_nav2_test/test.xml
+              example_simulation_test/test.xml
+              example_library_test/test.xml
+              scenario_variation_test/test.xml
+              scenario_multi_robot_test/test.xml
+              scenario_control_test/test.xml
+        - name: Upload Scenario Results
+          uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+          if: always()
+          with:
+            name: junit-reports
+            path: |
+              example_scenario_test/test.xml
+              example_nav2_test/test.xml
+              example_simulation_test/test.xml
+              example_library_test/test.xml
+              scenario_variation_test/test.xml
+              scenario_multi_robot_test/test.xml
+              scenario_control_test/test.xml
   
