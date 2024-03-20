@@ -62,7 +62,7 @@ class ScenarioExecutionControl(Node):
         self.declare_parameter('output_directory', '.')
         self.output_directory = ""
         if self.get_parameter('output_directory').value:
-            self.output_directory = "-o " + self.get_parameter('output_directory').value
+            self.output_directory = "-p output_dir:=" + self.get_parameter('output_directory').value
 
     def scenario_execution_log(self, log):  # pylint: disable=no-self-use
         """
