@@ -1,0 +1,12 @@
+import osc.standard
+import osc.helpers
+
+scenario scenario_control:
+    do serial:
+        log() with:
+            keep(it.msg in "Hello Control!")
+            wait elapsed(3s)
+            keep(it.msg in "Control Runnunig....")
+            wait elapsed(3s)
+            keep(it.msg in "Success!")
+        emit end
