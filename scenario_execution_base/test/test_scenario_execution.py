@@ -43,33 +43,27 @@ class TestOSC2Parser(unittest.TestCase):
         self.assertFalse(result)
 
     def test_no_scenario(self):
-        #self.scenario_dir = get_package_share_directory('scenario_execution_base')
         scenario_execution = ScenarioExecution(debug=False,
                                                log_model=False,
                                                live_tree=False,
-                                               #scenario_file=os.path.join(self.scenario_dir, 'test', 'scenarios', 'test_scenario.osc'),
                                                scenario_file=os.path.join(os.path.dirname(__file__), 'scenarios', 'no_scenario.osc'),
                                                output_dir="")
         result = scenario_execution.parse()
         self.assertFalse(result)
 
     def test_scenario(self):
-        #self.scenario_dir = get_package_share_directory('scenario_execution_base')
         scenario_execution = ScenarioExecution(debug=False,
                                                log_model=False,
                                                live_tree=False,
-                                               #scenario_file=os.path.join(self.scenario_dir, 'test', 'scenarios', 'test_scenario.osc'),
                                                scenario_file=os.path.join(os.path.dirname(__file__), 'scenarios', 'test_scenario.osc'),
                                                output_dir="")
         result = scenario_execution.parse()
         self.assertTrue(result)
 
     def test_two_scenarios(self):
-        #self.scenario_dir = get_package_share_directory('scenario_execution_base')
         scenario_execution = ScenarioExecution(debug=False,
                                                log_model=False,
                                                live_tree=False,
-                                               #scenario_file=os.path.join(self.scenario_dir, 'test', 'scenarios', 'test_scenario.osc'),
                                                scenario_file=os.path.join(os.path.dirname(__file__), 'scenarios', 'two_scenarios.osc'),
                                                output_dir="")
         result = scenario_execution.parse()
