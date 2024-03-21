@@ -20,7 +20,7 @@ from pkg_resources import iter_entry_points
 
 import inspect
 
-from scenario_execution_base.model.types import EventReference, CoverDeclaration, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral
+from scenario_execution_base.model.types import EventReference, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral
 from scenario_execution_base.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution_base.model.error import OSC2ParsingError
 
@@ -117,8 +117,8 @@ class ModelToPyTree(object):
         behavior_trees = behavior_builder.get_behavior_trees()
 
         if behavior_trees and log_tree:
-            for tree in behavior_trees:
-                print(py_trees.display.ascii_tree(tree))
+            for t in behavior_trees:
+                print(py_trees.display.ascii_tree(t))
 
         return behavior_trees
 

@@ -19,7 +19,7 @@ import sys
 from datetime import datetime
 import rclpy  # pylint: disable=import-error
 import py_trees_ros  # pylint: disable=import-error
-from scenario_execution_base import ScenarioExecution, ScenarioResult
+from scenario_execution_base import ScenarioExecution
 from .logging_ros import RosLogger
 from .marker_handler import MarkerHandler
 

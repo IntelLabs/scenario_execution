@@ -280,9 +280,9 @@ class ScenarioExecution(object):
             result = False
         if self.behaviour_tree.root.status == py_trees.common.Status.SUCCESS:
             result = True
-        if self.blackboard.end == True:
+        if self.blackboard.end is True:
             result = True
-        if self.blackboard.fail == True:
+        if self.blackboard.fail is True:
             result = False
         if result is not None:
             self.on_scenario_shutdown(result)
