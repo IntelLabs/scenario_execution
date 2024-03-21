@@ -23,7 +23,6 @@ from scenario_execution import ROSScenarioExecution
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.model.model_to_py_tree import create_py_tree
 from scenario_execution_base.utils.logging import Logger
-from ament_index_python.packages import get_package_share_directory
 from antlr4.InputStream import InputStream
 
 os.environ["PYTHONUNBUFFERED"] = '1'
@@ -52,7 +51,6 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.callback_group = rclpy.callback_groups.ReentrantCallbackGroup()
         self.srv = self.node.create_timer(1, self.callback)
 
-        self.scenario_dir = get_package_share_directory('scenario_execution')
         self.parser = OpenScenario2Parser(Logger('test'))
         self.scenario_execution = ROSScenarioExecution()
 

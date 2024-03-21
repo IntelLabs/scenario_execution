@@ -23,7 +23,6 @@ from scenario_execution_base import ScenarioExecution
 from .logging_ros import RosLogger
 from .marker_handler import MarkerHandler
 
-
 class ROSScenarioExecution(ScenarioExecution):
     """
     Class for scenario execution using ROS2 as middleware
@@ -31,6 +30,9 @@ class ROSScenarioExecution(ScenarioExecution):
 
     def __init__(self) -> None:
         self.node = rclpy.create_node(node_name="scenario_execution")
+        self.marker_handler = MarkerHandler(self.node)
+        self.current_scenario_start = None
+        self.current_scenario = None
 
         # parse from commandline
         args_without_ros = rclpy.utilities.remove_ros_args(sys.argv[1:])
@@ -58,7 +60,7 @@ class ROSScenarioExecution(ScenarioExecution):
             scenario = self.node.get_parameter('scenario').value
         if self.node.get_parameter('output_dir').value:
             output_dir = self.node.get_parameter('output_dir').value
-        super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario=scenario, output_dir=output_dir)
+        super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario_file=scenario, output_dir=output_dir)
 
     def _get_logger(self):
         """
@@ -79,67 +81,42 @@ class ROSScenarioExecution(ScenarioExecution):
             py_trees_ros.trees.BehaviourTree
         """
         return py_trees_ros.trees.BehaviourTree(tree)
-
+    
+    
+    
     def run(self) -> bool:
-        """
-        Setup behaviour tree and run ROS node
-
-        return:
-            True if all scenarios are executed successfully
-        """
-        try:
-            executor = rclpy.executors.MultiThreadedExecutor()
-        except Exception as e:
-            print(f"FAILURE {e}")
+        if len(self.scenarios) != 1:
+            self.logger.error(f"Only one scenario per file is supported.")
             return False
-        marker_handler = MarkerHandler(self.node)
-        executor.add_node(self.node)
+        self.current_scenario = self.scenarios[0]
+    
+        self.logger.info(f"Executing scenario '{self.current_scenario.name}'")
+        self.current_scenario_start = datetime.now()
 
-        if not self.scenarios:
-            self.logger.info("No scenarios to execute.")
+        result = self.setup(self.current_scenario, node=self.node, marker_handler=self.marker_handler)
 
-        failure = False
-        for tree in self.scenarios:
-            self.logger.info(f"Executing scenario '{tree.name}'")
-            start = datetime.now()
-            if not tree:
-                self.logger.error(f'Scenario {tree.name} has no executables.')
-                failure = True
-                continue
+        if result:
+            self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
 
-            result = self.setup(tree, node=self.node, marker_handler=marker_handler)
-            if not result:
-                failure = True
+        return result
 
-            if result:
-                self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
 
-                # Spin ROS node
-                while rclpy.ok() and not self.shutdown_requested:
-                    try:
-                        # rclpy.spin_once(self.behaviour_tree.node)
-                        executor.spin_once()
-                    except KeyboardInterrupt:
-                        self.blackboard.fail = True
-                        break
+    def on_scenario_shutdown(self, result):
+        self.behaviour_tree.interrupt()
+        if result:
+            self.logger.info(f"Scenario '{self.current_scenario.name}' succeeded.")
+        else:
+            self.logger.error(f"Scenario '{self.current_scenario.name}' failed.")
+            if self.log_model:
+                self.logger.error(self.last_snapshot_visitor.last_snapshot)
 
-                self.behaviour_tree.interrupt()
-                failure = failure or self.blackboard.fail
-                result = not self.blackboard.fail
-            if result:
-                self.logger.info(f"Scenario '{tree.name}' succeeded.")
-            else:
-                self.logger.error(f"Scenario '{tree.name}' failed.")
-                if self.log_model:
-                    self.logger.error(self.last_snapshot_visitor.last_snapshot)
-
-            self.add_result((tree.name, self.blackboard.fail, "execution failed",
-                            self.last_snapshot_visitor.last_snapshot, datetime.now() - start))
-            self.cleanup_behaviours(tree)
-            self.behaviour_tree.shutdown()
-
-        return not failure
-
+        self.add_result((self.current_scenario.name, result, "execution failed",
+                        self.last_snapshot_visitor.last_snapshot, datetime.now() - self.current_scenario_start))
+        self.cleanup_behaviours(self.current_scenario)
+        self.behaviour_tree.shutdown()
+        self.node.destroy_node()
+        self.node.executor.create_task(self.node.executor.shutdown)
+  
 
 def main():
     """
@@ -147,12 +124,19 @@ def main():
     """
     rclpy.init(args=sys.argv)
     ros_scenario_execution = ROSScenarioExecution()
-    result = ros_scenario_execution.parse()
+    result = ros_scenario_execution.parse()        
 
     if result:
-        result = ros_scenario_execution.run()
-    rclpy.try_shutdown()
+        executor = rclpy.executors.MultiThreadedExecutor()
+        executor.add_node(ros_scenario_execution.node)
+        ros_scenario_execution.run()
+        try:
+            executor.spin()
+        except KeyboardInterrupt:
+            print("Execution got canceled. Exiting...")
+            ros_scenario_execution.on_scenario_shutdown(False)
     ros_scenario_execution.report_results()
+    rclpy.try_shutdown()
     if result:
         sys.exit(0)
     else:

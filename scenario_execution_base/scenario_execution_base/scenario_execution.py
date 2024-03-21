@@ -53,14 +53,14 @@ class ScenarioExecution(object):
                  debug: bool,
                  log_model: bool,
                  live_tree: bool,
-                 scenario: str,
+                 scenario_file: str,
                  output_dir: str,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_tock_period: float = 0.1) -> None:
         self.debug = debug
         self.log_model = log_model
         self.live_tree = live_tree
-        self.scenario = scenario
+        self.scenario_file = scenario_file
         self.output_dir = output_dir
         self.logger = self._get_logger()
 
@@ -124,8 +124,8 @@ class ScenarioExecution(object):
         try:
             self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, output_dir=self.output_dir, **kwargs)
             return True
-        except RuntimeError:
-            self.logger.error('Setup Timeout exceeded. Aborting...')
+        except RuntimeError as e:
+            self.logger.error(f'Runtime Error "{e}". Aborting... ')
             return False
         except Exception as e:  # pylint: disable=broad-except
             self.logger.error(f"Error while setting up tree: {e}")
@@ -153,60 +153,63 @@ class ScenarioExecution(object):
         return:
             True if no errors occured during parsing
         """
-        if self.scenario is None:
+        if self.scenario_file is None:
             self.logger.error(f"No scenario file given.")
             return False
-        file_extension = os.path.splitext(self.scenario)[1]
+        file_extension = os.path.splitext(self.scenario_file)[1]
         if file_extension == '.osc':
             parser = OpenScenario2Parser(self.logger)
         elif file_extension == '.sce':
             parser = ModelFileLoader(self.logger)
         else:
-            self.logger.error(f"File '{self.scenario}' has unknown extension '{file_extension}'. Allowed [.osc, .sce]")
+            self.logger.error(f"File '{self.scenario_file}' has unknown extension '{file_extension}'. Allowed [.osc, .sce]")
             return False
 
         start = datetime.now()
-        self.scenarios = parser.process_file(self.scenario, self.log_model, self.debug)
+        if not os.path.isfile(self.scenario_file):
+            self.add_result((f'Parsing of {self.scenario_file}', True, "File does not exist", "", datetime.now() - start))
+            self.logger.error(f'Parsing of {self.scenario_file} failed: File does not exist!')
+            return False
+        self.scenarios = parser.process_file(self.scenario_file, self.log_model, self.debug)
         if self.scenarios is None:
-            self.add_result((f'Parsing of {self.scenario}', True, "parsing failed", "", datetime.now() - start))
-        return self.scenarios is not None
+            self.add_result((f'Parsing of {self.scenario_file}', True, "parsing failed", "", datetime.now() - start))
+        if len(self.scenarios) == 0:
+            self.add_result((f'Parsing of {self.scenario_file}', True, "no scenario defined", "", datetime.now() - start))
+            self.logger.error(f'Parsing of {self.scenario_file} failed: No scenarios defined!')
+        if len(self.scenarios) != 1:
+            self.add_result((f'Parsing of {self.scenario_file}', True, f"more than one ({len(self.scenarios)}) scenario defined", "", datetime.now() - start))
+            self.logger.error(f'Parsing of {self.scenario_file} failed: More than one ({len(self.scenarios)}) scenarios defined. Only one allowed! Use separate files and scenario_batch_execution instead.')
+            
+        return self.scenarios is not None and len(self.scenarios) == 1
 
-    def run(self) -> bool:
-        """
-        Run all scenarios
-
-        return:
-            True if all scenarios are executed successfully
-        """
-        if not self.scenarios:
-            self.logger.info("No scenarios to execute.")
-
-        failure = False
-        for tree in self.scenarios:
-            start = datetime.now()
-            if not tree:
-                self.logger.error(f'Scenario {tree.name} has no executables.')
-                continue
-            if not self.setup(tree):
-                failure = True
-                self.logger.error(f'Scenario {tree.name} failed to setup.')
-                continue
-            while not self.shutdown_requested:
-                try:
-                    self.behaviour_tree.tick()
-                    time.sleep(self.tick_tock_period)
-                    if self.live_tree:
-                        self.logger.debug(py_trees.display.unicode_tree(
-                            root=self.behaviour_tree.root, show_status=True))
-                except KeyboardInterrupt:
-                    self.behaviour_tree.interrupt()
-                    self.blackboard.fail = True
-                    break
-            if self.blackboard.fail:
-                self.logger.error(f'Scenario {tree.name} failed.')
-            failure = failure or self.blackboard.fail
-            self.add_result((tree.name, self.blackboard.fail, "execution failed", "", datetime.now()-start))
-            self.cleanup_behaviours(tree)
+    def run(self) -> bool:        
+        if len(self.scenarios) != 1:
+            self.logger.error(f"Only one scenario per file is supported.")
+            return False
+        scenario = self.scenarios[0]
+        start = datetime.now()
+        
+        if not self.setup(scenario):
+            failure = True
+            self.logger.error(f'Scenario {scenario.name} failed to setup.')
+        while not self.shutdown_requested:
+            try:
+                self.behaviour_tree.tick()
+                time.sleep(self.tick_tock_period)
+                if self.live_tree:
+                    self.logger.debug(py_trees.display.unicode_tree(
+                        root=self.behaviour_tree.root, show_status=True))
+            except KeyboardInterrupt:
+                self.behaviour_tree.interrupt()
+                self.blackboard.fail = True
+                break
+        if self.blackboard.fail:
+            self.logger.error(f'Scenario {scenario.name} failed.')
+        else:
+            self.logger.info(f"Scenario '{scenario.name}' succeeded.")
+        failure = failure or self.blackboard.fail
+        self.add_result((scenario.name, self.blackboard.fail, "execution failed", "", datetime.now()-start))
+        self.cleanup_behaviours(scenario)
         return not failure
 
     def add_result(self, result):
@@ -218,7 +221,7 @@ class ScenarioExecution(object):
             failures = 0
             overall_time = timedelta(0)
             for result in self.results:
-                if result[1]:
+                if result[1] is False:
                     failures += 1
                 overall_time += result[4]
             try:
@@ -228,7 +231,7 @@ class ScenarioExecution(object):
                         f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')
                     for result in self.results:
                         out.write(f'  <testcase classname="tests.scenario" name="{result[0]}" time="{result[4].total_seconds()}">\n')
-                        if result[1]:
+                        if result[1] is False:
                             out.write(f'    <failure message="{result[2]}">{result[3]}</failure>\n')
                         out.write(f'  </testcase>\n')
                     out.write("</testsuite>\n")
@@ -244,16 +247,22 @@ class ScenarioExecution(object):
                 f"--------- Scenario {behaviour_tree.root.name}: Run {behaviour_tree.count} ---------")
 
     def post_tick_handler(self, behaviour_tree):
-        """
-        Things to do after a round of ticking
-        """
-        # Shut down if the root is failed
+        result = None
         if self.behaviour_tree.root.status == py_trees.common.Status.FAILURE:
-            self.blackboard.fail = True
+            result = False
         if self.behaviour_tree.root.status == py_trees.common.Status.SUCCESS:
-            self.blackboard.end = True
-        self.shutdown_requested = self.blackboard.fail or self.blackboard.end
+            result = True
+        if result is None:
+            if self.blackboard.end == True:
+                result = True
+            if self.blackboard.fail == True:
+                result = False
+        if result is not None:
+            self.on_scenario_shutdown(result)
 
+    def on_scenario_shutdown(self, _):
+        self.shutdown_requested = True
+        
     def cleanup_behaviours(self, tree):
         """
         Run cleanup functions in all behaviors
@@ -301,7 +310,7 @@ def main():
     scenario_execution = ScenarioExecution(debug=args.debug,
                                            log_model=args.log_model,
                                            live_tree=args.live_tree,
-                                           scenario=args.scenario,
+                                           scenario_file=args.scenario,
                                            output_dir=args.output_dir)
 
     result = scenario_execution.parse()

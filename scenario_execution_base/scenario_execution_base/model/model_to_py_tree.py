@@ -27,16 +27,16 @@ from scenario_execution_base.model.error import OSC2ParsingError
 
 def create_py_tree(model, logger, log_tree):
     model_to_py_tree = ModelToPyTree(logger)
-    scenario = None
+    behavior_trees = None
     try:
-        scenario = model_to_py_tree.build(model, log_tree)
+        behavior_trees = model_to_py_tree.build(model, log_tree)
     except OSC2ParsingError as e:
         logger.error(
             f'Error while creating tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n'
             f'{e.__class__.__name__}: {e.msg}'
         )
         return None
-    return [scenario]
+    return behavior_trees
 
 
 class TopicEquals(py_trees.behaviour.Behaviour):
@@ -111,36 +111,33 @@ class ModelToPyTree(object):
         self.logger = logger
 
     def build(self, tree, log_tree):
-        if tree.find_children_of_type(CoverDeclaration):
-            raise ValueError("Model still contains CoverageDeclarations.")
         behavior_builder = self.BehaviorInit(self.logger)
         behavior_builder.visit(tree)
 
-        behavior_tree = behavior_builder.get_behavior_tree()
+        behavior_trees = behavior_builder.get_behavior_trees()
 
-        if behavior_tree and log_tree:
-            print(py_trees.display.ascii_tree(behavior_tree))
+        if behavior_trees and log_tree:
+            for tree in behavior_trees:
+                print(py_trees.display.ascii_tree(tree))
 
-        return behavior_tree
+        return behavior_trees
 
     class BehaviorInit(ModelBaseVisitor):
         def __init__(self, logger) -> None:
             super().__init__()
             self.logger = logger
-            self.root_behavior = None
+            self.behavior_trees = []
             self.__cur_behavior = None
 
-        def get_behavior_tree(self):
-            return self.root_behavior
+        def get_behavior_trees(self):
+            return self.behavior_trees
 
         def visit_scenario_declaration(self, node: ScenarioDeclaration):
             scenario_name = node.qualified_behavior_name
-            if self.root_behavior:
-                raise ValueError(
-                    f"Could not add scenario {scenario_name}. Scenario {self.root_behavior.name} already defined.")
 
-            self.root_behavior = py_trees.composites.Sequence(name=scenario_name)
-            self.__cur_behavior = self.root_behavior
+            behavior_tree = py_trees.composites.Sequence(name=scenario_name)
+            self.__cur_behavior = behavior_tree
+            self.behavior_trees.append(behavior_tree)
 
             super().visit_scenario_declaration(node)
 
@@ -174,7 +171,7 @@ class ModelToPyTree(object):
         def visit_emit_directive(self, node: EmitDirective):
             if node.event_name in ['start', 'end', 'fail']:
                 self.__cur_behavior.add_child(TopicPublish(
-                    name=f"emit {node.event_name}", key=f"/{self.root_behavior.name}/{node.event_name}", msg=True))
+                    name=f"emit {node.event_name}", key=f"/{self.behavior_trees[-1].name}/{node.event_name}", msg=True))
             else:
                 qualified_name = node.event.get_qualified_name()
                 self.__cur_behavior.add_child(TopicPublish(
