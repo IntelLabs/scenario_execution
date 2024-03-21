@@ -31,6 +31,7 @@
             rosdep update --rosdistro=humble 
             rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
             pip3 install -r requirements.txt
+            apt install ros-humble-controller-manager
         - name: Build
           shell: bash
           run: |
