@@ -38,6 +38,7 @@ jobs:
           PYTHON_PYLINT_CONFIG_FILE: .pylintrc
           LOG_FILE: super-linter.log
           CREATE_LOG_FILE: true
+          FILTER_REGEX_EXCLUDE: .*/pull_request_template.md
   trivy:
     name: Trivy
     runs-on: intellabs-01
