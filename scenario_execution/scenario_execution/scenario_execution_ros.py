@@ -23,6 +23,7 @@ from scenario_execution_base import ScenarioExecution
 from .logging_ros import RosLogger
 from .marker_handler import MarkerHandler
 
+
 class ROSScenarioExecution(ScenarioExecution):
     """
     Class for scenario execution using ROS2 as middleware
@@ -81,15 +82,13 @@ class ROSScenarioExecution(ScenarioExecution):
             py_trees_ros.trees.BehaviourTree
         """
         return py_trees_ros.trees.BehaviourTree(tree)
-    
-    
-    
+
     def run(self) -> bool:
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
             return False
         self.current_scenario = self.scenarios[0]
-    
+
         self.logger.info(f"Executing scenario '{self.current_scenario.name}'")
         self.current_scenario_start = datetime.now()
 
@@ -99,7 +98,6 @@ class ROSScenarioExecution(ScenarioExecution):
             self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
 
         return result
-
 
     def on_scenario_shutdown(self, result):
         self.behaviour_tree.interrupt()
@@ -116,7 +114,7 @@ class ROSScenarioExecution(ScenarioExecution):
         self.behaviour_tree.shutdown()
         self.node.destroy_node()
         self.node.executor.create_task(self.node.executor.shutdown)
-  
+
 
 def main():
     """
@@ -124,7 +122,7 @@ def main():
     """
     rclpy.init(args=sys.argv)
     ros_scenario_execution = ROSScenarioExecution()
-    result = ros_scenario_execution.parse()        
+    result = ros_scenario_execution.parse()
 
     if result:
         executor = rclpy.executors.MultiThreadedExecutor()

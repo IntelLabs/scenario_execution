@@ -177,18 +177,20 @@ class ScenarioExecution(object):
             self.add_result((f'Parsing of {self.scenario_file}', True, "no scenario defined", "", datetime.now() - start))
             self.logger.error(f'Parsing of {self.scenario_file} failed: No scenarios defined!')
         if len(self.scenarios) != 1:
-            self.add_result((f'Parsing of {self.scenario_file}', True, f"more than one ({len(self.scenarios)}) scenario defined", "", datetime.now() - start))
-            self.logger.error(f'Parsing of {self.scenario_file} failed: More than one ({len(self.scenarios)}) scenarios defined. Only one allowed! Use separate files and scenario_batch_execution instead.')
-            
+            self.add_result((f'Parsing of {self.scenario_file}', True,
+                            f"more than one ({len(self.scenarios)}) scenario defined", "", datetime.now() - start))
+            self.logger.error(
+                f'Parsing of {self.scenario_file} failed: More than one ({len(self.scenarios)}) scenarios defined. Only one allowed! Use separate files and scenario_batch_execution instead.')
+
         return self.scenarios is not None and len(self.scenarios) == 1
 
-    def run(self) -> bool:        
+    def run(self) -> bool:
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
             return False
         scenario = self.scenarios[0]
         start = datetime.now()
-        
+
         if not self.setup(scenario):
             failure = True
             self.logger.error(f'Scenario {scenario.name} failed to setup.')
@@ -262,7 +264,7 @@ class ScenarioExecution(object):
 
     def on_scenario_shutdown(self, _):
         self.shutdown_requested = True
-        
+
     def cleanup_behaviours(self, tree):
         """
         Run cleanup functions in all behaviors

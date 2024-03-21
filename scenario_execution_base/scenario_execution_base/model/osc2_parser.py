@@ -45,7 +45,7 @@ class OpenScenario2Parser(object):
         try:
             model = self.create_internal_model(parsed_tree, file, log_model, debug)
         except Exception:
-            return None 
+            return None
         if model is None:
             return None
 
