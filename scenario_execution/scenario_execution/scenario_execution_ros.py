@@ -86,7 +86,7 @@ class ROSScenarioExecution(ScenarioExecution):
             self.logger.error(f"Only one scenario per file is supported.")
             return False
         self.current_scenario = self.scenarios[0]
-        
+
         executor = rclpy.executors.MultiThreadedExecutor()
         executor.add_node(self.node)
 
@@ -102,13 +102,14 @@ class ROSScenarioExecution(ScenarioExecution):
         except KeyboardInterrupt:
             print("Execution got canceled. Exiting...")
             self.on_scenario_shutdown(False, "Aborted")
-            
+
         return self.process_results()
 
-    def on_scenario_shutdown(self, result, failure_message = ""):
+    def on_scenario_shutdown(self, result, failure_message=""):
         super().on_scenario_shutdown(result, failure_message)
         self.node.destroy_node()
         self.node.executor.create_task(self.node.executor.shutdown)
+
 
 def main():
     """
@@ -120,7 +121,7 @@ def main():
 
     if result:
         result = ros_scenario_execution.run()
-    
+
     rclpy.try_shutdown()
     if result:
         sys.exit(0)

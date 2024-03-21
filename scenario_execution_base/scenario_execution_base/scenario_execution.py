@@ -24,7 +24,8 @@ from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.utils.logging import Logger
 from scenario_execution_base.model.model_file_loader import ModelFileLoader
 from dataclasses import dataclass
-    
+
+
 @dataclass
 class ScenarioResult:
     name: str
@@ -32,7 +33,7 @@ class ScenarioResult:
     failure_message: str
     failure_output: str = ""
     processing_time: timedelta = timedelta(0)
-        
+
 
 class LastSnapshotVisitor(py_trees.visitors.DisplaySnapshotVisitor):
 
@@ -178,10 +179,10 @@ class ScenarioExecution(object):
 
         start = datetime.now()
         if not os.path.isfile(self.scenario_file):
-            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}', 
-                                           result=False, 
+            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
+                                           result=False,
                                            failure_message="parsing failed",
-                                           failure_output="File does not exist", 
+                                           failure_output="File does not exist",
                                            processing_time=datetime.now() - start))
             return False
         self.scenarios = parser.process_file(self.scenario_file, self.log_model, self.debug)
@@ -195,7 +196,7 @@ class ScenarioExecution(object):
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
                                            failure_message="parsing failed",
-                                           failure_output="no scenario defined", 
+                                           failure_output="no scenario defined",
                                            processing_time=datetime.now() - start))
         if len(self.scenarios) != 1:
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
@@ -229,7 +230,7 @@ class ScenarioExecution(object):
         if result.result is False:
             self.logger.error(f"{result.name}: {result.failure_message} {result.failure_output}")
         self.results.append(result)
-    
+
     def process_results(self):
         result = True
         if len(self.results) == 0:
@@ -255,7 +256,8 @@ class ScenarioExecution(object):
                     out.write(
                         f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')
                     for res in self.results:
-                        out.write(f'  <testcase classname="tests.scenario" name="{res.name}" time="{res.processing_time.total_seconds()}">\n')
+                        out.write(
+                            f'  <testcase classname="tests.scenario" name="{res.name}" time="{res.processing_time.total_seconds()}">\n')
                         if res.result is False:
                             out.write(f'    <failure message="{res.failure_message}">{res.failure_output}</failure>\n')
                         out.write(f'  </testcase>\n')
@@ -285,7 +287,7 @@ class ScenarioExecution(object):
         if result is not None:
             self.on_scenario_shutdown(result)
 
-    def on_scenario_shutdown(self, result, failure_message = ""):
+    def on_scenario_shutdown(self, result, failure_message=""):
         self.shutdown_requested = True
         self.behaviour_tree.interrupt()
         failure_output = ""
@@ -298,10 +300,10 @@ class ScenarioExecution(object):
             if self.log_model:
                 self.logger.error(self.last_snapshot_visitor.last_snapshot)
         self.add_result(ScenarioResult(name=self.current_scenario.name,
-                                result=result,
-                                failure_message=failure_message,
-                                failure_output=failure_output,
-                                processing_time=datetime.now()-self.current_scenario_start))
+                                       result=result,
+                                       failure_message=failure_message,
+                                       failure_output=failure_output,
+                                       processing_time=datetime.now()-self.current_scenario_start))
         self.cleanup_behaviours(self.current_scenario)
         self.behaviour_tree.shutdown()
 

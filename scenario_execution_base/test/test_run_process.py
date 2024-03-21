@@ -38,9 +38,9 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ScenarioExecution(debug=False,
                                                     log_model=False,
-                                                    live_tree= False,
-                                                    scenario_file= 'test',
-                                                    output_dir= '')
+                                                    live_tree=False,
+                                                    scenario_file='test',
+                                                    output_dir='')
 
     def test_failure(self):
         scenario_content = """
@@ -66,7 +66,6 @@ scenario test_run_process:
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()
         self.assertFalse(ret)
-        
 
     def test_success(self):
         scenario_content = """

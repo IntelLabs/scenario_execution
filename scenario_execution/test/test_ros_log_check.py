@@ -82,7 +82,6 @@ scenario test_log_check:
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()
         self.assertTrue(ret)
-        
 
     def test_timeout(self):
         scenario_content = """
