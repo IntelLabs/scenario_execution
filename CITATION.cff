@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Pasch"
+  given-names: "Frederik"
+  orcid: "https://orcid.org/0000-0002-2626-1538"
+- family-names: "Mirus"
+  given-names: "Florian"
+  orcid: "https://orcid.org/0000-0001-8923-6009"
+- family-names: "Zhang"
+  given-names: "Yongzhou"
+  orcid: "https://orcid.org/0009-0003-0043-8950"
+- family-names: "Scholl"
+  given-names: "Kay-Ulrich"
+  orcid: "https://orcid.org/0000-0001-6337-1798"
+title: "Scenario Execution for Robotics"
+date-released: "2024-03-05"
+url: "https://github.com/intellabs/scenario_execution"
+preferred-citation:
+  type: unpublished
+  authors:
+    - family-names: "Pasch"
+      given-names: "Frederik"
+      orcid: "https://orcid.org/0000-0002-2626-1538"
+    - family-names: "Mirus"
+      given-names: "Florian"
+      orcid: "https://orcid.org/0000-0001-8923-6009"
+    - family-names: "Zhang"
+      given-names: "Yongzhou"
+      orcid: "https://orcid.org/0009-0003-0043-8950"
+    - family-names: "Scholl"
+      given-names: "Kay-Ulrich"
+      orcid: "https://orcid.org/0000-0001-6337-1798"
+  title: "Scenario Execution for Robotics: A generic, backend-agnostic library for running reproducible robotics experiments and tests"
+  year: 2024
+  notes: "Submitted for publication, currently under review"

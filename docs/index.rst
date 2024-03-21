@@ -33,3 +33,4 @@ gets cleaned up.
    libraries
    development
    openscenario2
+   how_to_cite
