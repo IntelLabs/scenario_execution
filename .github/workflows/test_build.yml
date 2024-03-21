@@ -78,11 +78,13 @@
             mkdir scenario_multi_robot_test
             ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario_execution:=False scenario:=foo yaw:=3.14 &
             # shellcheck disable=SC1083
-            ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_multi_robot/example_multi_robot.osc output_dir:=scenario_multi_robot_test
-            ros2 launch tb4_sim_scenario ignition_robot_launch.py namespace:=turtlebot2 x:=-3.0 y:=1.5 yaw:=-1.57 &
+            ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_multi_robot/example_multi_robot.osc output_dir:=scenario_multi_robot_test &
+            ros2 launch tb4_sim_scenario ignition_robot_launch.py namespace:=turtlebot2 x:=-3.0 y:=1.5 yaw:=-1.57 
         - name: Test Example Scenario
           shell: bash
           run: |
+            pkill -f ros
+            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             #shellcheck disable=SC1083
@@ -90,6 +92,8 @@
         - name: Test Example Nav2
           shell: bash
           run: |
+            pkill -f ros
+            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             Xvfb :1 -screen 0 800x600x16 &
@@ -102,6 +106,8 @@
         - name: Test Example Simulation
           shell: bash
           run: |
+            pkill -f ros
+            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             Xvfb :1 -screen 0 800x600x16 &
@@ -114,6 +120,8 @@
         - name: Test Example Library
           shell: bash
           run: |
+            pkill -f ros
+            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             # shellcheck disable=SC1083
@@ -121,6 +129,8 @@
         - name: Test Example Variation
           shell: bash
           run: |
+            pkill -f ros
+            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
@@ -129,6 +139,8 @@
         - name: Test Example Scenario Control
           shell: bash
           run: |
+            pkill -f ros
+            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             Xvfb :1 -screen 0 800x600x16 &
