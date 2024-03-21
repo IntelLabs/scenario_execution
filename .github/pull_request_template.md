@@ -1,28 +1,23 @@
 <!-- For questions please refer to https://intellabs.github.io/scenario_execution/development.html#contribute, mail to scenario-execution@intel.com or ask in a comment below -->
-
-# Issue number and link (if applicable)
-<!-- Insert issue here as "Issue Number: #XXXX", example "Issue Number: #19" -->
-Issue Number:
-
-# Objective of pull request
+### Description
 <!-- Insert one sentence pr objective here, can be copied from relevant issue. -->
 
-# Pull request checklist
+<!-- Insert issue here as "Issue Number: #XXXX", example "Issue Number: #19" -->
+
+### Pull request checklist
 <!--  (Mark with "x") -->
-Your PR fulfills the following requirements:
 - [ ] [Issue](https://github.com/IntelLabs/scenario_execution/issues) created that explains the change and why it's needed
 - [ ] Tests are part of the PR (for bug fixes / features)
 - [ ] [Docs](https://intellabs.github.io/scenario_execution/) reviewed and added / updated if needed (for bug fixes / features)
 - [ ] Format and Lint checks (`make check`) pass locally
 - [ ] PR applies Apache 2.0 License to all code files
 
-# Pull request type
+### Pull request type
 
 <!-- Please do not submit updates to dependencies unless it fixes an issue. -->
 
 <!-- Please limit your pull request to one type, submit multiple pull requests if needed. -->
 
-Please check your PR type:
 <!--  (Mark one with "x") remove not chosen below -->
 
 - [ ] Bugfix
@@ -33,14 +28,12 @@ Please check your PR type:
 - [ ] Documentation changes
 - [ ] Other (please describe)
 
-# What is the current behavior?
+### Current behavior
 <!-- Please describe the current behavior that you are modifying, can be copied from relevant issue. -->
 
-# What is the new behavior?
+### New behavior
 <!-- Please describe the new behavior, can be copied from relevant issue. -->
 
-# How to test
+### How to test
 <!-- Please describe how reviewers should test the new behavior. -->
 
-# Supplemental information
-<!-- Any other information that is important to this PR. -->
