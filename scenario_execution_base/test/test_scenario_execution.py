@@ -24,7 +24,6 @@ class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
 
     def test_scenario_file_not_existing(self):
-        self.scenario_dir = get_package_share_directory('scenario_execution_base')
         scenario_execution = ScenarioExecution(debug=False,
                                                log_model=False,
                                                live_tree=False,
