@@ -17,7 +17,6 @@
 import unittest
 import os
 from scenario_execution_base.scenario_execution import ScenarioExecution
-from ament_index_python.packages import get_package_share_directory
 
 
 class TestOSC2Parser(unittest.TestCase):
