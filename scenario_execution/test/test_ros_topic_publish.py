@@ -39,7 +39,7 @@ class TestRosTopicPublish(unittest.TestCase):
         rclpy.shutdown()
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ROSScenarioExecution()
 
         self.scenario_dir = get_package_share_directory('scenario_execution')

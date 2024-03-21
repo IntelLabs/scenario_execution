@@ -27,7 +27,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
 
     def test_unknown_event(self):
         scenario_content = """

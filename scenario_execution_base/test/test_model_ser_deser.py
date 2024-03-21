@@ -28,7 +28,7 @@ from antlr4.InputStream import InputStream
 class DebugLogger(BaseLogger):
 
     def __init__(self, name):
-        super().__init__(name)
+        super().__init__(name, False)
         self.logs = []
 
     def info(self, msg: str) -> None:
@@ -48,7 +48,7 @@ class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
 
     def test_serialize(self):
         scenario_content = """

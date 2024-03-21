@@ -58,7 +58,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
             Int32, "/bla", self.topic_callback, 10, callback_group=self.callback_group)
 
         self.scenario_dir = get_package_share_directory('scenario_execution')
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ROSScenarioExecution()
 
     def tearDown(self):

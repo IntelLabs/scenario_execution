@@ -28,7 +28,7 @@ class TestExpression(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
 
     @unittest.skip(reason="requires porting")
     def test_add(self):

@@ -51,7 +51,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.callback_group = rclpy.callback_groups.ReentrantCallbackGroup()
         self.srv = self.node.create_timer(1, self.callback)
 
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ROSScenarioExecution()
 
     def tearDown(self):

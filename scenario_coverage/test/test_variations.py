@@ -66,7 +66,7 @@ scenario test:
 
         # Model 1
         model = copy.deepcopy(models[0][0])
-        ret = resolve_internal_model(model, Logger('test'), False)
+        ret = resolve_internal_model(model, Logger('test', False), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[3]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
@@ -74,7 +74,7 @@ scenario test:
 
         # Model 2
         model = copy.deepcopy(models[1][0])
-        ret = resolve_internal_model(model, Logger('test'), False)
+        ret = resolve_internal_model(model, Logger('test', False), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[3]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
@@ -95,7 +95,7 @@ scenario test:
         for scenario in scenarios:
             if scenario.endswith("0.sce"):
                 scenario0 = scenario
-        parser = ModelFileLoader(Logger('test'))
+        parser = ModelFileLoader(Logger('test', False))
         model = parser.load_file(scenario0, True)
         self.assertIsNotNone(model)
         success = resolve_internal_model(model, parser.logger, False)
@@ -124,7 +124,7 @@ scenario test:
 
         # Model 1
         model = copy.deepcopy(models[0][0])
-        ret = resolve_internal_model(model, Logger('test'), False)
+        ret = resolve_internal_model(model, Logger('test', False), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
@@ -133,7 +133,7 @@ scenario test:
 
         # Model 2
         model = copy.deepcopy(models[1][0])
-        ret = resolve_internal_model(model, Logger('test'), False)
+        ret = resolve_internal_model(model, Logger('test', False), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
@@ -142,7 +142,7 @@ scenario test:
 
         # Model 3
         model = copy.deepcopy(models[2][0])
-        ret = resolve_internal_model(model, Logger('test'), False)
+        ret = resolve_internal_model(model, Logger('test', False), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
@@ -151,7 +151,7 @@ scenario test:
 
         # Model 4
         model = copy.deepcopy(models[3][0])
-        ret = resolve_internal_model(model, Logger('test'), False)
+        ret = resolve_internal_model(model, Logger('test', False), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
@@ -160,7 +160,7 @@ scenario test:
 
         # Model 5
         model = copy.deepcopy(models[4][0])
-        ret = resolve_internal_model(model, Logger('test'), False)
+        ret = resolve_internal_model(model, Logger('test', False), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
@@ -169,7 +169,7 @@ scenario test:
 
         # Model 6
         model = copy.deepcopy(models[5][0])
-        ret = resolve_internal_model(model, Logger('test'), False)
+        ret = resolve_internal_model(model, Logger('test', False), False)
         self.assertTrue(ret)
         elem = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         value = elem.get_resolved_value()
