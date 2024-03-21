@@ -28,8 +28,8 @@ class RosLogger(BaseLogger):
         name [str]: name of the logger
     """
 
-    def __init__(self, name: str):
-        super().__init__(name)
+    def __init__(self, name: str, debug=False):
+        super().__init__(name, debug)
         self.logger = rclpy.logging.get_logger(name)
 
     def info(self, msg: str):

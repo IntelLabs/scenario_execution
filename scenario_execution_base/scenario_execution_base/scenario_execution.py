@@ -62,7 +62,7 @@ class ScenarioExecution(object):
         self.live_tree = live_tree
         self.scenario_file = scenario_file
         self.output_dir = output_dir
-        self.logger = self._get_logger()
+        self.logger = self._get_logger(debug)
 
         if self.debug:
             py_trees.logging.level = py_trees.logging.Level.DEBUG
@@ -75,7 +75,7 @@ class ScenarioExecution(object):
         self.shutdown_requested = False
         self.results = []
 
-    def _get_logger(self):
+    def _get_logger(self, debug):
         """
         Create a logger
         This method could be overriden by child classes and defined according to the middleware.
@@ -83,7 +83,7 @@ class ScenarioExecution(object):
         return:
             A logger which has three logging levels: info, warning, error
         """
-        return Logger('scenario_execution')
+        return Logger('scenario_execution', debug)
 
     def setup(self, tree: py_trees.behaviour.Behaviour, **kwargs) -> bool:
         """
@@ -184,42 +184,44 @@ class ScenarioExecution(object):
 
         return self.scenarios is not None and len(self.scenarios) == 1
 
-    def run(self) -> bool:
+    def run(self):
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
             return False
         scenario = self.scenarios[0]
         start = datetime.now()
-
+        result = True
         if not self.setup(scenario):
-            failure = True
+            result = False
             self.logger.error(f'Scenario {scenario.name} failed to setup.')
-        while not self.shutdown_requested:
-            try:
-                self.behaviour_tree.tick()
-                time.sleep(self.tick_tock_period)
-                if self.live_tree:
-                    self.logger.debug(py_trees.display.unicode_tree(
-                        root=self.behaviour_tree.root, show_status=True))
-            except KeyboardInterrupt:
-                self.behaviour_tree.interrupt()
-                self.blackboard.fail = True
-                break
-        if self.blackboard.fail:
-            self.logger.error(f'Scenario {scenario.name} failed.')
-        else:
-            self.logger.info(f"Scenario '{scenario.name}' succeeded.")
-        failure = failure or self.blackboard.fail
-        self.add_result((scenario.name, self.blackboard.fail, "execution failed", "", datetime.now()-start))
+        if result:
+            while not self.shutdown_requested:
+                try:
+                    self.behaviour_tree.tick()
+                    time.sleep(self.tick_tock_period)
+                    if self.live_tree:
+                        self.logger.debug(py_trees.display.unicode_tree(
+                            root=self.behaviour_tree.root, show_status=True))
+                except KeyboardInterrupt:
+                    self.behaviour_tree.interrupt()
+                    self.blackboard.fail = True
+                    break
+            if self.blackboard.fail:
+                result = False
+                self.logger.error(f'Scenario {scenario.name} failed.')
+            else:
+                self.logger.info(f"Scenario '{scenario.name}' succeeded.")
+        self.add_result((scenario.name, result, "execution failed", "", datetime.now()-start))
         self.cleanup_behaviours(scenario)
-        return not failure
+        return result
 
     def add_result(self, result):
         self.results.append(result)
 
     def report_results(self):
         if self.output_dir and self.results:
-            self.logger.info(f"Writing results to '{self.output_dir}'...")
+            result_file = os.path.join(self.output_dir, 'test.xml')
+            self.logger.info(f"Writing results to '{result_file}'...")
             failures = 0
             overall_time = timedelta(0)
             for result in self.results:
@@ -227,7 +229,7 @@ class ScenarioExecution(object):
                     failures += 1
                 overall_time += result[4]
             try:
-                with open(os.path.join(self.output_dir, 'test.xml'), 'w') as out:
+                with open(result_file, 'w') as out:
                     out.write('<?xml version="1.0" encoding="utf-8"?>\n')
                     out.write(
                         f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')

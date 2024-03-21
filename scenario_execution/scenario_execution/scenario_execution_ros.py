@@ -63,12 +63,12 @@ class ROSScenarioExecution(ScenarioExecution):
             output_dir = self.node.get_parameter('output_dir').value
         super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario_file=scenario, output_dir=output_dir)
 
-    def _get_logger(self):
+    def _get_logger(self, debug):
         """
         Get a logger from ROS2 with name "scenario_execution"
         Overriden parent class method
         """
-        return RosLogger('scenario_execution')
+        return RosLogger('scenario_execution', debug)
 
     def setup_behaviour_tree(self, tree):
         """
@@ -127,7 +127,7 @@ def main():
     if result:
         executor = rclpy.executors.MultiThreadedExecutor()
         executor.add_node(ros_scenario_execution.node)
-        ros_scenario_execution.run()
+        result = ros_scenario_execution.run()
         try:
             executor.spin()
         except KeyboardInterrupt:
