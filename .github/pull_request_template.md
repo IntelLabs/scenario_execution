@@ -3,7 +3,6 @@
 <!-- Insert one sentence pr objective here, can be copied from relevant issue. -->
 
 <!-- Insert issue here as "Issue Number: #XXXX", example "Issue Number: #19" -->
-<!-- Issue Number: -->
 
 ### Pull request checklist
 <!--  (Mark with "x") -->
