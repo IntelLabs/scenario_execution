@@ -23,7 +23,16 @@ import py_trees
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.utils.logging import Logger
 from scenario_execution_base.model.model_file_loader import ModelFileLoader
-
+from dataclasses import dataclass
+    
+@dataclass
+class ScenarioResult:
+    name: str
+    result: bool
+    failure_message: str
+    failure_output: str = ""
+    processing_time: timedelta = timedelta(0)
+        
 
 class LastSnapshotVisitor(py_trees.visitors.DisplaySnapshotVisitor):
 
@@ -57,6 +66,8 @@ class ScenarioExecution(object):
                  output_dir: str,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_tock_period: float = 0.1) -> None:
+        self.current_scenario_start = None
+        self.current_scenario = None
         self.debug = debug
         self.log_model = log_model
         self.live_tree = live_tree
@@ -167,20 +178,31 @@ class ScenarioExecution(object):
 
         start = datetime.now()
         if not os.path.isfile(self.scenario_file):
-            self.add_result((f'Parsing of {self.scenario_file}', True, "File does not exist", "", datetime.now() - start))
-            self.logger.error(f'Parsing of {self.scenario_file} failed: File does not exist!')
+            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}', 
+                                           result=False, 
+                                           failure_message="parsing failed",
+                                           failure_output="File does not exist", 
+                                           processing_time=datetime.now() - start))
             return False
         self.scenarios = parser.process_file(self.scenario_file, self.log_model, self.debug)
         if self.scenarios is None:
-            self.add_result((f'Parsing of {self.scenario_file}', True, "parsing failed", "", datetime.now() - start))
+            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
+                                           result=False,
+                                           failure_message="parsing failed",
+                                           failure_output="No scenario defined",
+                                           processing_time=datetime.now() - start))
         if len(self.scenarios) == 0:
-            self.add_result((f'Parsing of {self.scenario_file}', True, "no scenario defined", "", datetime.now() - start))
-            self.logger.error(f'Parsing of {self.scenario_file} failed: No scenarios defined!')
+            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
+                                           result=False,
+                                           failure_message="parsing failed",
+                                           failure_output="no scenario defined", 
+                                           processing_time=datetime.now() - start))
         if len(self.scenarios) != 1:
-            self.add_result((f'Parsing of {self.scenario_file}', True,
-                            f"more than one ({len(self.scenarios)}) scenario defined", "", datetime.now() - start))
-            self.logger.error(
-                f'Parsing of {self.scenario_file} failed: More than one ({len(self.scenarios)}) scenarios defined. Only one allowed! Use separate files and scenario_batch_execution instead.')
+            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
+                                           result=False,
+                                           failure_message="parsing failed",
+                                           failure_output=f"more than one ({len(self.scenarios)}) scenario defined",
+                                           processing_time=datetime.now() - start))
 
         return self.scenarios is not None and len(self.scenarios) == 1
 
@@ -188,12 +210,9 @@ class ScenarioExecution(object):
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
             return False
-        scenario = self.scenarios[0]
-        start = datetime.now()
-        result = True
-        if not self.setup(scenario):
-            result = False
-            self.logger.error(f'Scenario {scenario.name} failed to setup.')
+        self.current_scenario = self.scenarios[0]
+        self.current_scenario_start = datetime.now()
+        result = self.setup(self.current_scenario)
         if result:
             while not self.shutdown_requested:
                 try:
@@ -203,44 +222,47 @@ class ScenarioExecution(object):
                         self.logger.debug(py_trees.display.unicode_tree(
                             root=self.behaviour_tree.root, show_status=True))
                 except KeyboardInterrupt:
-                    self.behaviour_tree.interrupt()
-                    self.blackboard.fail = True
-                    break
-            if self.blackboard.fail:
-                result = False
-                self.logger.error(f'Scenario {scenario.name} failed.')
-            else:
-                self.logger.info(f"Scenario '{scenario.name}' succeeded.")
-        self.add_result((scenario.name, result, "execution failed", "", datetime.now()-start))
-        self.cleanup_behaviours(scenario)
-        return result
+                    self.on_scenario_shutdown(False, "Aborted")
+        return self.process_results()
 
-    def add_result(self, result):
+    def add_result(self, result: ScenarioResult):
+        if result.result is False:
+            self.logger.error(f"{result.name}: {result.failure_message} {result.failure_output}")
         self.results.append(result)
+    
+    def process_results(self):
+        result = True
+        if len(self.results) == 0:
+            result = False
+        else:
+            for res in self.results:
+                if res.result is False:
+                    result = False
 
-    def report_results(self):
+        # store output file
         if self.output_dir and self.results:
             result_file = os.path.join(self.output_dir, 'test.xml')
             self.logger.info(f"Writing results to '{result_file}'...")
             failures = 0
             overall_time = timedelta(0)
-            for result in self.results:
-                if result[1] is False:
+            for res in self.results:
+                if res.result is False:
                     failures += 1
-                overall_time += result[4]
+                overall_time += res.processing_time
             try:
                 with open(result_file, 'w') as out:
                     out.write('<?xml version="1.0" encoding="utf-8"?>\n')
                     out.write(
                         f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')
-                    for result in self.results:
-                        out.write(f'  <testcase classname="tests.scenario" name="{result[0]}" time="{result[4].total_seconds()}">\n')
-                        if result[1] is False:
-                            out.write(f'    <failure message="{result[2]}">{result[3]}</failure>\n')
+                    for res in self.results:
+                        out.write(f'  <testcase classname="tests.scenario" name="{res.name}" time="{res.processing_time.total_seconds()}">\n')
+                        if res.result is False:
+                            out.write(f'    <failure message="{res.failure_message}">{res.failure_output}</failure>\n')
                         out.write(f'  </testcase>\n')
                     out.write("</testsuite>\n")
             except Exception as e:  # pylint: disable=broad-except
                 self.logger.error(f"Could not write results to '{self.output_dir}': {e}")
+        return result
 
     def pre_tick_handler(self, behaviour_tree):
         """
@@ -250,22 +272,38 @@ class ScenarioExecution(object):
             self.logger.debug(
                 f"--------- Scenario {behaviour_tree.root.name}: Run {behaviour_tree.count} ---------")
 
-    def post_tick_handler(self, behaviour_tree):
+    def post_tick_handler(self, _):
         result = None
         if self.behaviour_tree.root.status == py_trees.common.Status.FAILURE:
             result = False
         if self.behaviour_tree.root.status == py_trees.common.Status.SUCCESS:
             result = True
-        if result is None:
-            if self.blackboard.end == True:
-                result = True
-            if self.blackboard.fail == True:
-                result = False
+        if self.blackboard.end == True:
+            result = True
+        if self.blackboard.fail == True:
+            result = False
         if result is not None:
             self.on_scenario_shutdown(result)
 
-    def on_scenario_shutdown(self, _):
+    def on_scenario_shutdown(self, result, failure_message = ""):
         self.shutdown_requested = True
+        self.behaviour_tree.interrupt()
+        failure_output = ""
+        if result:
+            self.logger.info(f"Scenario '{self.current_scenario.name} succeeded.")
+        else:
+            if not failure_message:
+                failure_message = "execution failed."
+            failure_output = self.last_snapshot_visitor.last_snapshot
+            if self.log_model:
+                self.logger.error(self.last_snapshot_visitor.last_snapshot)
+        self.add_result(ScenarioResult(name=self.current_scenario.name,
+                                result=result,
+                                failure_message=failure_message,
+                                failure_output=failure_output,
+                                processing_time=datetime.now()-self.current_scenario_start))
+        self.cleanup_behaviours(self.current_scenario)
+        self.behaviour_tree.shutdown()
 
     def cleanup_behaviours(self, tree):
         """
@@ -320,7 +358,6 @@ def main():
     result = scenario_execution.parse()
     if result:
         result = scenario_execution.run()
-    scenario_execution.report_results()
     if result:
         sys.exit(0)
     else:

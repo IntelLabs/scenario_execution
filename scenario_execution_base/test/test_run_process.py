@@ -16,7 +16,7 @@
 
 import unittest
 import rclpy
-from scenario_execution import ROSScenarioExecution
+from scenario_execution_base import ScenarioExecution
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.model.model_to_py_tree import create_py_tree
 from scenario_execution_base.utils.logging import Logger
@@ -36,7 +36,11 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
-        self.scenario_execution = ROSScenarioExecution()
+        self.scenario_execution = ScenarioExecution(debug=False,
+                                                    log_model=False,
+                                                    live_tree= False,
+                                                    scenario_file= 'test',
+                                                    output_dir= '')
 
     def test_failure(self):
         scenario_content = """
@@ -55,13 +59,14 @@ scenario test_run_process:
 """
         parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         self.assertIsNotNone(model)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()
         self.assertFalse(ret)
+        
 
     def test_success(self):
         scenario_content = """

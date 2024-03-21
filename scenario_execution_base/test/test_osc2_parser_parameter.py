@@ -48,7 +48,7 @@ invalid
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
         scenarios = create_py_tree(model, self.parser.logger, False)
-        self.assertEqual([None], scenarios)
+        self.assertEqual([], scenarios)
 
     def test_global_var(self):
         scenario_content = """

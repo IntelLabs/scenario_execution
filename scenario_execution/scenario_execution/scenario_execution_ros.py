@@ -19,7 +19,7 @@ import sys
 from datetime import datetime
 import rclpy  # pylint: disable=import-error
 import py_trees_ros  # pylint: disable=import-error
-from scenario_execution_base import ScenarioExecution
+from scenario_execution_base import ScenarioExecution, ScenarioResult
 from .logging_ros import RosLogger
 from .marker_handler import MarkerHandler
 
@@ -32,8 +32,6 @@ class ROSScenarioExecution(ScenarioExecution):
     def __init__(self) -> None:
         self.node = rclpy.create_node(node_name="scenario_execution")
         self.marker_handler = MarkerHandler(self.node)
-        self.current_scenario_start = None
-        self.current_scenario = None
 
         # parse from commandline
         args_without_ros = rclpy.utilities.remove_ros_args(sys.argv[1:])
@@ -88,6 +86,9 @@ class ROSScenarioExecution(ScenarioExecution):
             self.logger.error(f"Only one scenario per file is supported.")
             return False
         self.current_scenario = self.scenarios[0]
+        
+        executor = rclpy.executors.MultiThreadedExecutor()
+        executor.add_node(self.node)
 
         self.logger.info(f"Executing scenario '{self.current_scenario.name}'")
         self.current_scenario_start = datetime.now()
@@ -96,25 +97,18 @@ class ROSScenarioExecution(ScenarioExecution):
 
         if result:
             self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
+        try:
+            executor.spin()
+        except KeyboardInterrupt:
+            print("Execution got canceled. Exiting...")
+            self.on_scenario_shutdown(False, "Aborted")
+            
+        return self.process_results()
 
-        return result
-
-    def on_scenario_shutdown(self, result):
-        self.behaviour_tree.interrupt()
-        if result:
-            self.logger.info(f"Scenario '{self.current_scenario.name}' succeeded.")
-        else:
-            self.logger.error(f"Scenario '{self.current_scenario.name}' failed.")
-            if self.log_model:
-                self.logger.error(self.last_snapshot_visitor.last_snapshot)
-
-        self.add_result((self.current_scenario.name, result, "execution failed",
-                        self.last_snapshot_visitor.last_snapshot, datetime.now() - self.current_scenario_start))
-        self.cleanup_behaviours(self.current_scenario)
-        self.behaviour_tree.shutdown()
+    def on_scenario_shutdown(self, result, failure_message = ""):
+        super().on_scenario_shutdown(result, failure_message)
         self.node.destroy_node()
         self.node.executor.create_task(self.node.executor.shutdown)
-
 
 def main():
     """
@@ -125,15 +119,8 @@ def main():
     result = ros_scenario_execution.parse()
 
     if result:
-        executor = rclpy.executors.MultiThreadedExecutor()
-        executor.add_node(ros_scenario_execution.node)
         result = ros_scenario_execution.run()
-        try:
-            executor.spin()
-        except KeyboardInterrupt:
-            print("Execution got canceled. Exiting...")
-            ros_scenario_execution.on_scenario_shutdown(False)
-    ros_scenario_execution.report_results()
+    
     rclpy.try_shutdown()
     if result:
         sys.exit(0)

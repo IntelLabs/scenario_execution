@@ -51,3 +51,14 @@ scenario test:
         self.assertEqual(errors, 0)
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
+
+    def test_event_end(self):
+        scenario_content = """
+scenario test:
+    do serial:
+        emit end
+"""
+        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertEqual(errors, 0)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        self.assertIsNotNone(model)
