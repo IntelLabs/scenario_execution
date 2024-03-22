@@ -85,7 +85,7 @@ class OpenScenario2Parser(object):
 
     def parse_file(self, file: str, log_model: bool = False, error_prefix=""):
         """ Execute the parsing """
-        if file in self.parsed_files: # skip already parsed/imported files
+        if file in self.parsed_files:  # skip already parsed/imported files
             return None, 0
         self.parsed_files.append(file)
         try:
