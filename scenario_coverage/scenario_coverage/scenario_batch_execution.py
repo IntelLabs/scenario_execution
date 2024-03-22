@@ -25,7 +25,7 @@ from collections import deque
 from copy import deepcopy
 import signal
 from defusedxml import ElementTree as ETparse
-import xml.etree.ElementTree as ET # nosec B405
+import xml.etree.ElementTree as ET  # nosec B405
 
 
 class ScenarioBatchExecution(object):
