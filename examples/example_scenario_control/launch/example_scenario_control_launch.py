@@ -36,7 +36,7 @@ def generate_launch_description():
         example_scenario_control_dir, 'scenarios'), description='default directory of the scenarios')
 
     arg_rviz_config = DeclareLaunchArgument('rviz_config', default_value=PathJoinSubstitution(
-        [example_scenario_control_dir, 'rviz', 'example_control.rviz']), description='default directory of the scenarios')
+        [tb4_sim_scenario_dir, 'config', 'tb4_sim_scenario.rviz']), description='rviz config to launch')
 
     tb4_sim_scenario = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'sim_nav_scenario_launch.py'])]),

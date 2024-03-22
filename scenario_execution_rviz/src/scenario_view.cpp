@@ -173,10 +173,10 @@ void ScenarioView::populateTree(
 
 void ScenarioView::requestBtPublishing() {
   if (!mOpenSnapshotStreamClient->wait_for_service(
-          std::chrono::milliseconds(50))) {
-    RCLCPP_WARN(
-        rclcpp::get_logger("rclcpp"),
-        "Failed to call service OpenSnapshotStream. Will try to reconnect");
+          std::chrono::milliseconds(100))) {
+    // RCLCPP_WARN(
+    //     rclcpp::get_logger("rclcpp"),
+    //     "Failed to call service OpenSnapshotStream. Will try to reconnect");
     treeWidgetBuilt = false;
     timer->start();
   }
