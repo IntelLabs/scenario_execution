@@ -25,5 +25,5 @@ def get_helpers_library():
 def get_standard_library():
     return 'scenario_execution_base', 'standard.osc'
 
-def get_standard_common_library():
-    return 'scenario_execution_base', 'standard_common.osc'
+def get_standard_base_library():
+    return 'scenario_execution_base', 'standard_base.osc'

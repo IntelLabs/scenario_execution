@@ -10,7 +10,7 @@
 # ATTENTION: This file is modified to be compatible with
 #            the feature set of scenario execution.
 
-import osc.standard.common
+import osc.standard.base
 
 struct axle:
     max_steering: angle               # Mandatory: Maximum steering angle for the wheels on the axle.

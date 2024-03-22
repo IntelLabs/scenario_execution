@@ -41,7 +41,7 @@ import osc.standard
 
     def test_standard_common_osc(self):
         scenario_content = """
-import osc.standard.common
+import osc.standard.base
 """
         parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertEqual(errors, 0)
