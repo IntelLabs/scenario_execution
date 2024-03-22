@@ -38,7 +38,6 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
         self.__current_label = None
         self.model = None
         self.logger = logger
-        self.imported_files = []
         self.parse_file = parse_file_fct
         self.current_file = file_name
         self.log_model = log_model
@@ -119,21 +118,17 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
             lib_osc_dir = resource_filename(resource, 'lib_osc')
             file = os.path.join(lib_osc_dir, filename)
 
-        # Skip files that are already imported
-        if file in self.imported_files:
-            return
-
         imported_tree, errors = self.parse_file(file, self.log_model, f"{file} :")
 
         if errors:
             raise OSC2ParsingError(msg=f'{errors} parsing errors found in import {file}.', context=ctx)
 
-        walker = ParseTreeWalker()
-        prev_file = self.current_file
-        self.current_file = file
-        walker.walk(self, imported_tree)
-        self.current_file = prev_file
-        self.imported_files.append(import_reference)
+        if imported_tree is not None:
+            walker = ParseTreeWalker()
+            prev_file = self.current_file
+            self.current_file = file
+            walker.walk(self, imported_tree)
+            self.current_file = prev_file
 
     # Exit a parse tree produced by OpenSCENARIO2Parser#importReference.
     def exitImportReference(self, ctx: OpenSCENARIO2Parser.ImportReferenceContext):
