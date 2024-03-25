@@ -1,0 +1,5 @@
+import osc.helpers
+
+scenario scenario_test:
+    do serial:     
+        log("scenario")

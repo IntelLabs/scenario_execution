@@ -35,7 +35,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         rclpy.shutdown()
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ROSScenarioExecution()
 
     def test_success(self):
@@ -65,7 +65,7 @@ scenario test_ros_topic_publish:
         self.assertEqual(errors, 0)
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
-        scenarios = create_py_tree(model, self.parser.logger)
+        scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()

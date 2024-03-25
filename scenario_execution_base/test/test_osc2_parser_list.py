@@ -31,7 +31,7 @@ class TestOSC2Parser(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
 
     def test_invalid_listof(self):
         scenario_content = """

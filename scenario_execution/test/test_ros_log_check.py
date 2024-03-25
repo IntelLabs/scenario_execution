@@ -23,7 +23,6 @@ from scenario_execution import ROSScenarioExecution
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
 from scenario_execution_base.model.model_to_py_tree import create_py_tree
 from scenario_execution_base.utils.logging import Logger
-from ament_index_python.packages import get_package_share_directory
 from antlr4.InputStream import InputStream
 
 os.environ["PYTHONUNBUFFERED"] = '1'
@@ -52,8 +51,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.callback_group = rclpy.callback_groups.ReentrantCallbackGroup()
         self.srv = self.node.create_timer(1, self.callback)
 
-        self.scenario_dir = get_package_share_directory('scenario_execution')
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ROSScenarioExecution()
 
     def tearDown(self):
@@ -77,9 +75,9 @@ scenario test_log_check:
 """
         parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         self.assertIsNotNone(model)
-        scenarios = create_py_tree(model, self.parser.logger)
+        scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()
@@ -102,7 +100,7 @@ scenario test_log_check:
         self.assertEqual(errors, 0)
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
-        scenarios = create_py_tree(model, self.parser.logger)
+        scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()
@@ -123,11 +121,12 @@ scenario test_log_check:
 """
         parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         self.assertIsNotNone(model)
-        scenarios = create_py_tree(model, self.parser.logger)
+        scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
+        self.scenario_execution.live_tree = True
         ret = self.scenario_execution.run()
         self.assertTrue(ret)
 
@@ -148,7 +147,7 @@ scenario test_log_check:
         self.assertEqual(errors, 0)
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
-        scenarios = create_py_tree(model, self.parser.logger)
+        scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()
