@@ -48,15 +48,15 @@ def get_pose_stamped(timestamp, in_pose):
     pose = PoseStamped()
     pose.header.frame_id = 'map'
     pose.header.stamp = timestamp
-    pose.pose.position.x = in_pose['position']['x']
-    pose.pose.position.y = in_pose['position']['y']
-    pose.pose.position.z = in_pose['position']['z']
+    pose.pose.position.x = float(in_pose['position']['x'])
+    pose.pose.position.y = float(in_pose['position']['y'])
+    pose.pose.position.z = float(in_pose['position']['z'])
 
     # euler2quat() requires "zyx" convention,
     # while in YAML, we define as pitch-roll-yaw (xyz), since it's more intuitive.
-    quaternion = euler2quat(in_pose['orientation']['yaw'],
-                            in_pose['orientation']['roll'],
-                            in_pose['orientation']['pitch'])
+    quaternion = euler2quat(float(in_pose['orientation']['yaw']),
+                            float(in_pose['orientation']['roll']),
+                            float(in_pose['orientation']['pitch']))
     pose.pose.orientation.w = quaternion[0]
     pose.pose.orientation.x = quaternion[1]
     pose.pose.orientation.y = quaternion[2]
