@@ -18,6 +18,7 @@ import os
 import sys
 import time
 import argparse
+import signal
 from datetime import datetime, timedelta
 import py_trees
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
@@ -67,6 +68,12 @@ class ScenarioExecution(object):
                  output_dir: str,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_tock_period: float = 0.1) -> None:
+                
+        def signal_handler(sig, frame):
+            self.on_scenario_shutdown(False, "Aborted")
+
+        signal.signal(signal.SIGHUP, signal_handler)
+
         self.current_scenario_start = None
         self.current_scenario = None
         self.debug = debug
@@ -288,22 +295,24 @@ class ScenarioExecution(object):
 
     def on_scenario_shutdown(self, result, failure_message=""):
         self.shutdown_requested = True
-        self.behaviour_tree.interrupt()
+        if self.behaviour_tree:
+            self.behaviour_tree.interrupt()
         failure_output = ""
-        if result:
-            self.logger.info(f"Scenario '{self.current_scenario.name}' succeeded.")
-        else:
-            if not failure_message:
-                failure_message = "execution failed."
-            failure_output = self.last_snapshot_visitor.last_snapshot
-            if self.log_model:
-                self.logger.error(self.last_snapshot_visitor.last_snapshot)
-        self.add_result(ScenarioResult(name=self.current_scenario.name,
-                                       result=result,
-                                       failure_message=failure_message,
-                                       failure_output=failure_output,
-                                       processing_time=datetime.now()-self.current_scenario_start))
-        self.cleanup_behaviours(self.current_scenario)
+        if self.current_scenario:
+            if result:
+                self.logger.info(f"Scenario '{self.current_scenario.name}' succeeded.")
+            else:
+                if not failure_message:
+                    failure_message = "execution failed."
+                failure_output = self.last_snapshot_visitor.last_snapshot
+                if self.log_model:
+                    self.logger.error(self.last_snapshot_visitor.last_snapshot)
+            self.add_result(ScenarioResult(name=self.current_scenario.name,
+                                        result=result,
+                                        failure_message=failure_message,
+                                        failure_output=failure_output,
+                                        processing_time=datetime.now()-self.current_scenario_start))
+            self.cleanup_behaviours(self.current_scenario)
 
     def cleanup_behaviours(self, tree):
         """
