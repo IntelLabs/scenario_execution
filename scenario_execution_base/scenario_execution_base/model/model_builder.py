@@ -38,7 +38,6 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
         self.__current_label = None
         self.model = None
         self.logger = logger
-        self.imported_files = []
         self.parse_file = parse_file_fct
         self.current_file = file_name
         self.log_model = log_model
@@ -82,23 +81,24 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
         if ctx.StringLiteral():
             file = ctx.getText()
         if ctx.structuredIdentifier():
-            import_reference = []
+            import_reference_string = ""
             for child in ctx.structuredIdentifier().getChildren():
-                import_reference.append(child.getText())
-
+                import_reference_string += child.getText()
+            import_reference = import_reference_string.split('.')
             self.logger.debug(f'import_reference is: {import_reference}')
-            if len(import_reference) < 3 or import_reference[0] != 'osc' or import_reference[1] != '.':
+            if len(import_reference) < 2 or import_reference[0] != 'osc':
                 raise OSC2ParsingError(
                     msg=f'import_reference can only be of format osc.<library-name>, found "{import_reference}', context=ctx)
 
+            library_name = ".".join(import_reference[1:])
             # iterate through all packages
             libraries_found = []
             for entry_point in iter_entry_points(group='scenario_execution.osc_libraries', name=None):
-                if entry_point.name == import_reference[2]:
+                if entry_point.name == library_name:
                     libraries_found.append(entry_point)
             if not libraries_found:
                 raise OSC2ParsingError(
-                    msg=f'No import library "{".".join(import_reference)}" found.', context=ctx)
+                    msg=f'No import library "{library_name}" found.', context=ctx)
             if len(libraries_found) > 1:
                 pkgs = []
                 for elem in libraries_found:
@@ -111,7 +111,7 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
                         pass
 
                 raise OSC2ParsingError(
-                    msg=f'More than one import library for "{".".join(import_reference)}" found: {", ".join(pkgs)}', context=ctx)
+                    msg=f'More than one import library for "{library_name}" found: {", ".join(pkgs)}', context=ctx)
 
             lib_class = libraries_found[0].load()
             resource, filename = lib_class()
@@ -119,21 +119,17 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
             lib_osc_dir = resource_filename(resource, 'lib_osc')
             file = os.path.join(lib_osc_dir, filename)
 
-        # Skip files that are already imported
-        if file in self.imported_files:
-            return
-
         imported_tree, errors = self.parse_file(file, self.log_model, f"{file} :")
 
         if errors:
             raise OSC2ParsingError(msg=f'{errors} parsing errors found in import {file}.', context=ctx)
 
-        walker = ParseTreeWalker()
-        prev_file = self.current_file
-        self.current_file = file
-        walker.walk(self, imported_tree)
-        self.current_file = prev_file
-        self.imported_files.append(import_reference)
+        if imported_tree is not None:
+            walker = ParseTreeWalker()
+            prev_file = self.current_file
+            self.current_file = file
+            walker.walk(self, imported_tree)
+            self.current_file = prev_file
 
     # Exit a parse tree produced by OpenSCENARIO2Parser#importReference.
     def exitImportReference(self, ctx: OpenSCENARIO2Parser.ImportReferenceContext):

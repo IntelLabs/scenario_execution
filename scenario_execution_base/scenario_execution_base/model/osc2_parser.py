@@ -34,6 +34,7 @@ class OpenScenario2Parser(object):
 
     def __init__(self, logger) -> None:
         self.logger = logger
+        self.parsed_files = []
 
     def process_file(self, file, log_model: bool = False, debug: bool = False):
         """ Convenience method to execute the parsing and print out tree """
@@ -42,11 +43,14 @@ class OpenScenario2Parser(object):
         if errors:
             return None
 
-        model = self.create_internal_model(parsed_tree, file, log_model, debug)
+        try:
+            model = self.create_internal_model(parsed_tree, file, log_model, debug)
+        except Exception:  # pylint: disable=broad-except
+            return None
         if model is None:
             return None
 
-        scenarios = create_py_tree(model, self.logger)
+        scenarios = create_py_tree(model, self.logger, log_model)
 
         return scenarios
 
@@ -84,6 +88,9 @@ class OpenScenario2Parser(object):
 
     def parse_file(self, file: str, log_model: bool = False, error_prefix=""):
         """ Execute the parsing """
+        if file in self.parsed_files:  # skip already parsed/imported files
+            return None, 0
+        self.parsed_files.append(file)
         try:
             input_stream = FileStream(file)
         except (OSError, UnicodeDecodeError) as e:

@@ -17,10 +17,10 @@
 """ Logger Class for ROS"""
 
 import rclpy
-from scenario_execution_base.utils.logging import BaseLogger
+from scenario_execution_base.utils.logging import Logger
 
 
-class RosLogger(BaseLogger):
+class RosLogger(Logger):
     """
     Class for logger for ROS scenario execution
 
@@ -28,8 +28,8 @@ class RosLogger(BaseLogger):
         name [str]: name of the logger
     """
 
-    def __init__(self, name: str):
-        super().__init__(name)
+    def __init__(self, name: str, debug=False):
+        super().__init__(name, debug)
         self.logger = rclpy.logging.get_logger(name)
 
     def info(self, msg: str):
@@ -39,7 +39,10 @@ class RosLogger(BaseLogger):
         Args:
             msg [str]: msg to print
         """
-        self.logger.info(msg)
+        if rclpy.ok():
+            self.logger.info(msg)
+        else:
+            super().info(msg)
 
     def debug(self, msg: str):
         """
@@ -48,7 +51,10 @@ class RosLogger(BaseLogger):
         Args:
             msg [str]: msg to print
         """
-        self.logger.debug(msg)
+        if rclpy.ok():
+            self.logger.debug(msg)
+        else:
+            super().debug(msg)
 
     def warning(self, msg: str):
         """
@@ -57,7 +63,10 @@ class RosLogger(BaseLogger):
         Args:
             msg [str]: msg to print
         """
-        self.logger.warning(msg)
+        if rclpy.ok():
+            self.logger.warning(msg)
+        else:
+            super().warning(msg)
 
     def error(self, msg: str):
         """
@@ -66,4 +75,7 @@ class RosLogger(BaseLogger):
         Args:
             msg [str]: msg to print
         """
-        self.logger.error(msg)
+        if rclpy.ok():
+            self.logger.error(msg)
+        else:
+            super().error(msg)

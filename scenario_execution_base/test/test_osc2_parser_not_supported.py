@@ -28,7 +28,7 @@ class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable, too-many-public-methods
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
 
     def test_method(self):
         scenario_content = """
@@ -135,7 +135,7 @@ global test: int = foo.as(int)
 
     def test_sample(self):
         scenario_content = """
-import osc.standard
+import osc.standard.base
 
 scenario simple_drive:    
     environment: environment

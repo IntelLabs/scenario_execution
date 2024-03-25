@@ -13,4 +13,4 @@ ign topic -l
 ```
 The previous command prints all the gazebo topics and among them the right pose topic and also the name of the robots present in the simulation.
 
-The launch file offers also the possibility to start rviz2 directly with `start_rviz:=True` and to start the node in a specified ROS namespace if desired `use_namespace:=True namespace:=desired_namespace`.
+To start the node in a specified ROS namespace, use `use_namespace:=True namespace:=desired_namespace`.
