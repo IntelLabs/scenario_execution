@@ -39,7 +39,7 @@ Actors
 
 ``robot``
 """"""""""""""""""""""""""""
-A general parent robot actor.
+A general robot actor.
 
 ``osc.ros``
 -----------
