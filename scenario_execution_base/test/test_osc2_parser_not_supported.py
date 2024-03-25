@@ -135,7 +135,7 @@ global test: int = foo.as(int)
 
     def test_sample(self):
         scenario_content = """
-import osc.standard
+import osc.standard.base
 
 scenario simple_drive:    
     environment: environment
