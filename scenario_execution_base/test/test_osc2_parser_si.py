@@ -28,7 +28,7 @@ class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
 
     def test_si_invalid_type(self):
         scenario_content = """
