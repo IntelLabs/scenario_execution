@@ -51,7 +51,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.scenario_dir = get_package_share_directory('scenario_execution')
 
         self.srv = self.node.create_service(SetBool, "/bla", self.service_callback)
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ROSScenarioExecution()
 
     def tearDown(self):

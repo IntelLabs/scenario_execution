@@ -33,8 +33,8 @@ class TestOSC2Parser(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
-        self.scenario_execution = ScenarioExecution(debug=True, log_model=True, live_tree=True, scenario='test.osc', output_dir="")
+        self.parser = OpenScenario2Parser(Logger('test', False))
+        self.scenario_execution = ScenarioExecution(debug=True, log_model=True, live_tree=True, scenario_file='test.osc', output_dir="")
 
     def test_parallel(self):
         scenario_content = """
@@ -56,7 +56,7 @@ scenario test:
         self.assertEqual(errors, 0)
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNotNone(model)
-        scenarios = create_py_tree(model, self.parser.logger)
+        scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
         ret = self.scenario_execution.run()

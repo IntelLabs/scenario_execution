@@ -31,7 +31,7 @@ class TestOSC2Parser(unittest.TestCase):
     """
 
     def setUp(self) -> None:
-        self.parser = OpenScenario2Parser(Logger('test'))
+        self.parser = OpenScenario2Parser(Logger('test', False))
 
     def test_enum_ref(self):
         scenario_content = """

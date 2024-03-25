@@ -33,7 +33,7 @@ class ModelFileLoader(object):
         if not success:
             return None
 
-        scenarios = create_py_tree(model, self.logger)
+        scenarios = create_py_tree(model, self.logger, log_tree)
 
         return scenarios
 
