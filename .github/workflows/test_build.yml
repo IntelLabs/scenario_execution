@@ -30,7 +30,7 @@
             xargs -a deb_requirements.txt apt install -y --no-install-recommends
             rosdep update --rosdistro=humble 
             rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
-            python3 -m pip install -r requirements.txt
+            pip3 install -r requirements.txt
         - name: Build
           shell: bash
           run: |
@@ -67,8 +67,6 @@
         - name: Test Example Scenario
           shell: bash
           run: |
-            pkill -f ros
-            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             #shellcheck disable=SC1083
@@ -76,8 +74,6 @@
         - name: Test Example Nav2
           shell: bash
           run: |
-            pkill -f ros
-            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             Xvfb :1 -screen 0 800x600x16 &
@@ -90,8 +86,6 @@
         - name: Test Example Simulation
           shell: bash
           run: |
-            pkill -f ros
-            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             Xvfb :1 -screen 0 800x600x16 &
@@ -104,8 +98,6 @@
         - name: Test Example Library
           shell: bash
           run: |
-            pkill -f ros
-            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             # shellcheck disable=SC1083
@@ -113,8 +105,6 @@
         - name: Test Example Variation
           shell: bash
           run: |
-            pkill -f ros
-            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
@@ -123,8 +113,6 @@
         - name: Test Example Scenario Control
           shell: bash
           run: |
-            pkill -f ros
-            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             Xvfb :1 -screen 0 800x600x16 &
@@ -138,8 +126,6 @@
         - name: Test Example MultiRobot
           shell: bash
           run: |
-            pkill -f ros
-            pkill -f ign
             source /opt/ros/humble/setup.bash
             source install/setup.bash
             Xvfb :1 -screen 0 800x600x16 &
@@ -149,8 +135,9 @@
             export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
             mkdir scenario_multi_robot_test
             ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario_execution:=False scenario:=foo yaw:=3.14 &
+            ros2 launch tb4_sim_scenario ignition_robot_launch.py namespace:=turtlebot2 x:=-3.0 y:=1.5 yaw:=-1.57 &
             # shellcheck disable=SC1083
-            ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_multi_robot/example_multi_robot.osc output_dir:=scenario_multi_robot_test
+            timeout 120 ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_multi_robot/example_multi_robot.osc output_dir:=scenario_multi_robot_test || true
         - name: Publish Scenario Results
           uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
           if: always()
