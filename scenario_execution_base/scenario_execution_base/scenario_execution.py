@@ -274,17 +274,16 @@ class ScenarioExecution(object):
             self.logger.debug(
                 f"--------- Scenario {behaviour_tree.root.name}: Run {behaviour_tree.count} ---------")
 
-    def post_tick_handler(self, _):
-        result = None
+    def post_tick_handler(self, behaviour_tree):
+        # Shut down if the root has failed
         if self.behaviour_tree.root.status == py_trees.common.Status.FAILURE:
-            result = False
+            self.blackboard.fail = True
         if self.behaviour_tree.root.status == py_trees.common.Status.SUCCESS:
+            self.blackboard.end = True
+        if self.blackboard.fail or self.blackboard.end:
             result = True
-        if self.blackboard.end is True:
-            result = True
-        if self.blackboard.fail is True:
-            result = False
-        if result is not None:
+            if self.blackboard.fail:
+                result = False
             self.on_scenario_shutdown(result)
 
     def on_scenario_shutdown(self, result, failure_message=""):
@@ -292,7 +291,7 @@ class ScenarioExecution(object):
         self.behaviour_tree.interrupt()
         failure_output = ""
         if result:
-            self.logger.info(f"Scenario '{self.current_scenario.name} succeeded.")
+            self.logger.info(f"Scenario '{self.current_scenario.name}' succeeded.")
         else:
             if not failure_message:
                 failure_message = "execution failed."
@@ -305,7 +304,6 @@ class ScenarioExecution(object):
                                        failure_output=failure_output,
                                        processing_time=datetime.now()-self.current_scenario_start))
         self.cleanup_behaviours(self.current_scenario)
-        self.behaviour_tree.shutdown()
 
     def cleanup_behaviours(self, tree):
         """

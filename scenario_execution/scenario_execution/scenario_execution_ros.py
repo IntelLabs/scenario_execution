@@ -32,6 +32,7 @@ class ROSScenarioExecution(ScenarioExecution):
     def __init__(self) -> None:
         self.node = rclpy.create_node(node_name="scenario_execution")
         self.marker_handler = MarkerHandler(self.node)
+        self.shutdown_task = None
 
         # parse from commandline
         args_without_ros = rclpy.utilities.remove_ros_args(sys.argv[1:])
@@ -97,25 +98,36 @@ class ROSScenarioExecution(ScenarioExecution):
 
         if result:
             self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
-        try:
-            executor.spin()
-        except KeyboardInterrupt:
-            print("Execution got canceled. Exiting...")
-            self.on_scenario_shutdown(False, "Aborted")
+            while rclpy.ok():
+                try:
+                    executor.spin_once()
+                except KeyboardInterrupt:
+                    self.on_scenario_shutdown(False, "Aborted")
 
+                if self.shutdown_task is not None and self.shutdown_task.done():
+                    break
         return self.process_results()
+
+    def shutdown(self):
+        self.logger.info("Shutting down...")
+        self.behaviour_tree.shutdown()
+        self.node.executor.shutdown()
+        self.logger.info("Shutting down finished.")
 
     def on_scenario_shutdown(self, result, failure_message=""):
         super().on_scenario_shutdown(result, failure_message)
-        self.node.destroy_node()
-        self.node.executor.create_task(self.node.executor.shutdown)
+        self.shutdown_task = self.node.executor.create_task(self.shutdown)
 
 
 def main():
     """
     main function
     """
-    rclpy.init(args=sys.argv)
+    try:
+        rclpy.init(args=sys.argv)
+    except rclpy._rclpy_pybind11.RCLError as e:
+        print(f"Error while initializing: {e}")
+        sys.exit(1)
     ros_scenario_execution = ROSScenarioExecution()
     result = ros_scenario_execution.parse()
 
