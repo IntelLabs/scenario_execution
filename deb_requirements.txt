@@ -1,5 +1,0 @@
-ros-humble-turtlebot4-simulator
-ros-humble-py-trees-ros-interfaces
-python3-autopep8
-clang-format
-pylint

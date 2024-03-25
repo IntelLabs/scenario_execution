@@ -10,10 +10,15 @@ on:
   workflow_dispatch:
 permissions: read-all
 jobs:
-  vanilla-build:
+  build:
     runs-on: intellabs-01
+    strategy:
+      matrix:
+        include:
+          - ros_distro: humble
+          - ros_distro: iron
     container:
-      image: osrf/ros:humble-desktop
+      image: osrf/ros:${{ matrix.ros_distro }}-desktop
     permissions:
       # checks: write
       pull-requests: write
@@ -25,20 +30,19 @@ jobs:
         run: |
           apt update
           apt install -y python3-pip
-          xargs -a deb_requirements.txt apt install -y --no-install-recommends
-          rosdep update --rosdistro=humble 
-          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          rosdep update --rosdistro=${{ matrix.ros_distro }}
+          rosdep install --rosdistro=${{ matrix.ros_distro }} --from-paths . --ignore-src -r -y
           pip3 install -r requirements.txt
       - name: Build
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
       - name: Test
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
