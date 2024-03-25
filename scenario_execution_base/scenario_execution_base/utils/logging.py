@@ -25,8 +25,9 @@ class BaseLogger(object):
         name [str]: name of the logger
     """
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, debug) -> None:
         self.name = name
+        self.log_debug = debug
 
     def info(self, msg: str) -> None:
         """
@@ -89,7 +90,8 @@ class Logger(BaseLogger):
         Args:
             msg [str]: msg to print
         """
-        print(f'[{self.name}] [DEBUG] {msg}')
+        if self.log_debug:
+            print(f'[{self.name}] [DEBUG] {msg}')
 
     def warning(self, msg: str) -> None:
         """

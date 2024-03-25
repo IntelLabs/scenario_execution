@@ -32,7 +32,7 @@ from scenario_execution_base.utils.logging import Logger
 class ScenarioVariation(object):
 
     def __init__(self, output_dir, scenario, log_model, debug) -> None:
-        self.logger = Logger('scenario_variation', )
+        self.logger = Logger('scenario_variation', debug)
         self.output_dir = output_dir
         self.scenario = scenario
         self.log_model = log_model

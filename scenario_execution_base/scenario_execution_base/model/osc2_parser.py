@@ -43,11 +43,14 @@ class OpenScenario2Parser(object):
         if errors:
             return None
 
-        model = self.create_internal_model(parsed_tree, file, log_model, debug)
+        try:
+            model = self.create_internal_model(parsed_tree, file, log_model, debug)
+        except Exception:  # pylint: disable=broad-except
+            return None
         if model is None:
             return None
 
-        scenarios = create_py_tree(model, self.logger)
+        scenarios = create_py_tree(model, self.logger, log_model)
 
         return scenarios
 
