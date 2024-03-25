@@ -125,7 +125,7 @@ def main():
     """
     try:
         rclpy.init(args=sys.argv)
-    except rclpy._rclpy_pybind11.RCLError as e:
+    except Exception as e:  # pylint: disable=broad-except
         print(f"Error while initializing: {e}")
         sys.exit(1)
     ros_scenario_execution = ROSScenarioExecution()
