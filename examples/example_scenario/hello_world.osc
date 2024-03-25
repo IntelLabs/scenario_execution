@@ -1,4 +1,4 @@
-import osc.standard
+import osc.standard.base
 import osc.helpers
 
 scenario hello_world:
