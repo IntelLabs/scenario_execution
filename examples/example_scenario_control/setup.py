@@ -30,8 +30,7 @@ setup(
             ['resource/' + PACKAGE_NAME]),
         ('share/' + PACKAGE_NAME, ['package.xml']),
         (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
-        (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py')),
-        (os.path.join('share', PACKAGE_NAME, 'rviz'), glob('rviz/*.rviz'))
+        (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,

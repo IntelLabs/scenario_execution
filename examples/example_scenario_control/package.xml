@@ -11,6 +11,7 @@
   <depend>scenario_execution_control</depend>
   <depend>tb4_sim_scenario</depend>
   <depend>nav2_bringup</depend>
+  <depend>scenario_execution_rviz</depend>
 
   <exec_depend>rclpy</exec_depend>
 
