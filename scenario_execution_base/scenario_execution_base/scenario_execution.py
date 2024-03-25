@@ -192,6 +192,7 @@ class ScenarioExecution(object):
                                            failure_message="parsing failed",
                                            failure_output="No scenario defined",
                                            processing_time=datetime.now() - start))
+            return False
         if len(self.scenarios) == 0:
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
@@ -339,6 +340,7 @@ class ScenarioExecution(object):
         parser.add_argument('-t', '--live-tree', action='store_true',
                             help='For debugging: Show current state of py tree')
         parser.add_argument('-o', '--output-dir', type=str, help='Directory for output (e.g. test results)')
+        parser.add_argument('-n', '--dry-run', action='store_true',help='Parse and resolve scenario, but do not execute')
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
         args, _ = parser.parse_known_args(args)
         return args
@@ -356,7 +358,7 @@ def main():
                                            output_dir=args.output_dir)
 
     result = scenario_execution.parse()
-    if result:
+    if result and not args.dry_run:
         result = scenario_execution.run()
     if result:
         sys.exit(0)

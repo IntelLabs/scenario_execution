@@ -48,9 +48,9 @@ setup(
     include_package_data=True,
     entry_points={
         'scenario_execution.actions': [
-            'sim_object.spawn = scenario_execution_gazebo.actions.gazebo_spawn_actor:GazeboSpawnActor',
+            'osc_actor.spawn = scenario_execution_gazebo.actions.gazebo_spawn_actor:GazeboSpawnActor',
             'actor_exists = scenario_execution_gazebo.actions.gazebo_actor_exists:GazeboActorExists',
-            'sim_object.delete = scenario_execution_gazebo.actions.gazebo_delete_actor:GazeboDeleteActor',
+            'osc_actor.delete = scenario_execution_gazebo.actions.gazebo_delete_actor:GazeboDeleteActor',
             'wait_for_sim = scenario_execution_gazebo.actions.gazebo_wait_for_sim:GazeboWaitForSim',
         ],
         'scenario_execution.osc_libraries': [

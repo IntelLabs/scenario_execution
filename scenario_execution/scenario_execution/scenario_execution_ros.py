@@ -42,6 +42,7 @@ class ROSScenarioExecution(ScenarioExecution):
         live_tree = args.live_tree
         scenario = args.scenario
         output_dir = args.output_dir
+        self.dry_run = args.dry_run
 
         # override commandline by ros parameters
         self.node.declare_parameter('debug', False)
@@ -49,6 +50,7 @@ class ROSScenarioExecution(ScenarioExecution):
         self.node.declare_parameter('live_tree', False)
         self.node.declare_parameter('output_dir', "")
         self.node.declare_parameter('scenario', "")
+        self.node.declare_parameter('dry_run', False)
 
         if self.node.get_parameter('debug').value:
             debug = self.node.get_parameter('debug').value
@@ -60,6 +62,8 @@ class ROSScenarioExecution(ScenarioExecution):
             scenario = self.node.get_parameter('scenario').value
         if self.node.get_parameter('output_dir').value:
             output_dir = self.node.get_parameter('output_dir').value
+        if self.node.get_parameter('dry_run').value:
+            self.dry_run = self.node.get_parameter('dry_run').value
         super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario_file=scenario, output_dir=output_dir)
 
     def _get_logger(self, debug):
@@ -131,7 +135,7 @@ def main():
     ros_scenario_execution = ROSScenarioExecution()
     result = ros_scenario_execution.parse()
 
-    if result:
+    if result and not ros_scenario_execution.dry_run:
         result = ros_scenario_execution.run()
 
     rclpy.try_shutdown()
