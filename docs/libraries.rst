@@ -3,10 +3,10 @@ Libraries
 
 Beside ``osc.standard`` provided by OpenSCENARIO 2, multiple libraries are provided with scenario execution.
 
-- ``osc.helpers`` Helpers Library
-- ``osc.robotics``: Robotics Library
-- ``osc.ros``: ROS Library
-- ``osc.gazebo``: Gazebo Library
+- ``osc.helpers`` Helpers Library (provided with :repo_link:`scenario_execution_base`)
+- ``osc.robotics``: Robotics Library (provided with :repo_link:`scenario_execution_base`)
+- ``osc.ros``: ROS Library (provided with :repo_link:`scenario_execution`)
+- ``osc.gazebo``: Gazebo Library (provided with :repo_link:`scenario_execution_gazebo`)
 
 Additional features can be implemented by defining your own library.
 
@@ -26,7 +26,7 @@ For debugging purposes, log a string using the available log mechanism.
 ``run_process()``
 """"""""""""""""""""""""""
 
-Run an process. Reports `running` while the process has not finished.
+Run a process. Reports `running` while the process has not finished.
 
 - ``command: string``: Command to execute
 
@@ -37,12 +37,19 @@ Run an process. Reports `running` while the process has not finished.
 Actors
 ^^^^^^
 
-``differential_drive_robot``
+``robot``
 """"""""""""""""""""""""""""
-A differential drive robot actor.
+A general parent robot actor.
 
 ``osc.ros``
 -----------
+
+Actors
+^^^^^^
+
+``differential_drive_robot``
+""""""""""""""""""""""""""""
+A differential drive robot actor inheriting from the more general ``robot`` actor
 
 Actions
 ^^^^^^^
