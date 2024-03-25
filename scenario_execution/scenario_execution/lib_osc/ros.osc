@@ -27,6 +27,9 @@ enum comparison_operator: [
     gt
 ]
 
+actor differential_drive_robot inherits robot:
+    namespace: string = ''
+
 action wait_for_data:
     topic_name: string                                # name of the topic to connect to
     topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
