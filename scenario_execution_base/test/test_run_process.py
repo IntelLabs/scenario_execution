@@ -44,7 +44,7 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
 
     def test_failure(self):
         scenario_content = """
-import osc.standard
+import osc.standard.base
 import osc.helpers
 
 scenario test_run_process:
@@ -69,7 +69,7 @@ scenario test_run_process:
 
     def test_success(self):
         scenario_content = """
-import osc.standard
+import osc.standard.base
 import osc.helpers
 
 scenario test_run_process:
@@ -94,7 +94,7 @@ scenario test_run_process:
 
     def test_multi_element_command(self):
         scenario_content = """
-import osc.standard
+import osc.standard.base
 import osc.helpers
 
 scenario test_run_process:

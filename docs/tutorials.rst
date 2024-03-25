@@ -14,7 +14,7 @@ with the extension ``.osc``. Input the following code in the file.
 .. code-block::
 
    # import the libraries with import expression
-   import osc.standard
+   import osc.standard.base
    import osc.helpers
 
    # declare the scenario by the syntax: "scenario scenario_name:"
@@ -25,7 +25,7 @@ with the extension ``.osc``. Input the following code in the file.
            wait elapsed(3s)   # wait three seconds
            log("Good Bye!")         # log another message
 
-The first two lines ``import osc.standard`` and ``import osc.helpers`` will import the named libraries that provide required definitions. In this example ``helpers`` library provides the ``log`` action and ``standard`` provides the definition of the `s` unit to specify seconds.
+The first two lines ``import osc.standard.base`` and ``import osc.helpers`` will import the named libraries that provide required definitions. In this example ``helpers`` library provides the ``log`` action and ``standard.base`` provides the definition of the `s` unit to specify seconds.
 
 .. note::
    Comments in OpenSCENARIO 2 always start with ``#``.
