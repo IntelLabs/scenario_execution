@@ -262,7 +262,7 @@ class ScenarioExecution(object):
         # store output file
         if self.output_dir and self.results:
             result_file = os.path.join(self.output_dir, 'test.xml')
-            #self.logger.info(f"Writing results to '{result_file}'...")
+            # self.logger.info(f"Writing results to '{result_file}'...")
             failures = 0
             overall_time = timedelta(0)
             for res in self.results:
