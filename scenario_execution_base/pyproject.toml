@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scenario_execution_base"
+version = "1.0.0"
+dependencies = [
+    "antlr4-python3-runtime==4.7.2",
+    "transforms3d==0.3.1",
+    "pexpect==4.9.0",
+    "defusedxml==0.7.1"
+]
+requires-python = ">=3.8"
+authors = [
+  {name = "Intel Labs", email = "scenario-execution@intel.com"}
+]
+maintainers = [
+  {name = "Intel Labs", email = "scenario-execution@intel.com"}
+]
+description = "Lovely Spam! Wonderful Spam!"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["robotics", "scenarios", "experiments", "testing"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache 2.0 License",
+]
+
+[project.urls]
+Homepage = "https://github.com/IntelLabs/scenario_execution"
+Documentation = "https://intellabs.github.io/scenario_execution/"
+Issues = "https://github.com/IntelLabs/scenario_execution/issues"
