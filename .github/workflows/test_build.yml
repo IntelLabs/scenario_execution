@@ -66,6 +66,15 @@ jobs:
             scenario_execution_ros//TEST.xml
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
+      - name: Test Example Scanrio Files Syntax
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          find ./examples/ -name "*.osc" | grep -Ev "examples/example_library|examples/example_scenario_variation" | while read file; do 
+            echo "$file"; 
+            ros2 run scenario_execution_base scenario_execution_base "$file" -n; 
+          done
       - name: Test Example Scenario
         shell: bash
         run: |
