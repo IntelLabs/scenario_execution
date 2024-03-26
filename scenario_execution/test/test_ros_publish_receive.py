@@ -26,18 +26,14 @@ from antlr4.InputStream import InputStream
 class TestScenarioExectionSuccess(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
-    @classmethod
-    def setUpClass(cls):
-        rclpy.init()
-
-    @classmethod
-    def tearDownClass(cls):
-        rclpy.shutdown()
-
     def setUp(self) -> None:
+        rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ROSScenarioExecution()
 
+    def tearDown(self):
+        rclpy.try_shutdown()
+        
     def test_success(self):
         scenario_content = """
 import osc.ros
