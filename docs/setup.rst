@@ -5,6 +5,14 @@ Setup
 Installation from source as ROS 2 workspace
 -------------------------------------------
 
+Prerequisites
+^^^^^^^^^^^^^
+
+Install ROS2 following the installation instructions for either `humble <https://docs.ros.org/en/humble/Installation.html>`_ or `iron <https://docs.ros.org/en/iron/Installation.html>`_.
+
+Installation
+^^^^^^^^^^^^^
+
 Clone the scenario execution repository
 
 .. code-block:: bash
@@ -29,3 +37,15 @@ and build it
 .. code-block:: bash
 
    colcon build
+
+.. _install_with_pip:
+
+Installation with pip as standalone Python package
+--------------------------------------------------
+
+Currently, only :repo_link:`scenario_execution_base` is available as standalone Python package.
+To install it using pip, run
+
+.. code-block:: bash
+
+   pip install scenario-execution-base
