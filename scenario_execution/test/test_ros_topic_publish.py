@@ -30,15 +30,9 @@ from scenario_execution_base.utils.logging import Logger
 
 class TestRosTopicPublish(unittest.TestCase):
     # pylint: disable=missing-function-docstring,missing-class-docstring
-    @classmethod
-    def setUpClass(cls):
-        rclpy.init()
-
-    @classmethod
-    def tearDownClass(cls):
-        rclpy.shutdown()
 
     def setUp(self) -> None:
+        rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ROSScenarioExecution()
 
@@ -55,6 +49,7 @@ class TestRosTopicPublish(unittest.TestCase):
 
     def tearDown(self):
         self.node.destroy_node()
+        rclpy.try_shutdown()
 
     def callback(self, msg):
         self.received_msgs.append(msg)

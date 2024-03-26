@@ -79,9 +79,12 @@ class NavToPose(py_trees.behaviour.Behaviour):
 
         self.logger.debug("Waiting for 'NavigateToPose' action server")
         wait_for_action_server_time = 30
-        while wait_for_action_server_time > 0 and not self.nav_to_pose_client.wait_for_server(timeout_sec=1.0):
-            self.logger.info(f"'NavigateToPose' action server not available, waiting {wait_for_action_server_time}s...")
-            wait_for_action_server_time -= 1
+        try:
+            while wait_for_action_server_time > 0 and not self.nav_to_pose_client.wait_for_server(timeout_sec=1.0):
+                self.logger.info(f"'NavigateToPose' action server not available, waiting {wait_for_action_server_time}s...")
+                wait_for_action_server_time -= 1
+        except KeyboardInterrupt:
+            pass
         if wait_for_action_server_time == 0:
             raise ValueError("Timeout while waiting for action server.")
 
@@ -171,12 +174,13 @@ class NavToPose(py_trees.behaviour.Behaviour):
         return True
 
     def cancel_task(self):
-        self.logger.info('Canceling current task.')
         if self.result_future:
-            self.goal_handle.cancel_goal_async()
+            self.logger.info('Canceling current task.')
+            self.goal_handle.cancel_goal()
 
     def feedback_callback(self, msg):
         self.feedback = msg.feedback
 
-    def cleanup(self):
+    def shutdown(self):
         self.cancel_task()
+        self.nav_to_pose_client.destroy()

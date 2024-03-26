@@ -113,14 +113,14 @@ class GazeboSpawnActor(RunProcess):
         self.current_state = SpawnActionState.WAITING_FOR_RESPONSE
         self.feedback_message = f"Executed spawning, waiting for response..."  # pylint: disable= attribute-defined-outside-init
 
-    def cleanup(self):
+    def shutdown(self):
         """
         Cleanup on shutdown
         """
-        self.logger.info(f"Deleting entity '{self.entity_name}' from simulation.")
         if self.current_state in [SpawnActionState.WAITING_FOR_TOPIC, SpawnActionState.MODEL_AVAILABLE]:
             return
 
+        self.logger.info(f"Deleting entity '{self.entity_name}' from simulation.")
         subprocess.run(["ign", "service", "-s", "/world/" + self.world_name + "/remove",  # pylint: disable=subprocess-run-check
                         "--reqtype", "ignition.msgs.Entity",
                         "--reptype", "ignition.msgs.Boolean",
