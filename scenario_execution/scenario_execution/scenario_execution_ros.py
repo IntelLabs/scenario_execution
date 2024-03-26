@@ -136,7 +136,7 @@ def main():
     except Exception as e:  # pylint: disable=broad-except
         print(f"Error while initializing: {e}")
         sys.exit(1)
-    
+
     result = ros_scenario_execution.parse()
 
     if result and not ros_scenario_execution.dry_run:
