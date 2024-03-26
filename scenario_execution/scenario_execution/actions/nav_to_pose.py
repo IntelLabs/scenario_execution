@@ -175,7 +175,6 @@ class NavToPose(py_trees.behaviour.Behaviour):
 
     def cancel_task(self):
         if self.result_future:
-            self.logger.info('Canceling current task.')
             self.goal_handle.cancel_goal()
 
     def feedback_callback(self, msg):
