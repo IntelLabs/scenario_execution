@@ -121,7 +121,7 @@
             export -n CYCLONEDDS_URI
             export ROS_DOMAIN_ID=2
             export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-            mkdir scenario_control_test
+            mkdir example_control_test
             python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenario_execution_control.osc &
             timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/ output_dir:=example_control_test || true
         - name: Test Example MultiRobot
@@ -138,7 +138,14 @@
             timeout 600 scenario_batch_execution -i examples/example_multi_robot/ -o example_multi_robot_test -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR} || true
         - name: Check for Expected JUnit Files
           run: |
-            FILES_FOUND=$(find example_scenario_test/ example_nav2_test/ example_simulation_test/ example_library_test/ example_variation_test/ example_multi_robot_test/ example_control_test/ -type f -name 'test.xml' | wc -l)
+            folders=(example_scenario_test/ example_nav2_test/ example_simulation_test/ example_library_test/ example_variation_test/ example_multi_robot_test/ example_control_test/)
+            count=0
+            for folder in "${folders[@]}"; do
+              if [ -f "$folder/test.xml" ]; then
+                ((count++))
+              fi
+            done
+            FILES_FOUND = $count
             EXPECTED_FILES=7
             if [ "$FILES_FOUND" -ne $EXPECTED_FILES ]; then
               echo "Expected $EXPECTED_FILES JUnit XML files but found $FILES_FOUND."
