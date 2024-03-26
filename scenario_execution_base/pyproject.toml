@@ -22,10 +22,17 @@ description = "Lovely Spam! Wonderful Spam!"
 readme = "README.md"
 license = {file = "LICENSE"}
 keywords = ["robotics", "scenarios", "experiments", "testing"]
+dynamic = [
+    "entry-points",
+    "scripts"
+]
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: Apache 2.0 License",
 ]
+
+[tool.setuptools.packages]
+find = {}  # Scanning implicit namespaces is active by default
 
 [project.urls]
 Homepage = "https://github.com/IntelLabs/scenario_execution"
