@@ -33,7 +33,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def tearDown(self):
         rclpy.try_shutdown()
-        
+
     def test_success(self):
         scenario_content = """
 import osc.ros
