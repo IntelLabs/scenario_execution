@@ -191,8 +191,7 @@ class TfCloseTo(py_trees.behaviour.Behaviour):
         '''
         return sqrt((self.reference_point['x'] - pos.x) ** 2 + (self.reference_point['y'] - pos.y) ** 2)
 
-    def cleanup(self):
-        """
-        Cleanup on shutdown
-        """
+    def shutdown(self):
         self.marker_handler.remove_markers([self.marker_id])
+        if self.tf_listener:
+            del self.tf_listener

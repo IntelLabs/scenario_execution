@@ -135,8 +135,11 @@ class NamespacedTransformListener:
         """
         Unregisters all tf subscribers.
         """
-        self.node.destroy_subscription(self.tf_sub)
-        self.node.destroy_subscription(self.tf_static_sub)
+        try:
+            self.node.destroy_subscription(self.tf_sub)
+            self.node.destroy_subscription(self.tf_static_sub)
+        except AttributeError:
+            pass
 
     def callback(self, data: TFMessage) -> None:
         who = 'default_authority'
