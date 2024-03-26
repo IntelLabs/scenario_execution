@@ -16,7 +16,7 @@
 
 from glob import glob
 import os
-from setuptools import setup, find_namespace_packages
+from setuptools import find_namespace_packages, setup
 
 PACKAGE_NAME = 'example_library'
 

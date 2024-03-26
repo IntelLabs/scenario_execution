@@ -17,14 +17,14 @@
 """Setup python package"""
 from glob import glob
 import os
-from setuptools import find_packages, setup
+from setuptools import find_namespace_packages, setup
 
 PACKAGE_NAME = 'scenario_execution_base'
 
 setup(
     name=PACKAGE_NAME,
     version='1.0.0',
-    packages=find_packages(),
+    packages=find_namespace_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
