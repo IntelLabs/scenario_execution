@@ -69,9 +69,6 @@ class BaseLogger(object):
 class Logger(BaseLogger):
     """
     Class for logger for scenario execution
-
-    Args:
-        name [str]: name of the logger
     """
 
     def info(self, msg: str) -> None:

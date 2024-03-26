@@ -96,7 +96,7 @@ Implement an Action
 
 - If an action's ``setup()`` fails, raise an exception
 - Use a state machine, if multiple steps are required
-- Implement a ``cleanup()`` method to cleanup on scenario end.
+- Implement a ``shutdown()`` method to cleanup on scenario end.
 - For debugging/logging:
    - Make use of ``self.feedback_message``
    - Make use of ``kwargs['logger']``, available in ``setup()``
