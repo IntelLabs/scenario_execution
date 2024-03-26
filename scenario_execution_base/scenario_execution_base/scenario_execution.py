@@ -68,7 +68,7 @@ class ScenarioExecution(object):
                  output_dir: str,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_tock_period: float = 0.1) -> None:
-                
+
         def signal_handler(sig, frame):
             self.on_scenario_shutdown(False, "Aborted")
 
@@ -308,10 +308,10 @@ class ScenarioExecution(object):
                 if self.log_model:
                     self.logger.error(self.last_snapshot_visitor.last_snapshot)
             self.add_result(ScenarioResult(name=self.current_scenario.name,
-                                        result=result,
-                                        failure_message=failure_message,
-                                        failure_output=failure_output,
-                                        processing_time=datetime.now()-self.current_scenario_start))
+                                           result=result,
+                                           failure_message=failure_message,
+                                           failure_output=failure_output,
+                                           processing_time=datetime.now()-self.current_scenario_start))
             self.cleanup_behaviours(self.current_scenario)
 
     def cleanup_behaviours(self, tree):
