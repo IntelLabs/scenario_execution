@@ -75,3 +75,11 @@ jobs:
             source install/setup.bash
             # shellcheck disable=SC1083
             scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Test Example Variation
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
+            # shellcheck disable=SC1083
+            scenario_batch_execution -i scenario_variation_out -o test_example_variation -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
