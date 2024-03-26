@@ -109,7 +109,7 @@
             source install/setup.bash
             scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
             # shellcheck disable=SC1083
-            scenario_batch_execution -i scenario_variation_out -o scenario_variation_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+            scenario_batch_execution -i scenario_variation_out -o example_variation_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
         - name: Test Example Scenario Control
           shell: bash
           run: |
@@ -122,7 +122,7 @@
             export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
             mkdir scenario_control_test
             python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenario_execution_control.osc &
-            timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/ output_dir:=scenario_control_test || true
+            timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/ output_dir:=example_control_test || true
         - name: Test Example MultiRobot
           shell: bash
           run: |
@@ -133,10 +133,15 @@
             export -n CYCLONEDDS_URI
             export ROS_DOMAIN_ID=2
             export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-            mkdir scenario_multi_robot_test
-            ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario_execution:=False scenario:=foo yaw:=3.14 &
-            # shellcheck disable=SC1083
-            timeout 240 ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_multi_robot/example_multi_robot.osc output_dir:=scenario_multi_robot_test || true
+            scenario_batch_execution -i examples/example_multi_robot/ -o example_multi_robot_test -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR}
+        - name: Check for Expected JUnit Files
+          run: |
+            FILES_FOUND=$(find example_scenario_test/ example_nav2_test/ example_simulation_test/ example_library_test/ example_variation_test/ example_multi_robot_test/ example_control_test/ -type f -name 'test.xml' | wc -l)
+            EXPECTED_FILES=7
+            if [ "$FILES_FOUND" -ne $EXPECTED_FILES ]; then
+              echo "Expected $EXPECTED_FILES JUnit XML files but found $FILES_FOUND."
+              exit 1
+            fi
         - name: Publish Scenario Results
           uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
           if: always()
@@ -150,9 +155,9 @@
               example_nav2_test/test.xml
               example_simulation_test/test.xml
               example_library_test/test.xml
-              scenario_variation_test/test.xml
-              scenario_multi_robot_test/test.xml
-              scenario_control_test/test.xml
+              example_variation_test/test.xml
+              example_multi_robot_test/test.xml
+              example_control_test/test.xml
         - name: Upload Scenario Results
           uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
           if: always()
@@ -163,7 +168,7 @@
               example_nav2_test/test.xml
               example_simulation_test/test.xml
               example_library_test/test.xml
-              scenario_variation_test/test.xml
-              scenario_multi_robot_test/test.xml
-              scenario_control_test/test.xml
+              example_variation_test/test.xml
+              example_multi_robot_test/test.xml
+              example_control_test/test.xml
   
