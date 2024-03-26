@@ -4,12 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "scenario_execution_base"
-version = "1.0.0"
+version = "1.0.3"
 dependencies = [
     "antlr4-python3-runtime==4.7.2",
     "transforms3d==0.3.1",
     "pexpect==4.9.0",
-    "defusedxml==0.7.1"
+    "defusedxml==0.7.1",
+    "pyyaml",
+    "py-trees",
 ]
 requires-python = ">=3.8"
 authors = [
@@ -28,7 +30,7 @@ dynamic = [
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: Apache 2.0 License",
+  "License :: OSI Approved :: Apache License 2.0",
 ]
 
 [tool.setuptools.packages]
