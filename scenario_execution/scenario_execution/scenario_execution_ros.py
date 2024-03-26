@@ -42,6 +42,7 @@ class ROSScenarioExecution(ScenarioExecution):
         live_tree = args.live_tree
         scenario = args.scenario
         output_dir = args.output_dir
+        self.dry_run = args.dry_run
 
         # override commandline by ros parameters
         self.node.declare_parameter('debug', False)
@@ -49,6 +50,7 @@ class ROSScenarioExecution(ScenarioExecution):
         self.node.declare_parameter('live_tree', False)
         self.node.declare_parameter('output_dir', "")
         self.node.declare_parameter('scenario', "")
+        self.node.declare_parameter('dry_run', False)
 
         if self.node.get_parameter('debug').value:
             debug = self.node.get_parameter('debug').value
@@ -60,6 +62,8 @@ class ROSScenarioExecution(ScenarioExecution):
             scenario = self.node.get_parameter('scenario').value
         if self.node.get_parameter('output_dir').value:
             output_dir = self.node.get_parameter('output_dir').value
+        if self.node.get_parameter('dry_run').value:
+            self.dry_run = self.node.get_parameter('dry_run').value
         super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario_file=scenario, output_dir=output_dir)
 
     def _get_logger(self, debug):
@@ -100,21 +104,23 @@ class ROSScenarioExecution(ScenarioExecution):
             self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
             while rclpy.ok():
                 try:
-                    executor.spin_once()
+                    executor.spin_once(timeout_sec=0.1)
                 except KeyboardInterrupt:
                     self.on_scenario_shutdown(False, "Aborted")
 
                 if self.shutdown_task is not None and self.shutdown_task.done():
+                    rclpy.shutdown()
                     break
         return self.process_results()
 
     def shutdown(self):
         self.logger.info("Shutting down...")
         self.behaviour_tree.shutdown()
-        self.node.executor.shutdown()
         self.logger.info("Shutting down finished.")
 
     def on_scenario_shutdown(self, result, failure_message=""):
+        if self.shutdown_requested:
+            return
         super().on_scenario_shutdown(result, failure_message)
         self.shutdown_task = self.node.executor.create_task(self.shutdown)
 
@@ -125,13 +131,15 @@ def main():
     """
     try:
         rclpy.init(args=sys.argv)
+        rclpy.uninstall_signal_handlers()
+        ros_scenario_execution = ROSScenarioExecution()
     except Exception as e:  # pylint: disable=broad-except
         print(f"Error while initializing: {e}")
         sys.exit(1)
-    ros_scenario_execution = ROSScenarioExecution()
+
     result = ros_scenario_execution.parse()
 
-    if result:
+    if result and not ros_scenario_execution.dry_run:
         result = ros_scenario_execution.run()
 
     rclpy.try_shutdown()

@@ -50,6 +50,7 @@ def generate_launch_description():
         DeclareLaunchArgument('output_dir', description='Output directory', default_value=''),
 
         Node(
+            condition=IfCondition(scenario_execution),
             package='scenario_execution',
             executable='scenario_execution',
             name='scenario_execution',
@@ -84,5 +85,5 @@ def generate_launch_description():
         LogInfo(
             condition=UnlessCondition(scenario_execution),
             msg=["Skipping: ros2 launch scenario_execution scenario_launch.py scenario:=",
-                 scenario, ' log_level:="', log_level, '"']),
+                 scenario, ' log_model:=', log_model, ' live_tree:=', live_tree, ' debug:=', debug]),
     ])

@@ -18,6 +18,7 @@ import os
 import sys
 import time
 import argparse
+import signal
 from datetime import datetime, timedelta
 import py_trees
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
@@ -67,6 +68,13 @@ class ScenarioExecution(object):
                  output_dir: str,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_tock_period: float = 0.1) -> None:
+
+        def signal_handler(sig, frame):
+            self.on_scenario_shutdown(False, "Aborted")
+
+        signal.signal(signal.SIGHUP, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+
         self.current_scenario_start = None
         self.current_scenario = None
         self.debug = debug
@@ -74,6 +82,16 @@ class ScenarioExecution(object):
         self.live_tree = live_tree
         self.scenario_file = scenario_file
         self.output_dir = output_dir
+
+        if self.output_dir:
+            if not os.path.isdir(self.output_dir):
+                try:
+                    os.mkdir(self.output_dir)
+                except OSError as e:
+                    raise ValueError(f"Could not create output directory: {e}") from e
+            if not os.access(self.output_dir, os.W_OK):
+                raise ValueError(f"Output directory '{self.output_dir}' not writable.")
+
         self.logger = self._get_logger(debug)
 
         if self.debug:
@@ -192,6 +210,7 @@ class ScenarioExecution(object):
                                            failure_message="parsing failed",
                                            failure_output="No scenario defined",
                                            processing_time=datetime.now() - start))
+            return False
         if len(self.scenarios) == 0:
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
@@ -243,7 +262,7 @@ class ScenarioExecution(object):
         # store output file
         if self.output_dir and self.results:
             result_file = os.path.join(self.output_dir, 'test.xml')
-            self.logger.info(f"Writing results to '{result_file}'...")
+            #self.logger.info(f"Writing results to '{result_file}'...")
             failures = 0
             overall_time = timedelta(0)
             for res in self.results:
@@ -263,7 +282,7 @@ class ScenarioExecution(object):
                         out.write(f'  </testcase>\n')
                     out.write("</testsuite>\n")
             except Exception as e:  # pylint: disable=broad-except
-                self.logger.error(f"Could not write results to '{self.output_dir}': {e}")
+                print(f"Could not write results to '{self.output_dir}': {e}")  # use print, as logger might not be available during shutdown
         return result
 
     def pre_tick_handler(self, behaviour_tree):
@@ -284,51 +303,28 @@ class ScenarioExecution(object):
             result = True
             if self.blackboard.fail:
                 result = False
-            self.on_scenario_shutdown(result)
+            if not self.shutdown_requested:
+                self.on_scenario_shutdown(result)
 
     def on_scenario_shutdown(self, result, failure_message=""):
         self.shutdown_requested = True
-        self.behaviour_tree.interrupt()
+        if self.behaviour_tree:
+            self.behaviour_tree.interrupt()
         failure_output = ""
-        if result:
-            self.logger.info(f"Scenario '{self.current_scenario.name}' succeeded.")
-        else:
-            if not failure_message:
-                failure_message = "execution failed."
-            failure_output = self.last_snapshot_visitor.last_snapshot
-            if self.log_model:
-                self.logger.error(self.last_snapshot_visitor.last_snapshot)
-        self.add_result(ScenarioResult(name=self.current_scenario.name,
-                                       result=result,
-                                       failure_message=failure_message,
-                                       failure_output=failure_output,
-                                       processing_time=datetime.now()-self.current_scenario_start))
-        self.cleanup_behaviours(self.current_scenario)
-
-    def cleanup_behaviours(self, tree):
-        """
-        Run cleanup functions in all behaviors
-        """
-        class CleanupVisitor(py_trees.visitors.VisitorBase):
-            """
-            Helper class to call cleanup functions in all behaviors
-            """
-
-            def __init__(self):
-                super(CleanupVisitor, self).__init__(full=False)
-
-            def run(self, behaviour):
-                """
-                call cleanup method
-                """
-                method = getattr(behaviour, 'cleanup', None)
-                if callable(method):
-                    method()
-
-        cleanup_visitor = CleanupVisitor()
-
-        for node in tree.iterate():
-            cleanup_visitor.run(node)
+        if self.current_scenario:
+            if result:
+                self.logger.info(f"Scenario '{self.current_scenario.name}' succeeded.")
+            else:
+                if not failure_message:
+                    failure_message = "execution failed."
+                failure_output = self.last_snapshot_visitor.last_snapshot
+                if self.log_model:
+                    self.logger.error(self.last_snapshot_visitor.last_snapshot)
+            self.add_result(ScenarioResult(name=self.current_scenario.name,
+                                           result=result,
+                                           failure_message=failure_message,
+                                           failure_output=failure_output,
+                                           processing_time=datetime.now()-self.current_scenario_start))
 
     @staticmethod
     def parse_args(args):
@@ -339,6 +335,7 @@ class ScenarioExecution(object):
         parser.add_argument('-t', '--live-tree', action='store_true',
                             help='For debugging: Show current state of py tree')
         parser.add_argument('-o', '--output-dir', type=str, help='Directory for output (e.g. test results)')
+        parser.add_argument('-n', '--dry-run', action='store_true', help='Parse and resolve scenario, but do not execute')
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
         args, _ = parser.parse_known_args(args)
         return args
@@ -349,14 +346,17 @@ def main():
     main function
     """
     args = ScenarioExecution.parse_args(sys.argv[1:])
-    scenario_execution = ScenarioExecution(debug=args.debug,
-                                           log_model=args.log_model,
-                                           live_tree=args.live_tree,
-                                           scenario_file=args.scenario,
-                                           output_dir=args.output_dir)
-
+    try:
+        scenario_execution = ScenarioExecution(debug=args.debug,
+                                               log_model=args.log_model,
+                                               live_tree=args.live_tree,
+                                               scenario_file=args.scenario,
+                                               output_dir=args.output_dir)
+    except ValueError as e:
+        print(f"Error while initializing: {e}")
+        sys.exit(1)
     result = scenario_execution.parse()
-    if result:
+    if result and not args.dry_run:
         result = scenario_execution.run()
     if result:
         sys.exit(0)
