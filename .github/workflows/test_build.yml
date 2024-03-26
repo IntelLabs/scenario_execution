@@ -1,63 +1,183 @@
 ---
-name: test-build
-on:
-  # Triggers the workflow on push or pull request events but
-  # only for the main branch
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
-permissions: read-all
-jobs:
-  vanilla-build:
-    runs-on: intellabs-01
-    container:
-      image: osrf/ros:humble-desktop
-    permissions:
-      # checks: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
-        with:
-          submodules: true
-      - name: Setup Dependencies
-        run: |
-          apt update
-          apt install -y python3-pip
-          xargs -a deb_requirements.txt apt install -y --no-install-recommends
-          rosdep update --rosdistro=humble 
-          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
-          pip3 install -r requirements.txt
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
-      - name: Test
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          source install/setup.bash
-          export -n CYCLONEDDS_URI
-          export ROS_DOMAIN_ID=2
-          colcon test --packages-select \
-          scenario_execution_base \
-          scenario_execution \
-          scenario_execution_gazebo \
-          scenario_coverage \
-          --event-handlers console_direct+ \
-          --return-code-on-test-failure \
-          --pytest-args \
-          --junit-xml=TEST.xml
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
-        if: always()
-        with:
-          check_run: false
-          files: |
-            scenario_execution_base//TEST.xml
-            scenario_execution//TEST.xml
-            scenario_execution_gazebo//TEST.xml
-            scenario_coverage//TEST.xml
+  name: test-build
+  on:
+    # Triggers the workflow on push or pull request events but
+    # only for the main branch
+    push:
+      branches: [main]
+    pull_request:
+      branches: [main]
+    workflow_dispatch:
+  permissions: read-all
+  jobs:
+    vanilla-build:
+      runs-on: intellabs-01
+      container:
+        image: osrf/ros:humble-desktop
+      permissions:
+        # checks: write
+        pull-requests: write
+      steps:
+        - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+          with:
+            submodules: true
+        - name: Setup Dependencies
+          run: |
+            apt update
+            apt install -y python3-pip
+            apt install libgl1
+            apt install -y xvfb tk
+            xargs -a deb_requirements.txt apt install -y --no-install-recommends
+            rosdep update --rosdistro=humble 
+            rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+            pip3 install -r requirements.txt
+        - name: Build
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            colcon build --continue-on-error
+            source install/setup.bash
+        - name: Test
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            export -n CYCLONEDDS_URI
+            export ROS_DOMAIN_ID=2
+            colcon test --packages-select \
+            scenario_execution_base \
+            scenario_execution \
+            scenario_execution_gazebo \
+            scenario_coverage \
+            --event-handlers console_direct+ \
+            --return-code-on-test-failure \
+            --pytest-args \
+            --junit-xml=TEST.xml
+        - name: Publish Test Results
+          uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+          if: always()
+          with:
+            comment_mode: always
+            check_run: false
+            files: |
+              scenario_execution_base//TEST.xml
+              scenario_execution//TEST.xml
+              scenario_execution_gazebo//TEST.xml
+              scenario_coverage//TEST.xml
+        - name: Test Example Scenario
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            #shellcheck disable=SC1083
+            scenario_batch_execution -i examples/example_scenario/ -o example_scenario_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        - name: Test Example Nav2
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            Xvfb :1 -screen 0 800x600x16 &
+            export DISPLAY=:1.0
+            export -n CYCLONEDDS_URI
+            export ROS_DOMAIN_ID=2
+            export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+            # shellcheck disable=SC1083
+            scenario_batch_execution -i examples/example_nav2/ -o example_nav2_test -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        - name: Test Example Simulation
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            Xvfb :1 -screen 0 800x600x16 &
+            export DISPLAY=:1.0
+            export -n CYCLONEDDS_URI
+            export ROS_DOMAIN_ID=2
+            export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+            mkdir example_simulation_test
+            # shellcheck disable=SC1083
+            timeout 600 ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_simulation/scenarios/example_simulation.osc output_dir:=example_simulation_test || true
+        - name: Test Example Library
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            # shellcheck disable=SC1083
+            scenario_batch_execution -i examples/example_library/scenarios -o example_library_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        - name: Test Example Variation
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
+            # shellcheck disable=SC1083
+            scenario_batch_execution -i scenario_variation_out -o example_variation_test -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        - name: Test Example Scenario Control
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            Xvfb :1 -screen 0 800x600x16 &
+            export DISPLAY=:1.0
+            export -n CYCLONEDDS_URI
+            export ROS_DOMAIN_ID=2
+            export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+            mkdir example_control_test
+            python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenario_execution_control.osc &
+            timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/ output_dir:=example_control_test || true
+        - name: Test Example MultiRobot
+          shell: bash
+          run: |
+            source /opt/ros/humble/setup.bash
+            source install/setup.bash
+            Xvfb :1 -screen 0 800x600x16 &
+            export DISPLAY=:1.0
+            export -n CYCLONEDDS_URI
+            export ROS_DOMAIN_ID=2
+            export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+            # shellcheck disable=SC1083
+            timeout 600 scenario_batch_execution -i examples/example_multi_robot/ -o example_multi_robot_test -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR} || true
+        - name: Check for Expected JUnit Files
+          run: |
+            folders=(example_scenario_test/ example_nav2_test/ example_simulation_test/ example_library_test/ example_variation_test/ example_multi_robot_test/ example_control_test/)
+            count=0
+            for folder in "${folders[@]}"; do
+              if [ -f "$folder/test.xml" ]; then
+                ((count++))
+              fi
+            done
+            FILES_FOUND = $count
+            EXPECTED_FILES=7
+            if [ "$FILES_FOUND" -ne $EXPECTED_FILES ]; then
+              echo "Expected $EXPECTED_FILES JUnit XML files but found $FILES_FOUND."
+              exit 1
+            fi
+        - name: Publish Scenario Results
+          uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+          if: always()
+          with:
+            check_name: Scenario Results
+            check_run: false
+            action_fail: true
+            comment_mode: always
+            files: |
+              example_scenario_test/test.xml
+              example_nav2_test/test.xml
+              example_simulation_test/test.xml
+              example_library_test/test.xml
+              example_variation_test/test.xml
+              example_multi_robot_test/test.xml
+              example_control_test/test.xml
+        - name: Upload Scenario Results
+          uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+          if: always()
+          with:
+            name: junit-reports
+            path: |
+              example_scenario_test/test.xml
+              example_nav2_test/test.xml
+              example_simulation_test/test.xml
+              example_library_test/test.xml
+              example_variation_test/test.xml
+              example_multi_robot_test/test.xml
+              example_control_test/test.xml
+  
