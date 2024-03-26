@@ -3,7 +3,7 @@ import osc.gazebo
 
 scenario example_simulation:
     robot: differential_drive_robot
-    box: sim_object
+    box: osc_actor
     do parallel:
         serial:
             robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))

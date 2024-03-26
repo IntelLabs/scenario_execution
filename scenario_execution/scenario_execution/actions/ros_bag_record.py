@@ -124,10 +124,7 @@ class RosBagRecord(RunProcess):
             self.current_state = RosBagRecordActionState.FAILURE
             return py_trees.common.Status.FAILURE
 
-    def cleanup(self):
-        """
-        Cleanup on shutdown
-        """
+    def shutdown(self):
         if self.current_state != RosBagRecordActionState.FAILURE:
             self.logger.info('Waiting for process to quit...')
             if self.process:
@@ -136,7 +133,7 @@ class RosBagRecord(RunProcess):
             self.logger.info('Process finished.')
         if self.current_state == RosBagRecordActionState.WAITING_FOR_TOPICS and self.bag_dir and os.path.exists(self.bag_dir):
             self.logger.info(
-                f'Cleanup while waiting for topics. Removing incomplete bag {self.bag_dir}...')
+                f'Shutdown while waiting for topics. Removing incomplete bag {self.bag_dir}...')
             shutil.rmtree(self.bag_dir)
 
     def on_process_finished(self, ret):

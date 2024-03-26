@@ -124,6 +124,7 @@ class NavThroughPoses(py_trees.behaviour.Behaviour):
 
         return result
 
-    def cleanup(self):
+    def shutdown(self):
         self.logger.info('Canceling current task.')
         self.nav.cancelTask()
+        self.nav.destroy_node()

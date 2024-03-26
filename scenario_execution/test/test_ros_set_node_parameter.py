@@ -31,15 +31,9 @@ from scenario_execution_base.utils.logging import Logger
 
 class TestRosSetNodeParameter(unittest.TestCase):
     # pylint: disable=missing-function-docstring,missing-class-docstring
-    @classmethod
-    def setUpClass(cls):
-        rclpy.init()
-
-    @classmethod
-    def tearDownClass(cls):
-        rclpy.shutdown()
 
     def setUp(self):
+        rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ROSScenarioExecution()
         self.scenario_dir = get_package_share_directory('scenario_execution')
@@ -59,6 +53,7 @@ class TestRosSetNodeParameter(unittest.TestCase):
 
     def tearDown(self):
         self.node.destroy_node()
+        rclpy.try_shutdown()
 
     def callback(self, params):
         print(f"set_parameters callback called.")

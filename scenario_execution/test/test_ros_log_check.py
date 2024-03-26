@@ -31,15 +31,9 @@ os.environ["PYTHONUNBUFFERED"] = '1'
 class TestScenarioExectionSuccess(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         rclpy.init()
 
-    @classmethod
-    def tearDownClass(cls):
-        rclpy.shutdown()
-
-    def setUp(self):
         self.received_msgs = []
         self.node = rclpy.create_node('test_node')
 
@@ -56,6 +50,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def tearDown(self):
         self.node.destroy_node()
+        rclpy.try_shutdown()
 
     def callback(self):
         self.node.get_logger().info("ERROR")
