@@ -95,3 +95,12 @@ jobs:
               test_example_scenario/test.xml
               test_example_library/test.xml
               test_example_variation/test.xml
+      - name: Upload Scenario Results
+          uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+          if: always()
+          with:
+            name: junit-reports
+            path: |
+              test_example_scenario/test.xml
+              test_example_library/test.xml
+              test_example_variation/test.xml
