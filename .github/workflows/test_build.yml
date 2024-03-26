@@ -62,45 +62,45 @@ jobs:
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
       - name: Test Example Scenario
-          shell: bash
-          run: |
-            source /opt/ros/humble/setup.bash
-            source install/setup.bash
-            #shellcheck disable=SC1083
-            scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          #shellcheck disable=SC1083
+          scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Test Example Library
-          shell: bash
-          run: |
-            source /opt/ros/humble/setup.bash
-            source install/setup.bash
-            # shellcheck disable=SC1083
-            scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Test Example Variation
-          shell: bash
-          run: |
-            source /opt/ros/humble/setup.bash
-            source install/setup.bash
-            scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
-            # shellcheck disable=SC1083
-            scenario_batch_execution -i scenario_variation_out -o test_example_variation -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i scenario_variation_out -o test_example_variation -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Publish Scenario Results
-          uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
-          if: always()
-          with:
-            check_name: Scenario Results
-            check_run: false
-            action_fail: true
-            comment_mode: always
-            files: |
-              test_example_scenario/test.xml
-              test_example_library/test.xml
-              test_example_variation/test.xml
+        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+        if: always()
+        with:
+          check_name: Scenario Results
+          check_run: false
+          action_fail: true
+          comment_mode: always
+          files: |
+            test_example_scenario/test.xml
+            test_example_library/test.xml
+            test_example_variation/test.xml
       - name: Upload Scenario Results
-          uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
-          if: always()
-          with:
-            name: junit-reports
-            path: |
-              test_example_scenario/test.xml
-              test_example_library/test.xml
-              test_example_variation/test.xml
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: junit-reports
+          path: |
+            test_example_scenario/test.xml
+            test_example_library/test.xml
+            test_example_variation/test.xml
