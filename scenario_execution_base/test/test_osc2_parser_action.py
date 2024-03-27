@@ -20,7 +20,6 @@ Test action parsing
 import unittest
 
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
-from scenario_execution_base.model.error import OSC2ParsingError
 from scenario_execution_base.utils.logging import Logger
 from antlr4.InputStream import InputStream
 

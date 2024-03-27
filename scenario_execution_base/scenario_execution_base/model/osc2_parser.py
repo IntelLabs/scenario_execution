@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import sys
 import re
 
 from antlr4 import FileStream, CommonTokenStream

@@ -57,8 +57,8 @@ scenario test_run_process:
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution.scenarios = scenarios
-        ret = self.scenario_execution.run()
-        self.assertFalse(ret)
+        self.scenario_execution.run()
+        self.assertFalse(self.scenario_execution.process_results())
 
     def test_success(self):
         scenario_content = """

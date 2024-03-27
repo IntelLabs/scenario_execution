@@ -176,7 +176,7 @@ class ScenarioExecution(object):
         """
         return py_trees.trees.BehaviourTree(tree)
 
-    def parse(self):
+    def parse(self):  # pylint: disable=too-many-return-statements
         """
         Parse the OpenScenario2 file
 
