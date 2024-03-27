@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "scenario-execution"
 version = "1.0.0"
 dynamic = ["license"]
-description = "Robotics Scenario Execution"
+description = "Scenario Execution for Robotics"
 readme = "README.md"
 requires-python = ">=3.8"
 keywords = ["robotics", "scenarios", "experiments", "testing"]
