@@ -8,6 +8,9 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 permissions: read-all
 jobs:
   vanilla-build:
@@ -61,3 +64,106 @@ jobs:
             scenario_execution//TEST.xml
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
+  vanilla-test-run:
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    permissions:
+      # checks: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Setup Dependencies
+        run: |
+          apt update
+          apt install -y python3-pip
+          xargs -a deb_requirements.txt apt install -y --no-install-recommends
+          rosdep update --rosdistro=humble 
+          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          python3 -m pip install -r requirements.txt
+          apt install libgl1
+          apt install -y xvfb tk
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Scanrio Files Syntax
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          find ./examples/ -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation" | while read -r file; do 
+            echo "$file"; 
+            ros2 run scenario_execution_base scenario_execution_base "$file" -n; 
+          done
+      - name: Test Example Scenario
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          #shellcheck disable=SC1083
+          scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Test Example Library
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Test Example Variation
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i scenario_variation_out -o test_example_variation -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Test Example Scenario Control
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          mkdir test_example_control
+          python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenario_execution_control_test.osc &
+          timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/ output_dir:=test_example_control || true
+      # - name: Test Example Nav2
+      #   shell: bash
+      #   run: |
+      #     source /opt/ros/humble/setup.bash
+      #     source install/setup.bash
+      #     Xvfb :1 -screen 0 800x600x16 &
+      #     export DISPLAY=:1.0
+      #     export ROS_DOMAIN_ID=2
+      #     export -n CYCLONEDDS_URI
+      #     export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+      #     # shellcheck disable=SC1083
+      #     scenario_batch_execution -i examples/example_nav2/ -o test_example_nav2 -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Publish Scenario Results
+        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+        if: always()
+        with:
+          check_name: Scenario Results
+          check_run: false
+          action_fail: true
+          comment_mode: always
+          files: |
+            test_example_scenario/test.xml
+            test_example_library/test.xml
+            test_example_variation/test.xml
+            test_example_control/test.xml
+            test_example_nav2/test.xml
+      - name: Upload Scenario Results
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: junit-reports
+          path: |
+            test_example_scenario/test.xml
+            test_example_library/test.xml
+            test_example_variation/test.xml
+            test_example_control/test.xml
+            test_example_nav2/test.xml
