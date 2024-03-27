@@ -186,16 +186,20 @@ class ScenarioExecution(object):
         if self.scenario_file is None:
             self.logger.error(f"No scenario file given.")
             return False
+        start = datetime.now()
         file_extension = os.path.splitext(self.scenario_file)[1]
         if file_extension == '.osc':
             parser = OpenScenario2Parser(self.logger)
         elif file_extension == '.sce':
             parser = ModelFileLoader(self.logger)
-        else:
-            self.logger.error(f"File '{self.scenario_file}' has unknown extension '{file_extension}'. Allowed [.osc, .sce]")
+        else:            
+            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
+                                           result=False,
+                                           failure_message="parsing failed",
+                                           failure_output=f"File has unknown extension '{file_extension}'. Allowed [.osc, .sce]",
+                                           processing_time=datetime.now() - start))
             return False
 
-        start = datetime.now()
         if not os.path.isfile(self.scenario_file):
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
@@ -203,12 +207,13 @@ class ScenarioExecution(object):
                                            failure_output="File does not exist",
                                            processing_time=datetime.now() - start))
             return False
-        self.scenarios, error_message = parser.process_file(self.scenario_file, self.log_model, self.debug)
-        if self.scenarios is None:
+        try:
+            self.scenarios = parser.process_file(self.scenario_file, self.log_model, self.debug)
+        except Exception as e:  # pylint: disable=broad-except
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
                                            failure_message="parsing failed",
-                                           failure_output=error_message,
+                                           failure_output=str(e),
                                            processing_time=datetime.now() - start))
             return False
         if len(self.scenarios) == 0:

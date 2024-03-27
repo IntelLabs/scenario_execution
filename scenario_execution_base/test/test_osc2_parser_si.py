@@ -37,10 +37,8 @@ unit cm         of length is SI(m: 1, factor: 0.01)
 
 global val1: string = 3.2cm
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_si(self):
         scenario_content = """
@@ -49,10 +47,8 @@ unit cm         of length is SI(m: 1, factor: 0.01)
 
 global val1: length = 3.2cm
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         param = model._ModelElement__children[2]
         self.assertEqual(param.get_resolved_value(), 0.032)
@@ -63,10 +59,9 @@ type length is SI(m: 1)
 unit m          of length is SI(m: 1, factor: 1)
 global val1: length = 3.2m
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
+        
         param = model._ModelElement__children[2]
         self.assertEqual(param.get_resolved_value(), 3.2)
 
@@ -75,7 +70,5 @@ global val1: length = 3.2m
 type length is SI(m: 1)
 unit m          of UNKNOWN is SI(m: 1, factor: 1)
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")

@@ -39,20 +39,13 @@ class OpenScenario2Parser(object):
     def process_file(self, file, log_model: bool = False, debug: bool = False):
         """ Convenience method to execute the parsing and print out tree """
 
-        parsed_tree, errors, error_message = self.parse_file(file, log_model)
-        if errors:
-            return None, error_message
+        parsed_tree = self.parse_file(file, log_model)
 
-        try:
-            model, error_message = self.create_internal_model(parsed_tree, file, log_model, debug)
-        except Exception as e:  # pylint: disable=broad-except
-            return None, str(e)
-        if model is None:
-            return None, error_message
+        model = self.create_internal_model(parsed_tree, file, log_model, debug)
 
-        scenarios, error_message = create_py_tree(model, self.logger, log_model)
+        scenarios = create_py_tree(model, self.logger, log_model)
 
-        return scenarios, error_message
+        return scenarios
 
     def load_internal_model(self, tree, file_name: str, log_model: bool = False, debug: bool = False):
         model_builder = ModelBuilder(self.logger, self.parse_file, file_name, log_model)
@@ -63,13 +56,7 @@ class OpenScenario2Parser(object):
             walker.walk(model_builder, tree)
             model = model_builder.get_model()
         except OSC2ParsingError as e:
-            self.logger.error(
-                f'Error creating internal model: Traceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n'
-                f'{e.__class__.__name__}: {e.msg}'
-            )
-            if debug:
-                self.logger.info(str(e))
-            return None
+            raise ValueError(f'Error creating internal model: Traceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}') from e
         if log_model:
             self.logger.info("----Internal model-----")
             print_tree(model, self.logger)
@@ -77,25 +64,18 @@ class OpenScenario2Parser(object):
 
     def create_internal_model(self, tree, file_name: str, log_model: bool = False, debug: bool = False):
         model = self.load_internal_model(tree, file_name, log_model, debug)
-        if model is None:
-            return None, ""
-
-        ret, error_message = resolve_internal_model(model, self.logger, log_model)
-        if ret:
-            return model, ""
-
-        return None, error_message
+        resolve_internal_model(model, self.logger, log_model)
+        return model
 
     def parse_file(self, file: str, log_model: bool = False, error_prefix=""):
         """ Execute the parsing """
         if file in self.parsed_files:  # skip already parsed/imported files
-            return None, 0, ""
+            return None
         self.parsed_files.append(file)
         try:
             input_stream = FileStream(file)
         except (OSError, UnicodeDecodeError) as e:
-            self.logger.error(f'{e}')
-            sys.exit(1)
+            raise ValueError(f'{e}') from e
         return self.parse_input_stream(input_stream, log_model, error_prefix)
 
     def parse_input_stream(self, input_stream, log_model=False, error_prefix=""):
@@ -123,9 +103,10 @@ class OpenScenario2Parser(object):
         errors = parser.getNumberOfSyntaxErrors()  # pylint: disable=no-member
         if log_model:
             self.print_parsed_osc_tree(tree, self.logger, parser.ruleNames)
-
+        if errors:
+            raise ValueError(error_listener.error_message)
         del parser
-        return tree, errors, error_listener.error_message
+        return tree
 
     @staticmethod
     def print_parsed_osc_tree(tree, logger, rule_names, indent=0):

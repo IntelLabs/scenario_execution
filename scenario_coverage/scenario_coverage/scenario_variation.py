@@ -51,22 +51,13 @@ class ScenarioVariation(object):
         return variations
 
     def run(self) -> bool:
-        model = self.load_model()
-        if model is None:
-            return False
-
+        model, _ = self.load_model()
         models = self.generate_concrete_models(model)
-        if not models:
-            return False
-
         return self.save_resulting_scenarios(models)
 
     def load_model(self):
         parser = OpenScenario2Parser(self.logger)
-        parsed_tree, errors = parser.parse_file(self.scenario, self.log_model)
-        if errors:
-            return None
-
+        parsed_tree = parser.parse_file(self.scenario, self.log_model)
         return parser.load_internal_model(parsed_tree, self.scenario, self.log_model, self.debug)
 
     def get_next_variation_element(self, elem):
@@ -182,7 +173,13 @@ def main():
         os.mkdir(args.output_dir)
 
     scenario_variation = ScenarioVariation(args.output_dir, args.scenario, args.log_model, args.debug)
-    if scenario_variation.run():
+    try:
+        ret = scenario_variation.run()
+    except Exception as e:  # pylint: disable=broad-except
+        scenario_variation.logger.error(e)
+        ret = False
+    
+    if ret:
         sys.exit(0)
     else:
         print("Error!")

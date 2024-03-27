@@ -62,10 +62,8 @@ scenario test:
         log("foo")
         emit end
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.load_internal_model(parsed_tree, "test.osc", False, False)
-        self.assertIsNotNone(model)
         serialize_data = serialize(model)['CompilationUnit']['_children']
         self.assertGreater(len(serialize_data), 0)
         deserialized_model = deserialize(serialize_data)

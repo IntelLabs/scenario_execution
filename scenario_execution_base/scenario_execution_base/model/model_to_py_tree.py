@@ -31,9 +31,8 @@ def create_py_tree(model, logger, log_tree):
     try:
         behavior_trees = model_to_py_tree.build(model, log_tree)
     except OSC2ParsingError as e:
-        error_message = f'Error while creating tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}'
-        return None, error_message
-    return behavior_trees, ""
+        raise ValueError(f'Error while creating py-tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}') from e
+    return behavior_trees
 
 
 class TopicEquals(py_trees.behaviour.Behaviour):

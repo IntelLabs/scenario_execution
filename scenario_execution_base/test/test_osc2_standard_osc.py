@@ -34,16 +34,12 @@ class TestOSC2Parser(unittest.TestCase):
         scenario_content = """
 import osc.standard
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
     def test_standard_common_osc(self):
         scenario_content = """
 import osc.standard.base
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)

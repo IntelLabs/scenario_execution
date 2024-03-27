@@ -20,6 +20,7 @@ Test action parsing
 import unittest
 
 from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
+from scenario_execution_base.model.error import OSC2ParsingError
 from scenario_execution_base.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
@@ -35,20 +36,16 @@ class TestOSC2Parser(unittest.TestCase):
 action test_action:
     param1: string = "value1"
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
     def test_action_unknown_actor(self):
         scenario_content = """
 action UNKNOWN.test_action:
     param1: string = "value1"
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_action_valid_actor(self):
         scenario_content = """
@@ -57,7 +54,5 @@ actor base
 action base.test_action:
     param1: string = "value1"
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)

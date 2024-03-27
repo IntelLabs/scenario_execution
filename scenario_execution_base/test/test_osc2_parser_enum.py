@@ -42,10 +42,9 @@ enum test_enum: [
 struct test:
     param1: test_enum = test_enum!val1
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
+        
         test_struct = model._ModelElement__children[1]
         self.assertEqual(test_struct.get_resolved_value(), {'param1': ('val1', 0)})
 
@@ -58,10 +57,8 @@ enum test_enum: [
 struct test:
     param1: test_enum = test_enum!UNKNOWN
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_enum_ref_invalid_type(self):
         scenario_content = """
@@ -72,10 +69,8 @@ enum test_enum: [
 struct test:
     param1: test_enum = UNKNOWN!val1
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model,parsed_tree, "test.osc")
 
     def test_enum_ref_other_enum_type(self):
         scenario_content = """
@@ -92,10 +87,8 @@ enum test_enum: [
 struct test:
     param1: test_enum = other_enum!val1
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_enum_val_non_numeric(self):
         scenario_content = """
@@ -108,10 +101,9 @@ struct test:
     param1: test_enum = test_enum!val1
     param2: test_enum = test_enum!val2
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
+        
         test_struct = model._ModelElement__children[1]
         self.assertEqual(test_struct.get_resolved_value(), {'param1': ('val1', 0), 'param2': ('val2', 1)})
 
@@ -126,10 +118,9 @@ struct test:
     param1: test_enum = test_enum!val1
     param2: test_enum = test_enum!val2
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
+        
         test_struct = model._ModelElement__children[1]
         self.assertEqual(test_struct.get_resolved_value(), {'param1': ('val1', 4), 'param2': ('val2', 5)})
 
@@ -144,9 +135,8 @@ struct test:
     param1: test_enum = test_enum!val1
     param2: test_enum = test_enum!val2
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
+        
         test_struct = model._ModelElement__children[1]
         self.assertEqual(test_struct.get_resolved_value(), {'param1': ('val1', 4), 'param2': ('val2', 19)})
