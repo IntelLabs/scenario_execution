@@ -52,21 +52,12 @@ class ScenarioVariation(object):
 
     def run(self) -> bool:
         model = self.load_model()
-        if model is None:
-            return False
-
         models = self.generate_concrete_models(model)
-        if not models:
-            return False
-
         return self.save_resulting_scenarios(models)
 
     def load_model(self):
         parser = OpenScenario2Parser(self.logger)
-        parsed_tree, errors = parser.parse_file(self.scenario, self.log_model)
-        if errors:
-            return None
-
+        parsed_tree = parser.parse_file(self.scenario, self.log_model)
         return parser.load_internal_model(parsed_tree, self.scenario, self.log_model, self.debug)
 
     def get_next_variation_element(self, elem):
@@ -138,10 +129,10 @@ class ScenarioVariation(object):
             serialize_data = serialize(model[0])['CompilationUnit']['_children']
             if self.debug:
                 print_tree(model[0], self.logger)
-            success = resolve_internal_model(model[0], self.logger, False)
-            if not success:
-                self.logger.error(f"Error: model is not resolvable.")
-                return False
+            try:
+                resolve_internal_model(model[0], self.logger, False)
+            except ValueError as e:
+                raise ValueError(f"Resulting model is not resolvable: {e}") from e
 
             # create description
             variation_descriptions = []
@@ -182,7 +173,13 @@ def main():
         os.mkdir(args.output_dir)
 
     scenario_variation = ScenarioVariation(args.output_dir, args.scenario, args.log_model, args.debug)
-    if scenario_variation.run():
+    try:
+        ret = scenario_variation.run()
+    except Exception as e:  # pylint: disable=broad-except
+        scenario_variation.logger.error(e)
+        ret = False
+
+    if ret:
         sys.exit(0)
     else:
         print("Error!")

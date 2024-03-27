@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import sys
 import re
 
 from antlr4 import FileStream, CommonTokenStream
@@ -39,16 +38,9 @@ class OpenScenario2Parser(object):
     def process_file(self, file, log_model: bool = False, debug: bool = False):
         """ Convenience method to execute the parsing and print out tree """
 
-        parsed_tree, errors = self.parse_file(file, log_model)
-        if errors:
-            return None
+        parsed_tree = self.parse_file(file, log_model)
 
-        try:
-            model = self.create_internal_model(parsed_tree, file, log_model, debug)
-        except Exception:  # pylint: disable=broad-except
-            return None
-        if model is None:
-            return None
+        model = self.create_internal_model(parsed_tree, file, log_model, debug)
 
         scenarios = create_py_tree(model, self.logger, log_model)
 
@@ -63,13 +55,8 @@ class OpenScenario2Parser(object):
             walker.walk(model_builder, tree)
             model = model_builder.get_model()
         except OSC2ParsingError as e:
-            self.logger.error(
-                f'Error creating internal model: Traceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n'
-                f'{e.__class__.__name__}: {e.msg}'
-            )
-            if debug:
-                self.logger.info(str(e))
-            return None
+            raise ValueError(
+                f'Error creating internal model: Traceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}') from e
         if log_model:
             self.logger.info("----Internal model-----")
             print_tree(model, self.logger)
@@ -77,25 +64,18 @@ class OpenScenario2Parser(object):
 
     def create_internal_model(self, tree, file_name: str, log_model: bool = False, debug: bool = False):
         model = self.load_internal_model(tree, file_name, log_model, debug)
-        if model is None:
-            return None
-
-        ret = resolve_internal_model(model, self.logger, log_model)
-        if ret:
-            return model
-
-        return None
+        resolve_internal_model(model, self.logger, log_model)
+        return model
 
     def parse_file(self, file: str, log_model: bool = False, error_prefix=""):
         """ Execute the parsing """
         if file in self.parsed_files:  # skip already parsed/imported files
-            return None, 0
+            return None
         self.parsed_files.append(file)
         try:
             input_stream = FileStream(file)
         except (OSError, UnicodeDecodeError) as e:
-            self.logger.error(f'{e}')
-            sys.exit(1)
+            raise ValueError(f'{e}') from e
         return self.parse_input_stream(input_stream, log_model, error_prefix)
 
     def parse_input_stream(self, input_stream, log_model=False, error_prefix=""):
@@ -110,20 +90,23 @@ class OpenScenario2Parser(object):
         class TestErrorListener(ErrorListener):
             def __init__(self, prefix: str) -> None:
                 self.prefix = prefix
+                self.error_message = ""
                 super().__init__()
 
             def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):  # pylint: disable=invalid-name
-                print(self.prefix + "line " + str(line) + ":" +
-                      str(column) + " " + msg, file=sys.stderr)
-
-        parser.addErrorListener(TestErrorListener(error_prefix))
+                if self.error_message:
+                    self.error_message += "\n"
+                self.error_message += self.prefix + "line " + str(line) + ":" + str(column) + " " + msg
+        error_listener = TestErrorListener(error_prefix)
+        parser.addErrorListener(error_listener)
         tree = parser.osc_file()
         errors = parser.getNumberOfSyntaxErrors()  # pylint: disable=no-member
         if log_model:
             self.print_parsed_osc_tree(tree, self.logger, parser.ruleNames)
-
+        if errors:
+            raise ValueError(error_listener.error_message)
         del parser
-        return tree, errors
+        return tree
 
     @staticmethod
     def print_parsed_osc_tree(tree, logger, rule_names, indent=0):

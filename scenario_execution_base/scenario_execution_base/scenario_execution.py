@@ -115,7 +115,7 @@ class ScenarioExecution(object):
         """
         return Logger('scenario_execution', debug)
 
-    def setup(self, tree: py_trees.behaviour.Behaviour, **kwargs) -> bool:
+    def setup(self, scenario: py_trees.behaviour.Behaviour, **kwargs) -> bool:
         """
         Setup each scenario before ticking
 
@@ -125,10 +125,13 @@ class ScenarioExecution(object):
         return:
             True if the scenario is setup without errors
         """
+        self.logger.info(f"Executing scenario '{scenario.name}'")
         self.shutdown_requested = False
-        self.blackboard = tree.attach_blackboard_client(
+        self.current_scenario = scenario
+        self.current_scenario_start = datetime.now()
+        self.blackboard = scenario.attach_blackboard_client(
             name="MainBlackboardClient",
-            namespace=tree.name
+            namespace=scenario.name
         )
 
         self.blackboard.register_key("end", access=py_trees.common.Access.READ)
@@ -139,7 +142,7 @@ class ScenarioExecution(object):
         self.blackboard.register_key("fail", access=py_trees.common.Access.WRITE)
         self.blackboard.end = False
         self.blackboard.fail = False
-        self.behaviour_tree = self.setup_behaviour_tree(tree)  # Get the behaviour_tree
+        self.behaviour_tree = self.setup_behaviour_tree(scenario)  # Get the behaviour_tree
         self.behaviour_tree.add_pre_tick_handler(self.pre_tick_handler)
         self.behaviour_tree.add_post_tick_handler(self.post_tick_handler)
         self.last_snapshot_visitor = LastSnapshotVisitor()
@@ -151,15 +154,7 @@ class ScenarioExecution(object):
                 py_trees.visitors.DisplaySnapshotVisitor(
                     display_blackboard=True
                 ))
-        try:
-            self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, output_dir=self.output_dir, **kwargs)
-            return True
-        except RuntimeError as e:
-            self.logger.error(f'Runtime Error "{e}". Aborting... ')
-            return False
-        except Exception as e:  # pylint: disable=broad-except
-            self.logger.error(f"Error while setting up tree: {e}")
-            return False
+        self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, output_dir=self.output_dir, **kwargs)
 
     def setup_behaviour_tree(self, tree):
         """
@@ -176,7 +171,7 @@ class ScenarioExecution(object):
         """
         return py_trees.trees.BehaviourTree(tree)
 
-    def parse(self):
+    def parse(self):  # pylint: disable=too-many-return-statements
         """
         Parse the OpenScenario2 file
 
@@ -186,16 +181,20 @@ class ScenarioExecution(object):
         if self.scenario_file is None:
             self.logger.error(f"No scenario file given.")
             return False
+        start = datetime.now()
         file_extension = os.path.splitext(self.scenario_file)[1]
         if file_extension == '.osc':
             parser = OpenScenario2Parser(self.logger)
         elif file_extension == '.sce':
             parser = ModelFileLoader(self.logger)
         else:
-            self.logger.error(f"File '{self.scenario_file}' has unknown extension '{file_extension}'. Allowed [.osc, .sce]")
+            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
+                                           result=False,
+                                           failure_message="parsing failed",
+                                           failure_output=f"File has unknown extension '{file_extension}'. Allowed [.osc, .sce]",
+                                           processing_time=datetime.now() - start))
             return False
 
-        start = datetime.now()
         if not os.path.isfile(self.scenario_file):
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
@@ -203,12 +202,13 @@ class ScenarioExecution(object):
                                            failure_output="File does not exist",
                                            processing_time=datetime.now() - start))
             return False
-        self.scenarios = parser.process_file(self.scenario_file, self.log_model, self.debug)
-        if self.scenarios is None:
+        try:
+            self.scenarios = parser.process_file(self.scenario_file, self.log_model, self.debug)
+        except Exception as e:  # pylint: disable=broad-except
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
                                            failure_message="parsing failed",
-                                           failure_output="No scenario defined",
+                                           failure_output=str(e),
                                            processing_time=datetime.now() - start))
             return False
         if len(self.scenarios) == 0:
@@ -217,33 +217,36 @@ class ScenarioExecution(object):
                                            failure_message="parsing failed",
                                            failure_output="no scenario defined",
                                            processing_time=datetime.now() - start))
+            return False
         if len(self.scenarios) != 1:
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
                                            failure_message="parsing failed",
                                            failure_output=f"more than one ({len(self.scenarios)}) scenario defined",
                                            processing_time=datetime.now() - start))
+            return False
 
-        return self.scenarios is not None and len(self.scenarios) == 1
+        return True
 
     def run(self):
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
-            return False
-        self.current_scenario = self.scenarios[0]
-        self.current_scenario_start = datetime.now()
-        result = self.setup(self.current_scenario)
-        if result:
-            while not self.shutdown_requested:
-                try:
-                    self.behaviour_tree.tick()
-                    time.sleep(self.tick_tock_period)
-                    if self.live_tree:
-                        self.logger.debug(py_trees.display.unicode_tree(
-                            root=self.behaviour_tree.root, show_status=True))
-                except KeyboardInterrupt:
-                    self.on_scenario_shutdown(False, "Aborted")
-        return self.process_results()
+            return
+        try:
+            self.setup(self.scenarios[0])
+        except Exception as e:  # pylint: disable=broad-except
+            self.on_scenario_shutdown(False, "Setup failed", f"{e}")
+            return
+
+        while not self.shutdown_requested:
+            try:
+                self.behaviour_tree.tick()
+                time.sleep(self.tick_tock_period)
+                if self.live_tree:
+                    self.logger.debug(py_trees.display.unicode_tree(
+                        root=self.behaviour_tree.root, show_status=True))
+            except KeyboardInterrupt:
+                self.on_scenario_shutdown(False, "Aborted")
 
     def add_result(self, result: ScenarioResult):
         if result.result is False:
@@ -306,18 +309,19 @@ class ScenarioExecution(object):
             if not self.shutdown_requested:
                 self.on_scenario_shutdown(result)
 
-    def on_scenario_shutdown(self, result, failure_message=""):
+    def on_scenario_shutdown(self, result, failure_message="", failure_output=""):
         self.shutdown_requested = True
         if self.behaviour_tree:
             self.behaviour_tree.interrupt()
-        failure_output = ""
         if self.current_scenario:
             if result:
                 self.logger.info(f"Scenario '{self.current_scenario.name}' succeeded.")
             else:
                 if not failure_message:
                     failure_message = "execution failed."
-                failure_output = self.last_snapshot_visitor.last_snapshot
+                if failure_output and self.last_snapshot_visitor.last_snapshot:
+                    failure_output += "\n\n"
+                failure_output += self.last_snapshot_visitor.last_snapshot
                 if self.log_model:
                     self.logger.error(self.last_snapshot_visitor.last_snapshot)
             self.add_result(ScenarioResult(name=self.current_scenario.name,
@@ -325,6 +329,11 @@ class ScenarioExecution(object):
                                            failure_message=failure_message,
                                            failure_output=failure_output,
                                            processing_time=datetime.now()-self.current_scenario_start))
+        else:
+            self.add_result(ScenarioResult(name="",
+                                           result=result,
+                                           failure_message=failure_message,
+                                           failure_output=failure_output))
 
     @staticmethod
     def parse_args(args):
@@ -357,7 +366,8 @@ def main():
         sys.exit(1)
     result = scenario_execution.parse()
     if result and not args.dry_run:
-        result = scenario_execution.run()
+        scenario_execution.run()
+    result = scenario_execution.process_results()
     if result:
         sys.exit(0)
     else:
