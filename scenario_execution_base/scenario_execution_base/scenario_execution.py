@@ -115,7 +115,7 @@ class ScenarioExecution(object):
         """
         return Logger('scenario_execution', debug)
 
-    def setup(self, tree: py_trees.behaviour.Behaviour, **kwargs) -> bool:
+    def setup(self, scenario: py_trees.behaviour.Behaviour, **kwargs) -> bool:
         """
         Setup each scenario before ticking
 
@@ -125,10 +125,13 @@ class ScenarioExecution(object):
         return:
             True if the scenario is setup without errors
         """
+        self.logger.info(f"Executing scenario '{scenario.name}'")
         self.shutdown_requested = False
-        self.blackboard = tree.attach_blackboard_client(
+        self.current_scenario = scenario
+        self.current_scenario_start = datetime.now()
+        self.blackboard = scenario.attach_blackboard_client(
             name="MainBlackboardClient",
-            namespace=tree.name
+            namespace=scenario.name
         )
 
         self.blackboard.register_key("end", access=py_trees.common.Access.READ)
@@ -139,7 +142,7 @@ class ScenarioExecution(object):
         self.blackboard.register_key("fail", access=py_trees.common.Access.WRITE)
         self.blackboard.end = False
         self.blackboard.fail = False
-        self.behaviour_tree = self.setup_behaviour_tree(tree)  # Get the behaviour_tree
+        self.behaviour_tree = self.setup_behaviour_tree(scenario)  # Get the behaviour_tree
         self.behaviour_tree.add_pre_tick_handler(self.pre_tick_handler)
         self.behaviour_tree.add_post_tick_handler(self.post_tick_handler)
         self.last_snapshot_visitor = LastSnapshotVisitor()
@@ -237,8 +240,6 @@ class ScenarioExecution(object):
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
             return
-        self.current_scenario = self.scenarios[0]
-        self.current_scenario_start = datetime.now()
         result = self.setup(self.current_scenario)
         if result:
             while not self.shutdown_requested:

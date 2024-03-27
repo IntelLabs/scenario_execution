@@ -90,27 +90,25 @@ class ROSScenarioExecution(ScenarioExecution):
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
             return
-        self.current_scenario = self.scenarios[0]
 
         executor = rclpy.executors.MultiThreadedExecutor()
         executor.add_node(self.node)
 
-        self.logger.info(f"Executing scenario '{self.current_scenario.name}'")
-        self.current_scenario_start = datetime.now()
+        result = self.setup(self.scenarios[0], node=self.node, marker_handler=self.marker_handler)
+        if not result:
+            self.on_scenario_shutdown(False, "Setup failed")
+            return
 
-        result = self.setup(self.current_scenario, node=self.node, marker_handler=self.marker_handler)
+        self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
+        while rclpy.ok():
+            try:
+                executor.spin_once(timeout_sec=0.1)
+            except KeyboardInterrupt:
+                self.on_scenario_shutdown(False, "Aborted")
 
-        if result:
-            self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
-            while rclpy.ok():
-                try:
-                    executor.spin_once(timeout_sec=0.1)
-                except KeyboardInterrupt:
-                    self.on_scenario_shutdown(False, "Aborted")
-
-                if self.shutdown_task is not None and self.shutdown_task.done():
-                    rclpy.shutdown()
-                    break
+            if self.shutdown_task is not None and self.shutdown_task.done():
+                rclpy.shutdown()
+                break
 
     def shutdown(self):
         self.logger.info("Shutting down...")
