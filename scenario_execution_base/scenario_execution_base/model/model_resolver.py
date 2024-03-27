@@ -27,16 +27,13 @@ def resolve_internal_model(model, logger, log_tree):
     try:
         osc2scenario_resolver.visit(model)
     except OSC2ParsingError as e:
-        logger.error(
-            f'Error while creating tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n'
-            f'{e.__class__.__name__}: {e.msg}'
-        )
-        return False
+        error_message = f'Error while creating tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}'
+        return False, error_message
 
     if log_tree:
         logger.info("----Internal model (resolved)-----")
         print_tree(model, logger)
-    return True
+    return True, ""
 
 
 class ModelResolver(ModelBaseVisitor):

@@ -119,10 +119,10 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
             lib_osc_dir = resource_filename(resource, 'lib_osc')
             file = os.path.join(lib_osc_dir, filename)
 
-        imported_tree, errors = self.parse_file(file, self.log_model, f"{file} :")
+        imported_tree, errors, error_message = self.parse_file(file, self.log_model, f"{file} :")
 
         if errors:
-            raise OSC2ParsingError(msg=f'{errors} parsing errors found in import {file}.', context=ctx)
+            raise OSC2ParsingError(msg=f'{errors} parsing errors found in import {file}: {error_message}', context=ctx)
 
         if imported_tree is not None:
             walker = ParseTreeWalker()

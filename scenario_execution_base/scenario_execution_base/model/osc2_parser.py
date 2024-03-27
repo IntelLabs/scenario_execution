@@ -39,20 +39,20 @@ class OpenScenario2Parser(object):
     def process_file(self, file, log_model: bool = False, debug: bool = False):
         """ Convenience method to execute the parsing and print out tree """
 
-        parsed_tree, errors = self.parse_file(file, log_model)
+        parsed_tree, errors, error_message = self.parse_file(file, log_model)
         if errors:
-            return None
+            return None, error_message
 
         try:
-            model = self.create_internal_model(parsed_tree, file, log_model, debug)
-        except Exception:  # pylint: disable=broad-except
-            return None
+            model, error_message = self.create_internal_model(parsed_tree, file, log_model, debug)
+        except Exception as e:  # pylint: disable=broad-except
+            return None, str(e)
         if model is None:
-            return None
+            return None, error_message
 
-        scenarios = create_py_tree(model, self.logger, log_model)
+        scenarios, error_message = create_py_tree(model, self.logger, log_model)
 
-        return scenarios
+        return scenarios, error_message
 
     def load_internal_model(self, tree, file_name: str, log_model: bool = False, debug: bool = False):
         model_builder = ModelBuilder(self.logger, self.parse_file, file_name, log_model)
@@ -78,18 +78,18 @@ class OpenScenario2Parser(object):
     def create_internal_model(self, tree, file_name: str, log_model: bool = False, debug: bool = False):
         model = self.load_internal_model(tree, file_name, log_model, debug)
         if model is None:
-            return None
+            return None, ""
 
-        ret = resolve_internal_model(model, self.logger, log_model)
+        ret, error_message = resolve_internal_model(model, self.logger, log_model)
         if ret:
-            return model
+            return model, ""
 
-        return None
+        return None, error_message
 
     def parse_file(self, file: str, log_model: bool = False, error_prefix=""):
         """ Execute the parsing """
         if file in self.parsed_files:  # skip already parsed/imported files
-            return None, 0
+            return None, 0, ""
         self.parsed_files.append(file)
         try:
             input_stream = FileStream(file)
@@ -110,20 +110,22 @@ class OpenScenario2Parser(object):
         class TestErrorListener(ErrorListener):
             def __init__(self, prefix: str) -> None:
                 self.prefix = prefix
+                self.error_message = ""
                 super().__init__()
 
             def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):  # pylint: disable=invalid-name
-                print(self.prefix + "line " + str(line) + ":" +
-                      str(column) + " " + msg, file=sys.stderr)
-
-        parser.addErrorListener(TestErrorListener(error_prefix))
+                if self.error_message:
+                    self.error_message += "\n"
+                self.error_message += self.prefix + "line " + str(line) + ":" + str(column) + " " + msg
+        error_listener = TestErrorListener(error_prefix)
+        parser.addErrorListener(error_listener)
         tree = parser.osc_file()
         errors = parser.getNumberOfSyntaxErrors()  # pylint: disable=no-member
         if log_model:
             self.print_parsed_osc_tree(tree, self.logger, parser.ruleNames)
 
         del parser
-        return tree, errors
+        return tree, errors, error_listener.error_message
 
     @staticmethod
     def print_parsed_osc_tree(tree, logger, rule_names, indent=0):

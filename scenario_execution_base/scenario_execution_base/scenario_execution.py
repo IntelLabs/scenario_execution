@@ -203,12 +203,12 @@ class ScenarioExecution(object):
                                            failure_output="File does not exist",
                                            processing_time=datetime.now() - start))
             return False
-        self.scenarios = parser.process_file(self.scenario_file, self.log_model, self.debug)
+        self.scenarios, error_message = parser.process_file(self.scenario_file, self.log_model, self.debug)
         if self.scenarios is None:
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
                                            failure_message="parsing failed",
-                                           failure_output="No scenario defined",
+                                           failure_output=error_message,
                                            processing_time=datetime.now() - start))
             return False
         if len(self.scenarios) == 0:
@@ -217,19 +217,21 @@ class ScenarioExecution(object):
                                            failure_message="parsing failed",
                                            failure_output="no scenario defined",
                                            processing_time=datetime.now() - start))
+            return False
         if len(self.scenarios) != 1:
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
                                            failure_message="parsing failed",
                                            failure_output=f"more than one ({len(self.scenarios)}) scenario defined",
                                            processing_time=datetime.now() - start))
+            return False
 
-        return self.scenarios is not None and len(self.scenarios) == 1
+        return True
 
     def run(self):
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
-            return False
+            return
         self.current_scenario = self.scenarios[0]
         self.current_scenario_start = datetime.now()
         result = self.setup(self.current_scenario)
@@ -243,7 +245,6 @@ class ScenarioExecution(object):
                             root=self.behaviour_tree.root, show_status=True))
                 except KeyboardInterrupt:
                     self.on_scenario_shutdown(False, "Aborted")
-        return self.process_results()
 
     def add_result(self, result: ScenarioResult):
         if result.result is False:
@@ -357,7 +358,8 @@ def main():
         sys.exit(1)
     result = scenario_execution.parse()
     if result and not args.dry_run:
-        result = scenario_execution.run()
+        scenario_execution.run()
+    result = scenario_execution.process_results()
     if result:
         sys.exit(0)
     else:

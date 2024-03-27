@@ -89,7 +89,7 @@ class ROSScenarioExecution(ScenarioExecution):
     def run(self) -> bool:
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
-            return False
+            return
         self.current_scenario = self.scenarios[0]
 
         executor = rclpy.executors.MultiThreadedExecutor()
@@ -111,7 +111,6 @@ class ROSScenarioExecution(ScenarioExecution):
                 if self.shutdown_task is not None and self.shutdown_task.done():
                     rclpy.shutdown()
                     break
-        return self.process_results()
 
     def shutdown(self):
         self.logger.info("Shutting down...")
@@ -140,8 +139,8 @@ def main():
     result = ros_scenario_execution.parse()
 
     if result and not ros_scenario_execution.dry_run:
-        result = ros_scenario_execution.run()
-
+        ros_scenario_execution.run()
+    result = ros_scenario_execution.process_results()
     rclpy.try_shutdown()
     if result:
         sys.exit(0)
