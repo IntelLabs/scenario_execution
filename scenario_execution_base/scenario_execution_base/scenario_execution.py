@@ -154,15 +154,7 @@ class ScenarioExecution(object):
                 py_trees.visitors.DisplaySnapshotVisitor(
                     display_blackboard=True
                 ))
-        try:
-            self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, output_dir=self.output_dir, **kwargs)
-            return True
-        except RuntimeError as e:
-            self.logger.error(f'Runtime Error "{e}". Aborting... ')
-            return False
-        except Exception as e:  # pylint: disable=broad-except
-            self.logger.error(f"Error while setting up tree: {e}")
-            return False
+        self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, output_dir=self.output_dir, **kwargs)
 
     def setup_behaviour_tree(self, tree):
         """
@@ -313,18 +305,19 @@ class ScenarioExecution(object):
             if not self.shutdown_requested:
                 self.on_scenario_shutdown(result)
 
-    def on_scenario_shutdown(self, result, failure_message=""):
+    def on_scenario_shutdown(self, result, failure_message="", failure_output=""):
         self.shutdown_requested = True
         if self.behaviour_tree:
             self.behaviour_tree.interrupt()
-        failure_output = ""
         if self.current_scenario:
             if result:
                 self.logger.info(f"Scenario '{self.current_scenario.name}' succeeded.")
             else:
                 if not failure_message:
                     failure_message = "execution failed."
-                failure_output = self.last_snapshot_visitor.last_snapshot
+                if failure_output and self.last_snapshot_visitor.last_snapshot:
+                    failure_output += "\n\n"
+                failure_output += self.last_snapshot_visitor.last_snapshot
                 if self.log_model:
                     self.logger.error(self.last_snapshot_visitor.last_snapshot)
             self.add_result(ScenarioResult(name=self.current_scenario.name,
