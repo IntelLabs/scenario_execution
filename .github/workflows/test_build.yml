@@ -32,8 +32,6 @@ jobs:
           rosdep update --rosdistro=humble 
           rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
           pip3 install -r requirements.txt
-          apt install libgl1
-          apt install -y xvfb tk
       - name: Build
         shell: bash
         run: |
@@ -84,7 +82,7 @@ jobs:
           xargs -a deb_requirements.txt apt install -y --no-install-recommends
           rosdep update --rosdistro=humble 
           rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
-          pip3 install -r requirements.txt
+          python3 -m pip install -r requirements.txt
           apt install libgl1
           apt install -y xvfb tk
       - name: Build
@@ -98,7 +96,7 @@ jobs:
         run: |
           source /opt/ros/humble/setup.bash
           source install/setup.bash
-          find ./examples/ -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation" | while read file; do 
+          find ./examples/ -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation" | while read -r file; do 
             echo "$file"; 
             ros2 run scenario_execution_base scenario_execution_base "$file" -n; 
           done
