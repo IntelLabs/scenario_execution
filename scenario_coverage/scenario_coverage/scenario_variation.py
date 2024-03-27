@@ -51,7 +51,7 @@ class ScenarioVariation(object):
         return variations
 
     def run(self) -> bool:
-        model, _ = self.load_model()
+        model = self.load_model()
         models = self.generate_concrete_models(model)
         return self.save_resulting_scenarios(models)
 
