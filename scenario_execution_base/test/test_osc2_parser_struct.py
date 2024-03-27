@@ -67,10 +67,8 @@ scenario test:
     struct2f: struct1a with:
         keep(it.struct_param == base_struct(base_param1: 'override'))
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         struct1a = model._ModelElement__children[4].get_resolved_value()
         struct1b = model._ModelElement__children[5].get_resolved_value()
@@ -118,10 +116,8 @@ scenario test:
     struct5: l2_struct with:
         keep(it.l1.base == base_struct('override'))
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         struct1 = model._ModelElement__children[3]._ModelElement__children[0].get_resolved_value()
         struct2 = model._ModelElement__children[3]._ModelElement__children[1].get_resolved_value()
@@ -149,10 +145,8 @@ scenario test:
     struct4: l2_struct with:
         keep(it.l1.base.param1 == 'override')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         struct1 = model._ModelElement__children[3]._ModelElement__children[0].get_resolved_value()
         self.assertEqual({'l1': {'base': {'param1': 'override'}}}, struct1)
@@ -172,7 +166,5 @@ scenario test:
     struct4: l2_struct with:
         keep(it.l1.UNKNOWN.param1 == 'override')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")

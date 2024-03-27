@@ -41,9 +41,7 @@ scenario nav2_simulation_nav_to_pose:
     turtlebot4: differential_drive_robot with:
         keep(it.namespace == 'test')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
         robot = model._ModelElement__children[2]._ModelElement__children[0].get_resolved_value()
         self.assertEqual({'namespace': 'test'}, robot)

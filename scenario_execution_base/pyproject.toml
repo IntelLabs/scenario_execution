@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scenario-execution"
+version = "1.0.0"
+dynamic = ["license"]
+description = "Scenario Execution for Robotics"
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["robotics", "scenarios", "experiments", "testing"]
+authors = [
+  {name = "Intel Labs", email = "scenario-execution@intel.com"}
+]
+maintainers = [
+    { name = "Intel Labs", email = "scenario-execution@intel.com" },
+]
+dependencies = [
+    "setuptools",
+    "antlr4-python3-runtime==4.7.2",
+    "transforms3d==0.3.1",
+    "pexpect==4.9.0",
+    "defusedxml==0.7.1",
+    "pyyaml==6.0.1",
+    "py-trees==2.1.6",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+]
+
+[project.scripts]
+scenario_execution = "scenario_execution_base.scenario_execution:main"
+
+[project.entry-points."scenario_execution.actions"]
+log = "scenario_execution_base.actions.log:Log"
+run_process = "scenario_execution_base.actions.run_process:RunProcess"
+
+[project.entry-points."scenario_execution.osc_libraries"]
+helpers = "scenario_execution_base.get_osc_library:get_helpers_library"
+robotics = "scenario_execution_base.get_osc_library:get_robotics_library"
+standard = "scenario_execution_base.get_osc_library:get_standard_library"
+"standard.base" = "scenario_execution_base.get_osc_library:get_standard_base_library"
+
+
+[tool.setuptools.packages]
+find = {}  # Scanning implicit namespaces is active by default
+
+[project.urls]
+Homepage = "https://github.com/IntelLabs/scenario_execution"
+Documentation = "https://intellabs.github.io/scenario_execution/"
+Issues = "https://github.com/IntelLabs/scenario_execution/issues"

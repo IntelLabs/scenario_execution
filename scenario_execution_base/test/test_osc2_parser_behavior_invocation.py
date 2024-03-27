@@ -56,10 +56,8 @@ scenario test:
             spawn_it: test_obstacle1.spawn() with:
                 keep(it.namespace == 'bll')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
         behavior = model._ModelElement__children[3]._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
         self.assertEqual({'spawn_pose': {'x': 'x_val'}, 'world_name': 'default',
@@ -78,10 +76,8 @@ scenario test:
     do parallel:
         spawn_it: test_obstacle1.spawn(param1: 'override1')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         behavior = model._ModelElement__children[2]._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
@@ -101,10 +97,8 @@ scenario test:
     do parallel:
         spawn_it: test_obstacle1.spawn(param1: 'override1')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
     def test_behavior_invalid_param_name(self):
         scenario_content = """
@@ -118,10 +112,8 @@ scenario test:
     do parallel:
         spawn_it: test_obstacle1.spawn(param1: 'override1')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_behavior_invalid_param_associated_actor(self):
         scenario_content = """
@@ -136,10 +128,8 @@ scenario test:
     do parallel:
         spawn_it: test_obstacle1.spawn(param1: 'override1')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_behavior_positional_arg(self):
         scenario_content = """
@@ -150,10 +140,8 @@ scenario test:
     do parallel:
         spawn_it: test('override1')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         behavior = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
@@ -170,8 +158,7 @@ scenario test:
     do parallel:
         spawn_it: test()
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         self.assertIsNone(model)
 
@@ -186,8 +173,7 @@ scenario test:
     do parallel:
         spawn_it: test()
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc")
         self.assertIsNone(model)
 
@@ -202,8 +188,7 @@ scenario test:
     do parallel:
         spawn_it: test('override1')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc")
         self.assertIsNone(model)
 
@@ -218,8 +203,7 @@ scenario test:
     do parallel:
         spawn_it: test(param2: 'override2')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc")
         self.assertIsNone(model)
 
@@ -233,10 +217,8 @@ scenario test:
     do parallel:
         spawn_it: test(param1: 'override1', param2: 'override2', param3: 'override3')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_behavior_too_many_positional_args(self):
         scenario_content = """
@@ -248,10 +230,8 @@ scenario test:
     do parallel:
         spawn_it: test('override1', 'override2', 'override3')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_behavior_unknown_named_args(self):
         scenario_content = """
@@ -263,10 +243,8 @@ scenario test:
     do parallel:
         spawn_it: test(param1: 'override1', UNKNOWN: 'override2')
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     @unittest.skip(reason="requires porting")
     def test_behavior_struct_param_named_override(self):
@@ -283,10 +261,8 @@ scenario test:
         test_action() with:
             keep(it.struct_param == test_struct(param2: 'OVERRIDE'))
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         behavior = model._ModelElement__children[2]._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[1]
         params = behavior.get_resolved_value()
@@ -306,10 +282,8 @@ scenario test:
         test_action() with:
             keep(it.struct_param == test_struct('OVERRIDE'))
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         behavior = model._ModelElement__children[2]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
@@ -330,10 +304,8 @@ scenario test:
         test_action() with:
             keep(it.struct_param == test_struct('OVERRIDE1', param3: 'OVERRIDE3'))
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         behavior = model._ModelElement__children[2]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
@@ -355,8 +327,7 @@ scenario test:
         test_action() with:
             keep(it.struct_param == test_struct('OVERRIDE1'))
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc")
         self.assertIsNone(model)
 
@@ -401,10 +372,8 @@ scenario nav2_simulation_nav_to_pose:
                 keep(it.spawn_pose.orientation.yaw == 0.0rad)
                 keep(it.spawn_pose.orientation.roll == 1.0rad)
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         pose_struct = model._ModelElement__children[7].get_resolved_value()
         self.assertEqual({'position': {'x': 0., 'y': 0., 'z': 0.}, 'orientation': {

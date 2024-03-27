@@ -2,6 +2,9 @@
 How to run
 ==========
 
+Run locally with ROS2
+---------------------
+
 First, build the packages:
 
 .. code-block:: bash
@@ -21,12 +24,31 @@ To run an osc-file with ROS2:
 
    ros2 run scenario_execution scenario_execution $(PATH_TO_SCENARIO_FILE)
 
-Use ``-t`` flag to see the printed tree and use ``-d`` flag to see debug
-information of py_trees and parser:
+Use the ``-t`` flag to see the printed tree and use the ``-d`` flag to see debug
+information of py_trees and the parser:
 
 .. code-block:: bash
 
    ros2 run scenario_execution scenario_execution $(PATH_TO_SCENARIO_FILE) -t -d
+
+Run as standalone Python package without ROS2
+---------------------------------------------
+
+After installing `scenario-execution` using pip (see :ref:`install_with_pip`), you can execute a scenario with the following command
+
+.. code-block:: bash
+
+   scenario_execution $(PATH_TO_SCENARIO_FILE)
+
+
+Use the ``-t`` flag to see the printed tree and use the ``-d`` flag to see debug
+information of py_trees and the parser:
+
+.. code-block:: bash
+
+   scenario_execution $(PATH_TO_SCENARIO_FILE) -t -d
+
+
 
 Run with Development Container inside Visual Studio Code
 --------------------------------------------------------

@@ -86,7 +86,7 @@ class NavToPose(py_trees.behaviour.Behaviour):
         except KeyboardInterrupt:
             pass
         if wait_for_action_server_time == 0:
-            raise ValueError("Timeout while waiting for action server.")
+            raise ValueError(f"{self.name}: Timeout while waiting for action server.")
 
     def update(self) -> py_trees.common.Status:
         """

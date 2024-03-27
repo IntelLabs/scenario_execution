@@ -41,10 +41,9 @@ unit s          of time is SI(s: 1, factor: 1)
 action odometry_distance_traveled:
     distance: length = 3m
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
+
         action = model._ModelElement__children[4].get_resolved_value()
         self.assertEqual({'distance': 3.0}, action)
 
@@ -59,7 +58,5 @@ unit s          of time is SI(s: 1, factor: 1)
 action odometry_distance_traveled:
     distance: length = 3s
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")

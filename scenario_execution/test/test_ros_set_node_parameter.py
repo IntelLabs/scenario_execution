@@ -68,9 +68,8 @@ class TestRosSetNodeParameter(unittest.TestCase):
     def test_success(self):
         scenarios = self.parser.process_file(os.path.join(
             self.scenario_dir, 'scenarios', 'test', 'test_ros_set_node_parameter.osc'), False)
-        self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
-        ret = self.scenario_execution.run()
-        self.assertTrue(ret)
+        self.scenario_execution.run()
+        self.assertTrue(self.scenario_execution.process_results())
         self.assertTrue(self.bool_value)
         self.assertEqual(self.float_value, 3.14)

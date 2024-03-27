@@ -40,12 +40,9 @@ scenario test:
     do serial:
         wait elapsed(1s)
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
         model = create_py_tree(model, self.parser.logger, False)
-        self.assertIsNotNone(model)
 
     def test_wait_invalid(self):
         scenario_content = """
@@ -56,13 +53,10 @@ scenario test:
     do serial:
         wait(1s)
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.assertIsNone(scenarios)
+        self.assertRaises(ValueError, create_py_tree, model, self.parser.logger, False)
 
     def test_wait_invalid_literal(self):
         scenario_content = """
@@ -70,13 +64,10 @@ scenario test:
     do serial:
         wait(1)
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
-        model = create_py_tree(model, self.parser.logger, False)
-        self.assertIsNone(model)
+        self.assertRaises(ValueError, create_py_tree, model, self.parser.logger, False)
 
     def test_wait_invalid_literal2(self):
         scenario_content = """
@@ -84,10 +75,7 @@ scenario test:
     do serial:
         wait elapsed(1)
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
-        model = create_py_tree(model, self.parser.logger, False)
-        self.assertIsNone(model)
+        self.assertRaises(ValueError, create_py_tree, model, self.parser.logger, False)
