@@ -129,10 +129,10 @@ class ScenarioVariation(object):
             serialize_data = serialize(model[0])['CompilationUnit']['_children']
             if self.debug:
                 print_tree(model[0], self.logger)
-            success = resolve_internal_model(model[0], self.logger, False)
-            if not success:
-                self.logger.error(f"Error: model is not resolvable.")
-                return False
+            try:
+                resolve_internal_model(model[0], self.logger, False)
+            except ValueError as e:
+                raise ValueError(f"Resulting model is not resolvable: {e}") from e
 
             # create description
             variation_descriptions = []

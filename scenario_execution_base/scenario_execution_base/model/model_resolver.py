@@ -33,7 +33,6 @@ def resolve_internal_model(model, logger, log_tree):
     if log_tree:
         logger.info("----Internal model (resolved)-----")
         print_tree(model, logger)
-    return True
 
 
 class ModelResolver(ModelBaseVisitor):
