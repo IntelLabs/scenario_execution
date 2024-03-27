@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "scenario-execution-base"
+name = "scenario-execution"
 version = "1.0.0"
 dynamic = ["license"]
 description = "Robotics Scenario Execution"
@@ -30,7 +30,7 @@ classifiers = [
 ]
 
 [project.scripts]
-scenario_execution_base = "scenario_execution_base.scenario_execution:main"
+scenario_execution = "scenario_execution_base.scenario_execution:main"
 
 [project.entry-points."scenario_execution.actions"]
 log = "scenario_execution_base.actions.log:Log"

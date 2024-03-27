@@ -34,11 +34,11 @@ information of py_trees and the parser:
 Run as standalone Python package without ROS2
 ---------------------------------------------
 
-After installing :repo_link:`scenario_execution_base` using pip (see :ref:`install_with_pip`), you can execute a scenario with the following command
+After installing `scenario-execution` using pip (see :ref:`install_with_pip`), you can execute a scenario with the following command
 
 .. code-block:: bash
 
-   scenario_execution_base $(PATH_TO_SCENARIO_FILE)
+   scenario_execution $(PATH_TO_SCENARIO_FILE)
 
 
 Use the ``-t`` flag to see the printed tree and use the ``-d`` flag to see debug
@@ -46,7 +46,7 @@ information of py_trees and the parser:
 
 .. code-block:: bash
 
-   scenario_execution_base $(PATH_TO_SCENARIO_FILE) -t -d
+   scenario_execution $(PATH_TO_SCENARIO_FILE) -t -d
 
 
 
