@@ -232,17 +232,21 @@ class ScenarioExecution(object):
         if len(self.scenarios) != 1:
             self.logger.error(f"Only one scenario per file is supported.")
             return
-        result = self.setup(self.current_scenario)
-        if result:
-            while not self.shutdown_requested:
-                try:
-                    self.behaviour_tree.tick()
-                    time.sleep(self.tick_tock_period)
-                    if self.live_tree:
-                        self.logger.debug(py_trees.display.unicode_tree(
-                            root=self.behaviour_tree.root, show_status=True))
-                except KeyboardInterrupt:
-                    self.on_scenario_shutdown(False, "Aborted")
+        try:
+            self.setup(self.scenarios[0])
+        except Exception as e:  # pylint: disable=broad-except
+            self.on_scenario_shutdown(False, "Setup failed", f"{e}")
+            return
+    
+        while not self.shutdown_requested:
+            try:
+                self.behaviour_tree.tick()
+                time.sleep(self.tick_tock_period)
+                if self.live_tree:
+                    self.logger.debug(py_trees.display.unicode_tree(
+                        root=self.behaviour_tree.root, show_status=True))
+            except KeyboardInterrupt:
+                self.on_scenario_shutdown(False, "Aborted")
 
     def add_result(self, result: ScenarioResult):
         if result.result is False:
@@ -325,6 +329,11 @@ class ScenarioExecution(object):
                                            failure_message=failure_message,
                                            failure_output=failure_output,
                                            processing_time=datetime.now()-self.current_scenario_start))
+        else:
+            self.add_result(ScenarioResult(name="",
+                                           result=result,
+                                           failure_message=failure_message,
+                                           failure_output=failure_output))
 
     @staticmethod
     def parse_args(args):

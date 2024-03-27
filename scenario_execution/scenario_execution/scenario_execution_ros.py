@@ -16,7 +16,6 @@
 
 """ Main entry for scenario_execution_ros """
 import sys
-from datetime import datetime
 import rclpy  # pylint: disable=import-error
 import py_trees_ros  # pylint: disable=import-error
 from scenario_execution_base import ScenarioExecution
