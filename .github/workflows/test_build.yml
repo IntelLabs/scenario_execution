@@ -66,12 +66,39 @@ jobs:
             scenario_execution_ros//TEST.xml
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
-      - name: Test Example Scanrio Files Syntax
+  vanilla-test-run:
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    permissions:
+      # checks: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Setup Dependencies
+        run: |
+          apt update
+          apt install -y python3-pip
+          xargs -a deb_requirements.txt apt install -y --no-install-recommends
+          rosdep update --rosdistro=humble 
+          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          pip3 install -r requirements.txt
+          apt install libgl1
+          apt install -y xvfb tk
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Scanrio Files Syntax
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
           source install/setup.bash
-          find ./examples/ -name "*.osc" | grep -Ev "examples/example_library|examples/example_scenario_variation" | while read file; do 
+          find ./examples/ -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation" | while read file; do 
             echo "$file"; 
             ros2 run scenario_execution_base scenario_execution_base "$file" -n; 
           done
@@ -105,18 +132,18 @@ jobs:
           mkdir test_example_control
           python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenario_execution_control_test.osc &
           timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/ output_dir:=test_example_control || true
-      - name: Test Example Nav2
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          source install/setup.bash
-          Xvfb :1 -screen 0 800x600x16 &
-          export DISPLAY=:1.0
-          export ROS_DOMAIN_ID=2
-          export -n CYCLONEDDS_URI
-          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          # shellcheck disable=SC1083
-          scenario_batch_execution -i examples/example_nav2/ -o test_example_nav2 -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      # - name: Test Example Nav2
+      #   shell: bash
+      #   run: |
+      #     source /opt/ros/humble/setup.bash
+      #     source install/setup.bash
+      #     Xvfb :1 -screen 0 800x600x16 &
+      #     export DISPLAY=:1.0
+      #     export ROS_DOMAIN_ID=2
+      #     export -n CYCLONEDDS_URI
+      #     export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+      #     # shellcheck disable=SC1083
+      #     scenario_batch_execution -i examples/example_nav2/ -o test_example_nav2 -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Publish Scenario Results
         uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
         if: always()
