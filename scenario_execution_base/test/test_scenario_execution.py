@@ -63,7 +63,7 @@ class TestOSC2Parser(unittest.TestCase):
                                                output_dir="")
         result = scenario_execution.parse()
         self.assertTrue(result)
-        self.assertEqual(len(scenario_execution.results), 0) # not yet executed
+        self.assertEqual(len(scenario_execution.results), 0)  # not yet executed
 
     def test_two_scenarios(self):
         scenario_execution = ScenarioExecution(debug=False,

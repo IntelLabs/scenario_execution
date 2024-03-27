@@ -61,7 +61,7 @@ global val1: length = 3.2m
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         param = model._ModelElement__children[2]
         self.assertEqual(param.get_resolved_value(), 3.2)
 

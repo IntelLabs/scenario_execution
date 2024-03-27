@@ -178,7 +178,7 @@ def main():
     except Exception as e:  # pylint: disable=broad-except
         scenario_variation.logger.error(e)
         ret = False
-    
+
     if ret:
         sys.exit(0)
     else:

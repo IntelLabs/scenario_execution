@@ -44,7 +44,7 @@ invalid
         scenario_content = ""
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.assertEqual([], scenarios)
 
@@ -54,7 +54,7 @@ global level1: string = "hey!"
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         param = model._ModelElement__children[0].get_resolved_value()
         self.assertEqual(param, "hey!")
 
@@ -65,7 +65,7 @@ global level2: string = level1
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         self.assertEqual(len(model._ModelElement__children), 2)
         glob_param1 = model._ModelElement__children[0]
         val1 = glob_param1.get_resolved_value()
@@ -82,7 +82,7 @@ global level3: string = level2
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         self.assertEqual(model._ModelElement__children[0].get_resolved_value(), 'hey!')
         self.assertEqual(model._ModelElement__children[1].get_resolved_value(), 'hey!')
         self.assertEqual(model._ModelElement__children[2].get_resolved_value(), 'hey!')
@@ -107,7 +107,7 @@ scenario test:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         self.assertEqual(model._ModelElement__children[0].get_resolved_value(), 'hey!')
         self.assertEqual(model._ModelElement__children[1].get_resolved_value(), 'hey!')
         self.assertEqual(model._ModelElement__children[2].get_resolved_value(), 'hey!')
@@ -129,7 +129,7 @@ struct test_struct:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         self.assertEqual({'z': 'z_global'}, model._ModelElement__children[1].get_resolved_value())
 
     def test_global_var_indirect_in_actor(self):
@@ -140,7 +140,7 @@ actor test_struct:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         self.assertEqual({'z': 'z_global'}, model._ModelElement__children[1].get_resolved_value())
 
     def test_var_instance_unknown_type(self):
@@ -183,7 +183,6 @@ scenario network_drop_straight:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
 
     def test_var_instance_keep_not_equal(self):
         scenario_content = """
@@ -193,7 +192,7 @@ scenario network_drop_straight:
     test_pose: pose3d with:
         keep(it.z <= "override")
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))        
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_struct_inheritance(self):
@@ -206,7 +205,7 @@ struct derived inherits base:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         self.assertEqual({'x': 'base', 'y': 'derived'},
                          model._ModelElement__children[1].get_resolved_value())
 
@@ -220,7 +219,7 @@ actor derived inherits base:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         self.assertEqual({'x': 'base', 'y': 'derived'},
                          model._ModelElement__children[1].get_resolved_value())
 
@@ -241,7 +240,7 @@ action derived inherits base:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         self.assertEqual({'x': 'base', 'y': 'derived'},
                          model._ModelElement__children[1].get_resolved_value())
 
@@ -263,7 +262,7 @@ scenario derived inherits base:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         derived = model._ModelElement__children[1]
         self.assertEqual({'x': 'base', 'y': 'derived'}, derived.get_resolved_value())
 
@@ -287,7 +286,7 @@ scenario test:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         param = model._ModelElement__children[1]._ModelElement__children[0]
         values = param.get_resolved_value()
         self.assertEqual({"x": "override_x", "y": "value_y"}, values)
@@ -303,7 +302,7 @@ global foo: test_struct with:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         param = model._ModelElement__children[1]
         values = param.get_resolved_value()
         self.assertEqual({"x": "override_x", "y": "value_y"}, values)
@@ -320,7 +319,7 @@ global foo: test_struct with:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         param = model._ModelElement__children[1]
         values = param.get_resolved_value()  # parse should already fail!
 
@@ -339,7 +338,7 @@ scenario test:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         param = model._ModelElement__children[2]._ModelElement__children[0]
         values = param.get_resolved_value()
         self.assertEqual({"x": "override_x", "y": "base_y", "z": "value_z"}, values)
@@ -356,7 +355,7 @@ struct test_struct:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         base_struct = model._ModelElement__children[0]
 
         values = base_struct.get_resolved_value()
@@ -380,7 +379,7 @@ struct l2_struct:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         base_struct = model._ModelElement__children[0]
         self.assertEqual({"a": "base_a"}, base_struct.get_resolved_value())
         l1_struct = model._ModelElement__children[1]
@@ -409,7 +408,7 @@ global test_struct1: test_struct = test_struct(param2: 'OVERRIDE')
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         test_struct1 = model._ModelElement__children[1]
         self.assertEqual({'param1': 'val1', 'param2': 'OVERRIDE'},
                          test_struct1.get_resolved_value())
@@ -438,7 +437,7 @@ struct test_struct:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         test_struct = model._ModelElement__children[1]
         self.assertEqual({'param_base_struct': {'base_param1': 'base1'}},
                          test_struct.get_resolved_value())
@@ -453,7 +452,7 @@ struct test_struct:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         test_struct = model._ModelElement__children[1]
         self.assertEqual({'param_base_struct': {'base_param1': 'OVERRIDE'}},
                          test_struct.get_resolved_value())
@@ -470,7 +469,7 @@ struct test_struct:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        
+
         test_struct = model._ModelElement__children[2]
         self.assertEqual({'param_base_struct': {'base_param1': 'OVERRIDE'}},
                          test_struct.get_resolved_value())
