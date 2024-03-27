@@ -46,18 +46,15 @@ scenario test:
             wait elapsed(5s)
         emit end        
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
         scenarios = create_py_tree(model, self.parser.logger, False)
-        self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
 
         start_time = datetime.now()
-        ret = self.scenario_execution.run()
+        self.scenario_execution.run()
         end_time = datetime.now()
-        self.assertTrue(ret)
+        self.assertTrue(self.scenario_execution.process_results())
 
         delta = end_time - start_time
         self.assertLess(delta.total_seconds(), 15.)

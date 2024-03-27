@@ -52,12 +52,9 @@ scenario test:
         wait elapsed(1s)
         emit fail             
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
         scenarios = create_py_tree(model, self.parser.logger, False)
-        self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
-        ret = self.scenario_execution.run()
-        self.assertTrue(ret)
+        self.scenario_execution.run()
+        self.assertTrue(self.scenario_execution.process_results())

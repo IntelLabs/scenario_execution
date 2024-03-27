@@ -39,19 +39,15 @@ struct listoffoo
 
 global test: listoffoo
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_string_list(self):
         scenario_content = """
 global test: list of string = ["foo", "bar"]
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         test_list = model._ModelElement__children[0].get_resolved_value()
         self.assertEqual(["foo", "bar"], test_list)
@@ -60,17 +56,14 @@ global test: list of string = ["foo", "bar"]
         scenario_content = """
 global test: list of string = [ ]
 """
-        _, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 1)
+        self.assertRaises(ValueError, self.parser.parse_input_stream, InputStream(scenario_content))
 
     def test_mixed_basetypes_list(self):
         scenario_content = """
 global test: list of string = ["foo", 3]
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_struct_list(self):
         scenario_content = """
@@ -78,10 +71,8 @@ struct test_struct:
     member: string
 global test: list of test_struct = [test_struct('val1'), test_struct('val2')]
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         test_list = model._ModelElement__children[1].get_resolved_value()
         self.assertEqual([{'member': 'val1'}, {'member': 'val2'}], test_list)
@@ -94,10 +85,8 @@ struct second_struct:
     member2: string
 global test: list of test_struct = [test_struct('val1'), second_struct('invalid')]
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
 
     def test_assign_struct_list(self):
         scenario_content = """
@@ -107,10 +96,8 @@ struct test_struct:
 global test1: list of test_struct = [test_struct('val1'), test_struct('val2')]
 global test2: list of test_struct = test1
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         test1 = model._ModelElement__children[1].get_resolved_value()
         test2 = model._ModelElement__children[2].get_resolved_value()
@@ -122,10 +109,8 @@ global test2: list of test_struct = test1
 global test1: list of float = [2.1, 4.3]
 global test2: list of float = test1
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        self.assertIsNotNone(model)
 
         test1 = model._ModelElement__children[0].get_resolved_value()
         test2 = model._ModelElement__children[1].get_resolved_value()
@@ -137,7 +122,5 @@ global test2: list of float = test1
 global test1: list of float = [2.1, 4.3]
 global test2: list of string = test1
 """
-        parsed_tree, errors = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertEqual(errors, 0)
-        model = self.parser.create_internal_model(parsed_tree, "test.osc")
-        self.assertIsNone(model)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
