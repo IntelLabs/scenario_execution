@@ -21,6 +21,11 @@ from setuptools import find_namespace_packages, setup
 
 PACKAGE_NAME = 'scenario_execution_base'
 
+# read the contents of the README file
+from pathlib import Path
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
+
 setup(
     name=PACKAGE_NAME,
     version='1.0.0',
@@ -44,8 +49,19 @@ setup(
     include_package_data=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
+    url='https://github.com/IntelLabs/scenario_execution',
+    project_urls={
+        "Homepage": "https://github.com/IntelLabs/scenario_execution",
+        "Documentation": "https://github.com/IntelLabs/scenario_execution",
+        "Issues": "https://github.com/IntelLabs/scenario_execution/issues",
+    },
     description='Scenario Execution for Robotics',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     license='Apache License 2.0',
+    classifiers=[
+        "Programming Language :: Python :: 3",
+    ],
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
