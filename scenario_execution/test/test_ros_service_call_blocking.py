@@ -77,10 +77,9 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def test_success(self):
         scenarios = self.parser.process_file(os.path.join(
             self.scenario_dir, 'scenarios', 'test', 'test_ros_service_call_blocking.osc'), False)
-        self.assertIsNotNone(scenarios)
         self.scenario_execution.scenarios = scenarios
-        ret = self.scenario_execution.run()
-        self.assertTrue(ret)
+        self.scenario_execution.run()
+        self.assertTrue(self.scenario_execution.process_results())
 
         self.assertGreater(len(self.received_msgs), 0)
         prev_elem = self.received_msgs[0]

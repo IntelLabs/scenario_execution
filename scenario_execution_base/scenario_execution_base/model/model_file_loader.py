@@ -28,13 +28,8 @@ class ModelFileLoader(object):
 
     def process_file(self, file_name, log_tree: bool = False, debug: bool = False):
         model = self.load_file(file_name, log_tree)
-
-        success = resolve_internal_model(model, self.logger, log_tree)
-        if not success:
-            return None
-
+        resolve_internal_model(model, self.logger, log_tree)
         scenarios = create_py_tree(model, self.logger, log_tree)
-
         return scenarios
 
     def load_file(self, file_name, log_tree):
