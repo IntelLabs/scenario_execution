@@ -5,8 +5,15 @@ Development
 Contribute
 ----------
 
-Before pushing your code, please ensure that the code formatting is
-correct by running:
+Before pushing your code, please ensure that the code formatting.
+
+A `Makefile` is provided for convenience. Please first install the following packages:
+
+.. code-block:: bash
+
+   sudo apt install python3-autopep8 clang-format pylint
+
+For checking the code, run:
 
 .. code-block:: bash
 
