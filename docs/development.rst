@@ -26,10 +26,10 @@ To run only specific tests:
 .. code-block:: bash
 
    #using py-test
-   colcon build --packages-up-to scenario_execution && reset && pytest-3 -s scenario_execution/test/<TEST>.py 
+   colcon build --packages-up-to scenario_execution_ros && reset && pytest-3 -s scenario_execution_ros/test/<TEST>.py 
 
    #manual run
-   colcon build --packages-up-to scenario_execution && reset && ros2 launch scenario_execution scenario_launch.py scenario:=<...> debug:=True
+   colcon build --packages-up-to scenario_execution_ros && reset && ros2 launch scenario_execution_ros scenario_launch.py scenario:=<...> debug:=True
 
 
 Developing and Debugging with Visual Studio Code
@@ -50,10 +50,10 @@ Add the following entry to the "configurations" element within the previously cr
 .. code-block:: json
 
            {
-               "name": "scenario_execution",
+               "name": "scenario_execution_ros",
                "type": "python",
                "request": "launch",
-               "program": "./install/scenario_execution/lib/scenario_execution/scenario_execution",
+               "program": "./install/scenario_execution_ros/lib/scenario_execution_ros/scenario_execution_ros",
                "console": "integratedTerminal",
                "cwd": "${workspaceFolder}",
                "args": ["-l", "TEST_SCENARIO.osc"],

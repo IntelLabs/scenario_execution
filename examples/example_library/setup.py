@@ -22,7 +22,7 @@ PACKAGE_NAME = 'example_library'
 
 setup(
     name=PACKAGE_NAME,
-    version='1.0.0',
+    version='1.1.0',
     packages=find_namespace_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',

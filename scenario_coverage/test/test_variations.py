@@ -17,9 +17,9 @@
 import unittest
 
 from scenario_coverage.scenario_variation import ScenarioVariation
-from scenario_execution_base.model.model_file_loader import ModelFileLoader
-from scenario_execution_base.model.model_resolver import resolve_internal_model
-from scenario_execution_base.utils.logging import Logger
+from scenario_execution.model.model_file_loader import ModelFileLoader
+from scenario_execution.model.model_resolver import resolve_internal_model
+from scenario_execution.utils.logging import Logger
 import tempfile
 import copy
 import os

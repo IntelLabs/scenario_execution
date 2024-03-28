@@ -64,8 +64,8 @@ Use this code to see a launch of this tutorial:
 
 .. code-block:: bash
 
-   colcon build --packages-up-to scenario_execution && source install/setup.bash \
-   && ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/hello_world.osc
+   colcon build --packages-up-to scenario_execution_ros && source install/setup.bash \
+   && ros2 launch scenario_execution_ros scenario_launch.py scenario:=examples/example_scenario/hello_world.osc
 
 .. _scenario_library:
 
@@ -152,7 +152,7 @@ Use this code to see a launch of this tutorial:
 .. code-block:: bash
 
    colcon build --packages-up-to example_library && source install/setup.bash \
-   && ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_library/scenarios/example_library.osc
+   && ros2 launch scenario_execution_ros scenario_launch.py scenario:=examples/example_library/scenarios/example_library.osc
 
 Create Navigation Scenario
 --------------------------
@@ -342,7 +342,7 @@ Now, lets try to run this scenario. To do this, first build Packages ``scenario_
 
 .. code-block::
 
-    colcon build --packages-up-to scenario_execution && colcon build --packages-up-to scenario_coverage
+    colcon build --packages-up-to scenario_execution_ros && colcon build --packages-up-to scenario_coverage
 
 
 * Now, create intermediate scenarios with ``.sce`` extension using the command:
@@ -364,7 +364,7 @@ In the first part we run the executable ``scenario_batch_execution``. This requi
 
     1. Directory where the scenario files ``.sce`` were saved as the input option ``-i``.
     2. Directory where the output ``log`` and ``xml`` files will be saved as the output option ``-o``.
-    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}``.
+    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}``.
 
 
 Finally, The output of the above command will display two values ``foo`` and ``bar`` on the terminal along with the success message.

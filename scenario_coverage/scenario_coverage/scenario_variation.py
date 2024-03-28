@@ -23,10 +23,10 @@ from copy import deepcopy
 
 import yaml
 
-from scenario_execution_base.model.osc2_parser import OpenScenario2Parser
-from scenario_execution_base.model.model_resolver import resolve_internal_model
-from scenario_execution_base.model.types import RelationExpression, ListExpression, FieldAccessExpression, Expression, print_tree, serialize, to_string
-from scenario_execution_base.utils.logging import Logger
+from scenario_execution.model.osc2_parser import OpenScenario2Parser
+from scenario_execution.model.model_resolver import resolve_internal_model
+from scenario_execution.model.types import RelationExpression, ListExpression, FieldAccessExpression, Expression, print_tree, serialize, to_string
+from scenario_execution.utils.logging import Logger
 
 
 class ScenarioVariation(object):
