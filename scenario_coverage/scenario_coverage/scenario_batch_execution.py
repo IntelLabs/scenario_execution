@@ -26,6 +26,7 @@ from copy import deepcopy
 import signal
 from defusedxml import ElementTree as ETparse
 import xml.etree.ElementTree as ET  # nosec B405
+import logging
 
 
 class ScenarioBatchExecution(object):
@@ -65,12 +66,12 @@ class ScenarioBatchExecution(object):
             return None
 
     def run(self) -> bool:
-
         def log_output(out, buffer):
             try:
                 for line in iter(out.readline, b''):
                     msg = line.decode().strip()
                     print(msg)
+                    logging.info(msg)
                     buffer.append(msg)
                 out.close()
             except ValueError:
@@ -85,7 +86,11 @@ class ScenarioBatchExecution(object):
             log_cmd = " ".join(launch_command)
             print(f"### For scenario {scenario}, executing process: '{log_cmd}'")
             process = subprocess.Popen(launch_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-
+            # Configure the logging system
+            logging.basicConfig(filename=output_file_path + '.log',
+                                filemode='a',
+                                format='%(asctime)s - %(message)s',
+                                level=logging.INFO)
             log_stdout_thread = Thread(target=log_output, args=(process.stdout, output, ))
             log_stdout_thread.daemon = True  # die with the program
             log_stdout_thread.start()
@@ -115,10 +120,6 @@ class ScenarioBatchExecution(object):
             ret = process.returncode
 
             print(f"### Storing results in {self.output_dir}...")
-
-            with open(output_file_path + '.log', 'w') as out:
-                for line in output:
-                    out.write(line + '\n')
             if ret:
                 print("### Process failed.")
             else:
