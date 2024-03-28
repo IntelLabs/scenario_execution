@@ -16,25 +16,25 @@ To launch an osc-file with ROS2, use the default launch file:
 
 .. code-block:: bash
 
-   ros2 launch scenario_execution scenario_launch.py scenario:=$(PATH_TO_SCENARIO_FILE) debug:=True log-level:=debug
+   ros2 launch scenario_execution_ros scenario_launch.py scenario:=$(PATH_TO_SCENARIO_FILE) debug:=True log-level:=debug
 
 To run an osc-file with ROS2:
 
 .. code-block:: bash
 
-   ros2 run scenario_execution scenario_execution $(PATH_TO_SCENARIO_FILE)
+   ros2 run scenario_execution_ros scenario_execution_ros $(PATH_TO_SCENARIO_FILE)
 
 Use the ``-t`` flag to see the printed tree and use the ``-d`` flag to see debug
 information of py_trees and the parser:
 
 .. code-block:: bash
 
-   ros2 run scenario_execution scenario_execution $(PATH_TO_SCENARIO_FILE) -t -d
+   ros2 run scenario_execution_ros scenario_execution_ros $(PATH_TO_SCENARIO_FILE) -t -d
 
 Run as standalone Python package without ROS2
 ---------------------------------------------
 
-After installing `scenario-execution-base` using pip (see :ref:`install_with_pip`), you can execute a scenario with the following command
+After installing :repo_link:`scenario_execution` using pip (see :ref:`install_with_pip`), you can execute a scenario with the following command
 
 .. code-block:: bash
 
@@ -152,7 +152,7 @@ Example:
 
 .. code-block:: bash
 
-      ros2 launch scenario_execution scenario_launch.py scenario:=examples/example_scenario/hello_world.osc
+      ros2 launch scenario_execution_ros scenario_launch.py scenario:=examples/example_scenario/hello_world.osc
 
 .. figure:: images/py_tree_viewer.png
    :alt: Behavior Tree Viewer 
@@ -186,12 +186,12 @@ Now to execute all scenario variation, simply run the scenario_coverage executab
 
 .. code-block:: bash
 
-   scenario_batch_execution -i out -o scenario_output -- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+   scenario_batch_execution -i out -o scenario_output -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
 
 above command requires three arguments.
 
     1. Directory where the scenario files ``.sce`` were saved as the input option ``-i``.
     2. Directory where the output ``log`` and ``xml`` files will be saved as the output option ``-o``.
-    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}``.
+    3. Launch command to launch scenarios ``-- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}``.
 
 Finally, The output of the above command will display two values ``foo`` and ``bar`` on the terminal along with the success message.

@@ -5,7 +5,7 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2, multiple libraries are provi
 
 - ``osc.helpers`` Helpers Library (provided with :repo_link:`scenario_execution`)
 - ``osc.robotics``: Robotics Library (provided with :repo_link:`scenario_execution`)
-- ``osc.ros``: ROS Library (provided with :repo_link:`scenario_execution`)
+- ``osc.ros``: ROS Library (provided with :repo_link:`scenario_execution_ros`)
 - ``osc.gazebo``: Gazebo Library (provided with :repo_link:`scenario_execution_gazebo`)
 
 Additional features can be implemented by defining your own library.
