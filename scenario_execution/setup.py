@@ -15,6 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """Setup python package"""
+from pathlib import Path
 from glob import glob
 import os
 from setuptools import find_namespace_packages, setup
@@ -22,7 +23,6 @@ from setuptools import find_namespace_packages, setup
 PACKAGE_NAME = 'scenario_execution'
 
 # read the contents of the README file
-from pathlib import Path
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 

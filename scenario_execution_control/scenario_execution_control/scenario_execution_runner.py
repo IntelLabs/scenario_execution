@@ -38,6 +38,7 @@ class ScenarioExecutionRunner(ApplicationRunner):
         """
         Executes scenario
         """
-        cmdline = ["ros2", "run", "scenario_execution_ros", "scenario_execution_ros", "--ros-args", "-p", f"scenario:={scenario_file}", output_dir]
+        cmdline = ["ros2", "run", "scenario_execution_ros", "scenario_execution_ros",
+                   "--ros-args", "-p", f"scenario:={scenario_file}", output_dir]
 
         return self.execute(cmdline, env=os.environ)
