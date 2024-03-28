@@ -45,7 +45,7 @@ setup(
         'console_scripts': [
             'scenario_execution_ros = scenario_execution_ros.scenario_execution_ros:main',
         ],
-        'scenario_execution_ros.actions': [
+        'scenario_execution.actions': [
             'differential_drive_robot.init_nav2 = scenario_execution_ros.actions.init_nav2:InitNav2',
             'differential_drive_robot.nav_to_pose = scenario_execution_ros.actions.nav_to_pose:NavToPose',
             'differential_drive_robot.nav_through_poses = scenario_execution_ros.actions.nav_through_poses:NavThroughPoses',
@@ -61,7 +61,7 @@ setup(
             'log_check = scenario_execution_ros.actions.ros_log_check:RosLogCheck',
             'differential_drive_robot.tf_close_to = scenario_execution_ros.actions.tf_close_to:TfCloseTo',
         ],
-        'scenario_execution_ros.osc_libraries': [
+        'scenario_execution.osc_libraries': [
             'ros = '
             'scenario_execution_ros.get_osc_library:get_ros_library',
         ]
