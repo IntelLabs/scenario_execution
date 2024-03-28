@@ -30,7 +30,7 @@ def generate_launch_description():
     live_tree = LaunchConfiguration('live_tree')
     log_model = LaunchConfiguration('log_model')
     log_level = LaunchConfiguration('log_level')
-    scenario_execution_ros = LaunchConfiguration('scenario_execution_ros')
+    scenario_execution = LaunchConfiguration('scenario_execution')
     scenario_status = LaunchConfiguration('scenario_status')
     output_dir = LaunchConfiguration('output_dir')
 
@@ -75,7 +75,7 @@ def generate_launch_description():
             parameters=[{
                 'bt_snapshot_topic': '/bt_snapshot',
                 'scenario_status_topic': '/scenario_status',
-                'snapshot_srv_name': '/scenario_execution_ros/snapshot_streams/open',
+                'snapshot_srv_name': '/scenario_execution/snapshot_streams/open',
 
             }],
             output='screen'

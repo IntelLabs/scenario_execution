@@ -129,16 +129,16 @@ def main():
     try:
         rclpy.init(args=sys.argv)
         rclpy.uninstall_signal_handlers()
-        ros_scenario_execution_ros = ROSScenarioExecution()
+        scenario_execution_ros = ROSScenarioExecution()
     except Exception as e:  # pylint: disable=broad-except
         print(f"Error while initializing: {e}")
         sys.exit(1)
 
-    result = ros_scenario_execution_ros.parse()
+    result = scenario_execution_ros.parse()
 
-    if result and not ros_scenario_execution_ros.dry_run:
-        ros_scenario_execution_ros.run()
-    result = ros_scenario_execution_ros.process_results()
+    if result and not scenario_execution_ros.dry_run:
+        scenario_execution_ros.run()
+    result = scenario_execution_ros.process_results()
     rclpy.try_shutdown()
     if result:
         sys.exit(0)

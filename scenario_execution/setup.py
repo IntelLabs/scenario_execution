@@ -65,7 +65,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'scenario_execution = scenario_execution.scenario_execution:main',
+            'scenario_execution = scenario_execution.scenario_execution_base:main',
         ],
         'scenario_execution.actions': [
             'log = scenario_execution.actions.log:Log',
