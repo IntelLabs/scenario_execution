@@ -20,7 +20,7 @@ import time
 import unittest
 import rclpy
 import threading
-from scenario_execution import ROSScenarioExecution
+from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from ament_index_python.packages import get_package_share_directory
@@ -50,9 +50,9 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.sub = self.node.create_subscription(
             Int32, "/bla", self.topic_callback, 10, callback_group=self.callback_group)
 
-        self.scenario_dir = get_package_share_directory('scenario_execution')
+        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
         self.parser = OpenScenario2Parser(Logger('test', False))
-        self.scenario_execution = ROSScenarioExecution()
+        self.scenario_execution_ros = ROSScenarioExecution()
 
     def tearDown(self):
         self.node.destroy_node()
@@ -77,9 +77,9 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def test_success(self):
         scenarios = self.parser.process_file(os.path.join(
             self.scenario_dir, 'scenarios', 'test', 'test_ros_service_call_blocking.osc'), False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
-        self.assertTrue(self.scenario_execution.process_results())
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
         self.assertGreater(len(self.received_msgs), 0)
         prev_elem = self.received_msgs[0]

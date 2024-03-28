@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>scenario_execution</name>
+  <name>scenario_execution_ros</name>
   <version>1.0.0</version>
   <description>Scenario Execution for ROS</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../LICENSE">Apache-2.0</license>
 
-  <depend>scenario_execution</depend>
+  <depend>scenario_execution_ros</depend>
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>py_trees</exec_depend>

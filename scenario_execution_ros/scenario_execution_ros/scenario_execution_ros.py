@@ -29,7 +29,7 @@ class ROSScenarioExecution(ScenarioExecution):
     """
 
     def __init__(self) -> None:
-        self.node = rclpy.create_node(node_name="scenario_execution")
+        self.node = rclpy.create_node(node_name="scenario_execution_ros")
         self.marker_handler = MarkerHandler(self.node)
         self.shutdown_task = None
 
@@ -67,10 +67,10 @@ class ROSScenarioExecution(ScenarioExecution):
 
     def _get_logger(self, debug):
         """
-        Get a logger from ROS2 with name "scenario_execution"
+        Get a logger from ROS2 with name "scenario_execution_ros"
         Overriden parent class method
         """
-        return RosLogger('scenario_execution', debug)
+        return RosLogger('scenario_execution_ros', debug)
 
     def setup_behaviour_tree(self, tree):
         """
@@ -129,16 +129,16 @@ def main():
     try:
         rclpy.init(args=sys.argv)
         rclpy.uninstall_signal_handlers()
-        ros_scenario_execution = ROSScenarioExecution()
+        ros_scenario_execution_ros = ROSScenarioExecution()
     except Exception as e:  # pylint: disable=broad-except
         print(f"Error while initializing: {e}")
         sys.exit(1)
 
-    result = ros_scenario_execution.parse()
+    result = ros_scenario_execution_ros.parse()
 
-    if result and not ros_scenario_execution.dry_run:
-        ros_scenario_execution.run()
-    result = ros_scenario_execution.process_results()
+    if result and not ros_scenario_execution_ros.dry_run:
+        ros_scenario_execution_ros.run()
+    result = ros_scenario_execution_ros.process_results()
     rclpy.try_shutdown()
     if result:
         sys.exit(0)

@@ -30,7 +30,7 @@ def generate_launch_description():
     live_tree = LaunchConfiguration('live_tree')
     log_model = LaunchConfiguration('log_model')
     log_level = LaunchConfiguration('log_level')
-    scenario_execution = LaunchConfiguration('scenario_execution')
+    scenario_execution_ros = LaunchConfiguration('scenario_execution_ros')
     scenario_status = LaunchConfiguration('scenario_status')
     output_dir = LaunchConfiguration('output_dir')
 
@@ -51,8 +51,8 @@ def generate_launch_description():
 
         Node(
             condition=IfCondition(scenario_execution),
-            package='scenario_execution',
-            executable='scenario_execution',
+            package='scenario_execution_ros',
+            executable='scenario_execution_ros',
             name='scenario_execution',
             output='screen',
             additional_env={'PYTHONUNBUFFERED': '1'},
@@ -75,7 +75,7 @@ def generate_launch_description():
             parameters=[{
                 'bt_snapshot_topic': '/bt_snapshot',
                 'scenario_status_topic': '/scenario_status',
-                'snapshot_srv_name': '/scenario_execution/snapshot_streams/open',
+                'snapshot_srv_name': '/scenario_execution_ros/snapshot_streams/open',
 
             }],
             output='screen'
@@ -84,6 +84,6 @@ def generate_launch_description():
         # Parse log for message on how to execute scenario separately
         LogInfo(
             condition=UnlessCondition(scenario_execution),
-            msg=["Skipping: ros2 launch scenario_execution scenario_launch.py scenario:=",
+            msg=["Skipping: ros2 launch scenario_execution_ros scenario_launch.py scenario:=",
                  scenario, ' log_model:=', log_model, ' live_tree:=', live_tree, ' debug:=', debug]),
     ])

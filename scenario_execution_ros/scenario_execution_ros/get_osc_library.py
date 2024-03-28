@@ -16,4 +16,4 @@
 
 
 def get_ros_library():
-    return 'scenario_execution', 'ros.osc'
+    return 'scenario_execution_ros', 'ros.osc'

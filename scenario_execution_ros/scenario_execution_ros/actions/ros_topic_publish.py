@@ -23,7 +23,7 @@ from rclpy.node import Node
 import py_trees
 from py_trees.common import Status
 
-from scenario_execution.actions.conversions import get_qos_preset_profile
+from scenario_execution_ros.actions.conversions import get_qos_preset_profile
 
 
 class RosTopicPublish(py_trees.behaviour.Behaviour):

@@ -16,7 +16,7 @@
 
 import importlib
 import py_trees_ros  # pylint: disable=import-error
-from scenario_execution.actions.conversions import get_qos_preset_profile, \
+from scenario_execution_ros.actions.conversions import get_qos_preset_profile, \
     get_comparison_operator, get_clearing_policy
 
 

@@ -23,7 +23,7 @@ from ament_index_python.packages import get_package_share_directory
 import rclpy
 from std_msgs.msg import Bool
 
-from scenario_execution import ROSScenarioExecution
+from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 
@@ -34,9 +34,9 @@ class TestRosTopicPublish(unittest.TestCase):
     def setUp(self) -> None:
         rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
-        self.scenario_execution = ROSScenarioExecution()
+        self.scenario_execution_ros = ROSScenarioExecution()
 
-        self.scenario_dir = get_package_share_directory('scenario_execution')
+        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
 
         self.received_msgs = []
         self.node = rclpy.create_node('test_node')
@@ -57,7 +57,7 @@ class TestRosTopicPublish(unittest.TestCase):
     def test_success(self):
         scenarios = self.parser.process_file(os.path.join(
             self.scenario_dir, 'scenarios', 'test', 'test_ros_topic_publish.osc'), False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
-        self.assertTrue(self.scenario_execution.process_results())
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
         self.assertEqual(len(self.received_msgs), 1)

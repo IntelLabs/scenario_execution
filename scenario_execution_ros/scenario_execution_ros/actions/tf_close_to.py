@@ -26,7 +26,7 @@ from geometry_msgs.msg import PoseStamped
 from tf2_ros.buffer import Buffer
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 
-from scenario_execution.actions.nav2_common import NamespacedTransformListener
+from scenario_execution_ros.actions.nav2_common import NamespacedTransformListener
 
 
 class TfCloseTo(py_trees.behaviour.Behaviour):

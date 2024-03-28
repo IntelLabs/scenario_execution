@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import importlib
-from scenario_execution.actions.conversions import get_qos_preset_profile, get_clearing_policy
+from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_clearing_policy
 from .py_trees_ros_common import SubscriberWaitForData
 
 

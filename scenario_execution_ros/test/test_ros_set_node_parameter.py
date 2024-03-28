@@ -24,7 +24,7 @@ from ament_index_python.packages import get_package_share_directory
 import rclpy
 from rcl_interfaces.msg import SetParametersResult
 
-from scenario_execution import ROSScenarioExecution
+from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 
@@ -35,8 +35,8 @@ class TestRosSetNodeParameter(unittest.TestCase):
     def setUp(self):
         rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
-        self.scenario_execution = ROSScenarioExecution()
-        self.scenario_dir = get_package_share_directory('scenario_execution')
+        self.scenario_execution_ros = ROSScenarioExecution()
+        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
 
         self.node = rclpy.create_node('test_node')
         self.node.declare_parameter('testBoolParam', False)
@@ -68,8 +68,8 @@ class TestRosSetNodeParameter(unittest.TestCase):
     def test_success(self):
         scenarios = self.parser.process_file(os.path.join(
             self.scenario_dir, 'scenarios', 'test', 'test_ros_set_node_parameter.osc'), False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
-        self.assertTrue(self.scenario_execution.process_results())
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
         self.assertTrue(self.bool_value)
         self.assertEqual(self.float_value, 3.14)

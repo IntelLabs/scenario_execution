@@ -19,7 +19,7 @@ import os
 import unittest
 import rclpy
 import threading
-from scenario_execution import ROSScenarioExecution
+from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
@@ -46,7 +46,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.srv = self.node.create_timer(1, self.callback)
 
         self.parser = OpenScenario2Parser(Logger('test', False))
-        self.scenario_execution = ROSScenarioExecution()
+        self.scenario_execution_ros = ROSScenarioExecution()
 
     def tearDown(self):
         self.node.destroy_node()
@@ -71,9 +71,9 @@ scenario test_log_check:
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
-        self.assertTrue(self.scenario_execution.process_results())
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_timeout(self):
         scenario_content = """
@@ -91,9 +91,9 @@ scenario test_log_check:
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
-        self.assertFalse(self.scenario_execution.process_results())
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_module_success(self):
         scenario_content = """
@@ -111,10 +111,10 @@ scenario test_log_check:
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.live_tree = True
-        self.scenario_execution.run()
-        self.assertTrue(self.scenario_execution.process_results())
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.live_tree = True
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_module_timeout(self):
         scenario_content = """
@@ -132,6 +132,6 @@ scenario test_log_check:
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
         scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
-        self.assertFalse(self.scenario_execution.process_results())
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())
