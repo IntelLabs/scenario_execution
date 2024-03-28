@@ -1,14 +1,23 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>scenario_coverage</name>
+  <name>scenario_execution</name>
   <version>1.0.0</version>
-  <description>Robotics Scenario Execution Coverage Tools</description>
+  <description>Scenario Execution for ROS</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../LICENSE">Apache-2.0</license>
 
-  <exec_depend>scenario_execution</exec_depend>
+  <depend>scenario_execution</depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>py_trees</exec_depend>
+  <exec_depend>py_trees_ros</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>nav2_simple_commander</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>rcl_interfaces</exec_depend>
+  <exec_depend>scenario_status</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

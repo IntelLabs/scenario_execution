@@ -38,7 +38,7 @@ After installing `scenario-execution-base` using pip (see :ref:`install_with_pip
 
 .. code-block:: bash
 
-   scenario_execution_base $(PATH_TO_SCENARIO_FILE)
+   scenario_execution $(PATH_TO_SCENARIO_FILE)
 
 
 Use the ``-t`` flag to see the printed tree and use the ``-d`` flag to see debug
@@ -46,7 +46,7 @@ information of py_trees and the parser:
 
 .. code-block:: bash
 
-   scenario_execution_base $(PATH_TO_SCENARIO_FILE) -t -d
+   scenario_execution $(PATH_TO_SCENARIO_FILE) -t -d
 
 
 

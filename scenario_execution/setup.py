@@ -14,56 +14,68 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Setup python package """
+"""Setup python package"""
 from glob import glob
 import os
 from setuptools import find_namespace_packages, setup
 
 PACKAGE_NAME = 'scenario_execution'
 
+# read the contents of the README file
+from pathlib import Path
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
+
 setup(
     name=PACKAGE_NAME,
     version='1.0.0',
-    packages=find_namespace_packages(),
+    packages=find_namespace_packages(exclude=['test*']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
         ('share/' + PACKAGE_NAME, ['package.xml']),
-        (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
-        (os.path.join('share', PACKAGE_NAME, 'scenarios', 'test'), glob('scenarios/test/*osc')),
         (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py'))
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'antlr4-python3-runtime==4.7.2',
+        'transforms3d==0.3.1',
+        'pexpect==4.9.0',
+        'defusedxml==0.7.1',
+        'pyyaml==6.0.1',
+        'py-trees==2.1.6'
+    ],
     zip_safe=True,
+    include_package_data=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='Scenario Execution for ROS',
+    url='https://github.com/IntelLabs/scenario_execution',
+    project_urls={
+        "Homepage": "https://github.com/IntelLabs/scenario_execution",
+        "Documentation": "https://github.com/IntelLabs/scenario_execution",
+        "Issues": "https://github.com/IntelLabs/scenario_execution/issues",
+    },
+    description='Scenario Execution for Robotics',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     license='Apache License 2.0',
+    classifiers=[
+        "Programming Language :: Python :: 3",
+    ],
     tests_require=['pytest'],
-    include_package_data=True,
     entry_points={
         'console_scripts': [
-            'scenario_execution = scenario_execution.scenario_execution_ros:main',
+            'scenario_execution = scenario_execution.scenario_execution:main',
         ],
         'scenario_execution.actions': [
-            'differential_drive_robot.init_nav2 = scenario_execution.actions.init_nav2:InitNav2',
-            'differential_drive_robot.nav_to_pose = scenario_execution.actions.nav_to_pose:NavToPose',
-            'differential_drive_robot.nav_through_poses = scenario_execution.actions.nav_through_poses:NavThroughPoses',
-            'wait_for_data = scenario_execution.actions.ros_topic_wait_for_data:RosTopicWaitForData',
-            'check_data = scenario_execution.actions.ros_topic_check_data:RosTopicCheckData',
-            'service_call = scenario_execution.actions.ros_service_call:RosServiceCall',
-            'topic_publish = scenario_execution.actions.ros_topic_publish:RosTopicPublish',
-            'odometry_distance_traveled = '
-            'scenario_execution.actions.odometry_distance_traveled:OdometryDistanceTraveled',
-            'set_node_parameter = scenario_execution.actions.ros_set_node_parameter:RosSetNodeParameter',
-            'record_bag = scenario_execution.actions.ros_bag_record:RosBagRecord',
-            'wait_for_topics = scenario_execution.actions.ros_topic_wait_for_topics:RosTopicWaitForTopics',
-            'log_check = scenario_execution.actions.ros_log_check:RosLogCheck',
-            'differential_drive_robot.tf_close_to = scenario_execution.actions.tf_close_to:TfCloseTo',
+            'log = scenario_execution.actions.log:Log',
+            'run_process = scenario_execution.actions.run_process:RunProcess',
         ],
         'scenario_execution.osc_libraries': [
-            'ros = '
-            'scenario_execution.get_osc_library:get_ros_library',
+            'helpers = scenario_execution.get_osc_library:get_helpers_library',
+            'standard = scenario_execution.get_osc_library:get_standard_library',
+            'standard.base = scenario_execution.get_osc_library:get_standard_base_library',
+            'robotics = scenario_execution.get_osc_library:get_robotics_library',
         ]
     },
 )

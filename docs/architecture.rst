@@ -22,7 +22,7 @@ A library typically provides an OpenSCENARIO 2 file with additional definitions 
 
 Currently, the following sub-packages and libraries are available:
 
--  :repo_link:`scenario_execution_base`
+-  :repo_link:`scenario_execution`
 -  :repo_link:`scenario_execution`
 -  :repo_link:`scenario_execution_gazebo`
 -  :repo_link:`scenario_execution_control`
@@ -63,8 +63,8 @@ The Internal Model Builder, implemented as a Model Listener does an initial chec
 Modules
 -------
 
-- ``scenario_execution_base``: The base package for scenario execution. It provides the parsing of OpenSCENARIO 2 files and the conversion to py-trees. It's middleware agnostic and can therefore be used as a basis for more specific implementations (e.g. ROS). It also provides basic OpenSCENARIO 2 libraries and actions.
-- ``scenario_execution``: This package uses ``scenario_execution_base`` as a basis and implements a ROS2 version of scenario execution. It provides a OpenSCENARIO 2 library with basic ROS2-related actions like publishing on a topic or calling a service.
+- ``scenario_execution``: The base package for scenario execution. It provides the parsing of OpenSCENARIO 2 files and the conversion to py-trees. It's middleware agnostic and can therefore be used as a basis for more specific implementations (e.g. ROS). It also provides basic OpenSCENARIO 2 libraries and actions.
+- ``scenario_execution``: This package uses ``scenario_execution`` as a basis and implements a ROS2 version of scenario execution. It provides a OpenSCENARIO 2 library with basic ROS2-related actions like publishing on a topic or calling a service.
 - ``scenario_execution_control``: Provides code to control scenario execution (in ROS2) from another application such as RViz.
 - ``scenario_coverage``: Provides tools to generate concrete scenarios from abstract OpenSCENARIO 2 scenario definition and execute them.
 - ``scenario_execution_gazebo``: Provides a `Gazebo <https://gazebosim.org/>`_-specific OpenSCENARIO 2 library with actions.

@@ -1,7 +1,11 @@
-# Scenario Execution
+# Scenario Execution Base Package
 
-The `scenario_execution` package is the ROS2 middleware implementation of the scenario execution. It uses the `py_trees_ros` packages as the `py_trees`'s implementation for ROS2.
+The `scenario_execution` package is the base package for scenario execution. It provides functionalities like parsing, py-trees creation and execution.
 
 It provides the following scenario execution libraries:
 
-- `ros.osc`: ROS specific actions like topic publish and service call.
+- `standard.osc`: The OpenSCENARIO 2 standard library. It is slightly modified to be in sync with the feature set of scenario execution. For convenience, numerical struct members are initialized with 0.
+- `robotics.osc`: robotic-specific specifications
+- `helper.osc`: helper actions
+- `networking.osc`: actions related to networking
+
