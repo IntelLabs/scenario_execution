@@ -113,5 +113,5 @@ action assert_topic_latency:
     latency: time #the time to compare against
     comparison_operator: comparison_operator = comparison_operator!le # the comparision is done using the this operator
     fail_on_finish: bool = false # if true, the action should fail if comparison is true
-    rolling_average_count: init = 1 # the check is done aganist the rolling average over x elements
+    rolling_average_count: int = 1 # the check is done aganist the rolling average over x elements
     wait_for_first_message: bool = true # start measuring with the first recieved message
