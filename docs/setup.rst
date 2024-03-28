@@ -48,4 +48,4 @@ To install it using pip, run
 
 .. code-block:: bash
 
-   pip install scenario-execution
+   pip install scenario-execution-base
