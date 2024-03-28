@@ -24,19 +24,27 @@ PACKAGE_NAME = 'scenario_execution_base'
 setup(
     name=PACKAGE_NAME,
     version='1.0.0',
-    packages=find_namespace_packages(),
+    packages=find_namespace_packages(exclude=['test*']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
         ('share/' + PACKAGE_NAME, ['package.xml']),
         (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py'))
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'antlr4-python3-runtime==4.7.2',
+        'transforms3d==0.3.1',
+        'pexpect==4.9.0',
+        'defusedxml==0.7.1',
+        'pyyaml==6.0.1',
+        'py-trees==2.1.6'
+    ],
     zip_safe=True,
     include_package_data=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='Robotics Scenario Execution',
+    description='Scenario Execution for Robotics',
     license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
