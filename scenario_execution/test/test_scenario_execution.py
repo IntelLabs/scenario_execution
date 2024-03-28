@@ -16,7 +16,7 @@
 
 import unittest
 import os
-from scenario_execution.scenario_execution import ScenarioExecution
+from scenario_execution.scenario_execution_base import ScenarioExecution
 
 
 class TestOSC2Parser(unittest.TestCase):

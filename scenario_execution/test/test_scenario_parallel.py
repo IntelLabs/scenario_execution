@@ -19,7 +19,7 @@ Test parallel parsing
 """
 import unittest
 
-from scenario_execution.scenario_execution import ScenarioExecution
+from scenario_execution.scenario_execution_base import ScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
@@ -50,7 +50,7 @@ scenario test:
             serial:
                 wait elapsed(1s)
         wait elapsed(1s)
-        emit fail             
+        emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
