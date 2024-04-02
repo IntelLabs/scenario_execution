@@ -1,4 +1,4 @@
-# Scenario Execution Package
+# Scenario Execution
 
 The `scenario_execution` package is the core package of Scenario Execution for Robotics. It provides functionalities such as parsing, py-trees creation and execution.
 
