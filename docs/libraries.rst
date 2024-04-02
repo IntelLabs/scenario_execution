@@ -180,6 +180,18 @@ Wait until a defined distance was traveled, based on odometry.
 - ``namespace: string``:  Namespace of the odometry topic
 - ``distance: length``: Traveled distance at which the action succeeds.
 
+``assert_topic_latency()``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+check for topic latency.
+
+- ``topic_name: string``:  Topic name to wait for message
+- ``latency: time``: The time to compare.
+- ``comparision_operator: comparision_operator``: operator to compare latency time. (default: ``le``)
+- ``fail_on_finish: bool``: If true action fails, if comparison is true. (default: ``false``)
+- ``rolling_average_count: int``: check for the latency over the x elements. (default: ``1``)
+- ``wait_for_first_message: bool``: if true, start measuring only after first message is received. (default: ``true``)
+
 
 ``osc.gazebo``
 --------------
