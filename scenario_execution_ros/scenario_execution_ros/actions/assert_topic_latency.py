@@ -15,12 +15,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+from collections import deque
 import py_trees  # pylint: disable=import-error
 from rclpy.node import Node
 import importlib
 import time
-from rclpy.qos import QoSPresetProfiles
-from scenario_execution_ros.actions.conversions import get_comparison_operator
+from scenario_execution_ros.actions.conversions import get_comparison_operator, get_qos_preset_profile
 
 
 class AssertTopicLatency(py_trees.behaviour.Behaviour):
@@ -33,13 +33,16 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
         self.comparision_operator = get_comparison_operator(comparison_operator)
         self.fail_on_finish = fail_on_finish
         self.rolling_average_count = rolling_average_count
+        self.rolling_average_count_queue = deque(maxlen=rolling_average_count)
         self.wait_for_first_message = wait_for_first_message
         self.node = None
         self.subscription = None
         self.last_receive_time = None
         self.latency_time = None
         self.msg_count = 0
+        self.average_latency = 0
         self.topic_type = None
+        self.msg_timestamps = []
 
     def setup(self, **kwargs):
         try:
@@ -70,23 +73,25 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
             msg_type=self.topic_type,
             topic=self.topic_name,
             callback=self._callback,
-            qos_profile=QoSPresetProfiles.SENSOR_DATA.value)
+            qos_profile=get_qos_preset_profile(['sensor_data']))
 
     def update(self) -> py_trees.common.Status:
         result = py_trees.common.Status.FAILURE
         if self.wait_for_first_message:
-            self.feedback_message = f'Waiting for first message to publish on topic {self.topic_name}'
+            self.feedback_message = f'Waiting for first message to publish on topic {self.topic_name}'  # pylint: disable= attribute-defined-outside-init
             result = py_trees.common.Status.RUNNING
         else:
             if self.msg_count > 1:
-                if self.comparision_operator(self.latency_time, self.latency) and self.fail_on_finish:
+                if self.comparision_operator(self.average_latency, self.latency) and self.fail_on_finish:
                     result = py_trees.common.Status.FAILURE
-                elif self.comparision_operator(self.latency_time, self.latency):
+                    self.feedback_message = f'Average latency: {self.average_latency}'  # pylint: disable= attribute-defined-outside-init
+                elif self.comparision_operator(self.average_latency, self.latency):
                     result = py_trees.common.Status.SUCCESS
-                    self.feedback_message = f'Frequency of the topic {self.topic_name}'
                 else:
-                    result = py_trees.common.Status.RUNNING
-                    self.feedback_message = f'Frequency of the topic {self.topic_name}'
+                    result = py_trees.common.Status.FAILURE
+                    self.feedback_message = f'latency of the topic {self.topic_name} exceeds the given latency.'  # pylint: disable= attribute-defined-outside-init
+            else:
+                result = py_trees.common.Status.RUNNING
         return result
 
     def _callback(self, msg):
@@ -97,5 +102,8 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
             now = time.time()
             if self.last_receive_time is not None:
                 self.latency_time = now - self.last_receive_time
-                print(self.latency_time)
+                if len(self.rolling_average_count_queue) == self.rolling_average_count:
+                    self.rolling_average_count_queue.popleft()
+                self.rolling_average_count_queue.append(self.latency_time)
+                self.average_latency = sum(self.rolling_average_count_queue) / len(self.rolling_average_count_queue)
             self.last_receive_time = now
