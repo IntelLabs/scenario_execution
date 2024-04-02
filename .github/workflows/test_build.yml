@@ -44,7 +44,7 @@ jobs:
           export ROS_DOMAIN_ID=2
           colcon test --packages-select \
           scenario_execution \
-          scenario_execution \
+          scenario_execution_ros \
           scenario_execution_gazebo \
           scenario_coverage \
           --event-handlers console_direct+ \
@@ -58,6 +58,6 @@ jobs:
           check_run: false
           files: |
             scenario_execution//TEST.xml
-            scenario_execution//TEST.xml
+            scenario_execution_ros//TEST.xml
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
