@@ -14,13 +14,18 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 import unittest
+import threading
+
+from ament_index_python.packages import get_package_share_directory
+
 import rclpy
+from std_msgs.msg import Bool
+
 from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
-from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
-from antlr4.InputStream import InputStream
 
 
 class TestScenarioExectionSuccess(unittest.TestCase):
@@ -31,30 +36,24 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
 
+        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
+
+        self.received_msgs = []
+        self.node = rclpy.create_node('test_node')
+        self.publisher = self.node.create_publisher(Bool, "/bla", 10)
+        self.publisher.publish("Hello")
+        self.executor = rclpy.executors.MultiThreadedExecutor()
+        self.executor.add_node(self.node)
+        self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
+        self.executor_thread.start()
+
     def tearDown(self):
+        self.node.destroy_node()
         rclpy.try_shutdown()
 
     def test_success(self):
-        scenario_content = """
-import osc.ros
-
-
-scenario test_assert_topic_latency:
-    do parallel:
-        serial:
-            topic_publish() with:
-                keep(it.topic_name == '/bla')
-                keep(it.topic_type == 'std_msgs.msg.Bool')
-                keep(it.value == '{\"data\": True}')
-        serial:
-            assert_topic_latency() with:
-                keep(it.topic_name == '/bla')
-                keep(it.latency == 0.5s)
-            emit fail
-"""
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
-        scenarios = create_py_tree(model, self.parser.logger, False)
+        scenarios = self.parser.process_file(os.path.join(
+            self.scenario_dir, 'scenarios', 'test', 'test_assert_topic_latency.osc'), False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
