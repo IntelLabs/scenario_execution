@@ -28,7 +28,7 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 def generate_launch_description():
 
     tb4_sim_scenario_dir = get_package_share_directory('tb4_sim_scenario')
-    scenario_execution_dir = get_package_share_directory('scenario_execution')
+    scenario_execution_dir = get_package_share_directory('scenario_execution_ros')
     message_modification_dir = get_package_share_directory('message_modification')
     gazebo_tf_publisher_dir = get_package_share_directory('gazebo_tf_publisher')
     tf_to_pose_publisher_dir = get_package_share_directory('tf_to_pose_publisher')
