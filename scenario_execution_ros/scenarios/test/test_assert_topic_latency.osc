@@ -1,0 +1,10 @@
+import osc.ros
+
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency() with:
+                keep(it.topic_name == '/bla')
+                keep(it.latency == 0.5s)
+            emit fail
