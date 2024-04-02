@@ -17,11 +17,11 @@
 
 import py_trees  # pylint: disable=import-error
 from rclpy.node import Node
-from rclpy.qos import QoSProfile, DurabilityPolicy, HistoryPolicy
-from scenario_execution.actions.conversions import get_comparison_operator, get_qos_preset_profile
 import importlib
 import time
 from rclpy.qos import QoSPresetProfiles
+from scenario_execution_ros.actions.conversions import get_comparison_operator
+
 
 class AssertTopicLatency(py_trees.behaviour.Behaviour):
 
@@ -53,18 +53,19 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
         available_topics = self.node.get_topic_names_and_types()
         for name, topic_type in available_topics:
             if name == self.topic_name:
+                self.topic_type = topic_type
                 topic_available = True
                 break
-        
+
         if topic_available:
-            datatype_in_list = topic_type[0].split("/")
+            datatype_in_list = self.topic_type[0].split("/")
             self.topic_type = getattr(
                 importlib.import_module(".".join(datatype_in_list[0:-1])),
                 datatype_in_list[-1]
             )
         else:
             raise TypeError(f'Topic not available!')
-    
+
         self.subscription = self.node.create_subscription(
             msg_type=self.topic_type,
             topic=self.topic_name,
@@ -78,9 +79,9 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
             result = py_trees.common.Status.RUNNING
         else:
             if self.msg_count > 1:
-                if self.comparision_operator(self.latency_time , self.latency) and self.fail_on_finish:
+                if self.comparision_operator(self.latency_time, self.latency) and self.fail_on_finish:
                     result = py_trees.common.Status.FAILURE
-                elif self.comparision_operator(self.latency_time , self.latency):
+                elif self.comparision_operator(self.latency_time, self.latency):
                     result = py_trees.common.Status.SUCCESS
                     self.feedback_message = f'Frequency of the topic {self.topic_name}'
                 else:
@@ -95,7 +96,6 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
             self.msg_count += 1
             now = time.time()
             if self.last_receive_time is not None:
-                self.latency_time  = now - self.last_receive_time
+                self.latency_time = now - self.last_receive_time
                 print(self.latency_time)
             self.last_receive_time = now
-            
