@@ -96,7 +96,7 @@ class ScenarioBatchExecution(object):
             print(f"### For scenario {scenario}, executing process: '{log_cmd}'")
             process = subprocess.Popen(launch_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             file_handler = logging.FileHandler(filename=output_file_path + '.log', mode='w')
-            logger = configure_logger(output_file_path)
+            configure_logger(output_file_path)
             log_stdout_thread = Thread(target=log_output, args=(process.stdout, ))
             log_stdout_thread.daemon = True  # die with the program
             log_stdout_thread.start()
