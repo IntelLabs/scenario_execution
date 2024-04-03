@@ -21,7 +21,6 @@ import sys
 import argparse
 import subprocess  # nosec B404
 from threading import Thread
-from collections import deque
 from copy import deepcopy
 import signal
 from defusedxml import ElementTree as ETparse
@@ -66,15 +65,28 @@ class ScenarioBatchExecution(object):
             return None
 
     def run(self) -> bool:
-        def log_output(out):
+        def log_output(out, output):
             try:
                 for line in iter(out.readline, b''):
                     msg = line.decode().strip()
                     print(msg)
-                    logging.info(msg)
+                    logger = configure_logger(output)
+                    logger.info(msg)
                 out.close()
             except ValueError:
                 pass
+
+        def configure_logger(output_file_path):
+            log_file_path = output_file_path + '.log'
+            logger = logging.getLogger(log_file_path)
+            if logger.hasHandlers():
+                logger.handlers.clear()
+            file_handler = logging.FileHandler(filename=log_file_path, mode='a')
+            file_handler.setFormatter(logging.Formatter('%(message)s'))
+            file_handler.setLevel(logging.INFO)
+            logger.addHandler(file_handler)
+            logger.setLevel(logging.INFO)
+            return logger
 
         for scenario in self.scenarios:
             output_file_path = os.path.join(self.output_dir, os.path.splitext(os.path.basename(scenario))[0])
@@ -84,17 +96,12 @@ class ScenarioBatchExecution(object):
             log_cmd = " ".join(launch_command)
             print(f"### For scenario {scenario}, executing process: '{log_cmd}'")
             process = subprocess.Popen(launch_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-            
-            # Configure the logging system
-            log_file_path = output_file_path + '.log'
-            logging.basicConfig(filename=log_file_path,
-                                    filemode='a',
-                                    format='%(message)s',
-                                    level=logging.INFO)
-            log_stdout_thread = Thread(target=log_output, args=(process.stdout, ))
+            if os.path.exists(output_file_path + '.log'):
+                os.remove(output_file_path + '.log')
+            log_stdout_thread = Thread(target=log_output, args=(process.stdout, output_file_path, ))
             log_stdout_thread.daemon = True  # die with the program
             log_stdout_thread.start()
-            log_stderr_thread = Thread(target=log_output, args=(process.stderr, ))
+            log_stderr_thread = Thread(target=log_output, args=(process.stderr, output_file_path, ))
             log_stderr_thread.daemon = True  # die with the program
             log_stderr_thread.start()
 
