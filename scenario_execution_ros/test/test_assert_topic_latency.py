@@ -21,7 +21,7 @@ import threading
 from ament_index_python.packages import get_package_share_directory
 
 import rclpy
-from std_msgs.msg import Bool
+from std_msgs.msg import String
 
 from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
@@ -33,21 +33,29 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def setUp(self) -> None:
         rclpy.init()
+        self.running = True
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
-
         self.scenario_dir = get_package_share_directory('scenario_execution_ros')
-
         self.received_msgs = []
         self.node = rclpy.create_node('test_node')
-        self.publisher = self.node.create_publisher(Bool, "/bla", 10)
-        self.publisher.publish("Hello")
+        self.publisher = self.node.create_publisher(String, "/bla", 10)
+        self.publishing_thread = threading.Thread(target=self.publish_messages, daemon=True)
+        self.publishing_thread.start()
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
         self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
         self.executor_thread.start()
 
+    def publish_messages(self):
+        while self.running:
+            msg = String()
+            msg.data = 'Hello'
+            self.publisher.publish(msg)
+            
     def tearDown(self):
+        self.running = False
+        self.publishing_thread.join() 
         self.node.destroy_node()
         rclpy.try_shutdown()
 
