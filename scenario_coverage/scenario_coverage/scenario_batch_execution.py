@@ -66,13 +66,12 @@ class ScenarioBatchExecution(object):
             return None
 
     def run(self) -> bool:
-        def log_output(out, buffer):
+        def log_output(out):
             try:
                 for line in iter(out.readline, b''):
                     msg = line.decode().strip()
                     print(msg)
                     logging.info(msg)
-                    buffer.append(msg)
                 out.close()
             except ValueError:
                 pass
@@ -82,20 +81,20 @@ class ScenarioBatchExecution(object):
             if not os.path.isdir(output_file_path):
                 os.mkdir(output_file_path)
             launch_command = self.get_launch_command(scenario, output_file_path)
-            output = deque()
             log_cmd = " ".join(launch_command)
             print(f"### For scenario {scenario}, executing process: '{log_cmd}'")
             process = subprocess.Popen(launch_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+            
             # Configure the logging system
-            logging.basicConfig(filename=output_file_path + '.log',
-                                filemode='a',
-                                format='%(asctime)s - %(message)s',
-                                level=logging.INFO)
-            log_stdout_thread = Thread(target=log_output, args=(process.stdout, output, ))
+            log_file_path = output_file_path + '.log'
+            logging.basicConfig(filename=log_file_path,
+                                    filemode='a',
+                                    format='%(message)s',
+                                    level=logging.INFO)
+            log_stdout_thread = Thread(target=log_output, args=(process.stdout, ))
             log_stdout_thread.daemon = True  # die with the program
             log_stdout_thread.start()
-
-            log_stderr_thread = Thread(target=log_output, args=(process.stderr, output, ))
+            log_stderr_thread = Thread(target=log_output, args=(process.stderr, ))
             log_stderr_thread.daemon = True  # die with the program
             log_stderr_thread.start()
 
