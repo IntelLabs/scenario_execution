@@ -65,12 +65,11 @@ class ScenarioBatchExecution(object):
             return None
 
     def run(self) -> bool:
-        def log_output(out, output):
+        def log_output(out):
             try:
                 for line in iter(out.readline, b''):
                     msg = line.decode().strip()
                     print(msg)
-                    logger = configure_logger(output)
                     logger.info(msg)
                 out.close()
             except ValueError:
@@ -96,12 +95,12 @@ class ScenarioBatchExecution(object):
             log_cmd = " ".join(launch_command)
             print(f"### For scenario {scenario}, executing process: '{log_cmd}'")
             process = subprocess.Popen(launch_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-            if os.path.exists(output_file_path + '.log'):
-                os.remove(output_file_path + '.log')
-            log_stdout_thread = Thread(target=log_output, args=(process.stdout, output_file_path, ))
+            file_handler = logging.FileHandler(filename=output_file_path + '.log', mode='w')
+            logger = configure_logger(output_file_path)
+            log_stdout_thread = Thread(target=log_output, args=(process.stdout, ))
             log_stdout_thread.daemon = True  # die with the program
             log_stdout_thread.start()
-            log_stderr_thread = Thread(target=log_output, args=(process.stderr, output_file_path, ))
+            log_stderr_thread = Thread(target=log_output, args=(process.stderr, ))
             log_stderr_thread.daemon = True  # die with the program
             log_stderr_thread.start()
 
@@ -124,7 +123,8 @@ class ScenarioBatchExecution(object):
                     print("### Process not stopped after 10s.")
                 return False
             ret = process.returncode
-
+            file_handler.flush()
+            file_handler.close()
             print(f"### Storing results in {self.output_dir}...")
             if ret:
                 print("### Process failed.")
