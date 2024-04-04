@@ -89,11 +89,11 @@ jobs:
       - name: Build IGN_ROS_CONTROL #build from source for now becuase base package has errors
         shell: bash
         run: |
-          mkdir -p ros_ign/src
-          cd ros_ign/src
+          mkdir -p /ros_ign/src
+          cd /ros_ign/src
           git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
           rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
-          cd ros_ign
+          cd /ros_ign
           source /opt/ros/humble/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
@@ -145,7 +145,7 @@ jobs:
       - name: Test Example Nav2
         shell: bash
         run: |
-          source ros_ign/install/setup.bash
+          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
@@ -158,7 +158,7 @@ jobs:
       - name: Test Example Simulation
         shell: bash
         run: |
-          source ros_ign/install/setup.bash
+          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
@@ -171,7 +171,7 @@ jobs:
       - name: Test Example Multirobot
         shell: bash
         run: |
-          source ros_ign/install/setup.bash
+          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
