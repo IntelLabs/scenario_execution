@@ -253,14 +253,15 @@ class ScenarioExecution(object):
             self.logger.error(f"{result.name}: {result.failure_message} {result.failure_output}")
         self.results.append(result)
 
-    def process_results(self):
+    def process_results(self, dry_run):
         result = True
-        if len(self.results) == 0:
-            result = False
-        else:
-            for res in self.results:
-                if res.result is False:
-                    result = False
+        if not dry_run:
+            if len(self.results) == 0:
+                result = False
+            else:
+                for res in self.results:
+                    if res.result is False:
+                        result = False
 
         # store output file
         if self.output_dir and self.results:
@@ -367,7 +368,7 @@ def main():
     result = scenario_execution.parse()
     if result and not args.dry_run:
         scenario_execution.run()
-    result = scenario_execution.process_results()
+    result = scenario_execution.process_results(dry_run=result)
     if result:
         sys.exit(0)
     else:
