@@ -65,7 +65,7 @@ class ScenarioBatchExecution(object):
             return None
 
     def run(self) -> bool:
-        def log_output(out):
+        def log_output(out, logger):
             try:
                 for line in iter(out.readline, b''):
                     msg = line.decode().strip()
@@ -97,10 +97,10 @@ class ScenarioBatchExecution(object):
             process = subprocess.Popen(launch_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
             file_handler = logging.FileHandler(filename=output_file_path + '.log', mode='w')
             logger = configure_logger(output_file_path)
-            log_stdout_thread = Thread(target=log_output, args=(process.stdout, ))
+            log_stdout_thread = Thread(target=log_output, args=(process.stdout, logger, ))
             log_stdout_thread.daemon = True  # die with the program
             log_stdout_thread.start()
-            log_stderr_thread = Thread(target=log_output, args=(process.stderr, ))
+            log_stderr_thread = Thread(target=log_output, args=(process.stderr, logger))
             log_stderr_thread.daemon = True  # die with the program
             log_stderr_thread.start()
 
