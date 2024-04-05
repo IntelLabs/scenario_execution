@@ -52,10 +52,10 @@ class TestScenarioExectionSuccess(unittest.TestCase):
             msg = String()
             msg.data = 'Hello'
             self.publisher.publish(msg)
-            
+
     def tearDown(self):
         self.running = False
-        self.publishing_thread.join() 
+        self.publishing_thread.join()
         self.node.destroy_node()
         rclpy.try_shutdown()
 
