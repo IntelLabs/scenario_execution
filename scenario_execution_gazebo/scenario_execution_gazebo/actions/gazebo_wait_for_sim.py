@@ -35,7 +35,7 @@ class GazeboWaitForSim(RunProcess):
     Class to wait for the simulation to become active
     """
 
-    def __init__(self, name, world_name: str, **kwargs):
+    def __init__(self, name, world_name: str, timeout: int, **kwargs):
         self.node = None
         self.world_name = world_name
         command = ["ign", "topic", "-t", "/world/" +
@@ -43,7 +43,7 @@ class GazeboWaitForSim(RunProcess):
         super().__init__(name, command)
         self.current_state = WaitForSimulationActionState.IDLE
         self.start_time = time.time()
-        self.timeout_sec = 60
+        self.timeout_sec = timeout
 
     def on_executed(self):
         """
