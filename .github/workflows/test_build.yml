@@ -85,7 +85,7 @@ jobs:
           rosdep update --rosdistro=humble 
           rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
           apt install -y ros-humble-gazebo-ros2-control
-          pip install -r requirements.txt
+          pip3 install -r requirements.txt
       - name: Build IGN_ROS_CONTROL #build from source for now becuase base package has errors
         shell: bash
         run: |
