@@ -29,7 +29,6 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
         super().__init__(name)
         self.topic_name = topic_name
         self.latency = latency
-        print(latency)
         self.comparision_operator = get_comparison_operator(comparison_operator)
         self.fail_on_finish = fail_on_finish
         self.rolling_average_count = rolling_average_count
@@ -78,6 +77,7 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
     def update(self) -> py_trees.common.Status:
         result = py_trees.common.Status.FAILURE
         if self.wait_for_first_message:
+            self.logger.info(f"Waiting for first message to publish on topic {self.topic_name}")
             self.feedback_message = f'Waiting for first message to publish on topic {self.topic_name}'  # pylint: disable= attribute-defined-outside-init
             result = py_trees.common.Status.RUNNING
         else:

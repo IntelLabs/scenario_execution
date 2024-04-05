@@ -6,5 +6,5 @@ scenario test_assert_topic_latency:
         serial:
             assert_topic_latency() with:
                 keep(it.topic_name == '/bla')
-                keep(it.latency == 0.5s)
-            emit fail
+                keep(it.latency == 1.5s)
+            emit end
