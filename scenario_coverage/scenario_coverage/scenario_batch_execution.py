@@ -100,7 +100,7 @@ class ScenarioBatchExecution(object):
             log_stdout_thread = Thread(target=log_output, args=(process.stdout, logger, ))
             log_stdout_thread.daemon = True  # die with the program
             log_stdout_thread.start()
-            log_stderr_thread = Thread(target=log_output, args=(process.stderr, logger))
+            log_stderr_thread = Thread(target=log_output, args=(process.stderr, logger, ))
             log_stderr_thread.daemon = True  # die with the program
             log_stderr_thread.start()
 
