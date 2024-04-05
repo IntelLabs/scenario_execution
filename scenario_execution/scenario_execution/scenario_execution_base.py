@@ -257,10 +257,10 @@ class ScenarioExecution(object):
         if not result:
             if len(self.results) == 0:
                 result = False
-            else:
-                for res in self.results:
-                    if res.result is False:
-                        result = False
+
+        for res in self.results:
+            if res.result is False:
+                result = False
 
         # store output file
         if self.output_dir and self.results:
