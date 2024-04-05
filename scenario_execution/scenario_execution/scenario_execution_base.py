@@ -365,10 +365,10 @@ def main():
     except ValueError as e:
         print(f"Error while initializing: {e}")
         sys.exit(1)
-    result = scenario_execution.parse()
-    if result and not args.dry_run:
+    dry_run = scenario_execution.parse()
+    if dry_run and not args.dry_run:
         scenario_execution.run()
-    result = scenario_execution.process_results(dry_run=result)
+    result = scenario_execution.process_results(dry_run)
     if result:
         sys.exit(0)
     else:
