@@ -5,6 +5,6 @@ scenario scenario_control:
     do serial:
         log("Hello Control!")
         wait elapsed(3s)
-        log("Control Runnunig....")
+        log("Control Running....")
         wait elapsed(3s)
         log("Success!")
