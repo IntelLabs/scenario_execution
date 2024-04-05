@@ -92,16 +92,15 @@ def main(args=None):
             except RuntimeError as e:
                 scenario_execute_control_test.get_logger().info(f'Service call failed: {e}')
                 sys.exit(1)
+            if scenario_execute_control_test.scenario_status == 0:
+                scenario_execute_control_test.get_logger().info(f'Success! Scenario Succeed')
+                sys.exit(0)
             else:
-                if scenario_execute_control_test.scenario_status == 0:
-                    scenario_execute_control_test.get_logger().info(f'Success! Scenario Succeed')
-                    sys.exit(0)
+                if time.time() - start_time > timeout:
+                    scenario_execute_control_test.get_logger().info('Status check timed out.')
+                    sys.exit(1)
                 else:
-                    if time.time() - start_time > timeout:
-                        scenario_execute_control_test.get_logger().info('Status check timed out.')
-                        sys.exit(1)
-                    else:
-                        scenario_execute_control_test.get_logger().info('Waiting for success status...')
+                    scenario_execute_control_test.get_logger().info('Waiting for success status...')
 
     scenario_execute_control_test.destroy_node()
     rclpy.shutdown()
