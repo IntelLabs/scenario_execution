@@ -183,7 +183,7 @@ Wait until a defined distance was traveled, based on odometry.
 ``assert_topic_latency()``
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-check for topic latency.
+Check the latency of the specified topic. This can run concurrently with the scenario to monitor the frequency of the '/clock' topic, for instance.
 
 - ``topic_name: string``:  Topic name to wait for message
 - ``latency: time``: The time to compare.
@@ -205,7 +205,7 @@ Actions
 Wait for simulation to become active (checks for simulation clock).
 
 - ``world_name: string``: Gazebo world name (default: ``default``)
-- ``timeout: time``: Timeout for wait for sim (default: ``60s``)
+- ``timeout: time``:  Wait for sim timeout (default: ``60s``)
 
 ``actor_exists()``
 """"""""""""""""""
