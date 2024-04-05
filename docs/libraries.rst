@@ -209,6 +209,7 @@ Actions
 Wait for simulation to become active (checks for simulation clock).
 
 - ``world_name: string``: Gazebo world name (default: ``default``)
+- ``timeout: time``: Timeout for wait for sim (default: ``60s``)
 
 ``actor_exists()``
 """"""""""""""""""
