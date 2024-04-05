@@ -253,9 +253,8 @@ class ScenarioExecution(object):
             self.logger.error(f"{result.name}: {result.failure_message} {result.failure_output}")
         self.results.append(result)
 
-    def process_results(self, dry_run):
-        result = True
-        if not dry_run:
+    def process_results(self, result=True):
+        if not result:
             if len(self.results) == 0:
                 result = False
             else:
@@ -365,10 +364,10 @@ def main():
     except ValueError as e:
         print(f"Error while initializing: {e}")
         sys.exit(1)
-    dry_run = scenario_execution.parse()
-    if dry_run and not args.dry_run:
+    result = scenario_execution.parse()
+    if result and not args.dry_run:
         scenario_execution.run()
-    result = scenario_execution.process_results(dry_run)
+    result = scenario_execution.process_results(result)
     if result:
         sys.exit(0)
     else:
