@@ -66,6 +66,7 @@ class ScenarioExecution(object):
                  live_tree: bool,
                  scenario_file: str,
                  output_dir: str,
+                 dry_run=False,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_tock_period: float = 0.1) -> None:
 
@@ -82,8 +83,8 @@ class ScenarioExecution(object):
         self.live_tree = live_tree
         self.scenario_file = scenario_file
         self.output_dir = output_dir
-
-        if self.output_dir:
+        self.dry_run = dry_run
+        if self.output_dir and not self.dry_run:
             if not os.path.isdir(self.output_dir):
                 try:
                     os.mkdir(self.output_dir)
@@ -253,9 +254,9 @@ class ScenarioExecution(object):
             self.logger.error(f"{result.name}: {result.failure_message} {result.failure_output}")
         self.results.append(result)
 
-    def process_results(self, dry_run=False):
-        result=True
-        if not dry_run:
+    def process_results(self, dry_run_result=False):
+        result = True
+        if not dry_run_result:
             if len(self.results) == 0:
                 result = False
 
@@ -264,29 +265,33 @@ class ScenarioExecution(object):
                 result = False
 
         # store output file
-        if self.output_dir and self.results:
-            result_file = os.path.join(self.output_dir, 'test.xml')
-            # self.logger.info(f"Writing results to '{result_file}'...")
-            failures = 0
-            overall_time = timedelta(0)
-            for res in self.results:
-                if res.result is False:
-                    failures += 1
-                overall_time += res.processing_time
-            try:
-                with open(result_file, 'w') as out:
-                    out.write('<?xml version="1.0" encoding="utf-8"?>\n')
-                    out.write(
-                        f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')
-                    for res in self.results:
+        if self.output_dir:
+            if self.dry_run:
+                print("Dry_run is enabled, no output files will be generated!")
+            elif self.results:
+                result_file = os.path.join(self.output_dir, 'test.xml')
+                # self.logger.info(f"Writing results to '{result_file}'...")
+                failures = 0
+                overall_time = timedelta(0)
+                for res in self.results:
+                    if res.result is False:
+                        failures += 1
+                    overall_time += res.processing_time
+                try:
+                    with open(result_file, 'w') as out:
+                        out.write('<?xml version="1.0" encoding="utf-8"?>\n')
                         out.write(
-                            f'  <testcase classname="tests.scenario" name="{res.name}" time="{res.processing_time.total_seconds()}">\n')
-                        if res.result is False:
-                            out.write(f'    <failure message="{res.failure_message}">{res.failure_output}</failure>\n')
-                        out.write(f'  </testcase>\n')
-                    out.write("</testsuite>\n")
-            except Exception as e:  # pylint: disable=broad-except
-                print(f"Could not write results to '{self.output_dir}': {e}")  # use print, as logger might not be available during shutdown
+                            f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')
+                        for res in self.results:
+                            out.write(
+                                f'  <testcase classname="tests.scenario" name="{res.name}" time="{res.processing_time.total_seconds()}">\n')
+                            if res.result is False:
+                                out.write(f'    <failure message="{res.failure_message}">{res.failure_output}</failure>\n')
+                            out.write(f'  </testcase>\n')
+                        out.write("</testsuite>\n")
+                except Exception as e:  # pylint: disable=broad-except
+                    # use print, as logger might not be available during shutdown
+                    print(f"Could not write results to '{self.output_dir}': {e}")
         return result
 
     def pre_tick_handler(self, behaviour_tree):
@@ -361,14 +366,15 @@ def main():
                                                log_model=args.log_model,
                                                live_tree=args.live_tree,
                                                scenario_file=args.scenario,
-                                               output_dir=args.output_dir)
+                                               output_dir=args.output_dir,
+                                               dry_run=args.dry_run)
     except ValueError as e:
         print(f"Error while initializing: {e}")
         sys.exit(1)
     result = scenario_execution.parse()
     if result and not args.dry_run:
         scenario_execution.run()
-    result = scenario_execution.process_results(dry_run=result)
+    result = scenario_execution.process_results(dry_run_result=result)
     if result:
         sys.exit(0)
     else:
