@@ -100,3 +100,28 @@ scenario test_assert_topic_latency:
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
+
+
+    def test_running(self):
+        scenario_content = """
+import osc.ros
+
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency() with:
+                keep(it.topic_name == '/bla')
+                keep(it.latency == 0.1s)
+                keep(it.fail_on_finish == true)
+            emit fail
+        serial:
+            wait elapsed(10s)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
