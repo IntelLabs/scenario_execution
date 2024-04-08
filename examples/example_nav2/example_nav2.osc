@@ -8,5 +8,5 @@ scenario example_nav2:
             robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
             emit end
         time_out: serial:
-            wait elapsed(600s)
+            wait elapsed(60s)
             emit fail

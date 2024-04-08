@@ -175,5 +175,5 @@ scenario nav2_simulation_nav_to_pose:
                         keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
             emit end
         time_out: serial:
-            wait elapsed(1500s)
+            wait elapsed(240s)
             emit fail

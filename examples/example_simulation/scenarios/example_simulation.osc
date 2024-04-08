@@ -22,5 +22,5 @@ scenario example_simulation:
                         world_name: 'maze')
             emit end
         time_out: serial:
-            wait elapsed(1200s)
+            wait elapsed(120s)
             emit fail
