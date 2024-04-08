@@ -82,12 +82,12 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
             result = py_trees.common.Status.RUNNING
         else:
             if self.msg_count > 1:
-                if not self.comparision_operator(self.average_latency, self.latency) and self.fail_on_finish:
+                if self.comparision_operator(self.latency, self.average_latency) and self.fail_on_finish:
                     result = py_trees.common.Status.FAILURE
                     self.feedback_message = f'latency of the topic {self.topic_name} exceeds the given latency. Average latency: {self.average_latency}'  # pylint: disable= attribute-defined-outside-init
-                elif not self.comparision_operator(self.average_latency, self.latency):
+                elif self.comparision_operator(self.latency, self.average_latency):
                     result = py_trees.common.Status.SUCCESS
-                    self.feedback_message = f'latency of the topic {self.topic_name} exceeds the given latency. Average latency: {self.average_latency}' 
+                    self.feedback_message = f'latency of the topic {self.topic_name} exceeds the given latency. Average latency: {self.average_latency}'
                 elif self.comparision_operator(self.average_latency, self.latency):
                     result = py_trees.common.Status.RUNNING
                     self.feedback_message = f'Average latency: {self.average_latency}'  # pylint: disable= attribute-defined-outside-init

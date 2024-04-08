@@ -70,7 +70,7 @@ scenario test_assert_topic_latency:
         serial:
             assert_topic_latency() with:
                 keep(it.topic_name == '/bla')
-                keep(it.latency == 1.5s)
+                keep(it.latency == 0.001s)
             emit end
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
@@ -90,7 +90,7 @@ scenario test_assert_topic_latency:
         serial:
             assert_topic_latency() with:
                 keep(it.topic_name == '/bla')
-                keep(it.latency == 1.5s)
+                keep(it.latency == 0.001s)
                 keep(it.fail_on_finish == true)
             emit end
 """
@@ -100,7 +100,6 @@ scenario test_assert_topic_latency:
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
-
 
     def test_running(self):
         scenario_content = """
@@ -112,8 +111,7 @@ scenario test_assert_topic_latency:
         serial:
             assert_topic_latency() with:
                 keep(it.topic_name == '/bla')
-                keep(it.latency == 0.1s)
-                keep(it.fail_on_finish == true)
+                keep(it.latency == 1.5s)
             emit fail
         serial:
             wait elapsed(10s)
