@@ -254,11 +254,10 @@ class ScenarioExecution(object):
             self.logger.error(f"{result.name}: {result.failure_message} {result.failure_output}")
         self.results.append(result)
 
-    def process_results(self, dry_run_result=False):
+    def process_results(self):
         result = True
-        if not dry_run_result:
-            if len(self.results) == 0:
-                result = False
+        if len(self.results) == 0 and not self.dry_run:
+            result = False
 
         for res in self.results:
             if res.result is False:
@@ -374,7 +373,7 @@ def main():
     result = scenario_execution.parse()
     if result and not args.dry_run:
         scenario_execution.run()
-    result = scenario_execution.process_results(dry_run_result=result)
+    result = scenario_execution.process_results()
     if result:
         sys.exit(0)
     else:
