@@ -28,6 +28,7 @@ jobs:
           xargs -a deb_requirements.txt apt install -y --no-install-recommends
           rosdep update --rosdistro=humble 
           rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          pip install --user --upgrade 'pip==22.0.2'
           pip3 install -r requirements.txt
       - name: Build
         shell: bash
