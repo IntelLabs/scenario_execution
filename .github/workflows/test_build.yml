@@ -134,18 +134,12 @@ jobs:
           scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i scenario_variation_out -o test_example_variation -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-      - name: Test Example Scenario Control_1
+      - name: Test Example Scenario Control
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenarios/scenario_execution_control_test.osc &
-      - name: Test Example Scenario Control_2
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          source install/setup.bash
-          mkdir test_example_control
           timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/scenarios/ output_dir:=test_example_control || true
       - name: Test Example Nav2
         shell: bash
