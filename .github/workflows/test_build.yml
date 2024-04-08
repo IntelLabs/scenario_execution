@@ -167,7 +167,7 @@ jobs:
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=119
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          sed -i 's/120s/1200s/g' examples/example_simulation/scenarios/example_simulation.osc
+          sed -i 's/120s/900s/g' examples/example_simulation/scenarios/example_simulation.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_simulation/scenarios/ -o test_example_simulation -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Test Example Multirobot
