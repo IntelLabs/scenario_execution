@@ -139,8 +139,9 @@ jobs:
         run: |
           source /opt/ros/humble/setup.bash
           source install/setup.bash
-          python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenarios/scenario_execution_control_test.osc &
-          timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/scenarios/ output_dir:=test_example_control || true
+          mkdir test_example_control
+          python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenario_execution_control_test.osc &
+          timeout 60 ros2 launch scenario_execution_control scenario_execution_control_launch.py scenario_dir:=scenario_execution_control/test/ output_dir:=test_example_control || true
       - name: Test Example Nav2
         shell: bash
         run: |
