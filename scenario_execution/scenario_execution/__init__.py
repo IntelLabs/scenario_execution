@@ -14,14 +14,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Main entry for scenario execution """
-
 from . import actions
-from .logging_ros import RosLogger
-from .scenario_execution_ros import ROSScenarioExecution
+from . import utils
+from . import model
+from scenario_execution.scenario_execution_base import ScenarioExecution
+from scenario_execution.utils.logging import BaseLogger, Logger
 
 __all__ = [
     'actions',
-    'RosLogger',
-    'ROSScenarioExecution'
+    'utils',
+    'model',
+    'BaseLogger',
+    "Logger",
+    'ScenarioExecution'
 ]
