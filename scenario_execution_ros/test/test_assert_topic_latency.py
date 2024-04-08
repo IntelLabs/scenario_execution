@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 import unittest
 import threading
 
@@ -25,7 +24,9 @@ from std_msgs.msg import String
 
 from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
+from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
+from antlr4.InputStream import InputStream
 
 
 class TestScenarioExectionSuccess(unittest.TestCase):
@@ -60,8 +61,42 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         rclpy.try_shutdown()
 
     def test_success(self):
-        scenarios = self.parser.process_file(os.path.join(
-            self.scenario_dir, 'scenarios', 'test', 'test_assert_topic_latency.osc'), False)
+        scenario_content = """
+import osc.ros
+
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency() with:
+                keep(it.topic_name == '/bla')
+                keep(it.latency == 1.5s)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_failure(self):
+        scenario_content = """
+import osc.ros
+
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency() with:
+                keep(it.topic_name == '/bla')
+                keep(it.latency == 1.5s)
+                keep(it.fail_on_finish == true)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())
