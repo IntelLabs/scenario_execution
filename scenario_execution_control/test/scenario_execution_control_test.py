@@ -81,26 +81,27 @@ def main(args=None):
     if not scenario_execute_control_test.execute_scenario_client.service_is_ready():
         sys.exit(1)
     scenario_execute_control_test.execute_scenario(args.scenario)
-
     start_time = time.time()
     timeout = 60  # seconds
+    result = False
     while rclpy.ok():
         rclpy.spin_once(scenario_execute_control_test, timeout_sec=0.1)
+
         if scenario_execute_control_test.future.done():
             try:
-                scenario_execute_control_test.future.result()
+                result = scenario_execute_control_test.future.result().result
             except RuntimeError as e:
                 scenario_execute_control_test.get_logger().info(f'Service call failed: {e}')
                 sys.exit(1)
-            if scenario_execute_control_test.scenario_status == 0:
+            if result and scenario_execute_control_test.scenario_status == 0:
                 scenario_execute_control_test.get_logger().info(f'Success! Scenario Succeed')
                 sys.exit(0)
             else:
-                if time.time() - start_time > timeout:
+                if result and time.time() - start_time < timeout:
+                    scenario_execute_control_test.get_logger().info('Service call successful. Waiting for scenario success status...')
+                elif time.time() - start_time > timeout:
                     scenario_execute_control_test.get_logger().info('Status check timed out.')
                     sys.exit(1)
-                else:
-                    scenario_execute_control_test.get_logger().info('Waiting for success status...')
 
     scenario_execute_control_test.destroy_node()
     rclpy.shutdown()
