@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 permissions: read-all
 jobs:
-  vanilla-build:
+  build:
     runs-on: intellabs-01
     container:
       image: osrf/ros:humble-desktop-full
@@ -64,7 +64,7 @@ jobs:
             scenario_execution_ros//TEST.xml
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
-  vanilla-test-run:
+  test-scenarios:
     runs-on: intellabs-01
     container:
       image: osrf/ros:humble-desktop
@@ -103,7 +103,7 @@ jobs:
           source /opt/ros/humble/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
-      - name: Test Scanrio Files Syntax
+      - name: Test Scenario Files Syntax
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
