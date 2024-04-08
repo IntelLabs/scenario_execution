@@ -142,7 +142,6 @@ jobs:
           python3 scenario_execution_control/test/scenario_execution_control_test.py scenario_execution_control/test/scenarios/scenario_execution_control_test.osc &
       - name: Test Example Scenario Control_2
         shell: bash
-        needs: Test Example Scenario Control_1
         run: |
           source /opt/ros/humble/setup.bash
           source install/setup.bash
