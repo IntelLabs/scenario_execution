@@ -21,11 +21,11 @@ import sys
 import argparse
 import subprocess  # nosec B404
 from threading import Thread
-from collections import deque
 from copy import deepcopy
 import signal
 from defusedxml import ElementTree as ETparse
 import xml.etree.ElementTree as ET  # nosec B405
+import logging
 
 
 class ScenarioBatchExecution(object):
@@ -65,32 +65,42 @@ class ScenarioBatchExecution(object):
             return None
 
     def run(self) -> bool:
-
-        def log_output(out, buffer):
+        def log_output(out, logger):
             try:
                 for line in iter(out.readline, b''):
                     msg = line.decode().strip()
                     print(msg)
-                    buffer.append(msg)
+                    logger.info(msg)
                 out.close()
             except ValueError:
                 pass
+
+        def configure_logger(output_file_path):
+            log_file_path = output_file_path + '.log'
+            logger = logging.getLogger(log_file_path)
+            if logger.hasHandlers():
+                logger.handlers.clear()
+            file_handler = logging.FileHandler(filename=log_file_path, mode='a')
+            file_handler.setFormatter(logging.Formatter('%(message)s'))
+            file_handler.setLevel(logging.INFO)
+            logger.addHandler(file_handler)
+            logger.setLevel(logging.INFO)
+            return logger
 
         for scenario in self.scenarios:
             output_file_path = os.path.join(self.output_dir, os.path.splitext(os.path.basename(scenario))[0])
             if not os.path.isdir(output_file_path):
                 os.mkdir(output_file_path)
             launch_command = self.get_launch_command(scenario, output_file_path)
-            output = deque()
             log_cmd = " ".join(launch_command)
             print(f"### For scenario {scenario}, executing process: '{log_cmd}'")
             process = subprocess.Popen(launch_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-
-            log_stdout_thread = Thread(target=log_output, args=(process.stdout, output, ))
+            file_handler = logging.FileHandler(filename=output_file_path + '.log', mode='w')
+            logger = configure_logger(output_file_path)
+            log_stdout_thread = Thread(target=log_output, args=(process.stdout, logger, ))
             log_stdout_thread.daemon = True  # die with the program
             log_stdout_thread.start()
-
-            log_stderr_thread = Thread(target=log_output, args=(process.stderr, output, ))
+            log_stderr_thread = Thread(target=log_output, args=(process.stderr, logger, ))
             log_stderr_thread.daemon = True  # die with the program
             log_stderr_thread.start()
 
@@ -113,12 +123,9 @@ class ScenarioBatchExecution(object):
                     print("### Process not stopped after 10s.")
                 return False
             ret = process.returncode
-
+            file_handler.flush()
+            file_handler.close()
             print(f"### Storing results in {self.output_dir}...")
-
-            with open(output_file_path + '.log', 'w') as out:
-                for line in output:
-                    out.write(line + '\n')
             if ret:
                 print("### Process failed.")
             else:
