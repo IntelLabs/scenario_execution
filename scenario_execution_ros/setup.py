@@ -60,6 +60,7 @@ setup(
             'wait_for_topics = scenario_execution_ros.actions.ros_topic_wait_for_topics:RosTopicWaitForTopics',
             'log_check = scenario_execution_ros.actions.ros_log_check:RosLogCheck',
             'differential_drive_robot.tf_close_to = scenario_execution_ros.actions.tf_close_to:TfCloseTo',
+            'assert_tf_moving = scenario_execution_ros.actions.assert_tf_moving:AssertTfMoving',
         ],
         'scenario_execution.osc_libraries': [
             'ros = '

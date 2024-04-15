@@ -112,6 +112,6 @@ action assert_tf_moving:
     frame_id: string # frame_id to check for movement
     parent_frame_id: string = "map" # parent frame_id against which the movement is checked
     timeout: time # timeout without movement
-    threshold_speed: length = 0.01mps # speed below this threshold is skipped
+    threshold_speed: float = 0.01 # speed below this threshold is skipped
     fail_on_finish: bool = false # if true, the action should fail if the comparison is true
     wait_for_first_transform: bool = true # start measuring with the first received message

@@ -1,0 +1,9 @@
+import osc.ros
+
+scenario test_assert_tf_moving:
+    do parallel:
+        serial:
+            assert_tf_moving() with:
+                keep(it.frame_id == 'robot')
+                keep(it.timeout == 10)
+            emit end
