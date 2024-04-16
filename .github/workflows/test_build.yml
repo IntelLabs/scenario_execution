@@ -140,7 +140,7 @@ jobs:
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           mkdir test_example_control
-          python3 scenario_execution_control/test/test_scenario_execution_control_CI.py
+          python3 scenario_execution_control/test/scenario_execution_control_test_ci.py
       - name: Test Example Nav2
         shell: bash
         run: |
