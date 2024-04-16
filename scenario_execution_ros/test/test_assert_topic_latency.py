@@ -48,7 +48,6 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.executor_thread.start()
 
     def publish_messages(self):
-        while self.running:
             msg = String()
             msg.data = 'Hello'
             self.publisher.publish(msg)
