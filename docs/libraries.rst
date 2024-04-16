@@ -87,8 +87,8 @@ In the background, this action uses `check_data() <https://py-trees-ros.readthed
 - ``variable_name: string``: Name of the variable to check
 - ``expected_value: string``: Expected value of the variable
 - ``comparison_operator: comparison_operator``: The comparison operator to apply (default: ``comparison_operator!eq``)
-- ``fail_if_no_data: bool``: py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if there is no data yet (default: ``false``)
-- ``fail_if_bad_comparison: bool``: py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed (default: ``true``)
+- ``fail_if_no_data: bool``: return failure if there is no data yet (default: ``false``)
+- ``fail_if_bad_comparison: bool``: return failure if comparison failed (default: ``true``)
 - ``clearing_policy: clearing_policy``: When to clear the data (default: ``clearing_policy!on_initialise``)
 
 ``service_call()``
@@ -209,7 +209,7 @@ Actions
 Wait for simulation to become active (checks for simulation clock).
 
 - ``world_name: string``: Gazebo world name (default: ``default``)
-- ``timeout: time``:  Wait for sim timeout (default: ``60s``)
+- ``timeout: time``:  time to wait for the simulation. return failure afterwards. (default: ``60s``)
 
 ``actor_exists()``
 """"""""""""""""""
