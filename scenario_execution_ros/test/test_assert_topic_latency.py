@@ -41,9 +41,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.received_msgs = []
         self.node = rclpy.create_node('test_node')
         self.publisher = self.node.create_publisher(String, "/bla", 10)
-        self.publish_timer = threading.Timer(5, self.publish_messages)
-        self.publish_timer.daemon = True
-        self.publish_timer.start()
+        self.publish_timer = self.node.create_timer(5, self.publish_messages)
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
         self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
@@ -57,94 +55,116 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def tearDown(self):
         self.running = False
-        self.publish_timer.cancel()
+        self.node.destroy_node()
         rclpy.try_shutdown()
 
-#     def test_success(self):
-#         scenario_content = """
-# import osc.ros
+    def test_success(self):
+        scenario_content = """
+import osc.ros
 
-# scenario test_assert_topic_latency:
-#     do parallel:
-#         serial:
-#             assert_topic_latency(
-#                 topic_name: '/bla',
-#                 latency: 0.001s)
-#             emit end
-# """
-#         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-#         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-#         scenarios = create_py_tree(model, self.parser.logger, False)
-#         self.scenario_execution_ros.scenarios = scenarios
-#         self.scenario_execution_ros.run()
-#         self.assertTrue(self.scenario_execution_ros.process_results())
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 0.001s)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
-#     def test_failure(self):
-#         scenario_content = """
-# import osc.ros
+    def test_failure(self):
+        scenario_content = """
+import osc.ros
 
-# scenario test_assert_topic_latency:
-#     do parallel:
-#         serial:
-#             assert_topic_latency(
-#                 topic_name: '/bla',
-#                 latency: 0.001s,
-#                 fail_on_finish: true)
-#             emit end
-# """
-#         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-#         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-#         scenarios = create_py_tree(model, self.parser.logger, False)
-#         self.scenario_execution_ros.scenarios = scenarios
-#         self.scenario_execution_ros.run()
-#         self.assertFalse(self.scenario_execution_ros.process_results())
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 0.001s,
+                fail_on_finish: true)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())
 
-#     def test_running(self):
-#         scenario_content = """
-# import osc.ros
+    def test_running(self):
+        scenario_content = """
+import osc.ros
 
-# scenario test_assert_topic_latency:
-#     do parallel:
-#         serial:
-#             assert_topic_latency(
-#                 topic_name: '/bla',
-#                 latency: 1.5s)
-#             emit fail
-#         serial:
-#             wait elapsed(60s)
-#             emit end
-# """
-#         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-#         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-#         scenarios = create_py_tree(model, self.parser.logger, False)
-#         self.scenario_execution_ros.scenarios = scenarios
-#         self.scenario_execution_ros.run()
-#         self.assertTrue(self.scenario_execution_ros.process_results())
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 1.5s)
+            emit fail
+        serial:
+            wait elapsed(60s)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
+    def test_comparison_operator(self):
+        scenario_content = """
+import osc.ros
 
-#     def test_rolling_average_count(self):
-#         scenario_content = """
-# import osc.ros
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 1.5s,
+                comparison_operator: comparison_operator!ge)
+            emit end
+        serial:
+            wait elapsed(60s)
+            emit fail
+"""
+        self.publisher = self.node.create_publisher(String, "/bla", 10)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
-# scenario test_assert_topic_latency:
-#     do parallel:
-#         serial:
-#             assert_topic_latency(
-#                 topic_name: '/bla',
-#                 latency: 0.001s,
-#                 rolling_average_count: 5)
-#             emit end
-#         serial:
-#             wait elapsed(60s)
-#             emit fail
-# """
-#         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-#         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-#         scenarios = create_py_tree(model, self.parser.logger, False)
-#         self.scenario_execution_ros.scenarios = scenarios
-#         self.scenario_execution_ros.run()
-#         self.assertTrue(self.scenario_execution_ros.process_results())
+    def test_rolling_average_count(self):
+        scenario_content = """
+import osc.ros
 
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 0.001s,
+                rolling_average_count: 5)
+            emit end
+        serial:
+            wait elapsed(60s)
+            emit fail
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_wait_for_first_message(self):
         scenario_content = """
