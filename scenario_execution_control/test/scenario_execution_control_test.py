@@ -76,13 +76,13 @@ def main(args=None):
     """
     args = ScenarioExecutionControlTest.parse_args(sys.argv[1:])
     rclpy.init()
-    service_timeout = 60  # seconds
+    service_timeout = 30  # seconds
     scenario_execute_control_test = ScenarioExecutionControlTest(service_timeout)
     if not scenario_execute_control_test.execute_scenario_client.service_is_ready():
         sys.exit(1)
     scenario_execute_control_test.execute_scenario(args.scenario)
     start_time = time.time()
-    timeout = 60  # seconds
+    timeout = 30  # seconds
     result = False
     while rclpy.ok():
         rclpy.spin_once(scenario_execute_control_test, timeout_sec=0.1)
