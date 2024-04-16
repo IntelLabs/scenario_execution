@@ -54,12 +54,10 @@ class GazeboWaitForSim(RunProcess):
 
     def check_running_process(self):
         if self.current_state == WaitForSimulationActionState.WAITING_FOR_SIM:
-            while True:
-                if time.time() - self.start_time > self.timeout_sec:
-                    self.feedback_message = f"Timeout waiting for simulation of world '{self.world_name}'"  # pylint: disable= attribute-defined-outside-init
-                    return py_trees.common.Status.FAILURE
-        else:
-            return py_trees.common.Status.RUNNING
+            if time.time() - self.start_time > self.timeout_sec:
+                self.feedback_message = f"Timeout waiting for simulation of world '{self.world_name}'"  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.FAILURE
+        return py_trees.common.Status.RUNNING
 
     def get_logger_stdout(self):
         """

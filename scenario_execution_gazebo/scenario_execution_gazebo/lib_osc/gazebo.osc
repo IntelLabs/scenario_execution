@@ -4,7 +4,7 @@ import osc.robotics
 action wait_for_sim:
     # Wait for simulation to become active
     world_name: string = 'default'      # simulation world name
-    timeout: time = 60
+    timeout: time = 60s                 # time to wait for the simulation. return failure afterwards.
 
 action actor_exists:
     # report success if an actor with a specific name exists
