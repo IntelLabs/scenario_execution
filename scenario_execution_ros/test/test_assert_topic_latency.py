@@ -48,9 +48,9 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.executor_thread.start()
 
     def publish_messages(self):
-            msg = String()
-            msg.data = 'Hello'
-            self.publisher.publish(msg)
+        msg = String()
+        msg.data = 'Hello'
+        self.publisher.publish(msg)
 
     def tearDown(self):
         self.running = False
