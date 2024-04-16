@@ -187,7 +187,7 @@ Wait until a defined distance was traveled, based on odometry.
 ``assert_topic_latency()``
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Check the latency of the specified topic (in system time). If the check with `comparison_operator` gets true, the action ends, depending on `fail_on_finish`, either with sucess or failure.
+Check the latency of the specified topic (in system time). If the check with `comparison_operator` gets true, the action ends, depending on `fail_on_finish`, either with success or failure.
 
 - ``topic_name: string``:  Topic name to wait for message
 - ``latency: time``: The time to compare.
