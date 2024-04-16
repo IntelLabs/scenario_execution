@@ -187,11 +187,11 @@ Wait until a defined distance was traveled, based on odometry.
 ``assert_topic_latency()``
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Check the latency of the specified topic. This can run concurrently with the scenario to monitor the frequency of the '/clock' topic, for instance.
+Check the latency of the specified topic (in system time). If the check with `comparison_operator` gets true, the action ends, depending on `fail_on_finish`, either with sucess or failure.
 
 - ``topic_name: string``:  Topic name to wait for message
 - ``latency: time``: The time to compare.
-- ``comparision_operator: comparision_operator``: operator to compare latency time. (default: ``le``)
+- ``comparison_operator: comparison_operator``: operator to compare latency time. (default: ``le``)
 - ``fail_on_finish: bool``: If true action fails, if comparison is true. (default: ``false``)
 - ``rolling_average_count: int``: check for the latency over the x elements. (default: ``1``)
 - ``wait_for_first_message: bool``: if true, start measuring only after first message is received. (default: ``true``)
