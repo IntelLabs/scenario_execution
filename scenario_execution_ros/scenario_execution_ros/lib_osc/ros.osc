@@ -111,7 +111,7 @@ action differential_drive_robot.odometry_distance_traveled:
 action assert_topic_latency:
     topic_name: string # topic name to wait for message
     latency: time #the time to compare against
-    comparison_operator: comparison_operator = comparison_operator!le # the comparision is done using the python operator module
+    comparison_operator: comparison_operator = comparison_operator!le # the comparison is done using the python operator module
     fail_on_finish: bool = false # if true, the action should fail if comparison is true
     rolling_average_count: int = 1 # the check is done aganist the rolling average over x elements
     wait_for_first_message: bool = true # start measuring with the first recieved message
