@@ -59,6 +59,8 @@ Actions
 
 Wait for a specific data on a ROS topic.
 
+In the background, this action uses `wait_for_data() <https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.WaitForData>`__ from `py_trees_ros <https://github.com/splintered-reality/py_trees_ros>`__.
+
 - ``topic_name: string``: Name of the topic to connect to
 - ``topic_type: string``: Class of the message type (e.g. ``std_msgs.msg.String``)
 - ``qos_profile: qos_preset_profiles``: QoS Preset Profile for the subscriber (default: ``qos_preset_profiles!system_default``)
@@ -75,7 +77,9 @@ Wait for topics to get available (i.e. publisher gets available).
 
 ``check_data()``
 """"""""""""""""
-Wait for a topic message, compare a message field against a specific value
+Wait for a topic message, compare a message field against a specific value.
+
+In the background, this action uses `check_data() <https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.CheckData>`__ from `py_trees_ros <https://github.com/splintered-reality/py_trees_ros>`__.
 
 - ``topic_name: string``: Name of the topic to connect to
 - ``topic_type: string``: Class of the message type (e.g. ``std_msgs.msg.String``)
