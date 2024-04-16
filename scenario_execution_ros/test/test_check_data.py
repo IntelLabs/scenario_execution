@@ -14,18 +14,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 import unittest
-import threading
 
 from ament_index_python.packages import get_package_share_directory
 
 import rclpy
-from std_msgs.msg import Bool
 
-from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
+from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
 
 from antlr4.InputStream import InputStream
