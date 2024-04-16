@@ -48,7 +48,7 @@ action check_data:
     expected_value: string                            # expected value of the variable
     comparison_operator: comparison_operator = comparison_operator!eq     # one from the python `operator module`_
     fail_if_no_data: bool = false                     # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if there is no data yet
-    fail_if_bad_comparison: bool = true               # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
+    fail_if_bad_comparison: bool = false               # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
     clearing_policy: clearing_policy = clearing_policy!on_initialise     # when to clear the data
 
 action service_call:
