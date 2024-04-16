@@ -41,7 +41,6 @@ class TestCheckData(unittest.TestCase):
 
         self.scenario_dir = get_package_share_directory('scenario_execution_ros')
 
-
     def tearDown(self):
         rclpy.try_shutdown()
 
@@ -70,8 +69,7 @@ scenario test:
         self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
-        
-        
+
     def test_sucess_field(self):
         scenario_content = """
 import osc.ros
@@ -102,7 +100,7 @@ scenario test:
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
-        
+
     def test_error_empty_variable_name(self):
         scenario_content = """
 import osc.ros
@@ -134,7 +132,7 @@ scenario test:
         self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
-        
+
     def test_fail_if_bad_comparison(self):
         scenario_content = """
 import osc.ros
@@ -166,8 +164,7 @@ scenario test:
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
-        
-        
+
     def test_wait_for_comparison_to_succeed(self):
         scenario_content = """
 import osc.ros
@@ -203,5 +200,3 @@ scenario test:
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
-        
-        
