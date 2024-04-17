@@ -20,11 +20,13 @@ from rclpy.node import Node
 import time
 import numpy as np
 import tf2_ros
+from scenario_execution_ros.actions.nav2_common import NamespacedTransformListener
+from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 
 
 class AssertTfMoving(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name, frame_id: str, parent_frame_id: str, timeout: int, threshold_speed: bool, fail_on_finish: bool, wait_for_first_transform: bool):
+    def __init__(self, name, frame_id: str, parent_frame_id: str, timeout: int, threshold_speed: bool, fail_on_finish: bool, wait_for_first_transform: bool, namespace: str, sim: bool):
         super().__init__(name)
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
@@ -32,10 +34,14 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
         self.fail_on_finish = fail_on_finish
         self.threshold_speed = threshold_speed
         self.wait_for_first_transform = wait_for_first_transform
+        self.namespace = namespace
+        self.sim = sim
         self.node = None
-        self.average_displacement = None
-        # self.tf_buffer = None
-        # self.tf_listner = None
+        self.displacement = True
+        self.transforms_recieved = 0
+        self.max_transforms = 5
+        self.prev_transforms = []
+        self.start_timer = 0
 
     def setup(self, **kwargs):
         try:
@@ -45,73 +51,89 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
+        self.feedback_message = f"Waiting for transform {self.parent_frame_id} --> {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
         self.tf_buffer = tf2_ros.Buffer()
-        self.tf_listner = tf2_ros.TransformListener(buffer=self.tf_buffer, node=self.node)
-        
-        self.get_transform(self.frame_id, self.parent_frame_id)
-    def update(self) -> py_trees.common.Status:
+        tf_prefix = self.namespace
+        if not tf_prefix.startswith('/') and tf_prefix != '':
+            tf_prefix = "/" + tf_prefix
+        self.tf_listener = NamespacedTransformListener(
+            node=self.node,
+            buffer=self.tf_buffer,
+            tf_topic=(tf_prefix + "/tf"),
+            tf_static_topic=(tf_prefix + "/tf_static"),
+        )
 
+        self.get_transform(self.frame_id, self.parent_frame_id)
+
+    def update(self) -> py_trees.common.Status:
         result = py_trees.common.Status.FAILURE
+        transform, Success = self.get_transform(self.parent_frame_id, self.frame_id)
         if self.wait_for_first_transform:
-            self.logger.info(f"Waiting from the first tranformation on frame {self.frame_id}")
-            self.feedback_message = f"Waiting for first tranformation on frame {self.frame_id}"
-            result = py_trees.common.Status.RUNNING
-        else:
-            if self.fail_on_finish and (self.average_displacement > self.threshold_speed):
-                result = py_trees.common.Status.FAILURE
-                self.feedback_message = f"Threshold of frame {self.frame_id} with respect to frame {self.parent} is {self.average_displacement}"
-            elif self.average_displacement > self.threshold_speed:
-                result = py_trees.common.Status.SUCCESS
-                self.feedback_message = f"Threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} is {self.average_displacement}"
-            else:
+            if not Success:
+                self.logger.info(f"Waiting from the first tranformation on frame {self.frame_id}")
+                self.feedback_message = f"Waiting for first tranformation on frame {self.frame_id}"
                 result = py_trees.common.Status.RUNNING
+            else:
+                self.wait_for_first_transform = False
+                result = py_trees.common.Status.RUNNING
+        else:
+            average_displacement = self.calculated_displacement(transform)
+            if average_displacement is None:
+                return py_trees.common.Status.RUNNING
+            elif average_displacement == 0:
+                if self.displacement:
+                    self.start_time = time.time()
+                    self.displacement = False
+                elif time.time() - self.start_time > self.timeout:
+                    self.logger.error("Timeout: No movement detected for {} seconds.".format(self.timeout))
+                    self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds."
+                    return py_trees.common.Status.FAILURE
+                self.feedback_message = "Frame is not moving."
+                return py_trees.common.Status.RUNNING
+            elif self.fail_on_finish and (average_displacement > self.threshold_speed):
+                self.feedback_message = f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent} ({average_displacement}) exceeded."
+                return py_trees.common.Status.FAILURE
+            elif average_displacement > self.threshold_speed:
+                self.feedback_message = f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded."
+                return py_trees.common.Status.SUCCESS
+            else:
                 self.feedback_message = f"Avergae Threshold: {self.average_displacement}"
+                return py_trees.common.Status.RUNNING
         return result
 
     def get_transform(self, frame_id, parent_frame_id):
+        when = self.node.get_clock().now()
+        if self.sim:
+            when = rclpy.time.Time()
         try:
-            when = self.node.get_clock().now()
-            transform = self.tf_buffer.lookup_transform(parent_frame_id, frame_id, when)
-            return transform.transform
-        except:
-            self.logger.error(f"Failed to lookup transform between {frame_id} and {parent_frame_id}")
-            return None
+            transform = self.tf_buffer.lookup_transform(
+                parent_frame_id,
+                frame_id,
+                when,
+                timeout=rclpy.duration.Duration(seconds=1.0),
+            )
+            self.feedback_message = f"Transform map -> base_link got available."  # pylint: disable= attribute-defined-outside-init
+            return transform, True
+        except TransformException as ex:
+            self.feedback_message = f"Could not {frame_id} and {parent_frame_id}"  # pylint: disable= attribute-defined-outside-init
+            self.node.get_logger().warn(
+                f'Could not transform {frame_id} and {parent_frame_id} at time {when}: {ex}')
+            return None, False
 
-    def are_frames_moving(self):
-        parent_transforms = []
-        child_transforms = []
-        start_time = time.time()
-        # Collect transform over time
-        def collect_tranforms(frame_id, parent_frame_id, transform_list):
-            tranform = self.get_transform(frame_id, parent_frame_id)
-            if tranform:
-                transform_list.append(tranform)
+    def calculated_displacement(self, transform):
+        if self.transforms_recieved < self.max_transforms:
+            self.prev_transforms.append(transform)
+            self.transforms_recieved += 1
+            return
 
-        # Calculate relative movement
-        def calculate_average_displacement():
-            parent_positions = np.array([t.tranlation for t in parent_transforms])
-            child_positions = np.array([t.translation for t in child_transforms])
-            displacement = np.linalg.norm(parent_positions - child_positions, axis=1)
-            np.mean(displacement)
-
-        while len(parent_transforms) < 10 or len(child_transforms) < 10:  # 10 transformations
-            if self.wait_for_first_transform:
-                collect_tranforms(self.parent_frame_id, 'world', parent_transforms)
-                collect_tranforms(self.frame_id, self.parent_frame_id, child_transforms)
-                if len(parent_transforms) > 0 and len(child_transforms) > 0:
-                    self.wait_for_first_transform = False
-                    start_time = time.time()
-            else:
-                collect_tranforms(self.parent_frame_id, 'world', parent_transforms)
-                collect_tranforms(self.frame_id, self.parent_frame_id, child_transforms)
-                if len(parent_transforms) >= 2 or len(child_transforms) >= 2:
-                    self.average_displacement = calculate_average_displacement()
-                    if self.average_displacement > 0:
-                        break
-            if time.time() - start_time > self.timeout:
-                self.logger.error(f"Timeout waiting for movement")
-                return
-
-            rclpy.spin_once(self)
-
-        self.average_displacement = calculate_average_displacement()
+        for prev_transform in self.prev_transforms:
+            prev_translation = np.array([prev_transform.transform.translation.x,
+                                         prev_transform.transform.translation.y,
+                                         prev_transform.transform.translation.z])
+            current_translation = np.array([transform.transform.translation.x,
+                                            transform.transform.translation.y,
+                                            transform.transform.translation.z])
+            average_displacement = np.linalg.norm(prev_translation - current_translation)
+        self.prev_transforms.pop(0)
+        self.prev_transforms.append(transform)
+        return average_displacement
