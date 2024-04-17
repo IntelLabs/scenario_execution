@@ -38,7 +38,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
         self.sim = sim
         self.node = None
         self.displacement = True
-        self.transforms_recieved = 0
+        self.transforms_received = 0
         self.max_transforms = 5
         self.prev_transforms = []
         self.start_timer = 0
@@ -91,7 +91,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
                 self.feedback_message = "Frame is not moving."
                 return py_trees.common.Status.RUNNING
             elif self.fail_on_finish and (average_displacement > self.threshold_speed):
-                self.feedback_message = f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent} ({average_displacement}) exceeded."
+                self.feedback_message = f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded."
                 return py_trees.common.Status.FAILURE
             elif average_displacement > self.threshold_speed:
                 self.feedback_message = f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded."
@@ -122,9 +122,9 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
             return None, False
 
     def calculated_displacement(self, transform):
-        if self.transforms_recieved < self.max_transforms:
+        if self.transforms_received < self.max_transforms:
             self.prev_transforms.append(transform)
-            self.transforms_recieved += 1
+            self.transforms_received += 1
             return
 
         for prev_transform in self.prev_transforms:
