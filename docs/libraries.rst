@@ -184,6 +184,17 @@ Wait until a defined distance was traveled, based on odometry.
 - ``namespace: string``:  Namespace of the odometry topic
 - ``distance: length``: Traveled distance at which the action succeeds.
 
+``assert_tf_moving()``
+""""""""""""""""""""""""""""""""""""""""""""""
+
+Checks the movement threshold between `frame_id` and `parent_frame_id`. If the threshold is greater than the `threshold speed`, the action ends, depending on `fail_on_finish`, either with success or failure.
+
+- ``frame_id``: The frame Id to check for movement.
+- ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
+- ``timeout``: Timeout without movement.
+- ``threshold_speed``: Speed below this threshold is skipped. (default: ``0.01mps``)
+- ``fail_on_finish``: If true, the action should fail if the comparison is true. (default: ``false``)
+- ``wait_for_first_transform``: If true, start measuring only after first message is received. (default: ``true``)
 
 ``osc.gazebo``
 --------------
