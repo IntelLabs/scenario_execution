@@ -95,9 +95,10 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
                 return py_trees.common.Status.FAILURE
             elif average_displacement > self.threshold_speed:
                 self.feedback_message = f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded."
+                self.logger.info(f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded.")
                 return py_trees.common.Status.SUCCESS
             else:
-                self.feedback_message = f"Avergae Threshold: {self.average_displacement}"
+                self.feedback_message = f"Avergae Threshold: {average_displacement}"
                 return py_trees.common.Status.RUNNING
         return result
 
@@ -112,7 +113,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
                 when,
                 timeout=rclpy.duration.Duration(seconds=1.0),
             )
-            self.feedback_message = f"Transform map -> base_link got available."  # pylint: disable= attribute-defined-outside-init
+            self.feedback_message = f"Transform {parent_frame_id} -> {frame_id} got available."  # pylint: disable= attribute-defined-outside-init
             return transform, True
         except TransformException as ex:
             self.feedback_message = f"Could not {frame_id} and {parent_frame_id}"  # pylint: disable= attribute-defined-outside-init
