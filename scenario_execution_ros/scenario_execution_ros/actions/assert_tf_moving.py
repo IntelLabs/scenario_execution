@@ -95,7 +95,8 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
                 return py_trees.common.Status.FAILURE
             elif average_displacement > self.threshold_speed:
                 self.feedback_message = f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded."
-                self.logger.info(f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded.")
+                self.logger.info(
+                    f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded.")
                 return py_trees.common.Status.SUCCESS
             else:
                 self.feedback_message = f"Avergae Threshold: {average_displacement}"
