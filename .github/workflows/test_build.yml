@@ -70,6 +70,11 @@ jobs:
             scenario_coverage//TEST.xml
   test-scenarios:
     runs-on: intellabs-01
+    strategy:
+      matrix:
+        include:
+          - ros_distro: humble
+          - ros_distro: iron
     container:
       image: osrf/ros:humble-desktop
     permissions:
@@ -85,32 +90,31 @@ jobs:
           apt install -y xvfb tk
           apt install -y libgl1
           apt install -y python3-pip
-          xargs -a deb_requirements.txt apt install -y --no-install-recommends
-          rosdep update --rosdistro=humble 
-          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
-          apt install -y ros-humble-gazebo-ros2-control
+          rosdep update --rosdistro=${{ matrix.ros_distro }}
+          rosdep install --rosdistro=${{ matrix.ros_distro }} --from-paths . --ignore-src -r -y
+          apt install -y ros-${{ matrix.ros_distro }}-gazebo-ros2-control
           pip3 install -r requirements.txt
       - name: Build IGN_ROS_CONTROL # build from source for now because base package has errors.
         shell: bash
         run: |
           mkdir -p /ros_ign/src
           cd /ros_ign/src
-          git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
-          rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
+          git clone --branch ${{ matrix.ros_distro }} https://github.com/ros-controls/gz_ros2_control.git
+          rosdep install -r --from-paths . --ignore-src --rosdistro ${{ matrix.ros_distro }} -y
           cd /ros_ign
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
       - name: Build
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
       - name: Test Scenario Files Syntax
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           source install/setup.bash
           find . -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation|scenario_coverage|fail*|install|build" | while read -r file; do 
             echo "$file"; 
@@ -119,21 +123,21 @@ jobs:
       - name: Test Example Scenario
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           source install/setup.bash
           #shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Test Example Library
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           source install/setup.bash
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Test Example Variation
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           source install/setup.bash
           scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
           # shellcheck disable=SC1083
@@ -141,7 +145,7 @@ jobs:
       - name: Test Example Scenario Control
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           source install/setup.bash
           mkdir test_example_control
           python3 scenario_execution_control/test/scenario_execution_control_test_ci.py
@@ -149,7 +153,7 @@ jobs:
         shell: bash
         run: |
           source /ros_ign/install/setup.bash
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -163,7 +167,7 @@ jobs:
         shell: bash
         run: |
           source /ros_ign/install/setup.bash
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -177,7 +181,7 @@ jobs:
         shell: bash
         run: |
           source /ros_ign/install/setup.bash
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ matrix.ros_distro }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
