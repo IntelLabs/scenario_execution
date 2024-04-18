@@ -195,6 +195,8 @@ Checks the movement threshold between `frame_id` and `parent_frame_id`. If the t
 - ``threshold_speed``: Speed below this threshold is skipped. (default: ``0.01mps``)
 - ``fail_on_finish``: If true, the action should fail if the comparison is true. (default: ``false``)
 - ``wait_for_first_transform``: If true, start measuring only after first message is received. (default: ``true``)
+- ``namespace``: if set, it's used as namespace (default: ``' '``)
+- ``sim``: In simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time (default: ``false``)
 
 ``osc.gazebo``
 --------------

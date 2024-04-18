@@ -66,6 +66,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
         self.get_transform(self.frame_id, self.parent_frame_id)
 
     def update(self) -> py_trees.common.Status:
+        now = time.time()
         result = py_trees.common.Status.FAILURE
         transform, Success = self.get_transform(self.parent_frame_id, self.frame_id)
         if self.wait_for_first_transform:
@@ -84,22 +85,21 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
                 if self.displacement:
                     self.start_time = time.time()
                     self.displacement = False
-                elif time.time() - self.start_time > self.timeout:
+                elif now - self.start_time > self.timeout and self.fail_on_finish:
                     self.logger.error("Timeout: No movement detected for {} seconds.".format(self.timeout))
                     self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds."
                     return py_trees.common.Status.FAILURE
+                elif now - self.start_time > self.timeout:
+                    self.logger.error("Timeout: No movement detected for {} seconds.".format(self.timeout))
+                    self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds."
+                    return py_trees.common.Status.SUCCESS
                 self.feedback_message = "Frame is not moving."
                 return py_trees.common.Status.RUNNING
-            elif self.fail_on_finish and (average_displacement > self.threshold_speed):
-                self.feedback_message = f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded."
-                return py_trees.common.Status.FAILURE
             elif average_displacement > self.threshold_speed:
-                self.feedback_message = f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded."
-                self.logger.info(
-                    f"The movement threshold of frame {self.frame_id} with respect to frame {self.parent_frame_id} ({average_displacement}) exceeded.")
-                return py_trees.common.Status.SUCCESS
+                self.feedback_message = f"The  frame {self.frame_id} is moving with respect to frame {self.parent_frame_id} with average threshold of ({average_displacement})."
+                return py_trees.common.Status.RUNNING
             else:
-                self.feedback_message = f"Avergae Threshold: {average_displacement}"
+                self.feedback_message = f"Average Threshold: {average_displacement}"
                 return py_trees.common.Status.RUNNING
         return result
 
@@ -136,6 +136,8 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
                                             transform.transform.translation.y,
                                             transform.transform.translation.z])
             average_displacement = np.linalg.norm(prev_translation - current_translation)
+            if average_displacement != 0:
+                self.displacement = True
         self.prev_transforms.pop(0)
         self.prev_transforms.append(transform)
         return average_displacement

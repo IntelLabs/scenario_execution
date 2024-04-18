@@ -20,6 +20,8 @@ import threading
 from ament_index_python.packages import get_package_share_directory
 
 import rclpy
+import rclpy.executors
+import rclpy.time
 from std_msgs.msg import String
 
 from scenario_execution_ros import ROSScenarioExecution
@@ -27,3 +29,45 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
+from geometry_msgs.msg import TransformStamped
+
+
+class TestScenarioExecutionSuccess(unittest.TestCase):
+
+    def setUp(self) -> None:
+        rclpy.init()
+        self.running = True
+        self.parser = OpenScenario2Parser(Logger('test', False))
+        self.scenario_execution_ros = ROSScenarioExecution()
+        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
+        self.node = rclpy.create_node('test_node')
+        self.executor = rclpy.executors.MultiThreadedExecutor
+        self.executor.add_node(self.node)
+        self.executor_thread = threading.Thread(target=self.executor.spin, deamon=True)
+        self.executor_thread.start()
+        for i in range(5):
+            transform_msg = TransformStamped()
+            transform_msg.header.stamp = rclpy.time.Time().to_msg()
+            transform_msg.header.frame_id = 'map'
+            transform_msg.child_frame_id = 'robot'
+            transform_msg.transform.translation.x = i * 0.1
+            transform_msg.transform.rotation.w = 1.0
+            self.node.tf_buffer.set_translation_static(transform_msg)
+
+    def test_success(self):
+        scenario_content = """
+import osc.ros
+scenario test_assert_tf_moving:
+    do parallel:
+        serial:
+            assert_tf_moving(
+                frmae_id: 'robot',
+                timeout: 10)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
