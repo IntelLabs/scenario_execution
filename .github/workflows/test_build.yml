@@ -203,7 +203,7 @@ jobs:
         uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
         with:
-          name: junit-reports
+          name: test-scenario-results
           path: |
             test_example_scenario/test.xml
             test_example_library/test.xml
