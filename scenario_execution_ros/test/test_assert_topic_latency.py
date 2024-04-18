@@ -41,6 +41,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.received_msgs = []
         self.node = rclpy.create_node('test_node')
         self.publisher = self.node.create_publisher(String, "/bla", 10)
+        self.test_topic = self.node.create_publisher(String, "/blabla", 10)
         self.publish_timer = self.node.create_timer(1, self.publish_messages)
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
@@ -66,7 +67,8 @@ scenario test_assert_topic_latency:
         serial:
             assert_topic_latency(
                 topic_name: '/bla',
-                latency: 0.5s)
+                latency: 0.5s,
+                fail_on_finish: false)
             emit end
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
@@ -85,8 +87,7 @@ scenario test_assert_topic_latency:
         serial:
             assert_topic_latency(
                 topic_name: '/bla',
-                latency: 1.5s,
-                fail_on_finish: true)
+                latency: 0.5s)
             emit end
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
@@ -136,7 +137,7 @@ scenario test_assert_topic_latency:
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
-        self.assertTrue(self.scenario_execution_ros.process_results())
+        self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_rolling_average_count(self):
         scenario_content = """
@@ -156,7 +157,7 @@ scenario test_assert_topic_latency:
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
-        self.assertTrue(self.scenario_execution_ros.process_results())
+        self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_wait_for_first_message(self):
         scenario_content = """
@@ -166,14 +167,15 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
-                latency: 0.5s,
+                topic_name: '/blabla',
+                latency: 1.5s,
                 wait_for_first_message: false)
             emit end
 """
+
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
-        self.assertTrue(self.scenario_execution_ros.process_results())
+        self.assertFalse(self.scenario_execution_ros.process_results())

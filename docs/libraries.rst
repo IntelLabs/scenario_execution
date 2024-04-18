@@ -192,7 +192,7 @@ Check the latency of the specified topic (in system time). If the check with `co
 - ``topic_name: string``:  Topic name to wait for message
 - ``latency: time``: The time to compare.
 - ``comparison_operator: comparison_operator``: operator to compare latency time. (default: ``le``)
-- ``fail_on_finish: bool``: If true action fails, if comparison is true. (default: ``false``)
+- ``fail_on_finish: bool``: If false action success, if comparison is true. (default: ``true``)
 - ``rolling_average_count: int``: check for the latency over the x elements. (default: ``1``)
 - ``wait_for_first_message: bool``: if true, start measuring only after first message is received. (default: ``true``)
 

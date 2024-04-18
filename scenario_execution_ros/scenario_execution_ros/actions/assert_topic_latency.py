@@ -35,14 +35,14 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
         self.rolling_average_count = rolling_average_count
         self.rolling_average_count_queue = deque(maxlen=rolling_average_count)
         self.wait_for_first_message = wait_for_first_message
+        self.first_message_received = False
         self.node = None
         self.subscription = None
-        self.last_receive_time = None
-        self.latency_time = None
+        self.last_receive_time = 0
         self.msg_count = 0
         self.average_latency = 0
+        self.timer = 0
         self.topic_type = None
-        self.msg_timestamps = []
 
     def setup(self, **kwargs):
         try:
@@ -75,6 +75,8 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
             callback=self._callback,
             qos_profile=get_qos_preset_profile(['sensor_data']))
 
+        self.timer = time.time()
+
     def update(self) -> py_trees.common.Status:
         result = py_trees.common.Status.FAILURE
         if self.wait_for_first_message:
@@ -82,30 +84,39 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
             self.feedback_message = f'Waiting for first message to publish on topic {self.topic_name}'  # pylint: disable= attribute-defined-outside-init
             result = py_trees.common.Status.RUNNING
         else:
-            if self.msg_count > 1:
-                if self.comparison_operator(self.average_latency, self.latency) and self.fail_on_finish:
+            if not self.first_message_received:
+                if time.time() - self.timer > self.latency:
+                    self.feedback_message = f"Failed to receive message within the expected latency threshold ({self.latency} seconds)"
                     result = py_trees.common.Status.FAILURE
-                    self.feedback_message = f'Latency within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
-                elif self.comparison_operator(self.average_latency, self.latency):
+                else:
+                    self.feedback_message = f"No message received on the topic '{self.topic_name}'"
+                    result = py_trees.common.Status.RUNNING
+            elif self.msg_count > 1:
+                if self.comparison_operator(self.average_latency, self.latency):
                     result = py_trees.common.Status.RUNNING
                     self.feedback_message = f'Latency within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
+                if not self.comparison_operator(self.average_latency, self.latency) and self.fail_on_finish:
+                    result = py_trees.common.Status.FAILURE
+                    self.feedback_message = f'Latency not within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
                 elif not self.comparison_operator(self.average_latency, self.latency):
                     result = py_trees.common.Status.SUCCESS
                     self.feedback_message = f'Latency not within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
             else:
                 result = py_trees.common.Status.RUNNING
+
         return result
 
     def _callback(self, msg):
+        self.first_message_received = True
+        now = time.time()
         if self.wait_for_first_message:
             self.wait_for_first_message = False
         else:
             self.msg_count += 1
-            now = time.time()
-            if self.last_receive_time is not None:
-                self.latency_time = now - self.last_receive_time
+            if self.last_receive_time:
+                latency_time = now - self.last_receive_time
                 if len(self.rolling_average_count_queue) == self.rolling_average_count:
                     self.rolling_average_count_queue.popleft()
-                self.rolling_average_count_queue.append(self.latency_time)
+                self.rolling_average_count_queue.append(latency_time)
                 self.average_latency = sum(self.rolling_average_count_queue) / len(self.rolling_average_count_queue)
             self.last_receive_time = now
