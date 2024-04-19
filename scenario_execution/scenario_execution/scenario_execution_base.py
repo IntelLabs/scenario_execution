@@ -25,6 +25,7 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from scenario_execution.model.model_file_loader import ModelFileLoader
 from dataclasses import dataclass
+from xml.sax.saxutils import escape # nosec B406 # escape is only used on an internally generated error string
 
 
 @dataclass
@@ -66,6 +67,7 @@ class ScenarioExecution(object):
                  live_tree: bool,
                  scenario_file: str,
                  output_dir: str,
+                 dry_run=False,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_tock_period: float = 0.1) -> None:
 
@@ -82,8 +84,8 @@ class ScenarioExecution(object):
         self.live_tree = live_tree
         self.scenario_file = scenario_file
         self.output_dir = output_dir
-
-        if self.output_dir:
+        self.dry_run = dry_run
+        if self.output_dir and not self.dry_run:
             if not os.path.isdir(self.output_dir):
                 try:
                     os.mkdir(self.output_dir)
@@ -91,6 +93,8 @@ class ScenarioExecution(object):
                     raise ValueError(f"Could not create output directory: {e}") from e
             if not os.access(self.output_dir, os.W_OK):
                 raise ValueError(f"Output directory '{self.output_dir}' not writable.")
+            if os.path.exists(os.path.join(self.output_dir, 'test.xml')):
+                os.remove(os.path.join(self.output_dir, 'test.xml'))
 
         self.logger = self._get_logger(debug)
 
@@ -255,37 +259,42 @@ class ScenarioExecution(object):
 
     def process_results(self):
         result = True
-        if len(self.results) == 0:
+        if len(self.results) == 0 and not self.dry_run:
             result = False
-        else:
-            for res in self.results:
-                if res.result is False:
-                    result = False
+
+        for res in self.results:
+            if res.result is False:
+                result = False
 
         # store output file
-        if self.output_dir and self.results:
-            result_file = os.path.join(self.output_dir, 'test.xml')
-            # self.logger.info(f"Writing results to '{result_file}'...")
-            failures = 0
-            overall_time = timedelta(0)
-            for res in self.results:
-                if res.result is False:
-                    failures += 1
-                overall_time += res.processing_time
-            try:
-                with open(result_file, 'w') as out:
-                    out.write('<?xml version="1.0" encoding="utf-8"?>\n')
-                    out.write(
-                        f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')
-                    for res in self.results:
+        if self.output_dir:
+            if self.dry_run:
+                print("Dry_run is enabled, no output files will be generated!")
+            elif self.results:
+                result_file = os.path.join(self.output_dir, 'test.xml')
+                # self.logger.info(f"Writing results to '{result_file}'...")
+                failures = 0
+                overall_time = timedelta(0)
+                for res in self.results:
+                    if res.result is False:
+                        failures += 1
+                    overall_time += res.processing_time
+                try:
+                    with open(result_file, 'w') as out:
+                        out.write('<?xml version="1.0" encoding="utf-8"?>\n')
                         out.write(
-                            f'  <testcase classname="tests.scenario" name="{res.name}" time="{res.processing_time.total_seconds()}">\n')
-                        if res.result is False:
-                            out.write(f'    <failure message="{res.failure_message}">{res.failure_output}</failure>\n')
-                        out.write(f'  </testcase>\n')
-                    out.write("</testsuite>\n")
-            except Exception as e:  # pylint: disable=broad-except
-                print(f"Could not write results to '{self.output_dir}': {e}")  # use print, as logger might not be available during shutdown
+                            f'<testsuite errors="0" failures="{failures}" name="scenario_execution" tests="1" time="{overall_time.total_seconds()}">\n')
+                        for res in self.results:
+                            out.write(
+                                f'  <testcase classname="tests.scenario" name="{res.name}" time="{res.processing_time.total_seconds()}">\n')
+                            if res.result is False:
+                                failure_text = escape(res.failure_output).replace('"', "'")
+                                out.write(f'    <failure message="{res.failure_message}">{failure_text}</failure>\n')
+                            out.write(f'  </testcase>\n')
+                        out.write("</testsuite>\n")
+                except Exception as e:  # pylint: disable=broad-except
+                    # use print, as logger might not be available during shutdown
+                    print(f"Could not write results to '{self.output_dir}': {e}")
         return result
 
     def pre_tick_handler(self, behaviour_tree):
@@ -360,7 +369,8 @@ def main():
                                                log_model=args.log_model,
                                                live_tree=args.live_tree,
                                                scenario_file=args.scenario,
-                                               output_dir=args.output_dir)
+                                               output_dir=args.output_dir,
+                                               dry_run=args.dry_run)
     except ValueError as e:
         print(f"Error while initializing: {e}")
         sys.exit(1)
