@@ -113,7 +113,7 @@ action assert_tf_moving:
     parent_frame_id: string = "map" # parent frame_id against which the movement is checked
     timeout: time # timeout without movement
     threshold_speed: float = 0.01 # speed below this threshold is skipped
-    fail_on_finish: bool = false # if true, the action should fail if the comparison is true
+    fail_on_finish: bool = true # if false, the action should success if no movement
     wait_for_first_transform: bool = true # start measuring with the first received message
     namespace: string = '' # if set, it's used as namespace
     sim: bool = false # in simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time
