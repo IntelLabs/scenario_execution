@@ -42,6 +42,8 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
         self.max_transforms = 5
         self.prev_transforms = []
         self.start_timer = 0
+        self.tf_buffer = None
+        self.tf_listener = None
 
     def setup(self, **kwargs):
         try:
@@ -68,11 +70,11 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
     def update(self) -> py_trees.common.Status:
         now = time.time()
         result = py_trees.common.Status.FAILURE
-        transform, Success = self.get_transform(self.parent_frame_id, self.frame_id)
+        transform, success = self.get_transform(self.parent_frame_id, self.frame_id)
         if self.wait_for_first_transform:
-            if not Success:
+            if not success:
                 self.logger.info(f"Waiting from the first tranformation on frame {self.frame_id}")
-                self.feedback_message = f"Waiting for first tranformation on frame {self.frame_id}" # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = f"Waiting for first tranformation on frame {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
                 result = py_trees.common.Status.RUNNING
             else:
                 self.wait_for_first_transform = False
@@ -80,27 +82,30 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
         else:
             average_displacement = self.calculated_displacement(transform)
             if average_displacement is None:
-                return py_trees.common.Status.RUNNING
+                result = py_trees.common.Status.RUNNING
             elif average_displacement == 0:
                 if self.displacement:
-                    self.start_time = time.time()
+                    self.start_timer = time.time()
                     self.displacement = False
-                elif now - self.start_time > self.timeout and self.fail_on_finish:
+                    self.feedback_message = "Frame is not moving."  # pylint: disable= attribute-defined-outside-init
+                    result = py_trees.common.Status.RUNNING
+                elif now - self.start_timer > self.timeout and self.fail_on_finish:
                     self.logger.error("Timeout: No movement detected for {} seconds.".format(self.timeout))
-                    self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds." # pylint: disable= attribute-defined-outside-init
-                    return py_trees.common.Status.FAILURE
-                elif now - self.start_time > self.timeout:
+                    self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds."  # pylint: disable= attribute-defined-outside-init
+                    result = py_trees.common.Status.FAILURE
+                elif now - self.start_timer > self.timeout:
                     self.logger.error("Timeout: No movement detected for {} seconds.".format(self.timeout))
-                    self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds." # pylint: disable= attribute-defined-outside-init
-                    return py_trees.common.Status.SUCCESS
-                self.feedback_message = "Frame is not moving."
-                return py_trees.common.Status.RUNNING
+                    self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds."  # pylint: disable= attribute-defined-outside-init
+                    result = py_trees.common.Status.SUCCESS
+                else:
+                    self.feedback_message = "Frame is not moving."  # pylint: disable= attribute-defined-outside-init
+                    result = py_trees.common.Status.RUNNING
             elif average_displacement > self.threshold_speed:
-                self.feedback_message = f"The  frame {self.frame_id} is moving with respect to frame {self.parent_frame_id} with average threshold of ({average_displacement})." # pylint: disable= attribute-defined-outside-init
-                return py_trees.common.Status.RUNNING
+                self.feedback_message = f"The frame {self.frame_id} is moving with respect to frame {self.parent_frame_id} with average threshold of ({average_displacement})."  # pylint: disable= attribute-defined-outside-init
+                result = py_trees.common.Status.RUNNING
             else:
-                self.feedback_message = f"Average Threshold: {average_displacement}" # pylint: disable= attribute-defined-outside-init
-                return py_trees.common.Status.RUNNING
+                self.feedback_message = f"Average Threshold: {average_displacement}"  # pylint: disable= attribute-defined-outside-init
+                result = py_trees.common.Status.RUNNING
         return result
 
     def get_transform(self, frame_id, parent_frame_id):
@@ -126,7 +131,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
         if self.transforms_received < self.max_transforms:
             self.prev_transforms.append(transform)
             self.transforms_received += 1
-            return
+            return None
 
         for prev_transform in self.prev_transforms:
             prev_translation = np.array([prev_transform.transform.translation.x,
