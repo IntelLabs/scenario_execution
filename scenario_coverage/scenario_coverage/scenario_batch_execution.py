@@ -153,6 +153,7 @@ class ScenarioBatchExecution(object):
             test_file = os.path.join(self.output_dir, scenario_name, 'test.xml')
             parsed_successfully = False
             if os.path.exists(test_file):
+                root = None
                 try:
                     test_tree = ETparse.parse(test_file)
                     root = test_tree.getroot()
