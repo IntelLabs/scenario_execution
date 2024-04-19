@@ -27,6 +27,7 @@ from scenario_execution.model.model_file_loader import ModelFileLoader
 from dataclasses import dataclass
 from xml.sax.saxutils import escape
 
+
 @dataclass
 class ScenarioResult:
     name: str

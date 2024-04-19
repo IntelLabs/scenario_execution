@@ -15,7 +15,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import subprocess # nosec B404
+import subprocess  # nosec B404
 
 node_process = subprocess.Popen(['ros2', 'launch', 'scenario_execution_control', 'scenario_execution_control_launch.py',
                                 'scenario_dir:=scenario_execution_control/test/scenarios/', 'output_dir:=test_example_control'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

@@ -151,14 +151,15 @@ class ScenarioBatchExecution(object):
         for scenario in self.scenarios:
             scenario_name = os.path.splitext(os.path.basename(scenario))[0]
             test_file = os.path.join(self.output_dir, scenario_name, 'test.xml')
+            parsed_successfully = False
             if os.path.exists(test_file):
                 try:
                     test_tree = ETparse.parse(test_file)
                     root = test_tree.getroot()
                 except ETparse.ParseError:
                     print(f"### Error XML file {test_file} could not be parsed")
-                    return
                 if root is not None:
+                    parsed_successfully = True
                     total_errors += int(root.attrib.get('errors', 0))
                     total_failures += int(root.attrib.get('failures', 0))
                     total_time += float(root.attrib.get('time', 0))
@@ -168,14 +169,15 @@ class ScenarioBatchExecution(object):
                         tree.append(testcase)
                 else:
                     print(f"### XML file has no 'testsuite' element. {test_file}")
-            else:
+
+            if not parsed_successfully:
                 missing_test_elem = ET.Element('testcase')
                 missing_test_elem.set("classname", "tests.scenario")
                 missing_test_elem.set("name", "no_test_result")
                 missing_test_elem.set("time", "0.0")
                 failure_elem = ET.Element('failure')
                 failure_elem.set("message", f"expected file {test_file} not found")
-                missing_test_elem.append(failure_elem)    
+                missing_test_elem.append(failure_elem)
                 tree.append(missing_test_elem)
         tree.set('errors', str(total_errors))
         tree.set('failures', str(total_failures))
@@ -185,6 +187,7 @@ class ScenarioBatchExecution(object):
         ET.indent(combined_tests, space="\t", level=0)
         combined_tests.write(os.path.join(self.output_dir, "test.xml"), encoding='utf-8', xml_declaration=True)
         return total_errors == 0 and total_failures == 0
+
 
 def main():
     """
