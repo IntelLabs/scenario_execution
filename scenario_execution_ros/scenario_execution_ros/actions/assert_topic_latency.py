@@ -40,7 +40,7 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
         self.subscription = None
         self.last_receive_time = 0
         self.msg_count = 0
-        self.average_latency = 0
+        self.average_latency = 0.
         self.timer = 0
         self.topic_type = None
 
@@ -86,10 +86,10 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
         else:
             if not self.first_message_received:
                 if time.time() - self.timer > self.latency:
-                    self.feedback_message = f"Failed to receive message within the expected latency threshold ({self.latency} seconds)"
+                    self.feedback_message = f"Failed to receive message within the expected latency threshold ({self.latency} seconds)"  # pylint: disable= attribute-defined-outside-init
                     result = py_trees.common.Status.FAILURE
                 else:
-                    self.feedback_message = f"No message received on the topic '{self.topic_name}'"
+                    self.feedback_message = f"No message received on the topic '{self.topic_name}'"  # pylint: disable= attribute-defined-outside-init
                     result = py_trees.common.Status.RUNNING
             elif self.msg_count > 1:
                 if self.comparison_operator(self.average_latency, self.latency):
