@@ -32,7 +32,14 @@ class ScenarioBatchExecution(object):
 
     def __init__(self, args) -> None:
         if not os.path.isdir(args.output_dir):
-            os.mkdir(args.output_dir)
+            try:
+                os.mkdir(args.output_dir)
+            except OSError as e:
+                raise ValueError(f"Could not create output directory: {e}") from e
+        if not os.access(args.output_dir, os.W_OK):
+            raise ValueError(f"Output directory '{args.output_dir}' not writable.")
+        if os.path.exists(os.path.join(args.output_dir, 'test.xml')):
+            os.remove(os.path.join(args.output_dir, 'test.xml'))
         self.output_dir = args.output_dir
 
         dir_content = os.listdir(args.scenario_dir)
@@ -42,6 +49,7 @@ class ScenarioBatchExecution(object):
                 self.scenarios.append(os.path.join(args.scenario_dir, entry))
         if not self.scenarios:
             raise ValueError(f"Directory {args.scenario_dir} does not contain any scenarios.")
+        self.scenarios.sort()
         print(f"Detected {len(self.scenarios)} scenarios.")
         self.launch_command = args.launch_command
         if self.get_launch_command("", "") is None:
@@ -75,8 +83,7 @@ class ScenarioBatchExecution(object):
             except ValueError:
                 pass
 
-        def configure_logger(output_file_path):
-            log_file_path = output_file_path + '.log'
+        def configure_logger(log_file_path):
             logger = logging.getLogger(log_file_path)
             if logger.hasHandlers():
                 logger.handlers.clear()
@@ -87,16 +94,18 @@ class ScenarioBatchExecution(object):
             logger.setLevel(logging.INFO)
             return logger
 
+        ret = True
         for scenario in self.scenarios:
-            output_file_path = os.path.join(self.output_dir, os.path.splitext(os.path.basename(scenario))[0])
+            scenario_name = os.path.splitext(os.path.basename(scenario))[0]
+            output_file_path = os.path.join(self.output_dir, scenario_name)
             if not os.path.isdir(output_file_path):
                 os.mkdir(output_file_path)
             launch_command = self.get_launch_command(scenario, output_file_path)
             log_cmd = " ".join(launch_command)
             print(f"### For scenario {scenario}, executing process: '{log_cmd}'")
             process = subprocess.Popen(launch_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-            file_handler = logging.FileHandler(filename=output_file_path + '.log', mode='w')
-            logger = configure_logger(output_file_path)
+            file_handler = logging.FileHandler(filename=os.path.join(output_file_path, scenario_name + '.log'), mode='w')
+            logger = configure_logger(os.path.join(output_file_path, scenario_name + '.log'))
             log_stdout_thread = Thread(target=log_output, args=(process.stdout, logger, ))
             log_stdout_thread.daemon = True  # die with the program
             log_stdout_thread.start()
@@ -107,6 +116,11 @@ class ScenarioBatchExecution(object):
             print(f"### Waiting for process to finish...")
             try:
                 process.wait()
+                if process.returncode:
+                    print("### Process failed.")
+                    ret = False
+                else:
+                    print("### Process finished successfully.")
             except KeyboardInterrupt:
                 print("### Interrupted by user. Sending SIGINT...")
                 process.send_signal(signal.SIGINT)
@@ -122,55 +136,58 @@ class ScenarioBatchExecution(object):
                 except subprocess.TimeoutExpired:
                     print("### Process not stopped after 10s.")
                 return False
-            ret = process.returncode
             file_handler.flush()
             file_handler.close()
-            print(f"### Storing results in {self.output_dir}...")
-            if ret:
-                print("### Process failed.")
-            else:
-                print("### Process finished successfully.")
-        self.combine_test_xml()
-        return True
+        xml_ret = self.combine_test_xml()
+        return xml_ret and ret
 
     def combine_test_xml(self):
         print(f"### Writing combined tests to '{self.output_dir}/test.xml'.....")
-        new_root = ET.Element('testsuite')
+        tree = ET.Element('testsuite')
         total_time = 0
         total_errors = 0
         total_failures = 0
         total_tests = 0
         for scenario in self.scenarios:
-            variation = os.path.splitext(os.path.basename(scenario))[0]
-            for filename in os.listdir(os.path.join(self.output_dir, variation)):
-                if filename.endswith("test.xml"):
-                    file_path = os.path.join(self.output_dir, variation, filename)
-                    try:
-                        tree = ETparse.parse(file_path)
-                        root = tree.getroot()
-                    except FileNotFoundError:
-                        print(f"### File {file_path} not found")
-                        return
-                    except ETparse.ParseError:
-                        print(f"### Error XML file {file_path} could not be parsed")
-                        return
-                    if root is not None:
-                        total_errors += int(root.attrib.get('errors', 0))
-                        total_failures += int(root.attrib.get('failures', 0))
-                        total_time += float(root.attrib.get('time', 0))
-                        total_tests += int(root.attrib.get('tests', 0))
-                        for testcase in root.findall('testcase'):
-                            testcase.set('name', str(variation))
-                            new_root.append(testcase)
-                    else:
-                        print(f"### XML file has no 'testsuite' element. {file_path}")
-        new_root.set('errors', str(total_errors))
-        new_root.set('failures', str(total_failures))
-        new_root.set('time', str(total_time))
-        new_root.set('tests', str(total_tests))
-        combined_tests = ET.ElementTree(new_root)
+            scenario_name = os.path.splitext(os.path.basename(scenario))[0]
+            test_file = os.path.join(self.output_dir, scenario_name, 'test.xml')
+            parsed_successfully = False
+            if os.path.exists(test_file):
+                root = None
+                try:
+                    test_tree = ETparse.parse(test_file)
+                    root = test_tree.getroot()
+                except ETparse.ParseError:
+                    print(f"### Error XML file {test_file} could not be parsed")
+                if root is not None:
+                    parsed_successfully = True
+                    total_errors += int(root.attrib.get('errors', 0))
+                    total_failures += int(root.attrib.get('failures', 0))
+                    total_time += float(root.attrib.get('time', 0))
+                    total_tests += int(root.attrib.get('tests', 0))
+                    for testcase in root.findall('testcase'):
+                        testcase.set('name', str(scenario_name))
+                        tree.append(testcase)
+                else:
+                    print(f"### XML file has no 'testsuite' element. {test_file}")
+
+            if not parsed_successfully:
+                missing_test_elem = ET.Element('testcase')
+                missing_test_elem.set("classname", "tests.scenario")
+                missing_test_elem.set("name", "no_test_result")
+                missing_test_elem.set("time", "0.0")
+                failure_elem = ET.Element('failure')
+                failure_elem.set("message", f"expected file {test_file} not found")
+                missing_test_elem.append(failure_elem)
+                tree.append(missing_test_elem)
+        tree.set('errors', str(total_errors))
+        tree.set('failures', str(total_failures))
+        tree.set('time', str(total_time))
+        tree.set('tests', str(total_tests))
+        combined_tests = ET.ElementTree(tree)
         ET.indent(combined_tests, space="\t", level=0)
         combined_tests.write(os.path.join(self.output_dir, "test.xml"), encoding='utf-8', xml_declaration=True)
+        return total_errors == 0 and total_failures == 0
 
 
 def main():
