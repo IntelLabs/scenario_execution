@@ -18,29 +18,29 @@ import rclpy
 import py_trees  # pylint: disable=import-error
 from rclpy.node import Node
 import time
-import numpy as np
 import tf2_ros
 from scenario_execution_ros.actions.nav2_common import NamespacedTransformListener
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
+import math
 
 
 class AssertTfMoving(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name, frame_id: str, parent_frame_id: str, timeout: int, threshold_speed: bool, fail_on_finish: bool, wait_for_first_transform: bool, namespace: str, sim: bool):
+    def __init__(self, name, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_orientation: float, fail_on_finish: bool, wait_for_first_transform: bool, namespace: str, sim_time: bool):
         super().__init__(name)
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.timeout = timeout
         self.fail_on_finish = fail_on_finish
-        self.threshold_speed = threshold_speed
+        self.threshold_translation = threshold_translation
+        self.threshold_orientation = threshold_orientation
         self.wait_for_first_transform = wait_for_first_transform
         self.namespace = namespace
-        self.sim = sim
-        self.start_timer = False
+        self.sim_time = sim_time
+        self.start_timeout = False
         self.timer = 0
         self.transforms_received = 0
-        self.max_transforms = 5
-        self.prev_transforms = []
+        self.prev_transform = None
         self.node = None
         self.tf_buffer = None
         self.tf_listener = None
@@ -65,8 +65,6 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
             tf_static_topic=(tf_prefix + "/tf_static"),
         )
 
-        # self.get_transform(self.frame_id, self.parent_frame_id)
-
     def update(self) -> py_trees.common.Status:
         now = time.time()
         transform, success = self.get_transform(self.frame_id, self.parent_frame_id)
@@ -74,23 +72,28 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
         if self.wait_for_first_transform:
             if success:
                 self.feedback_message = f"Transform {self.parent_frame_id} -> {self.frame_id} got available."  # pylint: disable= attribute-defined-outside-init
+                self.prev_transform = transform
+                self.timer = time.time()
                 self.wait_for_first_transform = False
                 result = py_trees.common.Status.RUNNING
             else:
-                self.feedback_message = f"Waiting for first tranformation on frame {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = f"Waiting for first tranformation {self.parent_frame_id} -> {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
                 result = py_trees.common.Status.RUNNING
         else:
-            average_displacement = self.calculated_displacement(transform)
-            if average_displacement is None:
-                result = py_trees.common.Status.RUNNING
-            elif average_displacement >= self.threshold_speed:
-                self.start_timer = False
-                self.feedback_message = f"The frame {self.frame_id} is moving with respect to frame {self.parent_frame_id} with average threshold of ({average_displacement})."  # pylint: disable= attribute-defined-outside-init
+            delta_time = now - self.timer
+            translational_speed, rotational_speed = self.calculated_displacement(transform, self.prev_transform, delta_time)
+            self.logger.error(f"translation: ({translational_speed})")
+            self.logger.error(f"rotational: ({rotational_speed})")
+            self.prev_transform = transform
+            if translational_speed >= self.threshold_translation and rotational_speed >= self.threshold_orientation:
+                self.start_timeout = False
+                self.timer = time.time()
+                self.feedback_message = f"The frame {self.frame_id} is moving with respect to frame {self.parent_frame_id} with linear velocity ({translational_speed}) and rotational ({rotational_speed})."  # pylint: disable= attribute-defined-outside-init
                 result = py_trees.common.Status.RUNNING
             else:
-                if not self.start_timer:
+                if not self.start_timeout:
                     self.timer = time.time()
-                    self.start_timer = True
+                    self.start_timeout = True
                 elif now - self.timer > self.timeout and self.fail_on_finish:
                     self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds."  # pylint: disable= attribute-defined-outside-init
                     result = py_trees.common.Status.FAILURE
@@ -105,7 +108,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
 
     def get_transform(self, frame_id, parent_frame_id):
         when = self.node.get_clock().now()
-        if self.sim:
+        if self.sim_time:
             when = rclpy.time.Time()
         try:
             transform = self.tf_buffer.lookup_transform(
@@ -119,20 +122,16 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
             self.node.get_logger().warn(f'Could not transform {frame_id} and {parent_frame_id} at time {when}: {ex}')
             return None, False
 
-    def calculated_displacement(self, transform):
-        if self.transforms_received < self.max_transforms:
-            self.prev_transforms.append(transform)
-            self.transforms_received += 1
-            return None
+    def calculated_displacement(self, transform, prev_transform, delta_time):
+        dx = prev_transform.transform.translation.x - transform.transform.translation.x
+        dy = prev_transform.transform.translation.y - transform.transform.translation.y
+        dz = prev_transform.transform.translation.z - transform.transform.translation.z
+        translational_speed = math.sqrt(dx**2 + dy**2 + dz**2) / delta_time
 
-        for prev_transform in self.prev_transforms:
-            prev_translation = np.array([prev_transform.transform.translation.x,
-                                         prev_transform.transform.translation.y,
-                                         prev_transform.transform.translation.z])
-            current_translation = np.array([transform.transform.translation.x,
-                                            transform.transform.translation.y,
-                                            transform.transform.translation.z])
-            average_displacement = np.linalg.norm(prev_translation - current_translation)
-        self.prev_transforms.pop(0)
-        self.prev_transforms.append(transform)
-        return average_displacement
+        qx1, qy1, qz1, qw1 = prev_transform.transform.rotation.x, prev_transform.transform.rotation.y, prev_transform.transform.rotation.z, prev_transform.transform.rotation.w
+        qx2, qy2, qz2, qw2 = transform.transform.rotation.x, transform.transform.rotation.y, transform.transform.rotation.z, transform.transform.rotation.w
+
+        dqx, dqy, dqz, dqw = qx2 - qx1, qy2 - qy1, qz2 - qz1, qw2 - qw1
+        rotational_speed = math.sqrt(dqx**2 + dqy**2 + dqz**2 + dqw**2) / delta_time
+
+        return translational_speed, rotational_speed

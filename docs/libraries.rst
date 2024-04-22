@@ -192,7 +192,8 @@ Checks the movement threshold between `frame_id` and `parent_frame_id`. If the t
 - ``frame_id``: The frame Id to check for movement.
 - ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
 - ``timeout``: Timeout without movement.
-- ``threshold_speed``: Speed below this threshold is skipped. (default: ``0.01mps``)
+- ``threshold_translation``: Translation speed, below this threshold is skipped. (default: ``0.01mps``)
+- ``threshold_orientation``: Rotational speed, below this threshold is skipped. (default: ``0.01mps``)
 - ``fail_on_finish``: If false, the action should success if no movement. (default: ``true``)
 - ``wait_for_first_transform``: If true, start measuring only after first message is received. (default: ``true``)
 - ``namespace``: if set, it's used as namespace (default: ``' '``)
