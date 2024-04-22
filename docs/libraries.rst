@@ -195,6 +195,7 @@ Check the latency of the specified topic (in system time). If the check with `co
 - ``fail_on_finish: bool``: If false action success, if comparison is true. (default: ``true``)
 - ``rolling_average_count: int``: check for the latency over the x elements. (default: ``1``)
 - ``wait_for_first_message: bool``: if true, start measuring only after first message is received. (default: ``true``)
+- ``topic_type: string``: Class of message type, only required when 'wait_for_first_message' is set to false (e.g. ``std_msgs.msg.String``)
 
 
 ``osc.gazebo``

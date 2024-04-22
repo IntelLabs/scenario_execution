@@ -25,9 +25,10 @@ from scenario_execution_ros.actions.conversions import get_comparison_operator, 
 
 class AssertTopicLatency(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name, topic_name: str, latency: float, comparison_operator: bool, fail_on_finish: bool, rolling_average_count: int, wait_for_first_message: bool):
+    def __init__(self, name, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, fail_on_finish: bool, rolling_average_count: int, wait_for_first_message: bool):
         super().__init__(name)
         self.topic_name = topic_name
+        self.topic_type = topic_type
         self.latency = latency
         self.comparison_operator_feedback = comparison_operator[0]
         self.comparison_operator = get_comparison_operator(comparison_operator)
@@ -42,7 +43,6 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
         self.msg_count = 0
         self.average_latency = 0.
         self.timer = 0
-        self.topic_type = None
 
     def setup(self, **kwargs):
         try:
@@ -52,22 +52,33 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
-        topic_available = False
-        available_topics = self.node.get_topic_names_and_types()
-        for name, topic_type in available_topics:
-            if name == self.topic_name:
-                self.topic_type = topic_type
-                topic_available = True
-                break
+        if self.wait_for_first_message:
+            available_topics = self.node.get_topic_names_and_types()
+            topic_check = False
+            for name, topic_type in available_topics:
+                if name == self.topic_name:
+                    if self.topic_type:
+                        if self.topic_type == topic_type:
+                            topic_check = True
+                            datatype_in_list = topic_type.split("/")
+                            break
+                        else:
+                            break
+                    else:
+                        topic_check = True
+                        break
 
-        if topic_available:
-            datatype_in_list = self.topic_type[0].split("/")
-            self.topic_type = getattr(
-                importlib.import_module(".".join(datatype_in_list[0:-1])),
-                datatype_in_list[-1]
-            )
+            if not topic_check:
+                raise ValueError("Invalid topic or type speficied.")
         else:
-            raise TypeError(f'Topic not available!')
+            if not self.topic_type:
+                raise ValueError("Topic type must be specified. Please provide a valid topic type")
+            datatype_in_list = self.topic_type.split(".")
+
+        self.topic_type = getattr(
+            importlib.import_module(".".join(datatype_in_list[:-1])),
+            datatype_in_list[-1]
+        )
 
         self.subscription = self.node.create_subscription(
             msg_type=self.topic_type,
