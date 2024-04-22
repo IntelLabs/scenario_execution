@@ -25,6 +25,7 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from scenario_execution.model.model_file_loader import ModelFileLoader
 from dataclasses import dataclass
+from xml.sax.saxutils import escape # nosec B406 # escape is only used on an internally generated error string
 
 
 @dataclass
@@ -92,6 +93,8 @@ class ScenarioExecution(object):
                     raise ValueError(f"Could not create output directory: {e}") from e
             if not os.access(self.output_dir, os.W_OK):
                 raise ValueError(f"Output directory '{self.output_dir}' not writable.")
+            if os.path.exists(os.path.join(self.output_dir, 'test.xml')):
+                os.remove(os.path.join(self.output_dir, 'test.xml'))
 
         self.logger = self._get_logger(debug)
 
@@ -285,7 +288,8 @@ class ScenarioExecution(object):
                             out.write(
                                 f'  <testcase classname="tests.scenario" name="{res.name}" time="{res.processing_time.total_seconds()}">\n')
                             if res.result is False:
-                                out.write(f'    <failure message="{res.failure_message}">{res.failure_output}</failure>\n')
+                                failure_text = escape(res.failure_output).replace('"', "'")
+                                out.write(f'    <failure message="{res.failure_message}">{failure_text}</failure>\n')
                             out.write(f'  </testcase>\n')
                         out.write("</testsuite>\n")
                 except Exception as e:  # pylint: disable=broad-except
