@@ -57,14 +57,15 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
             topic_check = False
             for name, topic_type in available_topics:
                 if name == self.topic_name:
+                    topic_type = topic_type[0].replace('/', '.')
                     if self.topic_type:
                         if self.topic_type == topic_type:
                             topic_check = True
-                            datatype_in_list = topic_type.split("/")
                             break
                         else:
                             break
                     else:
+                        self.topic_type = topic_type
                         topic_check = True
                         break
 
@@ -72,9 +73,9 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
                 raise ValueError("Invalid topic or type speficied.")
         else:
             if not self.topic_type:
-                raise ValueError("Topic type must be specified. Please provide a valid topic type")
-            datatype_in_list = self.topic_type.split(".")
+                raise ValueError("Topic type must be specified. Please provide a valid topic type.")
 
+        datatype_in_list = self.topic_type.split(".")
         self.topic_type = getattr(
             importlib.import_module(".".join(datatype_in_list[:-1])),
             datatype_in_list[-1]
