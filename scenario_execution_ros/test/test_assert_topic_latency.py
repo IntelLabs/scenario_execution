@@ -58,102 +58,45 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         rclpy.try_shutdown()
 
 
-# test verifies that the action succeeds only when 'fail_on_finish' is set to false.
-# By default, 'fail_on_finish' is true and the action fails if the actual latency exceeds the threshold.
+# REQUIRED PARAMETERS
+    # topic_name: Name of the topic to test.
+    # latency: The acceptable latency in seconds.
 
-    def test_success(self):
-        scenario_content = """
-import osc.ros
+# DEFAULT VALUES
+    # comparison_operator: 'le' (less than or equal to)
+    # fail_on_finish: True
+    # rolling_average_count: 1
+    # wait_for_first_message: True
+    # topic_type: (optional)
 
-scenario test_assert_topic_latency:
-    do parallel:
-        serial:
-            assert_topic_latency(
-                topic_name: '/bla',
-                latency: 0.5s,
-                fail_on_finish: false)
-            emit end
-"""
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
-        self.assertTrue(self.scenario_execution_ros.process_results())
+# TESTS PERFORMED
 
+# 1. Minimal Test:
+    # Description: All default values remain; only topic name and latency are specified.
+    # Case 1: Test fails if recorded latency is more than the specified one.
+    # Case 2 & 3: Test fails if the topic type is specified and is incorrect or invalid.
+    # Case 4: Test succeeds if topic_type is provided and right, but end with failure in this case as recorded latency is greater than expected and fail_on_finish is True (default)
+    # Case 5: Test keeps running and ends with timeout if topic provided not exist.
+    # Case 6: Test keeps running and ends with a scenario timeout as latency condition is satisfied (recorded latency is less than the specified one).
 
-# verifies the successful execution of the action when the correct 'topic_type' is set.
+# 2. Comparison Operator 'ge' (greater than or equal to):
+    # Case 7: Test fails if recorded latency is less than the specified one.
 
-    def test_success_with_topic_type(self):
-        scenario_content = """
-import osc.ros
+# 3. fail_on_finish: False
+    # Case 8: Test succeeds if recorded latency is more than the specified one (for default comparison operator 'le').
 
-scenario test_assert_topic_latency:
-    do parallel:
-        serial:
-            assert_topic_latency(
-                topic_name: '/bla',
-                latency: 0.5s,
-                fail_on_finish: false,
-                topic_type: 'std_msgs.msg.String')
-            emit end
-"""
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
-        self.assertTrue(self.scenario_execution_ros.process_results())
+# 4. rolling_average_count: > 1
+    # Case 9: Test fails if recorded latency is more than the specified one (for default comparison operator 'le').
+
+# 5. wait_for_first_message: False
+    # Case 10: Test should fail if topic type is not given.
+    # Case 11: Test fails if topic type is invalid or wrong.
+    # Case 12: Test fails if the first message arrives after the specified latency time.
+    # Case 13: Test continues running if message arrives within the latency time.
+    # Case 14: Test fails if the topic provided doesn't show up in the latency time.
 
 
-# verifies that the action throws a setup error when an incorrect 'topic_type' is set, ensuring the action's failure.
-
-    def test_with_invalid_topic_type(self):
-        scenario_content = """
-import osc.ros
-
-scenario test_assert_topic_latency:
-    do parallel:
-        serial:
-            assert_topic_latency(
-                topic_name: '/bla',
-                latency: 0.5s,
-                fail_on_finish: false,
-                topic_type: 'std_msgs.msg.ring')
-            emit end
-"""
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
-        self.assertFalse(self.scenario_execution_ros.process_results())
-
-    def test_with_wrong_topic_type(self):
-        scenario_content = """
-import osc.ros
-
-scenario test_assert_topic_latency:
-    do parallel:
-        serial:
-            assert_topic_latency(
-                topic_name: '/bla',
-                latency: 0.5s,
-                fail_on_finish: false,
-                topic_type: 'std_msgs.msg.Bool')
-            emit end
-"""
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
-        self.assertFalse(self.scenario_execution_ros.process_results())
-
-
-# verifies the failure of the action. Since 'fail_on_finish' is true by default, the action fails if the latency exceeds the specified threshold.
-
-    def test_failure(self):
+    def test_case_1(self):
         scenario_content = """
 import osc.ros
 
@@ -172,8 +115,89 @@ scenario test_assert_topic_latency:
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-# evaluates the functionality of the action when the latency condition is met, allowing the action to continue running until the scenario ends.
-    def test_running(self):
+    def test_case_2(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 0.5s,
+                topic_type: 'std_msgs.msg.ring')
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_case_3(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 0.5s,
+                topic_type: 'std_msgs.msg.Bool')
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_case_4(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 0.5s,
+                topic_type: 'std_msgs.msg.String')
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test__case_5(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/blabla',
+                latency: 0.5s)
+            emit fail
+        time_out: serial:
+            wait elapsed(8s)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_case_6(self):
         scenario_content = """
 import osc.ros
 
@@ -183,20 +207,19 @@ scenario test_assert_topic_latency:
             assert_topic_latency(
                 topic_name: '/bla',
                 latency: 1.5s)
-            emit end
-        serial:
-            wait elapsed(10s)
             emit fail
+        serial:
+            wait elapsed(8s)
+            emit end
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
-        self.assertFalse(self.scenario_execution_ros.process_results())
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
-# verifies the comparison operator by switching the default value from le to ge. With the latency set higher than the actual latency, the action fails as 'fail_on_finish' is true by default.
-    def test_comparison_operator(self):
+    def test_case_7(self):
         scenario_content = """
 import osc.ros
 
@@ -216,7 +239,27 @@ scenario test_assert_topic_latency:
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-    def test_rolling_average_count(self):
+    def test_case_8(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 0.5s,
+                fail_on_finish: false)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_case_9(self):
         scenario_content = """
 import osc.ros
 
@@ -236,7 +279,7 @@ scenario test_assert_topic_latency:
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-    def test_wait_for_first_message_no_topic_type(self):
+    def test_case_10(self):
         scenario_content = """
 import osc.ros
 
@@ -245,7 +288,7 @@ scenario test_assert_topic_latency:
         serial:
             assert_topic_latency(
                 topic_name: '/bla',
-                latency: 5s,
+                latency: 0.5s,
                 wait_for_first_message: false)
             emit end
 """
@@ -257,7 +300,7 @@ scenario test_assert_topic_latency:
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-    def test_wait_for_first_message_with_topic_type(self):
+    def test_case_11(self):
         scenario_content = """
 import osc.ros
 
@@ -265,8 +308,30 @@ scenario test_assert_topic_latency:
     do parallel:
         serial: 
             assert_topic_latency(
-                topic_name: '/blabla',
+                topic_name: '/bla',
                 latency: 5s,
+                wait_for_first_message: false,
+                topic_type: 'std_msgs.msg.Bool')
+            emit end
+"""
+
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_case_12(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 0.5,
                 wait_for_first_message: false,
                 topic_type: 'std_msgs.msg.String')
             emit end
@@ -279,7 +344,7 @@ scenario test_assert_topic_latency:
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-    def test_wait_for_first_message_invalid_topic_type(self):
+    def test_case_13(self):
         scenario_content = """
 import osc.ros
 
@@ -290,18 +355,21 @@ scenario test_assert_topic_latency:
                 topic_name: '/bla',
                 latency: 5s,
                 wait_for_first_message: false,
-                topic_type: 'std_msgs.msg.ring')
+                topic_type: 'std_msgs.msg.String')
+            emit fail
+        serial:
+            wait elapsed(10s)
             emit end
-"""
 
+"""
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
-        self.assertFalse(self.scenario_execution_ros.process_results())
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
-    def test_wait_for_first_message_success(self):
+    def test_case_14(self):
         scenario_content = """
 import osc.ros
 
@@ -311,11 +379,11 @@ scenario test_assert_topic_latency:
             assert_topic_latency(
                 topic_name: '/blabla',
                 latency: 5s,
-                wait_for_first_message: True,
+                wait_for_first_message: false,
                 topic_type: 'std_msgs.msg.String')
             emit end
-"""
 
+"""
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)

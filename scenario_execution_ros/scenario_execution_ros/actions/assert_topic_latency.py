@@ -43,6 +43,7 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
         self.msg_count = 0
         self.average_latency = 0.
         self.timer = 0
+        self.is_topic = False
 
     def setup(self, **kwargs):
         try:
@@ -52,29 +53,77 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
+        success = self.check_topic()
+        if not success and self.wait_for_first_message:
+            raise ValueError("Invalid topic or type speficied.")
+        elif not success and not self.wait_for_first_message:
+            raise ValueError("Topic type must be specified. Please provide a valid topic type.")
+
+        self.timer = time.time()
+
+    def update(self) -> py_trees.common.Status:
+        result = py_trees.common.Status.FAILURE
+        if not self.is_topic:
+            self.check_topic()
+            self.logger.info(f"Waiting for the topic '{self.topic_name}' to become available")
+            self.feedback_message = f"Waiting for the topic '{self.topic_name}' to become available"  # pylint: disable= attribute-defined-outside-init
+            result = py_trees.common.Status.RUNNING
+        else:
+            if self.wait_for_first_message:
+                self.logger.info(f"Waiting for first message to publish on topic {self.topic_name}")
+                self.feedback_message = f'Waiting for first message to publish on topic {self.topic_name}'  # pylint: disable= attribute-defined-outside-init
+                result = py_trees.common.Status.RUNNING
+            else:
+                if not self.first_message_received:
+                    if time.time() - self.timer > self.latency:
+                        self.feedback_message = f"Failed to receive message within the expected latency threshold ({self.latency} seconds)"  # pylint: disable= attribute-defined-outside-init
+                        result = py_trees.common.Status.FAILURE
+                    else:
+                        self.feedback_message = f"No message received on the topic '{self.topic_name}'"  # pylint: disable= attribute-defined-outside-init
+                        result = py_trees.common.Status.RUNNING
+                elif self.msg_count > 1:
+                    if self.comparison_operator(self.average_latency, self.latency):
+                        result = py_trees.common.Status.RUNNING
+                        self.feedback_message = f'Latency within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
+                    if not self.comparison_operator(self.average_latency, self.latency) and self.fail_on_finish:
+                        result = py_trees.common.Status.FAILURE
+                        self.feedback_message = f'Latency not within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
+                    elif not self.comparison_operator(self.average_latency, self.latency):
+                        result = py_trees.common.Status.SUCCESS
+                        self.feedback_message = f'Latency not within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
+                else:
+                    result = py_trees.common.Status.RUNNING
+        return result
+
+    def check_topic(self):
         if self.wait_for_first_message:
             available_topics = self.node.get_topic_names_and_types()
-            topic_check = False
             for name, topic_type in available_topics:
                 if name == self.topic_name:
                     topic_type = topic_type[0].replace('/', '.')
                     if self.topic_type:
                         if self.topic_type == topic_type:
-                            topic_check = True
-                            break
+                            self.call_subscriber()
+                            self.is_topic = True
+                            return True
                         else:
-                            break
+                            return False  # Invalid topic or type speficied.
                     else:
                         self.topic_type = topic_type
-                        topic_check = True
-                        break
-
-            if not topic_check:
-                raise ValueError("Invalid topic or type speficied.")
+                        self.call_subscriber()
+                        self.is_topic = True  # 'topic_type' is not specified, the process will continue with the found one
+                        return True
+            # Topic not available wait....
+            return True
         else:
             if not self.topic_type:
-                raise ValueError("Topic type must be specified. Please provide a valid topic type.")
+                return False  # Topic type must be specified. (wait_for_first_message == False)
+            else:
+                self.call_subscriber()
+                self.is_topic = True  # wait_for_first_message' is set to false, the process will proceed with the specified topic and type
+                return True
 
+    def call_subscriber(self):
         datatype_in_list = self.topic_type.split(".")
         self.topic_type = getattr(
             importlib.import_module(".".join(datatype_in_list[:-1])),
@@ -86,37 +135,6 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
             topic=self.topic_name,
             callback=self._callback,
             qos_profile=get_qos_preset_profile(['sensor_data']))
-
-        self.timer = time.time()
-
-    def update(self) -> py_trees.common.Status:
-        result = py_trees.common.Status.FAILURE
-        if self.wait_for_first_message:
-            self.logger.info(f"Waiting for first message to publish on topic {self.topic_name}")
-            self.feedback_message = f'Waiting for first message to publish on topic {self.topic_name}'  # pylint: disable= attribute-defined-outside-init
-            result = py_trees.common.Status.RUNNING
-        else:
-            if not self.first_message_received:
-                if time.time() - self.timer > self.latency:
-                    self.feedback_message = f"Failed to receive message within the expected latency threshold ({self.latency} seconds)"  # pylint: disable= attribute-defined-outside-init
-                    result = py_trees.common.Status.FAILURE
-                else:
-                    self.feedback_message = f"No message received on the topic '{self.topic_name}'"  # pylint: disable= attribute-defined-outside-init
-                    result = py_trees.common.Status.RUNNING
-            elif self.msg_count > 1:
-                if self.comparison_operator(self.average_latency, self.latency):
-                    result = py_trees.common.Status.RUNNING
-                    self.feedback_message = f'Latency within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
-                if not self.comparison_operator(self.average_latency, self.latency) and self.fail_on_finish:
-                    result = py_trees.common.Status.FAILURE
-                    self.feedback_message = f'Latency not within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
-                elif not self.comparison_operator(self.average_latency, self.latency):
-                    result = py_trees.common.Status.SUCCESS
-                    self.feedback_message = f'Latency not within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
-            else:
-                result = py_trees.common.Status.RUNNING
-
-        return result
 
     def _callback(self, msg):
         self.first_message_received = True
