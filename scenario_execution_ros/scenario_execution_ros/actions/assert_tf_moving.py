@@ -67,10 +67,10 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
 
     def update(self) -> py_trees.common.Status:
         now = time.time()
-        transform, success = self.get_transform(self.frame_id, self.parent_frame_id)
+        transform = self.get_transform(self.frame_id, self.parent_frame_id)
         result = py_trees.common.Status.RUNNING
         if self.wait_for_first_transform:
-            if success:
+            if transform is not None:
                 self.feedback_message = f"Transform {self.parent_frame_id} -> {self.frame_id} got available."  # pylint: disable= attribute-defined-outside-init
                 self.prev_transform = transform
                 self.timer = time.time()
@@ -117,10 +117,10 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
                 when,
                 timeout=rclpy.duration.Duration(seconds=1.0),
             )
-            return transform, True
+            return transform
         except TransformException as ex:
             self.node.get_logger().warn(f'Could not transform {frame_id} and {parent_frame_id} at time {when}: {ex}')
-            return None, False
+            return None
 
     def calculated_displacement(self, transform, prev_transform, delta_time):
         dx = prev_transform.transform.translation.x - transform.transform.translation.x
