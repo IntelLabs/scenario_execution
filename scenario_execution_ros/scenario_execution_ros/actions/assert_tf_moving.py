@@ -82,10 +82,8 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
         else:
             delta_time = now - self.timer
             translational_speed, rotational_speed = self.calculated_displacement(transform, self.prev_transform, delta_time)
-            self.logger.error(f"translation: ({translational_speed})")
-            self.logger.error(f"rotational: ({rotational_speed})")
             self.prev_transform = transform
-            if translational_speed >= self.threshold_translation and rotational_speed >= self.threshold_orientation:
+            if translational_speed >= self.threshold_translation or rotational_speed >= self.threshold_orientation:
                 self.start_timeout = False
                 self.timer = time.time()
                 self.feedback_message = f"The frame {self.frame_id} is moving with respect to frame {self.parent_frame_id} with linear velocity ({translational_speed}) and rotational ({rotational_speed})."  # pylint: disable= attribute-defined-outside-init
