@@ -26,7 +26,7 @@ import math
 
 class AssertTfMoving(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_orientation: float, fail_on_finish: bool, wait_for_first_transform: bool, namespace: str, sim_time: bool):
+    def __init__(self, name, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_orientation: float, fail_on_finish: bool, wait_for_first_transform: bool, namespace: str, use_sim_time: bool):
         super().__init__(name)
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
@@ -36,7 +36,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
         self.threshold_orientation = threshold_orientation
         self.wait_for_first_transform = wait_for_first_transform
         self.namespace = namespace
-        self.sim_time = sim_time
+        self.use_sim_time = use_sim_time
         self.start_timeout = False
         self.timer = 0
         self.transforms_received = 0
@@ -108,7 +108,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
 
     def get_transform(self, frame_id, parent_frame_id):
         when = self.node.get_clock().now()
-        if self.sim_time:
+        if self.use_sim_time:
             when = rclpy.time.Time()
         try:
             transform = self.tf_buffer.lookup_transform(

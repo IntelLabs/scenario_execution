@@ -126,4 +126,4 @@ action assert_tf_moving:
     fail_on_finish: bool = true # if false, the action should success if no movement
     wait_for_first_transform: bool = true # start measuring with the first received message
     namespace: string = '' # if set, it's used as namespace
-    sim_time: bool = false # in simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time
+    use_sim_time: bool = false # in simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time

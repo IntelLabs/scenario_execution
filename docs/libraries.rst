@@ -211,7 +211,7 @@ Checks the movement threshold between `frame_id` and `parent_frame_id`. If the t
 - ``fail_on_finish``: If false, the action should success if no movement. (default: ``true``)
 - ``wait_for_first_transform``: If true, start measuring only after first message is received. (default: ``true``)
 - ``namespace``: if set, it's used as namespace (default: ``' '``)
-- ``sim_time``: In simulation, we need to look up the transform at a d
+- ``use_sim_time``: In simulation, we need to look up the transform at a d
 ``osc.gazebo``
 --------------
 
