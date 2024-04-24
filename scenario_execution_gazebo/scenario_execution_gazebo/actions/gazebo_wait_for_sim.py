@@ -16,7 +16,7 @@
 
 import py_trees
 from enum import Enum
-
+import time
 from scenario_execution.actions.run_process import RunProcess
 
 
@@ -35,13 +35,15 @@ class GazeboWaitForSim(RunProcess):
     Class to wait for the simulation to become active
     """
 
-    def __init__(self, name, world_name: str, **kwargs):
+    def __init__(self, name, world_name: str, timeout: int, **kwargs):
         self.node = None
         self.world_name = world_name
         command = ["ign", "topic", "-t", "/world/" +
                    world_name + "/clock", "-e", "--json-output", "-n", "1"]
         super().__init__(name, command)
         self.current_state = WaitForSimulationActionState.IDLE
+        self.start_time = time.time()
+        self.timeout_sec = timeout
 
     def on_executed(self):
         """
@@ -49,6 +51,13 @@ class GazeboWaitForSim(RunProcess):
         """
         self.feedback_message = f"Waiting for simulation of world '{self.world_name}'"  # pylint: disable= attribute-defined-outside-init
         self.current_state = WaitForSimulationActionState.WAITING_FOR_SIM
+
+    def check_running_process(self):
+        if self.current_state == WaitForSimulationActionState.WAITING_FOR_SIM:
+            if time.time() - self.start_time > self.timeout_sec:
+                self.feedback_message = f"Timeout waiting for simulation of world '{self.world_name}'"  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.FAILURE
+        return py_trees.common.Status.RUNNING
 
     def get_logger_stdout(self):
         """
@@ -63,6 +72,7 @@ class GazeboWaitForSim(RunProcess):
         return:
             py_trees.common.Status
         """
+
         if self.current_state == WaitForSimulationActionState.WAITING_FOR_SIM:
             self.feedback_message = f"Simulation is running"  # pylint: disable= attribute-defined-outside-init
             self.current_state = WaitForSimulationActionState.DONE

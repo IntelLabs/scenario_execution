@@ -25,7 +25,7 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from scenario_execution.model.model_file_loader import ModelFileLoader
 from dataclasses import dataclass
-from xml.sax.saxutils import escape # nosec B406 # escape is only used on an internally generated error string
+from xml.sax.saxutils import escape  # nosec B406 # escape is only used on an internally generated error string
 
 
 @dataclass
