@@ -201,7 +201,7 @@ Check the latency of the specified topic (in system time). If the check with `co
 ``assert_tf_moving()``
 """"""""""""""""""""""""""""""""""""""""""""""
 
-Checks the movement threshold between `frame_id` and `parent_frame_id`. If the threshold is greater than the `threshold speed`, the action ends, depending on `fail_on_finish`, either with success or failure.
+Checks the movement threshold between `frame_id` and `parent_frame_id`. If the threshold rate is greater than either the `threshold_translation` or `threshold_orientation`, or if it exceeds `both`, the frame is considered as `moving`, and the action continues to run. Conversely, if the threshold rate is less either the `threshold_translation` or `threshold_orientation`, or if it is less for both, the action ends; depending on `fail_on_finish`, it either ends with success or failure.
 
 - ``frame_id``: The frame Id to check for movement.
 - ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
@@ -211,7 +211,9 @@ Checks the movement threshold between `frame_id` and `parent_frame_id`. If the t
 - ``fail_on_finish``: If false, the action should success if no movement. (default: ``true``)
 - ``wait_for_first_transform``: If true, start measuring only after first message is received. (default: ``true``)
 - ``namespace``: if set, it's used as namespace (default: ``' '``)
-- ``use_sim_time``: In simulation, we need to look up the transform at a d
+- ``use_sim_time``: In simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time (default: ``false``)
+
+
 ``osc.gazebo``
 --------------
 

@@ -79,7 +79,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
             else:
                 self.feedback_message = f"Waiting for first tranformation {self.parent_frame_id} -> {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
                 result = py_trees.common.Status.RUNNING
-        else:
+        elif transform is not None and self.prev_transform is not None:
             delta_time = now - self.timer
             translational_speed, rotational_speed = self.calculated_displacement(transform, self.prev_transform, delta_time)
             self.prev_transform = transform
@@ -102,6 +102,12 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
                 else:
                     self.feedback_message = "Frame is not moving."  # pylint: disable= attribute-defined-outside-init
                     result = py_trees.common.Status.RUNNING
+        elif transform is not None and self.prev_transform is None:
+            self.prev_transform = transform
+            result = py_trees.common.Status.RUNNING
+        else:
+            self.feedback_message = f"No transformation found between frame '{self.frame_id}' and its parent frame '{self.parent_frame_id}'."  # pylint: disable= attribute-defined-outside-init
+            result = py_trees.common.Status.FAILURE
         return result
 
     def get_transform(self, frame_id, parent_frame_id):
