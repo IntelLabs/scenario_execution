@@ -122,7 +122,7 @@ action assert_tf_moving:
     parent_frame_id: string = "map" # parent frame_id against which the movement is checked
     timeout: time # timeout without movement
     threshold_translation: speed = 0.01mps # translation speed, below this threshold is skipped
-    threshold_orientation: speed = 0.01mps # rotational speed, below this threshold is skipped
+    threshold_orientation: speed = 0.01radps # rotational speed, below this threshold is skipped
     fail_on_finish: bool = true # if false, the action should success if no movement
     wait_for_first_transform: bool = true # start measuring with the first received message
     namespace: string = '' # if set, it's used as namespace
