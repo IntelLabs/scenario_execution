@@ -206,8 +206,8 @@ Checks that a tf `frame_id` keeps moving in respect to a `parent_frame_id`. If t
 - ``frame_id``: The frame Id to check for movement.
 - ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
 - ``timeout``: Timeout without movement.
-- ``threshold_translation``: Translation speed, below this threshold is skipped. (default: ``0.01mps``)
-- ``threshold_rotation``: Rotational speed, below this threshold is skipped. (default: ``0.01mps``)
+- ``threshold_translation``: Translation speed below this threshold is skipped. (default: ``0.01mps``)
+- ``threshold_rotation``: Rotational speed below this threshold is skipped. (default: ``0.01radps``)
 - ``fail_on_finish``: If false, the action should success if no movement. (default: ``true``)
 - ``wait_for_first_transform``: If true, start measuring only after first message is received. (default: ``true``)
 - ``tf_topic_namespace``: namespace of `tf` and `tf_static` topic. (default: ``''``)
