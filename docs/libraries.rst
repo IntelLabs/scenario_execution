@@ -87,8 +87,8 @@ In the background, this action uses `check_data() <https://py-trees-ros.readthed
 - ``variable_name: string``: Name of the variable to check
 - ``expected_value: string``: Expected value of the variable
 - ``comparison_operator: comparison_operator``: The comparison operator to apply (default: ``comparison_operator!eq``)
-- ``fail_if_no_data: bool``: py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if there is no data yet (default: ``false``)
-- ``fail_if_bad_comparison: bool``: py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed (default: ``true``)
+- ``fail_if_no_data: bool``: return failure if there is no data yet (default: ``false``)
+- ``fail_if_bad_comparison: bool``: return failure if comparison failed (default: ``true``)
 - ``clearing_policy: clearing_policy``: When to clear the data (default: ``clearing_policy!on_initialise``)
 
 ``service_call()``
@@ -184,6 +184,19 @@ Wait until a defined distance was traveled, based on odometry.
 - ``namespace: string``:  Namespace of the odometry topic
 - ``distance: length``: Traveled distance at which the action succeeds.
 
+``assert_topic_latency()``
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Check the latency of the specified topic (in system time). If the check with `comparison_operator` gets true, the action ends, depending on `fail_on_finish`, either with success or failure.
+
+- ``topic_name: string``:  Topic name to wait for message
+- ``latency: time``: The time to compare.
+- ``comparison_operator: comparison_operator``: operator to compare latency time. (default: ``le``)
+- ``fail_on_finish: bool``: If false action success, if comparison is true. (default: ``true``)
+- ``rolling_average_count: int``: check for the latency over the x elements. (default: ``1``)
+- ``wait_for_first_message: bool``: if true, start measuring only after first message is received. (default: ``true``)
+- ``topic_type: string``: Class of message type, only required when 'wait_for_first_message' is set to false (e.g. ``std_msgs.msg.String``)
+
 
 ``osc.gazebo``
 --------------
@@ -197,6 +210,7 @@ Actions
 Wait for simulation to become active (checks for simulation clock).
 
 - ``world_name: string``: Gazebo world name (default: ``default``)
+- ``timeout: time``:  time to wait for the simulation. return failure afterwards. (default: ``60s``)
 
 ``actor_exists()``
 """"""""""""""""""

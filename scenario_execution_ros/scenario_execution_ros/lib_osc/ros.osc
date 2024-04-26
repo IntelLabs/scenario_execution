@@ -107,3 +107,12 @@ action differential_drive_robot.tf_close_to:
 action differential_drive_robot.odometry_distance_traveled:
     namespace: string = ''
     distance: length
+
+action assert_topic_latency:
+    topic_name: string # topic name to wait for message
+    latency: time #the time to compare against
+    comparison_operator: comparison_operator = comparison_operator!le # the comparison is done using the python operator module
+    fail_on_finish: bool = true # if false, the action should success if comparison is true
+    rolling_average_count: int = 1 # the check is done aganist the rolling average over x elements
+    wait_for_first_message: bool = true # start measuring with the first recieved message
+    topic_type: string # class of message type, only required when wait_for_first_message is set to false (e.g. std_msgs.msg.String)
