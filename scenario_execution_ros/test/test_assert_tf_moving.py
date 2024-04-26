@@ -115,10 +115,10 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
 
 # DEFAULT VALUES
     # threshold_translation: 0.01 mps (meters per second)
-    # threshold_orientation: 0.01 radps (radians per second)
+    # threshold_rotation: 0.01 radps (radians per second)
     # fail_on_finish: True
     # wait_for_first_transform: True
-    # namespace: (optional)
+    # tf_topic_namespace: (optional)
     # use_sim_time: (optional)
 
 # TESTS PERFORMED
@@ -131,7 +131,7 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
 
 # 2. Threshold Translation and Threshold Orientation:
     # Case 4: Test with threshold_translation set to 1 mps. The test fails with timeout as the average threshold of the robot_moving frame is less than 1 mps (meters per second).
-    # Case 5: Test with threshold_orientation set to 5 radps. The test fails with timeout as the average threshold of the robot_rotating frame is less than 5 radps (radians per second).
+    # Case 5: Test with threshold_rotation set to 5 radps. The test fails with timeout as the average threshold of the robot_rotating frame is less than 5 radps (radians per second).
 
 # 3. fail_on_finish: False
     # Case 6: Test succeeds if no movement is observed between frames.
@@ -225,7 +225,7 @@ scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot_rotating',
-            threshold_orientation: 5.0,
+            threshold_rotation: 5.0,
             timeout: 10)
         emit end
 """

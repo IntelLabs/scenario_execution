@@ -26,16 +26,16 @@ import math
 
 class AssertTfMoving(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_orientation: float, fail_on_finish: bool, wait_for_first_transform: bool, namespace: str, use_sim_time: bool):
+    def __init__(self, name, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, fail_on_finish: bool, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
         super().__init__(name)
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.timeout = timeout
         self.fail_on_finish = fail_on_finish
         self.threshold_translation = threshold_translation
-        self.threshold_orientation = threshold_orientation
+        self.threshold_rotation = threshold_rotation
         self.wait_for_first_transform = wait_for_first_transform
-        self.namespace = namespace
+        self.tf_topic_namespace = tf_topic_namespace
         self.use_sim_time = use_sim_time
         self.start_timeout = False
         self.timer = 0
@@ -55,7 +55,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
 
         self.feedback_message = f"Waiting for transform {self.parent_frame_id} --> {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
         self.tf_buffer = tf2_ros.Buffer()
-        tf_prefix = self.namespace
+        tf_prefix = self.tf_topic_namespace
         if not tf_prefix.startswith('/') and tf_prefix != '':
             tf_prefix = "/" + tf_prefix
         self.tf_listener = NamespacedTransformListener(
@@ -83,7 +83,7 @@ class AssertTfMoving(py_trees.behaviour.Behaviour):
             delta_time = now - self.timer
             translational_speed, rotational_speed = self.calculated_displacement(transform, self.prev_transform, delta_time)
             self.prev_transform = transform
-            if translational_speed >= self.threshold_translation or rotational_speed >= self.threshold_orientation:
+            if translational_speed >= self.threshold_translation or rotational_speed >= self.threshold_rotation:
                 self.start_timeout = False
                 self.timer = time.time()
                 self.feedback_message = f"The frame {self.frame_id} is moving with respect to frame {self.parent_frame_id} with linear velocity ({translational_speed}) and rotational ({rotational_speed})."  # pylint: disable= attribute-defined-outside-init
