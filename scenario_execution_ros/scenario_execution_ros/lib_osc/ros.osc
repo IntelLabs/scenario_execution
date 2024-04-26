@@ -4,18 +4,11 @@ import osc.robotics
 #    on_initialise     Clear when entering the py_trees.behaviour.Behaviour.initialise method.
 #    on_success        Clear when returning py_trees.common.Status.SUCCESS
 #    never             Never clear the data
+
 enum clearing_policy: [
     on_initialise, 
     on_success, 
     never
-]
-
-enum qos_preset_profiles: [
-    parameters,
-    parameter_events,
-    sensor_data,
-    services_default,
-    system_default
 ]
 
 enum comparison_operator: [
@@ -27,18 +20,36 @@ enum comparison_operator: [
     gt
 ]
 
+enum qos_preset_profiles: [
+    parameters,
+    parameter_events,
+    sensor_data,
+    services_default,
+    system_default
+]
+
 actor differential_drive_robot inherits robot:
     namespace: string = ''
 
-action wait_for_data:
-    topic_name: string                                # name of the topic to connect to
-    topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
-    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
-    clearing_policy: clearing_policy = clearing_policy!on_initialise     # when to clear the data
+action assert_tf_moving:
+    frame_id: string # frame_id to check for movement
+    parent_frame_id: string = "map" # parent frame_id against which the movement is checked
+    timeout: time # timeout without movement
+    threshold_translation: speed = 0.01mps # translation speed, below this threshold is skipped
+    threshold_rotation: angular_rate = 0.01radps # rotational speed, below this threshold is skipped
+    fail_on_finish: bool = true # if false, the action should success if no movement
+    wait_for_first_transform: bool = true # start measuring with the first received message
+    tf_topic_namespace: string = '' # if set, it's used as namespace
+    use_sim_time: bool = false # in simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time
 
-action wait_for_topics:
-    # wait for topics to get available
-    topics: list of topics                           
+action assert_topic_latency:
+    topic_name: string # topic name to wait for message
+    latency: time #the time to compare against
+    comparison_operator: comparison_operator = comparison_operator!le # the comparison is done using the python operator module
+    fail_on_finish: bool = true # if false, the action should success if comparison is true
+    rolling_average_count: int = 1 # the check is done aganist the rolling average over x elements
+    wait_for_first_message: bool = true # start measuring with the first recieved message
+    topic_type: string # class of message type, only required when wait_for_first_message is set to false (e.g. std_msgs.msg.String)
 
 action check_data:
     topic_name: string                                # name of the topic to connect to
@@ -51,34 +62,6 @@ action check_data:
     fail_if_bad_comparison: bool = false               # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
     clearing_policy: clearing_policy = clearing_policy!on_initialise     # when to clear the data
 
-action service_call:
-    service_name: string                              # name of the service to connect to
-    service_type: string                              # class of the message type (e.g. std_srvs.msg.Empty)
-    data: string                                      # call content
-
-action topic_publish:
-    topic_name: string                                # name of the topic to connect to
-    topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
-    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
-    value: string                                     # value of the published topic
-
-action set_node_parameter:
-    node_name: string                                 # name of the node
-    parameter_name: string                            # name of the parameter
-    parameter_value: string                           # new value of the parameter
-
-action record_bag:
-    # Record a dataset, stored in output_dir defined by command-line parameter (default: '.')
-    topics: list of topics       # Topics to records, if empty all topics are recorded
-    timestamp_suffix: bool = true# Add a timestamp suffix to output directory name
-    hidden_topics: bool = false  # whether to record hidden topics
-    storage: string = ''         # storage type to use (empty string: use default)
-
-action log_check:
-    # Check the ROS log for specific output
-    module_name: string = '' # If specified, a matching message must also match the module name
-    values: list of string # string to check for. If found, action succeeds
-
 action differential_drive_robot.init_nav2:
     initial_pose: pose_3d
     base_frame_id: string = 'base_link'
@@ -86,16 +69,20 @@ action differential_drive_robot.init_nav2:
     namespace_override: string = '' # if set, it's used as namespace (instead of the associated actor's name)
     wait_for_initial_pose: bool = false  # if true the initial pose needs to be set externally (e.g. manually through rviz)
 
+action differential_drive_robot.nav_through_poses:
+    goal_poses: list of pose_3d
+    namespace_override: string = '' # if set, it's used as namespace (instead of the associated actor's name)
+    monitor_progress: bool = true # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
+
 action differential_drive_robot.nav_to_pose:
     goal_pose: pose_3d
     namespace_override: string = '' # if set, it's used as namespace (instead of the associated actor's name)
     action_topic: string = 'navigate_to_pose' # Name of action
     monitor_progress: bool = true # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
 
-action differential_drive_robot.nav_through_poses:
-    goal_poses: list of pose_3d
-    namespace_override: string = '' # if set, it's used as namespace (instead of the associated actor's name)
-    monitor_progress: bool = true # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
+action differential_drive_robot.odometry_distance_traveled:
+    namespace: string = ''
+    distance: length
 
 action differential_drive_robot.tf_close_to:
     namespace_override: string = '' # if set, it's used as namespace (instead of the associated actor's name)
@@ -104,26 +91,40 @@ action differential_drive_robot.tf_close_to:
     sim: bool = false # in simulation, we need to look up the transform map --> base_link at a different time as the scenario execution node is not allowed to use the sim time
     robot_frame_id: string = 'base_link' # defines the TF frame id of the robot 
 
-action differential_drive_robot.odometry_distance_traveled:
-    namespace: string = ''
-    distance: length
+action log_check:
+    # Check the ROS log for specific output
+    module_name: string = '' # If specified, a matching message must also match the module name
+    values: list of string # string to check for. If found, action succeeds
 
-action assert_topic_latency:
-    topic_name: string # topic name to wait for message
-    latency: time #the time to compare against
-    comparison_operator: comparison_operator = comparison_operator!le # the comparison is done using the python operator module
-    fail_on_finish: bool = true # if false, the action should success if comparison is true
-    rolling_average_count: int = 1 # the check is done aganist the rolling average over x elements
-    wait_for_first_message: bool = true # start measuring with the first recieved message
-    topic_type: string # class of message type, only required when wait_for_first_message is set to false (e.g. std_msgs.msg.String)
+action record_bag:
+    # Record a dataset, stored in output_dir defined by command-line parameter (default: '.')
+    topics: list of topics       # Topics to records, if empty all topics are recorded
+    timestamp_suffix: bool = true# Add a timestamp suffix to output directory name
+    hidden_topics: bool = false  # whether to record hidden topics
+    storage: string = ''         # storage type to use (empty string: use default)
 
-action assert_tf_moving:
-    frame_id: string # frame_id to check for movement
-    parent_frame_id: string = "map" # parent frame_id against which the movement is checked
-    timeout: time # timeout without movement
-    threshold_translation: speed = 0.01mps # translation speed, below this threshold is skipped
-    threshold_rotation: angular_rate = 0.01radps # rotational speed, below this threshold is skipped
-    fail_on_finish: bool = true # if false, the action should success if no movement
-    wait_for_first_transform: bool = true # start measuring with the first received message
-    tf_topic_namespace: string = '' # if set, it's used as namespace
-    use_sim_time: bool = false # in simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time
+action service_call:
+    service_name: string                              # name of the service to connect to
+    service_type: string                              # class of the message type (e.g. std_srvs.msg.Empty)
+    data: string                                      # call content
+
+action set_node_parameter:
+    node_name: string                                 # name of the node
+    parameter_name: string                            # name of the parameter
+    parameter_value: string                           # new value of the parameter
+
+action topic_publish:
+    topic_name: string                                # name of the topic to connect to
+    topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
+    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
+    value: string                                     # value of the published topic
+
+action wait_for_data:
+    topic_name: string                                # name of the topic to connect to
+    topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
+    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
+    clearing_policy: clearing_policy = clearing_policy!on_initialise     # when to clear the data
+
+action wait_for_topics:
+    # wait for topics to get available
+    topics: list of topics
