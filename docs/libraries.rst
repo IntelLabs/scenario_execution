@@ -197,6 +197,14 @@ Check the latency of the specified topic (in system time). If the check with `co
 - ``wait_for_first_message: bool``: if true, start measuring only after first message is received. (default: ``true``)
 - ``topic_type: string``: Class of message type, only required when 'wait_for_first_message' is set to false (e.g. ``std_msgs.msg.String``)
 
+``assert_lifecycle_state()``
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+Checks for the state of the lifecycle Node.
+
+- ``node_name: string``: # Lifecycle Node name.
+- ``state: lifecycle_state``: # The lifecycle state to check. Allowed ['unconfigured', 'inactive', 'active', 'finalized'] (e.g. ``unconfigured``) 
+- ``fail_on_finish: bool``: If false action success, if node is in different state. (default: ``true``)
+
 
 ``osc.gazebo``
 --------------

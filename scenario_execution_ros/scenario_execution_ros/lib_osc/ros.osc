@@ -27,6 +27,13 @@ enum comparison_operator: [
     gt
 ]
 
+enum lifecycle_state: [
+  unconfigured,
+  inactive,
+  active,
+  finalized
+]
+
 actor differential_drive_robot inherits robot:
     namespace: string = ''
 
@@ -116,3 +123,8 @@ action assert_topic_latency:
     rolling_average_count: int = 1 # the check is done aganist the rolling average over x elements
     wait_for_first_message: bool = true # start measuring with the first recieved message
     topic_type: string # class of message type, only required when wait_for_first_message is set to false (e.g. std_msgs.msg.String)
+
+action assert_lifecycle_state:
+  node_name: string # name of the lifecycle node
+  state: lifecycle_state # allowed lifecycle state
+  fail_on_finish: bool = true # if false, the action success if the node is different
