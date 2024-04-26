@@ -199,10 +199,10 @@ Check the latency of the specified topic (in system time). If the check with `co
 
 ``assert_lifecycle_state()``
 """"""""""""""""""""""""""""""""""""""""""""""""""""
-Checks for the state of the lifecycle Node.
+Checks for the state of the ``lifecycle`` Node.
 
-- ``node_name: string``: # Lifecycle Node name.
-- ``state: lifecycle_state``: # The lifecycle state to check. Allowed ['unconfigured', 'inactive', 'active', 'finalized'] (e.g. ``unconfigured``) 
+- ``node_name: string``: # ``Lifecycle`` Node name.
+- ``state: lifecycle_state``: # The ``lifecycle`` state to check. Allowed ``['unconfigured', 'inactive', 'active', 'finalized]`` (e.g. ``unconfigured``) 
 - ``fail_on_finish: bool``: If false action success, if node is in different state. (default: ``true``)
 
 
