@@ -54,6 +54,15 @@ A differential drive robot actor inheriting from the more general ``robot`` acto
 Actions
 ^^^^^^^
 
+``assert_lifecycle_state()``
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+Checks for the state of the ``lifecycle`` Node.
+
+- ``node_name: string``: ``Lifecycle`` Node name.
+- ``states: list of lifecycle states``: # List of states to check. Allowed ``['unconfigured', 'inactive', 'active', 'finalized]`` (e.g. ``['inactive', 'active']``)
+- ``allow_inital_state_skip: bool`` if True, enables skipping of initial states until the state of a node at the beginning of scenario is reached. (default: ``false``)
+- ``fail_on_finish: bool``: If false action success, if node is in different state. (default: ``true``)
+
 ``assert_tf_moving()``
 """"""""""""""""""""""
 
@@ -98,51 +107,6 @@ In the background, this action uses `check_data() <https://py-trees-ros.readthed
 - ``fail_if_no_data: bool``: return failure if there is no data yet (default: ``false``)
 - ``fail_if_bad_comparison: bool``: return failure if comparison failed (default: ``true``)
 - ``clearing_policy: clearing_policy``: When to clear the data (default: ``clearing_policy!on_initialise``)
-
-``service_call()``
-""""""""""""""""""
-
-Call a ROS service and wait for the reply.
-
-- ``service_name: string``: Name of the service to connect to
-- ``service_type: string``: Class of the message type (e.g. ``std_srvs.msg.Empty``)
-- ``data: string``: Service call content
-
-``topic_publish()``
-"""""""""""""""""""
-
-Publish a message on a topic.
-
-- ``topic_name: string``: Name of the topic to publish to
-- ``topic_type: string``: Class of the message type (e.g. ``std_msgs.msg.String``)
-- ``qos_profile: qos_preset_profiles``: QoS Preset Profile for the subscriber (default: ``qos_preset_profiles!system_default``)
-- ``value: string``: Value to publish
-
-``set_node_parameter()``
-""""""""""""""""""""""""
-
-Set a parameter of a node.
-
-- ``node_name: string``: Name of the node
-- ``parameter_name: string``: Name of the parameter
-- ``parameter_value: string``: Value of the parameter
-
-``record_bag()``
-""""""""""""""""
-
-Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: '.')
-
-- ``topics: list of string``: List of topics to capture
-- ``timestamp_suffix: bool``: Add a timestamp suffix to output directory name (default: ``true``)
-- ``hidden_topics: bool``: Whether to record hidden topics (default: ``false``)
-- ``storage: string``: Storage type to use (empty string: use ROS bag record default)
-
-``log_check()``
-"""""""""""""""
-Wait for specific output in ROS log (i.e. `/rosout` topic). If any of the entries within ``values`` the action succeeds.
-
-- ``module_name: string``: if specified, a matching message must also match the module name (default: empty)
-- ``values: list of string``: list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
 
 ``differential_drive_robot.init_nav2()``
 """"""""""""""""""""""""""""""""""""""""
@@ -262,14 +226,6 @@ Wait for topics to get available (i.e. publisher gets available).
 
 Actions
 ^^^^^^^
-
-
-``wait_for_sim()``
-""""""""""""""""""
-Wait for simulation to become active (checks for simulation clock).
-
-- ``world_name: string``: Gazebo world name (default: ``default``)
-- ``timeout: time``:  time to wait for the simulation. return failure afterwards. (default: ``60s``)
 
 ``actor_exists()``
 """"""""""""""""""
