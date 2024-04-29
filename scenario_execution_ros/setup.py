@@ -61,7 +61,8 @@ setup(
             'log_check = scenario_execution_ros.actions.ros_log_check:RosLogCheck',
             'differential_drive_robot.tf_close_to = scenario_execution_ros.actions.tf_close_to:TfCloseTo',
             'assert_topic_latency = scenario_execution_ros.actions.assert_topic_latency:AssertTopicLatency',
-            'assert_tf_moving = scenario_execution_ros.actions.assert_tf_moving:AssertTfMoving'
+            'assert_tf_moving = scenario_execution_ros.actions.assert_tf_moving:AssertTfMoving',
+            'assert_lifecycle_state = scenario_execution_ros.actions.assert_lifecycle_state:AssertLifecycleState',
         ],
         'scenario_execution.osc_libraries': [
             'ros = '

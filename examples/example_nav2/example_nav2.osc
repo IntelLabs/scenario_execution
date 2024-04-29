@@ -7,6 +7,12 @@ scenario example_nav2:
             robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
             robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
             emit end
+        serial:
+            assert_lifecycle_state() with:
+                keep(it.node_name == 'waypoint_follower' )
+                keep(it.states == ['unconfigured', 'inactive','active'])
+                keep(it.allow_inital_state_skip == true)
+            emit end
         time_out: serial:
             wait elapsed(60s)
             emit fail
