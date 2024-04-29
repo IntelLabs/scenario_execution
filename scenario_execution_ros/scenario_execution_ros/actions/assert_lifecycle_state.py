@@ -76,8 +76,7 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
                 self.feedback_message = f"{self.node_name}: Currently in state {self.current_state}."  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.RUNNING
             else:
-                message = f'{self.node_name}: Unexpected state transition. Expected {self.expected_state} or valid intermediate, but got {self.current_state}.'  # pylint: disable= attribute-defined-outside-init
-                self.feedback_message = message
+                self.feedback_message = f'{self.node_name}: Unexpected state transition. Expected {self.expected_state} or valid intermediate, but got {self.current_state}.'  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE if self.fail_on_finish else py_trees.common.Status.SUCCESS
         else:
             self.feedback_message = f"{self.node_name}: Waiting for current state..."  # pylint: disable= attribute-defined-outside-init
