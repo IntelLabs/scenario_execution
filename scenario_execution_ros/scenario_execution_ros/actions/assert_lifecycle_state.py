@@ -23,10 +23,10 @@ from scenario_execution_ros.actions.conversions import get_qos_preset_profile
 
 class AssertLifecycleState(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name, node_name: str, states: list, allow_inital_state_skip: bool, fail_on_finish: bool):
+    def __init__(self, name, node_name: str, state_sequence: list, allow_inital_state_skip: bool, fail_on_finish: bool):
         super().__init__(name)
         self.node_name = node_name
-        self.states = states
+        self.state_sequence = state_sequence
         self.allow_inital_state_skip = allow_inital_state_skip
         self.fail_on_finish = fail_on_finish
         self.node = None
@@ -56,9 +56,9 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
             raise KeyError(error_message) from e
 
         allowed_states = ['unconfigured', 'inactive', 'active', 'finalized']
-        for value in self.states:
+        for value in self.state_sequence:
             if value not in allowed_states:
-                raise ValueError("The specified states of the lifecycle node are not valid")
+                raise ValueError("The specified state_sequence of the lifecycle is not valid")
 
         service_get_state_name = "/" + self.node_name + "/get_state"
         self.client = self.node.create_client(GetState, service_get_state_name)
@@ -101,10 +101,10 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
             response = future.result()
             if response:
                 self.current_state = response.current_state.label
-                if self.allow_inital_state_skip and self.current_state in self.states:
-                    self.current_index = self.states.index(self.current_state)
-                if self.current_index < len(self.states):
-                    self.expected_state = self.states[self.current_index]
+                if self.allow_inital_state_skip and self.current_state in self.state_sequence:
+                    self.current_index = self.state_sequence.index(self.current_state)
+                if self.current_index < len(self.state_sequence):
+                    self.expected_state = self.state_sequence[self.current_index]
                     self.current_index += 1
             else:
                 self.logger.error("Failed to get inital state.")
@@ -115,7 +115,7 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
         goal_label = msg.goal_state.label
         if goal_label:
             self.current_state = goal_label
-            if self.current_index < len(self.states):
-                self.expected_state = self.states[self.current_index]
+            if self.current_index < len(self.state_sequence):
+                self.expected_state = self.state_sequence[self.current_index]
                 if self.expected_state == self.current_state:
                     self.current_index += 1

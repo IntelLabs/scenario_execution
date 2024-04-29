@@ -49,7 +49,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
 # REQUIRED PARAMETERS
     # node_name: Name of the topic to test.
-    # states: list of states ['unconfigured', 'inactive', 'active', 'finalized'].
+    # state_sequence: list of state_sequence ['unconfigured', 'inactive', 'active', 'finalized'].
 
 # DEFAULT VALUES
     # allow_inital_state_skip: False
@@ -62,7 +62,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     # Case 1: Test fails if state of the node doesn't match the specified state at index 0.
     # Case 2: Test keeps running and ends with scenario or timeout if state maches the specified state.
     # Case 3: Test keeps running and ends with scenario or timeout if specified lifecycle node is not found.
-    # Case 4: Test fails if the specified states are not in the defaul list.
+    # Case 4: Test fails if the specified state are not in the defaul list.
 
 # 3. fail_on_finish: False
     # Case 5: Test succeeds if state of the node doesn't match the specified state.
@@ -80,7 +80,7 @@ scenario test_assert_lifecycle_state:
         do serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                states: ['inactive'])
+                state_sequence: ['inactive'])
             emit end
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
@@ -99,7 +99,7 @@ scenario test_assert_lifecycle_state:
         serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                states: ['unconfigured'])
+                state_sequence: ['unconfigured'])
             emit fail
         time_out: serial:
             wait elapsed(8s)
@@ -121,7 +121,7 @@ scenario test_assert_lifecycle_state:
         serial:
             assert_lifecycle_state(
                 node_name: 'test_node',
-                states: ['unconfigured'])
+                state_sequence: ['unconfigured'])
             emit end
         time_out: serial:
             wait elapsed(8s)
@@ -142,7 +142,7 @@ scenario test_assert_lifecycle_state:
         do serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                states: ['inact'],
+                state_sequence: ['inact'],
                 fail_on_finish: false)
             emit end
 """
@@ -161,7 +161,7 @@ scenario test_assert_lifecycle_state:
         do serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                states: ['inactive'],
+                state_sequence: ['inactive'],
                 fail_on_finish: false)
             emit end
 """
@@ -181,7 +181,7 @@ scenario test_assert_lifecycle_state:
         serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                states: ['inactive', 'unconfigured', 'active'],
+                state_sequence: ['inactive', 'unconfigured', 'active'],
                 allow_inital_state_skip: true )
             emit fail
         time_out: serial:
@@ -204,7 +204,7 @@ scenario test_assert_lifecycle_state:
         serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                states: ['inactive', 'active'],
+                state_sequence: ['inactive', 'active'],
                 allow_inital_state_skip: true )
             emit fail
         time_out: serial:
