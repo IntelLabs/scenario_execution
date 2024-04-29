@@ -1,14 +1,13 @@
 import osc.standard.base
 import osc.robotics
 
-action wait_for_sim:
-    # Wait for simulation to become active
-    world_name: string = 'default'      # simulation world name
-    timeout: time = 60s                 # time to wait for the simulation. return failure afterwards.
-
 action actor_exists:
     # report success if an actor with a specific name exists
     entity_name: string                 # name of the actor within simulation
+    world_name: string = 'default'      # simulation world name
+
+action osc_actor.delete:
+    # Delete an actor from simulation
     world_name: string = 'default'      # simulation world name
 
 action osc_actor.spawn:
@@ -18,6 +17,7 @@ action osc_actor.spawn:
     model: string                       # model definition
     xacro_arguments: string = ''        # comma-separated list of argument key:=value pairs
 
-action osc_actor.delete:
-    # Delete an actor from simulation
+action wait_for_sim:
+    # Wait for simulation to become active
     world_name: string = 'default'      # simulation world name
+    timeout: time = 60s                 # time to wait for the simulation. return failure afterwards.
