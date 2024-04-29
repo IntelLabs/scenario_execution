@@ -58,7 +58,7 @@ Actions
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/node_lifecycle.html>`__ node.
 
-- ``node_name: string``: Name of lifecycle-managed node.
+- ``node_name: string``: Name of ``lifecycle-managed`` node.
 - ``state_sequence: list of lifecycle_state``: # List of states that a node is expected to transition through. The last entry is the state that a node is expected to remain in. Allowed ``['unconfigured', 'inactive', 'active', 'finalized]`` (e.g. ``['inactive', 'active']``)
 - ``allow_inital_state_skip: bool`` if true, enables skipping of states within the state_sequence. (default: ``false``)
 - ``fail_on_finish: bool``: If false action success, if node is in different state. (default: ``true``)
