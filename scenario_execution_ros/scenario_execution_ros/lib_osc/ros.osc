@@ -27,13 +27,6 @@ enum comparison_operator: [
     gt
 ]
 
-enum lifecycle_state: [
-  unconfigured,
-  inactive,
-  active,
-  finalized
-]
-
 actor differential_drive_robot inherits robot:
     namespace: string = ''
 
@@ -126,5 +119,6 @@ action assert_topic_latency:
 
 action assert_lifecycle_state:
   node_name: string # name of the lifecycle node
-  state: lifecycle_state # allowed lifecycle state
+  states: list # list of allowed lifecycle states to follow
+  allow_inital_state_skip: bool = false # if True, enables skipping of initial states until the state of a node at the beginning of scenario is reached.
   fail_on_finish: bool = true # if false, the action success if the node is different

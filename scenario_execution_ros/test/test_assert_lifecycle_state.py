@@ -49,21 +49,28 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
 # REQUIRED PARAMETERS
     # node_name: Name of the topic to test.
-    # state: ['unconfigured', 'inactive', 'active', 'finalized'].
+    # states: list of states ['unconfigured', 'inactive', 'active', 'finalized'].
 
 # DEFAULT VALUES
+    # allow_inital_state_skip: False
     # fail_on_finish: True
 
 # TESTS PERFORMED
 
 # 1. Minimal Test:
     # Description: All default values remain; only Node name and state are specified.
-    # Case 1: Test fails if state of the node doesn't match the specified state.
+    # Case 1: Test fails if state of the node doesn't match the specified state at index 0.
     # Case 2: Test keeps running and ends with scenario or timeout if state maches the specified state.
     # Case 3: Test keeps running and ends with scenario or timeout if specified lifecycle node is not found.
+    # Case 4: Test fails if the specified states are not in the defaul list.
 
 # 3. fail_on_finish: False
-    # Case 4: Test succeeds if state of the node doesn't match the specified state.
+    # Case 5: Test succeeds if state of the node doesn't match the specified state.
+
+# 4. allow_inital_state_true: True
+    # Case 6: Test keeps running and ends with scenario or timeout if start state maches any specified state in the list.
+    # Case 7: Test fails if state of the node doesn't match any specified state in the list.
+
 
     def test_case_1(self):
         scenario_content = """
@@ -73,7 +80,7 @@ scenario test_assert_lifecycle_state:
         do serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                state: 'inactive')
+                states: ['inactive'])
             emit end
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
@@ -92,7 +99,7 @@ scenario test_assert_lifecycle_state:
         serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                state: 'unconfigured')
+                states: ['unconfigured'])
             emit fail
         time_out: serial:
             wait elapsed(8s)
@@ -114,7 +121,7 @@ scenario test_assert_lifecycle_state:
         serial:
             assert_lifecycle_state(
                 node_name: 'test_node',
-                state: 'unconfigured')
+                states: ['unconfigured'])
             emit end
         time_out: serial:
             wait elapsed(8s)
@@ -135,7 +142,26 @@ scenario test_assert_lifecycle_state:
         do serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                state: 'inactive',
+                states: ['inact'],
+                fail_on_finish: false)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_case_5(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_lifecycle_state:
+        do serial:
+            assert_lifecycle_state(
+                node_name: 'test_lifecycle_node',
+                states: ['inactive'],
                 fail_on_finish: false)
             emit end
 """
@@ -145,3 +171,49 @@ scenario test_assert_lifecycle_state:
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_case_6(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_lifecycle_state:
+    do parallel:
+        serial:
+            assert_lifecycle_state(
+                node_name: 'test_lifecycle_node',
+                states: ['inactive', 'unconfigured', 'active'],
+                allow_inital_state_skip: true )
+            emit fail
+        time_out: serial:
+            wait elapsed(8s)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_case_7(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_lifecycle_state:
+    do parallel:
+        serial:
+            assert_lifecycle_state(
+                node_name: 'test_lifecycle_node',
+                states: ['inactive', 'active'],
+                allow_inital_state_skip: true )
+            emit fail
+        time_out: serial:
+            wait elapsed(8s)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.run()
+        self.assertFalse(self.scenario_execution_ros.process_results())

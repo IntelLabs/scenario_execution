@@ -17,20 +17,35 @@
 import py_trees  # pylint: disable=import-error
 from rclpy.node import Node
 from lifecycle_msgs.srv import GetState
+from lifecycle_msgs.msg import TransitionEvent
+from scenario_execution_ros.actions.conversions import get_qos_preset_profile
 
 
 class AssertLifecycleState(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name, node_name: str, state: str, fail_on_finish: bool):
+    def __init__(self, name, node_name: str, states: list, allow_inital_state_skip: bool, fail_on_finish: bool):
         super().__init__(name)
         self.node_name = node_name
-        self.node_state = state
+        self.states = states
+        self.allow_inital_state_skip = allow_inital_state_skip
         self.fail_on_finish = fail_on_finish
-        self.service_called = False
-        self.client = None
-        self.actual_state = None
         self.node = None
         self.subscription = None
+        self.current_index = 0  # Start with the first expected state
+        self.current_state = None
+        self.expected_state = None
+        self.service_check = False
+        self.client = None
+        self.valid_transitions = {
+            'unconfigured': ['configuring'],  # Valid intermediate state
+            'configuring': ['inactive'],
+            'inactive': ['activating', 'cleaningup'],
+            'activating': ['active'],
+            'cleaningup': ['unconfigured'],
+            'active': ['deactivating'],
+            'deactivating': ['inactive', 'finalized'],
+            'finalized': []  # No valid transitions from finalized
+        }
 
     def setup(self, **kwargs):
         try:
@@ -40,50 +55,68 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
+        allowed_states = ['unconfigured', 'inactive', 'active', 'finalized']
+        for value in self.states:
+            if value not in allowed_states:
+                raise ValueError("The specified states of the lifecycle node are not valid")
+
         service_get_state_name = "/" + self.node_name + "/get_state"
         self.client = self.node.create_client(GetState, service_get_state_name)
 
     def update(self) -> py_trees.common.Status:
-        result = py_trees.common.Status.FAILURE
-        service_check = self.check_service_ready()
-        if service_check and not self.service_called:
-            self.send_request()
-            self.service_called = True
-            result = py_trees.common.Status.RUNNING
-        elif service_check and self.service_called:
-            if self.actual_state:
-                if self.actual_state == self.node_state:
-                    self.feedback_message = f"The node '{self.node_name}' is in state '{self.actual_state}'."  # pylint: disable= attribute-defined-outside-init
-                    result = py_trees.common.Status.RUNNING
-                elif self.fail_on_finish:
-                    self.feedback_message = f"Node '{self.node_name}' state '{self.actual_state}' doesn't match '{self.node_state}'."  # pylint: disable= attribute-defined-outside-init
-                    result = py_trees.common.Status.FAILURE
-                else:
-                    self.feedback_message = f"Node '{self.node_name}' state '{self.actual_state}' doesn't match '{self.node_state}'."  # pylint: disable= attribute-defined-outside-init
-                    result = py_trees.common.Status.SUCCESS
+        if not self.service_check:
+            self.check_service_ready()
+            self.feedback_message = "Service not available, waiting..."  # pylint: disable= attribute-defined-outside-init
+            return py_trees.common.Status.RUNNING
+        if self.current_state and self.expected_state:
+            if self.current_state in self.valid_transitions.get(self.expected_state, []):
+                self.feedback_message = f'{self.node_name}: Transitioning through valid state {self.current_state}.'  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.RUNNING
+            elif self.current_state == self.expected_state:
+                self.feedback_message = f"{self.node_name}: Currently in state {self.current_state}."  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.RUNNING
             else:
-                self.feedback_message = f"Failed to get lifecycle state for node {self.node_name}."  # pylint: disable= attribute-defined-outside-init
-                result = py_trees.common.Status.FAILURE
+                message = f'{self.node_name}: Unexpected state transition. Expected {self.expected_state} or valid intermediate, but got {self.current_state}.'
+                self.feedback_message = message
+                return py_trees.common.Status.FAILURE if self.fail_on_finish else py_trees.common.Status.SUCCESS
         else:
-            self.feedback_message = f"Service not available, waiting again..."  # pylint: disable= attribute-defined-outside-init
-            result = py_trees.common.Status.RUNNING
-        return result
+            self.feedback_message = f"{self.node_name}: Waiting for current state..."
+            return py_trees.common.Status.RUNNING
 
     def check_service_ready(self):
         is_service = self.client.wait_for_service(timeout_sec=1.0)
-        return is_service
+        if is_service:
+            topic_transition_event_name = "/" + self.node_name + "/transition_event"
+            self.subscription = self.node.create_subscription(
+                TransitionEvent, topic_transition_event_name, self.lifecycle_callback, qos_profile=get_qos_preset_profile(['sensor_data']))
+            self.get_initial_state()
+            self.service_check = True
 
-    def send_request(self):
+    def get_initial_state(self):
         req = GetState.Request()
         future = self.client.call_async(req)
-        future.add_done_callback(self.handle_state_response)
+        future.add_done_callback(self.handle_initial_state_response)
 
-    def handle_state_response(self, future):
+    def handle_initial_state_response(self, future):
         try:
             response = future.result()
             if response:
-                self.actual_state = response.current_state.label
+                self.current_state = response.current_state.label
+                if self.allow_inital_state_skip and self.current_state in self.states:
+                    self.current_index = self.states.index(self.current_state)
+                if self.current_index < len(self.states):
+                    self.expected_state = self.states[self.current_index]
+                    self.current_index += 1
             else:
-                self.logger.error("Failed to get response.")
+                self.logger.error("Failed to get inital state.")
         except Exception as e:  # pylint: disable=broad-except
-            self.logger.error(f"Exception in getting lifecycle state: str({e})")
+            self.logger.error(f"Exception in getting inital state: str({e})")
+
+    def lifecycle_callback(self, msg):
+        goal_label = msg.goal_state.label
+        if goal_label:
+            self.current_state = goal_label
+            if self.current_index < len(self.states):
+                self.expected_state = self.states[self.current_index]
+                if self.expected_state == self.current_state:
+                    self.current_index += 1

@@ -202,7 +202,8 @@ Check the latency of the specified topic (in system time). If the check with `co
 Checks for the state of the ``lifecycle`` Node.
 
 - ``node_name: string``: # ``Lifecycle`` Node name.
-- ``state: lifecycle_state``: # The ``lifecycle`` state to check. Allowed ``['unconfigured', 'inactive', 'active', 'finalized]`` (e.g. ``unconfigured``) 
+- ``states: list of lifecycle states``: # list of states to check. Allowed ``['unconfigured', 'inactive', 'active', 'finalized]`` (e.g. ``['inactive', 'active']``)
+- ``allow_inital_state_skip: bool`` if True, enables skipping of initial states until the state of a node at the beginning of scenario is reached. (default: ``false``)
 - ``fail_on_finish: bool``: If false action success, if node is in different state. (default: ``true``)
 
 
