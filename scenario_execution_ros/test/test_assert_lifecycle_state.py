@@ -24,6 +24,8 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
+import subprocess
+import time
 
 
 class TestScenarioExectionSuccess(unittest.TestCase):
@@ -36,13 +38,16 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.scenario_execution_ros = ROSScenarioExecution()
         self.scenario_dir = get_package_share_directory('scenario_execution_ros')
         self.node = LifecycleNode('test_lifecycle_node')
+        self.dynamic_node = LifecycleNode('test_lifecycle_dynamic_node')
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
+        self.executor.add_node(self.dynamic_node)
         self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
         self.executor_thread.start()
 
     def tearDown(self):
         self.running = False
+        self.node.destroy_node()
         self.node.destroy_node()
         rclpy.try_shutdown()
 
@@ -70,7 +75,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 # 4. allow_inital_state_true: True
     # Case 6: Test keeps running and ends with scenario or timeout if start state maches any specified state in the list.
     # Case 7: Test fails if state of the node doesn't match any specified state in the list.
-
+    # Case 8: Test keeps running and ends with scenario or timeout if the node transition through the specified states in the correct order.
 
     def test_case_1(self):
         scenario_content = """
@@ -217,3 +222,37 @@ scenario test_assert_lifecycle_state:
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_case_8(self):
+        scenario_content = """
+import osc.ros
+
+scenario test_assert_lifecycle_state:
+    do parallel:
+        serial:
+            assert_lifecycle_state(
+                node_name: 'test_lifecycle_dynamic_node',
+                state_sequence: ['unconfigured', 'inactive', 'active'],
+                allow_inital_state_skip: true )
+            emit fail
+        time_out: serial:
+            wait elapsed(20s)
+            emit end
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        thread_change_state = threading.Thread(target=change_node_state)
+        thread_change_state.start()
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+
+def change_node_state():
+    time.sleep(5)
+    subprocess.run(['ros2', 'lifecycle', 'set', '/test_lifecycle_dynamic_node', 'configure'], stdout=subprocess.PIPE, timeout=5, check=True)
+    print("The node has successfully transitioned to the 'inactive' state.")
+    time.sleep(5)
+    subprocess.run(['ros2', 'lifecycle', 'set', '/test_lifecycle_dynamic_node', 'activate'], stdout=subprocess.PIPE, timeout=5, check=True)
+    print("The node has successfully transitioned to the 'active' state.")

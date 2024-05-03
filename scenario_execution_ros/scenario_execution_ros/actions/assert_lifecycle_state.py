@@ -37,14 +37,10 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
         self.service_check = False
         self.client = None
         self.valid_transitions = {
-            'unconfigured': ['configuring'],  # Valid intermediate state
-            'configuring': ['inactive'],
-            'inactive': ['activating', 'cleaningup'],
-            'activating': ['active'],
-            'cleaningup': ['unconfigured'],
-            'active': ['deactivating'],
-            'deactivating': ['inactive', 'finalized'],
-            'finalized': []  # No valid transitions from finalized
+            'unconfigured': ['configuring', 'cleaningup'],  # Valid intermediate state for each expected state
+            'inactive': ['configuring', 'deactivating'],
+            'active': ['activating'],
+            'finalized': []
         }
 
     def setup(self, **kwargs):
@@ -83,13 +79,15 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
             return py_trees.common.Status.RUNNING
 
     def check_service_ready(self):
-        is_service = self.client.wait_for_service(timeout_sec=1.0)
+        is_service = self.client
         if is_service:
             topic_transition_event_name = "/" + self.node_name + "/transition_event"
             self.subscription = self.node.create_subscription(
                 TransitionEvent, topic_transition_event_name, self.lifecycle_callback, qos_profile=get_qos_preset_profile(['sensor_data']))
             self.get_initial_state()
             self.service_check = True
+        else:
+            self.service_check = False
 
     def get_initial_state(self):
         req = GetState.Request()
@@ -107,7 +105,7 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
                     self.expected_state = self.state_sequence[self.current_index]
                     self.current_index += 1
             else:
-                self.logger.error("Failed to get inital state.")
+                self.logger.error("Failed to get initial state.")
         except Exception as e:  # pylint: disable=broad-except
             self.logger.error(f"Exception in getting inital state: str({e})")
 
@@ -119,3 +117,5 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
                 self.expected_state = self.state_sequence[self.current_index]
                 if self.expected_state == self.current_state:
                     self.current_index += 1
+            else:
+                self.current_index = len(self.state_sequence)
