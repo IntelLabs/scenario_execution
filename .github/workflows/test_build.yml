@@ -119,9 +119,7 @@ jobs:
     permissions:
       # checks: write
       pull-requests: write
-    needs:
-      - job: test-scenarios-dry-run
-        artifacts: true
+    needs: [test-scenarios-dry-run]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -168,9 +166,7 @@ jobs:
     permissions:
       # checks: write
       pull-requests: write
-    needs:
-      - job: test-scenarios-dry-run
-        artifacts: true
+    needs: [test-scenarios-dry-run]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -217,9 +213,7 @@ jobs:
     permissions:
       # checks: write
       pull-requests: write
-    needs:
-      - job: test-scenarios-dry-run
-        artifacts: true
+    needs: [test-scenarios-dry-run]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -267,9 +261,7 @@ jobs:
     permissions:
       # checks: write
       pull-requests: write
-    needs:
-      - job: test-scenarios-dry-run
-        artifacts: true
+    needs: [test-scenarios-dry-run]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -323,9 +315,7 @@ jobs:
     permissions:
       # checks: write
       pull-requests: write
-    needs:
-      - job: test-scenarios-dry-run
-        artifacts: true
+    needs: [test-scenarios-dry-run]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
@@ -379,9 +369,7 @@ jobs:
     permissions:
       # checks: write
       pull-requests: write
-    needs:
-      - job: test-scenarios-dry-run
-        artifacts: true
+    needs: [test-scenarios-dry-run]
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
