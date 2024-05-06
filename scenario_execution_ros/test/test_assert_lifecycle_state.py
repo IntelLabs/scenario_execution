@@ -233,7 +233,7 @@ scenario test_assert_lifecycle_state:
         serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_dynamic_node',
-                state_sequence: [lifecycle_state!unconfigured, lifecycle_state!inactive, lifecycle_state!active'],
+                state_sequence: [lifecycle_state!unconfigured, lifecycle_state!inactive, lifecycle_state!active],
                 allow_inital_state_skip: true )
             emit fail
         time_out: serial:
