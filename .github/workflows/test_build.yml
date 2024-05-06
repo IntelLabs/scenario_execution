@@ -114,18 +114,13 @@ jobs:
           done
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      -
-        name: Build and push
+      - name: Build and export
         uses: docker/build-push-action@v5
         with:
-          push: true
-          tags: tmp/scenario_execution_image:latest
-      - name: check
-        shell: bash
-        run: |
-          ls /tmp/
-      -
-        name: Upload artifact
+          context: .
+          tags: scenario_execution_image:latest
+          outputs: type=docker,dest=/tmp/scenario_execution_image.tar
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: scenario_execution_image
