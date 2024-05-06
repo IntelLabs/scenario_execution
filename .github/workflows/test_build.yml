@@ -300,7 +300,7 @@ jobs:
           source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
-          Xvfb :1 -screen 0 800x600x1 &
+          Xvfb :1 -screen 0 1280x1024x8 &
           export DISPLAY=:1.0
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=119
