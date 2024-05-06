@@ -50,8 +50,7 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
-        
-        
+
         if all(isinstance(state, tuple) and len(state) == 2 for state in self.state_sequence):
             self.state_sequence = [state[0] for state in self.state_sequence]
         else:
@@ -59,7 +58,6 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
             for value in self.state_sequence:
                 if value not in allowed_states:
                     raise ValueError("The specified state_sequence is not valid")
-
 
         service_get_state_name = "/" + self.node_name + "/get_state"
         self.client = self.node.create_client(GetState, service_get_state_name)

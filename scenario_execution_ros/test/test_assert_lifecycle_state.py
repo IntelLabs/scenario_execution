@@ -24,7 +24,7 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
-import subprocess # nosec B404
+import subprocess  # nosec B404
 import time
 
 
@@ -76,6 +76,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     # Case 6: Test keeps running and ends with scenario or timeout if start state maches any specified state in the list.
     # Case 7: Test fails if state of the node doesn't match any specified state in the list.
     # Case 8: Test keeps running and ends with scenario or timeout if the node transition through the specified states in the correct order.
+
 
     def test_case_1(self):
         scenario_content = """
