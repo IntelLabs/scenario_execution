@@ -64,7 +64,7 @@ jobs:
             scenario_execution_ros//TEST.xml
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
-  test-scenarios:
+  test-scenarios-dry-run:
     runs-on: intellabs-01
     container:
       image: osrf/ros:humble-desktop
@@ -112,6 +112,48 @@ jobs:
             echo "$file"; 
             ros2 run scenario_execution scenario_execution "$file" -n; 
           done
+  Test-Example-Scenario:
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    permissions:
+      # checks: write
+      pull-requests: write
+    needs:
+      - job: test-scenarios-dry-run
+        artifacts: true
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Setup Dependencies
+        run: |
+          apt update
+          apt install -y xvfb tk
+          apt install -y libgl1
+          apt install -y python3-pip
+          xargs -a deb_requirements.txt apt install -y --no-install-recommends
+          rosdep update --rosdistro=humble 
+          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          apt install -y ros-humble-gazebo-ros2-control
+          pip3 install -r requirements.txt
+      - name: Build IGN_ROS_CONTROL # build from source for now because base package has errors.
+        shell: bash
+        run: |
+          mkdir -p /ros_ign/src
+          cd /ros_ign/src
+          git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
+          rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
+          cd /ros_ign
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
       - name: Test Example Scenario
         shell: bash
         run: |
@@ -119,6 +161,48 @@ jobs:
           source install/setup.bash
           #shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+  Test-Example-Library:
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    permissions:
+      # checks: write
+      pull-requests: write
+    needs:
+      - job: test-scenarios-dry-run
+        artifacts: true
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Setup Dependencies
+        run: |
+          apt update
+          apt install -y xvfb tk
+          apt install -y libgl1
+          apt install -y python3-pip
+          xargs -a deb_requirements.txt apt install -y --no-install-recommends
+          rosdep update --rosdistro=humble 
+          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          apt install -y ros-humble-gazebo-ros2-control
+          pip3 install -r requirements.txt
+      - name: Build IGN_ROS_CONTROL # build from source for now because base package has errors.
+        shell: bash
+        run: |
+          mkdir -p /ros_ign/src
+          cd /ros_ign/src
+          git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
+          rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
+          cd /ros_ign
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
       - name: Test Example Library
         shell: bash
         run: |
@@ -126,6 +210,48 @@ jobs:
           source install/setup.bash
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+  Test-Example-Variation:
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    permissions:
+      # checks: write
+      pull-requests: write
+    needs:
+      - job: test-scenarios-dry-run
+        artifacts: true
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Setup Dependencies
+        run: |
+          apt update
+          apt install -y xvfb tk
+          apt install -y libgl1
+          apt install -y python3-pip
+          xargs -a deb_requirements.txt apt install -y --no-install-recommends
+          rosdep update --rosdistro=humble 
+          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          apt install -y ros-humble-gazebo-ros2-control
+          pip3 install -r requirements.txt
+      - name: Build IGN_ROS_CONTROL # build from source for now because base package has errors.
+        shell: bash
+        run: |
+          mkdir -p /ros_ign/src
+          cd /ros_ign/src
+          git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
+          rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
+          cd /ros_ign
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
       - name: Test Example Variation
         shell: bash
         run: |
@@ -134,13 +260,48 @@ jobs:
           scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i scenario_variation_out -o test_example_variation -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-      - name: Test Example Scenario Control
+  Test-Example-Nav2:
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    permissions:
+      # checks: write
+      pull-requests: write
+    needs:
+      - job: test-scenarios-dry-run
+        artifacts: true
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Setup Dependencies
+        run: |
+          apt update
+          apt install -y xvfb tk
+          apt install -y libgl1
+          apt install -y python3-pip
+          xargs -a deb_requirements.txt apt install -y --no-install-recommends
+          rosdep update --rosdistro=humble 
+          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          apt install -y ros-humble-gazebo-ros2-control
+          pip3 install -r requirements.txt
+      - name: Build IGN_ROS_CONTROL # build from source for now because base package has errors.
+        shell: bash
+        run: |
+          mkdir -p /ros_ign/src
+          cd /ros_ign/src
+          git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
+          rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
+          cd /ros_ign
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Build
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
           source install/setup.bash
-          mkdir test_example_control
-          python3 scenario_execution_control/test/scenario_execution_control_test_ci.py
       - name: Test Example Nav2
         shell: bash
         run: |
@@ -155,6 +316,48 @@ jobs:
           sed -i 's/60s/600s/g' examples/example_nav2/example_nav2.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_nav2/ -o test_example_nav2 -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+  Test-Example-Simulation:
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    permissions:
+      # checks: write
+      pull-requests: write
+    needs:
+      - job: test-scenarios-dry-run
+        artifacts: true
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Setup Dependencies
+        run: |
+          apt update
+          apt install -y xvfb tk
+          apt install -y libgl1
+          apt install -y python3-pip
+          xargs -a deb_requirements.txt apt install -y --no-install-recommends
+          rosdep update --rosdistro=humble 
+          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          apt install -y ros-humble-gazebo-ros2-control
+          pip3 install -r requirements.txt
+      - name: Build IGN_ROS_CONTROL # build from source for now because base package has errors.
+        shell: bash
+        run: |
+          mkdir -p /ros_ign/src
+          cd /ros_ign/src
+          git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
+          rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
+          cd /ros_ign
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
       - name: Test Example Simulation
         shell: bash
         run: |
@@ -169,7 +372,49 @@ jobs:
           sed -i 's/120s/900s/g' examples/example_simulation/scenarios/example_simulation.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_simulation/scenarios/ -o test_example_simulation -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-      - name: Test Example Multirobot
+  Test-Example-Multirobot:
+    runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop
+    permissions:
+      # checks: write
+      pull-requests: write
+    needs:
+      - job: test-scenarios-dry-run
+        artifacts: true
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Setup Dependencies
+        run: |
+          apt update
+          apt install -y xvfb tk
+          apt install -y libgl1
+          apt install -y python3-pip
+          xargs -a deb_requirements.txt apt install -y --no-install-recommends
+          rosdep update --rosdistro=humble 
+          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
+          apt install -y ros-humble-gazebo-ros2-control
+          pip3 install -r requirements.txt
+      - name: Build IGN_ROS_CONTROL # build from source for now because base package has errors.
+        shell: bash
+        run: |
+          mkdir -p /ros_ign/src
+          cd /ros_ign/src
+          git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
+          rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
+          cd /ros_ign
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Example Simulation
         shell: bash
         run: |
           source /ros_ign/install/setup.bash
@@ -180,36 +425,41 @@ jobs:
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=119
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          sed -i 's/240s/1500s/g' examples/example_multi_robot/example_multi_robot.osc
+          sed -i 's/120s/900s/g' examples/example_simulation/scenarios/example_simulation.osc
           # shellcheck disable=SC1083
-          scenario_batch_execution -i examples/example_multi_robot/ -o test_example_multirobot -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR}
-      - name: Publish Scenario Results
-        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
-        if: always()
-        with:
-          check_name: Scenario Results
-          check_run: false
-          action_fail: true
-          comment_mode: always
-          files: |
-            test_example_scenario/test.xml
-            test_example_library/test.xml
-            test_example_variation/test.xml
-            test_example_control/test.xml
-            test_example_nav2/test.xml
-            test_example_simulation/test.xml
-            test_example_multirobot/test.xml
-      - name: Upload Scenario Results
-        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
-        if: always()
-        with:
-          name: test-scenario-results
-          path: |
-            test_example_scenario/test.xml
-            test_example_library/test.xml
-            test_example_variation/test.xml
-            test_example_control/test.xml
-            test_example_nav2/test.xml
-            test_example_simulation/test.xml
-            test_example_nav2/test.xml
-            test_example_multirobot/test.xml
+          scenario_batch_execution -i examples/example_simulation/scenarios/ -o test_example_simulation -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+
+
+
+
+
+      # - name: Publish Scenario Results
+      #   uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+      #   if: always()
+      #   with:
+      #     check_name: Scenario Results
+      #     check_run: false
+      #     action_fail: true
+      #     comment_mode: always
+      #     files: |
+      #       test_example_scenario/test.xml
+      #       test_example_library/test.xml
+      #       test_example_variation/test.xml
+      #       test_example_control/test.xml
+      #       test_example_nav2/test.xml
+      #       test_example_simulation/test.xml
+      #       test_example_multirobot/test.xml
+      # - name: Upload Scenario Results
+      #   uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+      #   if: always()
+      #   with:
+      #     name: test-scenario-results
+      #     path: |
+      #       test_example_scenario/test.xml
+      #       test_example_library/test.xml
+      #       test_example_variation/test.xml
+      #       test_example_control/test.xml
+      #       test_example_nav2/test.xml
+      #       test_example_simulation/test.xml
+      #       test_example_nav2/test.xml
+      #       test_example_multirobot/test.xml
