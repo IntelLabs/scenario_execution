@@ -1,5 +1,5 @@
 # Use the ROS Humble desktop-full image as the base
-FROM ros:humble-desktop-full
+FROM osrf/ros:humble-desktop-full
 
 
 RUN apt-get update &&  \
