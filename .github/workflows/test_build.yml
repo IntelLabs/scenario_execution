@@ -51,6 +51,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          pip install -U pip setuptools
           source /opt/ros/humble/setup.bash
           cd /scenario_execution_repo/
           colcon build --continue-on-error
