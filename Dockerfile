@@ -7,4 +7,4 @@ RUN apt-get update &&  \
     xargs -a deb_requirements.txt apt install -y --no-install-recommends && \
     rosdep update --rosdistro=humble && \
     rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y && \
-    pip3 install -r requirements.txt && \
+    pip3 install -r requirements.txt
