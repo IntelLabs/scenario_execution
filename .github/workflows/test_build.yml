@@ -22,12 +22,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: scenario_execution_repo
+          path: ./scenario_execution_repo
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: check path
         run: |
-          ls
+          ls scenario_execution_repo 
       - name: Build and export
         uses: docker/build-push-action@v5
         with:
