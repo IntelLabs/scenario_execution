@@ -5,7 +5,7 @@ COPY /scenario_execution /
 
 RUN apt-get update &&  \
     apt install -y python3-pip && \
-    ls /scenario_execution
+    ls /scenario_execution && \
     xargs -a /scenario_execution/deb_requirements.txt apt install -y --no-install-recommends && \
     rosdep update --rosdistro=humble && \
     rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y && \
