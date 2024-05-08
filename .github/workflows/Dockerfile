@@ -4,7 +4,7 @@ FROM osrf/ros:humble-desktop-full
 COPY . /scenario_execution/
 
 RUN apt-get update &&  \
-    apt install -y python3-pip && \
+    apt-get install -y python3-pip && \
     xargs -a /scenario_execution/deb_requirements.txt apt install -y --no-install-recommends && \
     rosdep update --rosdistro=humble && \
     rosdep install --rosdistro=humble --from-paths /scenario_execution/. --ignore-src -r -y && \
