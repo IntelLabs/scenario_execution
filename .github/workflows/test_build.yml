@@ -16,12 +16,18 @@ jobs:
   build:
     runs-on: intellabs-01
     steps:
+      - name: Create Folder
+        run: |
+          mkdir scenario_execution 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          path: scenario_execution
       - name: check_path
         run: |
           ls
           ls /
+          ls scenario_execution
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build and export
