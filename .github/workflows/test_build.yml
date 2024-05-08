@@ -15,32 +15,19 @@ permissions: read-all
 jobs:
   build:
     runs-on: intellabs-01
+    container:
+      image: osrf/ros:humble-desktop-full
+    permissions:
+      # checks: write
+      pull-requests: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and export
-        uses: docker/build-push-action@v5
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
-          context: .
-          tags: scenario_execution_image:latest
-          outputs: type=docker,dest=/tmp/scenario_execution_image.tar
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: scenario_execution_image
-          path: /tmp/scenario_execution_image.tar
+          submodules: true
   use:
     runs-on: intellabs-01
     needs: build
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: scenario_execution_image
-          path: /tmp
       - name: Load image
         run: |
-          docker load --input /tmp/scenario_execution_image.tar
-          docker image ls -a  
+          docker image ls -a
