@@ -9,5 +9,5 @@ RUN apt-get update &&  \
     ls /scenario_execution_repo && \
     xargs -a /scenario_execution_repo/deb_requirements.txt apt install -y --no-install-recommends && \
     rosdep update --rosdistro=humble && \
-    rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y && \
+    rosdep install --rosdistro=humble --from-paths /scenario_execution_repo/. --ignore-src -r -y && \
     pip3 install -r /scenario_execution_repo/requirements.txt
