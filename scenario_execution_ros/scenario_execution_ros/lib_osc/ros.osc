@@ -28,8 +28,21 @@ enum qos_preset_profiles: [
     system_default
 ]
 
+enum lifecycle_state: [
+  unconfigured,
+  inactive,
+  active,
+  finalized
+]
+
 actor differential_drive_robot inherits robot:
     namespace: string = ''
+    
+action assert_lifecycle_state:
+  node_name: string # Name of lifecycle-managed node
+  state_sequence: list of lifecycle_state # list of allowed lifecycle states to follow
+  allow_inital_state_skip: bool = false # if true, enables skipping of states within the state_sequence
+  fail_on_finish: bool = true # if false, the action success if the node is in different state
 
 action assert_tf_moving:
     frame_id: string # frame_id to check for movement
