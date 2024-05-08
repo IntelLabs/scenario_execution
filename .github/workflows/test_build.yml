@@ -23,23 +23,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: scenario_execution
-      - name: check_path
-        run: |
-          ls
-          ls /
-          ls scenario_execution
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build and export
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: /scenario_execution
           tags: scenario_execution:latest
           outputs: type=docker,dest=/tmp/scenario_execution.tar
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: myimage
+          name: scenario_execution
           path: /tmp/scenario_execution.tar
   use:
     runs-on: intellabs-01
