@@ -38,7 +38,7 @@ jobs:
   #         tags: ghcr.io/${{ env.REPO_OWNER_LOWER }}/scenario-execution-image:latest
   build:
     runs-on: intellabs-01
-    needs: [build-image]
+    # needs: [build-image]
     container:
       image: ghcr.io/intellabs/scenario-execution-image:latest
       credentials:
