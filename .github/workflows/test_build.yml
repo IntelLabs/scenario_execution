@@ -53,13 +53,11 @@ jobs:
         run: |
           pip install -U pip setuptools
           source /opt/ros/humble/setup.bash
-          cd /scenario_execution_repo/
           colcon build --continue-on-error
           source install/setup.bash
       - name: Test
         shell: bash
         run: |
-          cd /scenario_execution_repo/
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
