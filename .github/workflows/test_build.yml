@@ -18,11 +18,11 @@ jobs:
     steps:
       - name: Create Folder
         run: |
-          mkdir scenario_execution 
+          mkdir scenario_execution_repo 
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: scenario_execution
+          path: scenario_execution_repo
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: check path
@@ -31,14 +31,14 @@ jobs:
       - name: Build and export
         uses: docker/build-push-action@v5
         with:
-          context: ./scenario_execution
-          tags: scenario_execution:latest
-          outputs: type=docker,dest=/tmp/scenario_execution.tar
+          context: ./scenario_execution_repo
+          tags: scenario_execution_repo:latest
+          outputs: type=docker,dest=/tmp/scenario_execution_repo.tar
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: scenario_execution
-          path: /tmp/scenario_execution.tar
+          name: scenario_execution_repo
+          path: /tmp/scenario_execution_repo.tar
   use:
     runs-on: intellabs-01
     needs: build
@@ -46,9 +46,9 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: scenario_execution
+          name: scenario_execution_repo
           path: /tmp
       - name: Load image
         run: |
-          docker load --input /tmp/scenario_execution.tar
+          docker load --input /tmp/scenario_execution_repo.tar
           docker image ls -a  
