@@ -15,28 +15,75 @@ permissions:
   contents: read
   packages: write
 jobs:
-  build:
+  build-image:
     runs-on: intellabs-01
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Set repository owner lowercase
+        run: echo "REPO_OWNER_LOWER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ghcr.io/intellabs/scenario-execution-image:latest
-
+          tags: ghcr.io/${{ env.REPO_OWNER_LOWER }}/scenario-execution-image:latest
       - name: Verify the image
-        run: docker pull ghcr.io/intellabs/scenario-execution-image:latest
+        run: docker pull ghcr.io/${{ env.REPO_OWNER_LOWER }}/scenario-execution-image:latest
+  build:
+    runs-on: intellabs-01
+    needs: [build-image]
+    container:
+      image: ghcr.io/intellabs/scenario-execution-image:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      # checks: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          cd /scenario_execution_repo/
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test
+        shell: bash
+        run: |
+          cd /scenario_execution_repo/
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=2
+          colcon test --packages-select \
+          scenario_execution \
+          scenario_execution_ros \
+          scenario_execution_gazebo \
+          scenario_coverage \
+          --event-handlers console_direct+ \
+          --return-code-on-test-failure \
+          --pytest-args \
+          --junit-xml=TEST.xml
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+        if: always()
+        with:
+          check_run: false
+          files: |
+            scenario_execution//TEST.xml
+            scenario_execution_ros//TEST.xml
+            scenario_execution_gazebo//TEST.xml
+            scenario_coverage//TEST.xml
