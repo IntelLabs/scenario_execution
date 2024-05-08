@@ -1,7 +1,7 @@
 # Use the ROS Humble desktop-full image as the base
 FROM osrf/ros:humble-desktop-full
 
-COPY /home/runner/work/scenario_execution/scenario_execution /
+COPY ../scenario_execution/ /
 
 RUN apt-get update &&  \
     apt install -y python3-pip && \
