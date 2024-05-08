@@ -34,7 +34,7 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
         self.current_index = 0  # Start with the first expected state
         self.current_state = None
         self.expected_state = None
-        self.service_check = False
+        self.service_available = False
         self.client = None
         self.valid_transitions = {
             'unconfigured': ['configuring', 'cleaningup'],  # Valid intermediate state for each expected state
@@ -63,7 +63,7 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
         self.client = self.node.create_client(GetState, service_get_state_name)
 
     def update(self) -> py_trees.common.Status:
-        if not self.service_check:
+        if not self.service_available:
             self.check_service_ready()
             self.feedback_message = "Service not available, waiting..."  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.RUNNING
@@ -82,15 +82,14 @@ class AssertLifecycleState(py_trees.behaviour.Behaviour):
             return py_trees.common.Status.RUNNING
 
     def check_service_ready(self):
-        is_service = self.client
-        if is_service:
+        if self.client:
             topic_transition_event_name = "/" + self.node_name + "/transition_event"
             self.subscription = self.node.create_subscription(
                 TransitionEvent, topic_transition_event_name, self.lifecycle_callback, qos_profile=get_qos_preset_profile(['sensor_data']))
             self.get_initial_state()
-            self.service_check = True
+            self.service_available = True
         else:
-            self.service_check = False
+            self.service_available = False
 
     def get_initial_state(self):
         req = GetState.Request()
