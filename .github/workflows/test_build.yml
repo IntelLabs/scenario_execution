@@ -318,9 +318,10 @@ jobs:
         with:
           name: test-example-multirobot-result
           path: test_example_multirobot/test.xml
-  Publish Scenario Results:
-    needs: [test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot ]
+  publish-scenario-results:
+    needs: [test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot]
     runs-on: intellabs-01
+    steps:
       - name: Download all artifacts
         uses: actions/download-artifact@e73ee10c7552966e58bde25ecb4a0033cd13a843 #v3.0
         with:
