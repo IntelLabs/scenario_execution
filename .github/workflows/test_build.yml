@@ -78,5 +78,207 @@ jobs:
             scenario_execution//TEST.xml
             scenario_execution_ros//TEST.xml
             scenario_execution_gazebo//TEST.xml
-            scenario_coverage//TEST.xml
-          
+            scenario_coverage//TEST.xml      
+  scenario-files-dry-run:
+    needs: [build-and-push]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Scenario Files
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          find . -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation|scenario_coverage|fail*|install|build" | while read -r file; do 
+            echo "$file"; 
+            ros2 run scenario_execution scenario_execution "$file" -n; 
+          done
+  test-example-scenario:
+    needs: [scenario-files-dry-run]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Example Scenario
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          #shellcheck disable=SC1083
+          scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+  Test-Example-Library:
+    needs: [scenario-files-dry-run]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Example Library
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+  Test-Example-Variation:
+    needs: [scenario-files-dry-run]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Example Variation
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i scenario_variation_out -o test_example_variation -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+  Test-Example-Nav2:
+    needs: [scenario-files-dry-run]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Example Nav2
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          Xvfb :1 -screen 0 800x600x16 &
+          export DISPLAY=:1.0
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=119
+          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+          sed -i 's/60s/600s/g' examples/example_nav2/example_nav2.osc
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i examples/example_nav2/ -o test_example_nav2 -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+  Test-Example-Simulation:
+    needs: [scenario-files-dry-run]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Example Simulation
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          Xvfb :1 -screen 0 800x600x16 &
+          export DISPLAY=:1.0
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=119
+          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+          sed -i 's/120s/900s/g' examples/example_simulation/scenarios/example_simulation.osc
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i examples/example_simulation/scenarios/ -o test_example_simulation -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+  Test-Example-Multirobot:
+    needs: [scenario-files-dry-run]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Test Example Simulation
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          Xvfb :1 -screen 0 800x600x16 &
+          export DISPLAY=:1.0
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=119
+          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+          sed -i 's/120s/900s/g' examples/example_simulation/scenarios/example_simulation.osc
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i examples/example_simulation/scenarios/ -o test_example_simulation -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
