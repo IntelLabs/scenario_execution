@@ -336,4 +336,4 @@ jobs:
           action_fail: true
           comment_mode: always
           files: |
-            downloaded-artifacts/test_example_scenario/test.xml
+            downloaded-artifacts/test-example-scenario-result/test.xml
