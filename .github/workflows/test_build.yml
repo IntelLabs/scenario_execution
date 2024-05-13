@@ -133,7 +133,13 @@ jobs:
           source install/setup.bash
           #shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-  Test-Example-Library:
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-scenario-result
+          path: test_example_scenario/test.xml
+  test-example-library:
     needs: [scenario-files-dry-run]
     runs-on: intellabs-01
     container:
@@ -159,7 +165,13 @@ jobs:
           source install/setup.bash
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-  Test-Example-Variation:
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-library-result
+          path: test_example_library/test.xml
+  test-example-variation:
     needs: [scenario-files-dry-run]
     runs-on: intellabs-01
     container:
@@ -186,7 +198,13 @@ jobs:
           scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i scenario_variation_out -o test_example_variation -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-  Test-Example-Nav2:
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-variation-result
+          path: test_example_variation/test.xml
+  test-example-nav2:
     needs: [scenario-files-dry-run]
     runs-on: intellabs-01
     container:
@@ -218,7 +236,13 @@ jobs:
           sed -i 's/60s/600s/g' examples/example_nav2/example_nav2.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_nav2/ -o test_example_nav2 -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-  Test-Example-Simulation:
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-nav2-result
+          path: test_example_nav2/test.xml
+  test-example-simulation:
     needs: [scenario-files-dry-run]
     runs-on: intellabs-01
     container:
@@ -250,7 +274,13 @@ jobs:
           sed -i 's/120s/900s/g' examples/example_simulation/scenarios/example_simulation.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_simulation/scenarios/ -o test_example_simulation -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-  Test-Example-Multirobot:
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-simulation-result
+          path: test_example_simulation/test.xml
+  test-example-multirobot:
     needs: [scenario-files-dry-run]
     runs-on: intellabs-01
     container:
@@ -282,3 +312,26 @@ jobs:
           sed -i 's/120s/900s/g' examples/example_simulation/scenarios/example_simulation.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_simulation/scenarios/ -o test_example_simulation -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-multirobot-result
+          path: test_example_multirobot/test.xml
+  Publish Scenario Results:
+    needs: [test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot ]
+    runs-on: intellabs-01
+      - name: Download all artifacts
+        uses: actions/download-artifact@e73ee10c7552966e58bde25ecb4a0033cd13a843 #v3.0
+        with:
+          path: downloaded-artifacts
+      - name: Publish Scenario Results
+        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+        if: always()
+        with:
+          check_name: Scenario Results
+          check_run: false
+          action_fail: true
+          comment_mode: always
+          files: |
+            downloaded-artifacts/*.xml
