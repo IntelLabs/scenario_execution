@@ -299,9 +299,10 @@ jobs:
           source /opt/ros/humble/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
-      - name: Test Example Simulation
+      - name: Test Example Multirobot
         shell: bash
         run: |
+          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
@@ -309,9 +310,9 @@ jobs:
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=119
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          sed -i 's/120s/900s/g' examples/example_simulation/scenarios/example_simulation.osc
+          sed -i 's/240s/1500s/g' examples/example_multi_robot/example_multi_robot.osc
           # shellcheck disable=SC1083
-          scenario_batch_execution -i examples/example_simulation/scenarios/ -o test_example_simulation -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+          scenario_batch_execution -i examples/example_multi_robot/ -o test_example_multirobot -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR}
       - name: Upload result
         uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
@@ -323,7 +324,7 @@ jobs:
     runs-on: intellabs-01
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@e73ee10c7552966e58bde25ecb4a0033cd13a843 #v3.0
+        uses: actions/download-artifact@7a1cd3216ca9260cd8022db641d960b1db4d1be4 #v4.0
         with:
           path: downloaded-artifacts
       - name: Publish Scenario Results
