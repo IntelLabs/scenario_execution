@@ -11,8 +11,10 @@ on:
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+env:
+  REPOSITORY_LOWERCASE: ${{github.repository_owner}}/${{github.repository_name | lower }}
 jobs:
-  build-image:
+  build-and-push:
     runs-on: intellabs-01
     steps:
       - name: Checkout code
@@ -31,5 +33,5 @@ jobs:
           context: .
           file: .github/workflows/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/scenario-execution:humble
+          tags: ghcr.io/${{ env.REPOSITORY_LOWERCASE }}/scenario-execution:humble
           
