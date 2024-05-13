@@ -12,7 +12,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 env:
-  REPOSITORY_LOWERCASE: ${{github.repository_owner}}/${{github.repository_name | lower }}
+  REPOSITORY_LOWERCASE: intellabs/scenario_execution
 jobs:
   build-and-push:
     runs-on: intellabs-01
