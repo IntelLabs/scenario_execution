@@ -94,7 +94,7 @@ action differential_drive_robot.nav_to_pose:
     monitor_progress: bool = true # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
 
 action differential_drive_robot.odometry_distance_traveled:
-    namespace: string = ''
+    namespace_override: string = ''
     distance: length
 
 action differential_drive_robot.tf_close_to:
