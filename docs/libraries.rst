@@ -253,14 +253,14 @@ Spawn an actor within simulation by using the ``model`` and ``namespace`` of the
 - ``xacro_arguments: string``: Comma-separated list of argument key:=value pairs
 
 ``osc_object.relative_spawn()``
-""""""""""""""""""""""
+"""""""""""""""""""""""""""""""
 
 Spawn an actor relative to a given ``frame_id`` within simulation (at a random distance between ``offset_min`` and ``offset_max`` to ``frame_id``) by using the ``model`` and ``namespace`` of the associated actor. The randomness of the distance can be controlled via ``seed``.
 
 - ``frame_id``: The frame Id to spawn the actor relative to. (default: ``base_link``)
 - ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
-- ``offset_min``: Mininmal offset value relative to the frame_id at which to spawn the new actor (default: 0.0)
-- ``offset_max``: Maxinmal offset value relative to the frame_id at which to spawn the new actor (default: 0.0)
+- ``offset_min``: Minimal offset value relative to the frame_id at which to spawn the new actor (default: 0.0)
+- ``offset_max``: Maximal offset value relative to the frame_id at which to spawn the new actor (default: 0.0)
 - ``seed``: Random seed to control the randomness of the distance offset
 - ``world_name: string``: Gazebo world name (default: ``default``)
 - ``model: string``: Model definition
