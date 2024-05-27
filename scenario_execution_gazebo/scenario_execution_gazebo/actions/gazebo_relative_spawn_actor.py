@@ -14,9 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# import tf2_ros
-# import tf2_geometry_msgs
-import random
+import random # nosec B311 random is only used to create random distance offset
 import subprocess  # nosec B404
 from enum import Enum
 
@@ -202,8 +200,8 @@ class GazeboRelativeSpawnActor(RunProcess):
             rotation_angle = 2 * atan2(current_orientation.z, current_orientation.w)
 
             # Calculate new position with offset in front
-            random.seed(self.seed) #nosec
-            offset = random.uniform(self.offset_min, self.offset_max) #nosec
+            random.seed(self.seed) # nosec B311 random is only used to create random distance offset
+            offset = random.uniform(self.offset_min, self.offset_max) # nosec B311 random is only used to create random distance offset
             new_x = current_position.x + offset * cos(rotation_angle)
             new_y = current_position.y + offset * sin(rotation_angle)
 
