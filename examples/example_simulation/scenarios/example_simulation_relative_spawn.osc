@@ -1,0 +1,32 @@
+import osc.ros
+import osc.gazebo
+
+scenario example_simulation:
+    robot: differential_drive_robot
+    box: osc_actor
+    do parallel:
+        serial:
+            robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+            parallel:
+                robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
+                serial:
+                    robot.tf_close_to() with:
+                        keep(it.reference_point.x == -1.5m)
+                        keep(it.reference_point.y == 0.0m)
+                        keep(it.threshold == 0.35m)
+                        keep(it.robot_frame_id ==  'turtlebot4_base_link_gt')
+                    box.relative_spawn(
+                        offset_min: 0.5,
+                        offset_max: 1.5,
+                        model: 'example_simulation://models/box.sdf',
+                        world_name: 'maze')
+                    wait elapsed(7s)
+                    box.relative_spawn(
+                        offset_min: 0.5,
+                        offset_max: 1.5,
+                        model: 'example_simulation://models/box.sdf',
+                        world_name: 'maze')
+            emit end
+        time_out: serial:
+            wait elapsed(120s)
+            emit fail

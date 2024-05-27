@@ -22,11 +22,11 @@ from enum import Enum
 
 from std_msgs.msg import String
 
+import rclpy
 from math import sin, cos, atan2
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
 from rclpy.logging import get_logger
 from rclpy.node import Node
-from rclpy.time import Time as RclpyTime
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
@@ -56,7 +56,8 @@ class GazeboRelativeSpawnActor(RunProcess):
     """
 
     def __init__(self, name, associated_actor,
-                 base_link_offset_min: float, base_link_offset_max: float,
+                 frame_id: str, parent_frame_id: str,
+                 offset_min: float, offset_max: float,
                  world_name: str, xacro_arguments: list, model: str, **kwargs):
         """
         init
@@ -64,8 +65,10 @@ class GazeboRelativeSpawnActor(RunProcess):
         super().__init__(name, "")
         self.entity_name = associated_actor["name"]
         self.model_file = model
-        self.base_link_offset_min = base_link_offset_min
-        self.base_link_offset_max = base_link_offset_max
+        self.frame_id = frame_id
+        self.parent_frame_id = parent_frame_id
+        self.offset_min = offset_min
+        self.offset_max = offset_max
         self.world_name = world_name
         self.xacro_arguments = xacro_arguments
         self.current_state = SpawnActionState.WAITING_FOR_TOPIC
@@ -178,12 +181,18 @@ class GazeboRelativeSpawnActor(RunProcess):
 
     def calculate_new_pose(self):
         """
-        Get position of base_link and create a pose with and offset in front of it
+        Get position of the frame with frame_id relative to the parent_frame_id
+        and create a pose with and offset in front of it
 
         """
         try:
-            now = RclpyTime()
-            trans = self.tf_buffer.lookup_transform('map', 'base_link', RclpyTime())
+            now = rclpy.time.Time()
+            trans = self.tf_buffer.lookup_transform(
+                self.parent_frame_id,
+                self.frame_id,
+                now,
+                timeout=rclpy.duration.Duration(seconds=1.0),
+            )
 
             # Extract current position and orientation
             current_position = trans.transform.translation
@@ -191,16 +200,16 @@ class GazeboRelativeSpawnActor(RunProcess):
 
             rotation_angle = 2 * atan2(current_orientation.z, current_orientation.w)
 
-            # Calculate new position with base_link_offset in front
+            # Calculate new position with offset in front
             # probably this can be done with another transform, but it doesn't work for me
-            offset = random.uniform(self.base_link_offset_min, self.base_link_offset_max)
+            offset = random.uniform(self.offset_min, self.offset_max)
             new_x = current_position.x + offset * cos(rotation_angle)
             new_y = current_position.y + offset * sin(rotation_angle)
 
             # Create new pose
             new_pose = PoseStamped()
             new_pose.header.stamp = now.to_msg()
-            new_pose.header.frame_id = 'map'
+            new_pose.header.frame_id = self.parent_frame_id
             new_pose.pose.position.x = new_x
             new_pose.pose.position.y = new_y
             new_pose.pose.position.z = current_position.z  # Assuming same height
@@ -214,24 +223,12 @@ class GazeboRelativeSpawnActor(RunProcess):
                 f' w: {new_pose.pose.orientation.w} x: {new_pose.pose.orientation.x} y: {new_pose.pose.orientation.y} z: {new_pose.pose.orientation.z}' \
                 ' } }'
 
-            # offset_pose = PoseStamped()
-            # offset_pose.header.frame_id = "base_link"
-            # offset_pose.pose.position.x = trans.transform.translation.x + self.base_link_offset
-            # offset_pose.pose.position.y = trans.transform.translation.y
-            # offset_pose.pose.orientation = trans.transform.rotation
-
-            # transformed_offset_pose = self.tf_buffer.transform(offset_pose, "map")
-
-            # self._pose = '{ position: {' \
-            #     f' x: {transformed_offset_pose.pose.position.x} y: {transformed_offset_pose.pose.position.y} z: {transformed_offset_pose.pose.position.z}' \
-            #     ' } orientation: {' \
-            #     f' w: {transformed_offset_pose.pose.orientation.w} x: {transformed_offset_pose.pose.orientation.x} y: {transformed_offset_pose.pose.orientation.y} z: {transformed_offset_pose.pose.orientation.z}' \
-            #     ' } }'
-
             self.current_state = SpawnActionState.POSE_AVAILABLE
 
-        except TransformException as e:
-            self.logger.warn(f"Could not transform: {str(e)}")
+        except TransformException as ex:
+            self.feedback_message = f"Could not transform {self.parent_frame_id} to {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
+            self.logger().warn(
+                f'Could not transform {self.parent_frame_id} to {self.frame_id} at time {now}: {ex}')
 
     def set_command(self, command):
         """
