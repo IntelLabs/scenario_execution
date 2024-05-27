@@ -56,7 +56,7 @@ class GazeboRelativeSpawnActor(RunProcess):
     """
 
     def __init__(self, name, associated_actor,
-                 frame_id: str, parent_frame_id: str,
+                 frame_id: str, parent_frame_id: str, seed: int,
                  offset_min: float, offset_max: float,
                  world_name: str, xacro_arguments: list, model: str, **kwargs):
         """
@@ -67,6 +67,7 @@ class GazeboRelativeSpawnActor(RunProcess):
         self.model_file = model
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
+        self.seed = seed
         self.offset_min = offset_min
         self.offset_max = offset_max
         self.world_name = world_name
@@ -201,8 +202,8 @@ class GazeboRelativeSpawnActor(RunProcess):
             rotation_angle = 2 * atan2(current_orientation.z, current_orientation.w)
 
             # Calculate new position with offset in front
-            # probably this can be done with another transform, but it doesn't work for me
-            offset = random.uniform(self.offset_min, self.offset_max)
+            random.seed(self.seed) #nosec
+            offset = random.uniform(self.offset_min, self.offset_max) #nosec
             new_x = current_position.x + offset * cos(rotation_angle)
             new_y = current_position.y + offset * sin(rotation_angle)
 

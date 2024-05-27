@@ -18,6 +18,7 @@ scenario example_simulation:
                     box.relative_spawn(
                         offset_min: 0.5,
                         offset_max: 1.5,
+                        seed: 42,
                         model: 'example_simulation://models/box.sdf',
                         world_name: 'maze')
                     wait elapsed(7s)
