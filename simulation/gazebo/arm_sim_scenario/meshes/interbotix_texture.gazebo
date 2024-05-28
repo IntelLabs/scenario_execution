@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <gazebo reference="$(arg robot_name)/$(arg base_link_frame)">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/shoulder_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/upper_arm_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/forearm_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/upper_forearm_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/lower_forearm_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/wrist_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/gripper_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/gripper_prop_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/gripper_bar_link">
+    <material>Gazebo/DarkGray</material>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/left_finger_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/right_finger_link">
+    <material>Gazebo/DarkGray</material>
+    <dynamics damping="10.0" friction="10.0"/>
+  </gazebo>
+
+  <gazebo reference="$(arg robot_name)/ar_tag_link">
+    <material>Gazebo/DarkGray</material>
+  </gazebo>
+
+  <gazebo reference="ee_arm">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
+
+  <gazebo reference="ar_tag">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
+
+  <gazebo reference="gripper_bar">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
+
+  <gazebo reference="ee_bar">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
+
+  <gazebo reference="ee_gripper">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
+
+</robot>
