@@ -141,3 +141,6 @@ action wait_for_data:
 action wait_for_topics:
     # wait for topics to get available
     topics: list of topics
+
+action move_to_joint_pose:
+    joint_pose: string

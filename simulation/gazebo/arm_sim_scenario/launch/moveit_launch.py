@@ -52,7 +52,7 @@ ARGUMENTS = [
                           description='use_sim_time'),
     DeclareLaunchArgument('robot_name', default_value=LaunchConfiguration('robot_model'),
                           description='Robot name'),
-    DeclareLaunchArgument('use_rviz', default_value='true',
+    DeclareLaunchArgument('use_rviz', default_value='false',
                           choices=['true', 'false'],
                           description='launches RViz if set to `true`.'),
     DeclareLaunchArgument('rviz_config',
