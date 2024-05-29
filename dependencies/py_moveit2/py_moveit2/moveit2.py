@@ -1,3 +1,5 @@
+# License: BSD
+
 import copy
 import threading
 from enum import Enum

@@ -1,3 +1,4 @@
+# License: BSD
 import math
 from typing import List, Optional
 

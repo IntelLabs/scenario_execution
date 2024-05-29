@@ -1,16 +1,29 @@
+# Copyright (C) 2024 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, RegisterEventHandler, IncludeLaunchDescription,Shutdown
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, RegisterEventHandler, IncludeLaunchDescription, Shutdown
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.event_handlers import OnProcessExit
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
-from launch.event_handlers import OnProcessExit
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch import LaunchDescription
-from launch.event_handlers import OnProcessExit
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import (LaunchConfiguration,PathJoinSubstitution)
 from launch_ros.substitutions import FindPackageShare
+
 
 ARGUMENTS = [
     DeclareLaunchArgument('robot_model', default_value='wx200',
@@ -30,15 +43,15 @@ ARGUMENTS = [
 
     DeclareLaunchArgument('rviz_config',
                           default_value=PathJoinSubstitution([get_package_share_directory('arm_sim_scenario'),
-                            'rviz',
-                            'xsarm_gz_classic.rviz',
-                            ]),
-                            description='file path to the config file RViz should load.',)
+                                                              'rviz',
+                                                              'xsarm_gz_classic.rviz',
+                                                              ]),
+                          description='file path to the config file RViz should load.',)
 ]
 
 
 def generate_launch_description():
-    
+
     robot_model = LaunchConfiguration('robot_model')
     robot_name = LaunchConfiguration('robot_name')
     use_rviz = LaunchConfiguration('use_rviz')
@@ -46,8 +59,8 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
 
     env = {'IGN_GAZEBO_SYSTEM_PLUGIN_PATH': os.environ['LD_LIBRARY_PATH'],
-        'IGN_GAZEBO_RESOURCE_PATH': os.path.dirname(
-            get_package_share_directory('arm_sim_scenario'))}
+           'IGN_GAZEBO_RESOURCE_PATH': os.path.dirname(
+        get_package_share_directory('arm_sim_scenario'))}
 
     ignition_gazebo = ExecuteProcess(
         cmd=['ign', 'gazebo', 'empty.sdf', '-r', '-v', '4'],
@@ -61,22 +74,22 @@ def generate_launch_description():
     )
 
     spawn_robot_node = Node(
-            package='ros_gz_sim',
-            executable='create',
-            arguments=['-name', 'spawn_wx200',
-                       '-x', '0.0',
-                       '-y', '0.0',
-                       '-z', '0.0',
-                       '-Y', '0.0',
-                       '-topic', 'wx200/robot_description'],
-            output='screen'
+        package='ros_gz_sim',
+        executable='create',
+        arguments=['-name', 'spawn_wx200',
+                   '-x', '0.0',
+                   '-y', '0.0',
+                   '-z', '0.0',
+                   '-Y', '0.0',
+                   '-topic', 'wx200/robot_description'],
+        output='screen'
     )
 
     clock_bridge = Node(
-                package='ros_gz_bridge',
-                executable='parameter_bridge',
-                arguments=['/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock'],
-                output='screen'
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=['/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock'],
+        output='screen'
     )
 
     arm_description_launch = IncludeLaunchDescription(

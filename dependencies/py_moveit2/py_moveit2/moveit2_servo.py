@@ -1,3 +1,4 @@
+# License: BSD
 from copy import deepcopy
 from typing import Optional, Tuple
 

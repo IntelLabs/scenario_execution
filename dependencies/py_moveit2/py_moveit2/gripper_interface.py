@@ -1,3 +1,5 @@
+# License: BSD
+
 from typing import List, Optional
 
 from rclpy.callback_groups import CallbackGroup

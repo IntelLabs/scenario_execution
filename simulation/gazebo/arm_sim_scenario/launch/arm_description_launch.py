@@ -1,3 +1,19 @@
+# Copyright (C) 2024 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
@@ -22,10 +38,10 @@ ARGUMENTS = [
                           description='launches RViz if set to `true`.'),
     DeclareLaunchArgument('rviz_config',
                           default_value=PathJoinSubstitution([get_package_share_directory('arm_sim_scenario'),
-                            'rviz',
-                            'xsarm_description.rviz',
-                            ]),
-                            description='file path to the config file RViz should load.',)
+                                                              'rviz',
+                                                              'xsarm_description.rviz',
+                                                              ]),
+                          description='file path to the config file RViz should load.',)
 ]
 
 
@@ -50,15 +66,15 @@ def generate_launch_description():
             {'robot_description': ParameterValue(Command([
                 'xacro', ' ', xacro_file, ' ',
                 'gazebo:=ignition', ' ',
-                'base_link_frame:=','base_link', ' ',
-                'use_gripper:=','true', ' ',
-                'show_ar_tag:=','false', ' ',
-                'show_gripper_bar:=','true', ' ',
-                'show_gripper_fingers:=','true', ' ',
-                'use_world_frame:=','true', ' ',
-                'robot_model:=',robot_model, ' ',
-                'robot_name:=',robot_name, ' ',
-                'hardware_type:=','gz_classic']), value_type=str)},
+                'base_link_frame:=', 'base_link', ' ',
+                'use_gripper:=', 'true', ' ',
+                'show_ar_tag:=', 'false', ' ',
+                'show_gripper_bar:=', 'true', ' ',
+                'show_gripper_fingers:=', 'true', ' ',
+                'use_world_frame:=', 'true', ' ',
+                'robot_model:=', robot_model, ' ',
+                'robot_name:=', robot_name, ' ',
+                'hardware_type:=', 'gz_classic']), value_type=str)},
         ],
         namespace=robot_name
     )
