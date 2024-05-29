@@ -17,7 +17,7 @@
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 
-from py_moveit2 import MoveIt2, MoveIt2State
+from pymoveit2 import MoveIt2, MoveIt2State
 from arm_sim_scenario.robots import wx200
 
 import py_trees
