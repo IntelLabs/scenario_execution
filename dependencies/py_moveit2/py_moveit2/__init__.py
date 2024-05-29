@@ -1,4 +1,3 @@
-from . import robots
 from .gripper_command import GripperCommand
 from .gripper_interface import GripperInterface
 from .moveit2 import MoveIt2, MoveIt2State

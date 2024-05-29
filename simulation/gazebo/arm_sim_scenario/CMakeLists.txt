@@ -8,6 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 
+ament_python_install_package(arm_sim_scenario)
 
 install(
   DIRECTORY config launch urdf config rviz meshes
