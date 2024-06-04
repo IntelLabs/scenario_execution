@@ -13,7 +13,7 @@ def joint_names() -> List[str]:
         "shoulder",
         "elbow",
         "wrist_angle",
-        "wrist_rotate"
+        "wrist_rotate",
         "left_finger",
         "right_finger",
     ]

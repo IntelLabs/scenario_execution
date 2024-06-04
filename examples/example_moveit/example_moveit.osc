@@ -1,9 +1,17 @@
 import osc.ros
 
 scenario example_moveit:
+    wx200: robotic_arm with:
+        keep(it.namespace == 'wx200') 
+        keep(it.joint_names == '[\"waist\",\"shoulder\",\"elbow\",\"wrist_angle\",\"wrist_rotate\",\"left_finger\",\"right_finger\"]')
+        keep(it.base_link_name == 'base_link') 
+        keep(it.end_effector_name == 'gripper_link') 
+        keep(it.gripper_joint_names == '[\"right_finger\",\"left_finger\"]') 
+        keep(it.move_group_arm == 'interbotix_arm') 
+        keep(it.move_group_gripper == 'interbotix_gripper')
     do parallel:
         serial:
-            move_to_joint_pose() with:
+            wx200.move_to_joint_pose() with:
                 keep(it.joint_pose == '[-1.5708, 0.0, 0.0, 0.0, 0.0]')
             wait elapsed(3s)
             emit end

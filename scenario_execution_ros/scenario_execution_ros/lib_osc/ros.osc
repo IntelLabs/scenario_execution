@@ -142,5 +142,15 @@ action wait_for_topics:
     # wait for topics to get available
     topics: list of topics
 
-action move_to_joint_pose:
+actor robotic_arm inherits robot:
+    namespace: string = ''
+    joint_names: string = ''
+    base_link_name: string = ''
+    end_effector_name: string = ''
+    gripper_joint_names: string = ''
+    move_group_arm: string = ''
+    move_group_gripper: string = ''
+
+
+action robotic_arm.move_to_joint_pose:
     joint_pose: string

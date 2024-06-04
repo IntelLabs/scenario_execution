@@ -27,8 +27,6 @@ def generate_launch_description():
 
     arm_sim_scenario_dir = get_package_share_directory('arm_sim_scenario')
     scenario_execution_dir = get_package_share_directory('scenario_execution_ros')
-    # gazebo_tf_publisher_dir = get_package_share_directory('gazebo_tf_publisher')
-    tf_to_pose_publisher_dir = get_package_share_directory('tf_to_pose_publisher')
 
     scenario = LaunchConfiguration('scenario')
     scenario_execution = LaunchConfiguration('scenario_execution')
@@ -46,23 +44,12 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'moveit_launch.py'])]),
     )
 
-    # groundtruth_publisher = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(os.path.join(gazebo_tf_publisher_dir, 'launch', 'gazebo_tf_publisher_launch.py')),
-    #     launch_arguments=[
-    #         ('ign_pose_topic', ['/world/', world, '/dynamic_pose/info']),
-    #     ]
-    # )
-
     scenario_exec = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([scenario_execution_dir, 'launch', 'scenario_launch.py'])]),
         condition=IfCondition(scenario_execution),
         launch_arguments=[
             ('scenario', scenario),
         ]
-    )
-
-    tf_to_pose = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([tf_to_pose_publisher_dir, 'launch', 'tf_to_pose_launch.py'])]),
     )
 
     ld = LaunchDescription([
@@ -72,5 +59,4 @@ def generate_launch_description():
     ld.add_action(ignition)
     ld.add_action(moveit_bringup)
     ld.add_action(scenario_exec)
-    ld.add_action(tf_to_pose)
     return ld

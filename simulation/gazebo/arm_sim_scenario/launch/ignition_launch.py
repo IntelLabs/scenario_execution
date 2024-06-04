@@ -41,12 +41,6 @@ ARGUMENTS = [
     DeclareLaunchArgument('headless', default_value='False',
                           description='Whether to execute simulation gui'),
 
-    DeclareLaunchArgument('rviz_config',
-                          default_value=PathJoinSubstitution([get_package_share_directory('arm_sim_scenario'),
-                                                              'rviz',
-                                                              'xsarm_gz_classic.rviz',
-                                                              ]),
-                          description='file path to the config file RViz should load.',)
 ]
 
 
@@ -55,7 +49,6 @@ def generate_launch_description():
     robot_model = LaunchConfiguration('robot_model')
     robot_name = LaunchConfiguration('robot_name')
     use_rviz = LaunchConfiguration('use_rviz')
-    rviz_config = LaunchConfiguration('rviz_config')
     use_sim_time = LaunchConfiguration('use_sim_time')
 
     env = {'IGN_GAZEBO_SYSTEM_PLUGIN_PATH': os.environ['LD_LIBRARY_PATH'],
@@ -104,8 +97,7 @@ def generate_launch_description():
             'robot_model': robot_model,
             'robot_name': robot_name,
             'use_rviz': use_rviz,
-            'use_sim_time': use_sim_time,
-            'rviz_config': rviz_config
+            'use_sim_time': use_sim_time
         }.items(),
     )
 

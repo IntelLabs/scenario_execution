@@ -26,8 +26,13 @@ import ast
 
 class MoveToJointPose(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name: str, joint_pose: str):
+    def __init__(self, name: str, associated_actor, joint_pose: str):
         super().__init__(name)
+        self.namespace = associated_actor["namespace"]
+        self.joint_names = ast.literal_eval(associated_actor["joint_names"])
+        self.base_link_name = associated_actor["base_link_name"]
+        self.end_effector_name = associated_actor["end_effector_name"]
+        self.move_group_arm = associated_actor["move_group_arm"]
         self.joint_pose = ast.literal_eval(joint_pose)
         self.execute = False
 
@@ -40,16 +45,17 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
             raise KeyError(error_message) from e
 
         self.synchronous = True
-        # If non-positive, don't cancel. Only used if synchronous is False
+
+        # # If non-positive, don't cancel. Only used if synchronous is False
         self.cancel_after_secs = 0.0
 
         # Create MoveIt 2 interface
         self.moveit2 = MoveIt2(
             node=self.node,
-            joint_names=wx200.joint_names(),
-            base_link_name=wx200.base_link_name(),
-            end_effector_name=wx200.end_effector_name(),
-            group_name=wx200.MOVE_GROUP_ARM,
+            joint_names=self.joint_names,
+            base_link_name= self.namespace + '/' + self.base_link_name,
+            end_effector_name= self.namespace + '/' + self.end_effector_name,
+            group_name=self.move_group_arm,
             callback_group=ReentrantCallbackGroup()
         )
 
