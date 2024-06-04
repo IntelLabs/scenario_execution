@@ -29,7 +29,7 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
     def __init__(self, name: str, associated_actor, joint_pose: str):
         super().__init__(name)
         self.namespace = associated_actor["namespace"]
-        self.joint_names = ast.literal_eval(associated_actor["joint_names"])
+        self.joint_names = associated_actor["joint_names"]
         self.base_link_name = associated_actor["base_link_name"]
         self.end_effector_name = associated_actor["end_effector_name"]
         self.move_group_arm = associated_actor["move_group_arm"]
@@ -51,11 +51,11 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
 
         # Create MoveIt 2 interface
         self.moveit2 = MoveIt2(
-            node=self.node,
-            joint_names=self.joint_names,
+            node= self.node,
+            joint_names= self.joint_names,
             base_link_name= self.namespace + '/' + self.base_link_name,
             end_effector_name= self.namespace + '/' + self.end_effector_name,
-            group_name=self.move_group_arm,
+            group_name= self.move_group_arm,
             callback_group=ReentrantCallbackGroup()
         )
 
@@ -64,6 +64,8 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
         # Scale down velocity and acceleration of joints (percentage of maximum)
         self.moveit2.max_velocity = 0.5
         self.moveit2.max_acceleration = 0.5
+
+        self.logger.info(f"{self.joint_names}")
 
     def update(self) -> py_trees.common.Status:
         self.current_state = self.moveit2.query_state()

@@ -144,10 +144,10 @@ action wait_for_topics:
 
 actor robotic_arm inherits robot:
     namespace: string = ''
-    joint_names: string = ''
+    joint_names: list of string
     base_link_name: string = ''
     end_effector_name: string = ''
-    gripper_joint_names: string = ''
+    gripper_joint_names: list of string
     move_group_arm: string = ''
     move_group_gripper: string = ''
 
