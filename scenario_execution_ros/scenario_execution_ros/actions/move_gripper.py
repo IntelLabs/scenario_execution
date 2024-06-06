@@ -51,8 +51,8 @@ class MoveGripper(py_trees.behaviour.Behaviour):
         self.gripper_interface = GripperInterface(
             node= self.node,
             gripper_joint_names= self.gripper_joint_names,
-            open_gripper_joint_positions=[0.037, -0.037] ,
-            closed_gripper_joint_positions=[0.015, -0.015],
+            open_gripper_joint_positions=[-0.037, +0.037] ,
+            closed_gripper_joint_positions=[-0.015, 0.015],
             gripper_group_name= self.move_group_gripper,
             callback_group=ReentrantCallbackGroup(),
             gripper_command_action_name="gripper_action_controller/gripper_cmd"
@@ -63,7 +63,7 @@ class MoveGripper(py_trees.behaviour.Behaviour):
         self.logger.info(f"Current State: {self.current_state}")
         if (self.current_state == MoveIt2State.IDLE):
             if (self.execute == False):
-                self.gripper_interface()
+                self.gripper_interface.open()
                 result = py_trees.common.Status.RUNNING
             else:
                 result = py_trees.common.Status.SUCCESS
