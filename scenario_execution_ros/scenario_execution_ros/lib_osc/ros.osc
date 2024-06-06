@@ -154,3 +154,6 @@ actor robotic_arm inherits robot:
 
 action robotic_arm.move_to_joint_pose:
     joint_pose: string
+
+action robotic_arm.move_gripper:
+    gripper: string # open, close

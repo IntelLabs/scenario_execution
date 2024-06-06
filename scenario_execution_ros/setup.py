@@ -64,6 +64,7 @@ setup(
             'assert_tf_moving = scenario_execution_ros.actions.assert_tf_moving:AssertTfMoving',
             'assert_lifecycle_state = scenario_execution_ros.actions.assert_lifecycle_state:AssertLifecycleState',
             'robotic_arm.move_to_joint_pose = scenario_execution_ros.actions.move_to_joint_pose:MoveToJointPose',
+            'robotic_arm.move_gripper = scenario_execution_ros.actions.move_gripper:MoveGripper',
         ],
         'scenario_execution.osc_libraries': [
             'ros = '

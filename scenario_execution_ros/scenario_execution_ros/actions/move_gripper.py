@@ -17,23 +17,25 @@
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 
-from pymoveit2 import MoveIt2, MoveIt2State
+from pymoveit2 import MoveIt2, MoveIt2State, GripperInterface
 from arm_sim_scenario.robots import wx200
 
 import py_trees
 import ast
 
 
-class MoveToJointPose(py_trees.behaviour.Behaviour):
+class MoveGripper(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name: str, associated_actor, joint_pose: str):
+    def __init__(self, name: str, associated_actor, gripper: str):
         super().__init__(name)
         self.namespace = associated_actor["namespace"]
         self.joint_names = associated_actor["joint_names"]
         self.base_link_name = associated_actor["base_link_name"]
         self.end_effector_name = associated_actor["end_effector_name"]
         self.move_group_arm = associated_actor["move_group_arm"]
-        self.joint_pose = ast.literal_eval(joint_pose)
+        self.move_group_gripper = associated_actor["move_group_gripper"]
+        self.gripper_joint_names = associated_actor["gripper_joint_names"]
+        self.gripper = gripper
         self.execute = False
 
     def setup(self, **kwargs):
@@ -44,42 +46,33 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
-        self.synchronous = True
-
-        # # If non-positive, don't cancel. Only used if synchronous is False
-        self.cancel_after_secs = 0.0
 
         # Create MoveIt 2 interface
-        self.moveit2 = MoveIt2(
+        self.gripper_interface = GripperInterface(
             node= self.node,
-            joint_names= self.joint_names,
-            base_link_name= self.namespace + '/' + self.base_link_name,
-            end_effector_name= self.namespace + '/' + self.end_effector_name,
-            group_name= self.move_group_arm,
-            callback_group=ReentrantCallbackGroup()
+            gripper_joint_names= self.gripper_joint_names,
+            open_gripper_joint_positions=[0.037, -0.037] ,
+            closed_gripper_joint_positions=[0.015, -0.015],
+            gripper_group_name= self.move_group_gripper,
+            callback_group=ReentrantCallbackGroup(),
+            gripper_command_action_name="gripper_action_controller/gripper_cmd"
         )
 
-        self.moveit2.planner_id = "RRTConnectkConfigDefault"
-
-        # Scale down velocity and acceleration of joints (percentage of maximum)
-        self.moveit2.max_velocity = 0.5
-        self.moveit2.max_acceleration = 0.5
-
     def update(self) -> py_trees.common.Status:
-        self.current_state = self.moveit2.query_state()
+        self.current_state = self.gripper_interface.query_state()
         self.logger.info(f"Current State: {self.current_state}")
         if (self.current_state == MoveIt2State.IDLE):
             if (self.execute == False):
-                self.moveit2.move_to_configuration(self.joint_pose)
+                self.gripper_interface()
                 result = py_trees.common.Status.RUNNING
             else:
                 result = py_trees.common.Status.SUCCESS
         elif (self.current_state == MoveIt2State.EXECUTING):
-            self.logger.info(f"Executing joint pose....")
+            self.logger.info(f"Executing gripper....")
             result = py_trees.common.Status.RUNNING
             self.execute = True
         else:
-            self.logger.info(f"Requesting joint pose....")
+            self.logger.info(f"Requesting gripper pose....")
             result = py_trees.common.Status.RUNNING
 
         return result
