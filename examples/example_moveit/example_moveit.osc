@@ -14,6 +14,8 @@ scenario example_moveit:
             wx200.move_to_joint_pose() with:
                 keep(it.joint_pose == '[-1.5708, 0.0, 0.0, 0.0, 0.0]')
             wait elapsed(3s)
+            wx200.move_to_pose(pose_3d(position: position_3d(x: 0.1m, y: 0.0m, z: 0.4m)))
+            wait elapsed(3s)
             wx200.move_gripper() with:
                 keep(it.gripper == 'open')
             wait elapsed(3s)

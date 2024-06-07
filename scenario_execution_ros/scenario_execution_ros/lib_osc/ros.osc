@@ -157,3 +157,6 @@ action robotic_arm.move_to_joint_pose:
 
 action robotic_arm.move_gripper:
     gripper: string # open, close
+
+action robotic_arm.move_to_pose:
+    goal_pose: pose_3d
