@@ -17,11 +17,8 @@
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 
-from pymoveit2 import MoveIt2, MoveIt2State, GripperInterface
-from arm_sim_scenario.robots import wx200
-
+from pymoveit2 import MoveIt2State, GripperInterface
 import py_trees
-import ast
 
 
 class MoveGripper(py_trees.behaviour.Behaviour):
@@ -37,6 +34,11 @@ class MoveGripper(py_trees.behaviour.Behaviour):
         self.gripper_joint_names = associated_actor["gripper_joint_names"]
         self.gripper = gripper
         self.execute = False
+        self.node = None
+        self.synchronous = True
+        self.cancel_after_secs = 0.0
+        self.gripper_interface = None
+        self.current_state = None
 
     def setup(self, **kwargs):
         try:
@@ -46,14 +48,13 @@ class MoveGripper(py_trees.behaviour.Behaviour):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
-
         # Create MoveIt 2 interface
         self.gripper_interface = GripperInterface(
-            node= self.node,
-            gripper_joint_names= self.gripper_joint_names,
-            open_gripper_joint_positions=[-0.037, +0.037] ,
+            node=self.node,
+            gripper_joint_names=self.gripper_joint_names,
+            open_gripper_joint_positions=[-0.037, +0.037],
             closed_gripper_joint_positions=[-0.015, 0.015],
-            gripper_group_name= self.move_group_gripper,
+            gripper_group_name=self.move_group_gripper,
             callback_group=ReentrantCallbackGroup(),
             gripper_command_action_name="gripper_action_controller/gripper_cmd"
         )
@@ -61,13 +62,13 @@ class MoveGripper(py_trees.behaviour.Behaviour):
     def update(self) -> py_trees.common.Status:
         self.current_state = self.gripper_interface.query_state()
         self.logger.info(f"Current State: {self.current_state}")
-        if (self.current_state == MoveIt2State.IDLE):
-            if (self.execute == False):
+        if self.current_state == MoveIt2State.IDLE:
+            if not self.execute:
                 self.gripper_interface.open()
                 result = py_trees.common.Status.RUNNING
             else:
                 result = py_trees.common.Status.SUCCESS
-        elif (self.current_state == MoveIt2State.EXECUTING):
+        elif self.current_state == MoveIt2State.EXECUTING:
             self.logger.info(f"Executing gripper....")
             result = py_trees.common.Status.RUNNING
             self.execute = True
@@ -76,4 +77,3 @@ class MoveGripper(py_trees.behaviour.Behaviour):
             result = py_trees.common.Status.RUNNING
 
         return result
-

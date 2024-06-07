@@ -18,8 +18,6 @@ from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 
 from pymoveit2 import MoveIt2, MoveIt2State
-from arm_sim_scenario.robots import wx200
-
 import py_trees
 import ast
 
@@ -35,6 +33,11 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
         self.move_group_arm = associated_actor["move_group_arm"]
         self.joint_pose = ast.literal_eval(joint_pose)
         self.execute = False
+        self.node = None
+        self.synchronous = True
+        self.cancel_after_secs = 0.0
+        self.moveit2 = None
+        self.current_state = None
 
     def setup(self, **kwargs):
         try:
@@ -44,18 +47,13 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
-        self.synchronous = True
-
-        # # If non-positive, don't cancel. Only used if synchronous is False
-        self.cancel_after_secs = 0.0
-
         # Create MoveIt 2 interface
         self.moveit2 = MoveIt2(
-            node= self.node,
-            joint_names= self.joint_names,
-            base_link_name= self.namespace + '/' + self.base_link_name,
-            end_effector_name= self.namespace + '/' + self.end_effector_name,
-            group_name= self.move_group_arm,
+            node=self.node,
+            joint_names=self.joint_names,
+            base_link_name=self.namespace + '/' + self.base_link_name,
+            end_effector_name=self.namespace + '/' + self.end_effector_name,
+            group_name=self.move_group_arm,
             callback_group=ReentrantCallbackGroup()
         )
 
@@ -68,13 +66,13 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
     def update(self) -> py_trees.common.Status:
         self.current_state = self.moveit2.query_state()
         self.logger.info(f"Current State: {self.current_state}")
-        if (self.current_state == MoveIt2State.IDLE):
-            if (self.execute == False):
+        if self.current_state == MoveIt2State.IDLE:
+            if not self.execute:
                 self.moveit2.move_to_configuration(self.joint_pose)
                 result = py_trees.common.Status.RUNNING
             else:
                 result = py_trees.common.Status.SUCCESS
-        elif (self.current_state == MoveIt2State.EXECUTING):
+        elif self.current_state == MoveIt2State.EXECUTING:
             self.logger.info(f"Executing joint pose....")
             result = py_trees.common.Status.RUNNING
             self.execute = True
@@ -83,4 +81,3 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
             result = py_trees.common.Status.RUNNING
 
         return result
-
