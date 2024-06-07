@@ -1,0 +1,39 @@
+import osc.ros
+import osc.gazebo
+
+scenario example_moveit:
+    wx200: robotic_arm with:
+        keep(it.namespace == 'wx200') 
+        keep(it.joint_names == ["waist","shoulder","elbow","wrist_angle","wrist_rotate","left_finger","right_finger"])
+        keep(it.base_link_name == 'base_link') 
+        keep(it.end_effector_name == 'gripper_link') 
+        keep(it.gripper_joint_names == ["right_finger","left_finger"]) 
+        keep(it.move_group_arm == 'interbotix_arm') 
+        keep(it.move_group_gripper == 'interbotix_gripper')
+    box: osc_actor
+    do parallel:
+        serial:
+            box.spawn(spawn_pose: pose_3d(
+                            position: position_3d(x: 0.25m, y: 0.0m, z: 0.02m),
+                            orientation: orientation_3d(yaw: 0.0rad)),
+                        model: 'example_moveit_simulation://models/box.sdf',world_name: 'empty')
+        serial:
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[0.0, 0.122173, 0.296706, 1.0472, 0.0]')
+            wx200.move_gripper() with:
+                keep(it.gripper == 'open')
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[0.0, 0.296706, 0.296706, 1.22173, 0.0]')
+            wx200.move_gripper() with:
+                keep(it.gripper == 'close')
+            wx200.move_to_pose(pose_3d(position: position_3d(x: 0.1m, y: 0.0m, z: 0.4m)))
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[0.5235, 0.0, 0.0, 0.0, 0.0]')
+            wx200.move_gripper() with:
+                keep(it.gripper == 'open')
+            wx200.move_to_pose(pose_3d(position: position_3d(x: 0.1m, y: 0.0m, z: 0.4m)))
+            wait elapsed(3s)
+            emit end
+        time_out: serial:
+            wait elapsed(60s)
+            emit fail

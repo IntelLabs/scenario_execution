@@ -1,0 +1,37 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+  <model name="my_model">
+    <pose>0 0 0.5 0 0 0</pose>
+    <link name="link">
+      <inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.083</ixx>   
+          <ixy>0.0</ixy>         
+          <ixz>0.0</ixz>        
+          <iyy>0.083</iyy>     
+          <iyz>0.0</iyz>         
+          <izz>0.083</izz>       
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <box>
+            <size>0.03 0.03 0.03</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <box>
+            <size>0.03 0.03 0.03</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0.1 0.1 0.1 1</diffuse>
+          <specular>0.4 0.4 0.4 1</specular>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
