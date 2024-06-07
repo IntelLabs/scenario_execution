@@ -51,11 +51,6 @@ class MoveToPose(py_trees.behaviour.Behaviour):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
-        self.synchronous = True
-
-        # # If non-positive, don't cancel. Only used if synchronous is False
-        self.cancel_after_secs = 0.0
-
         # Create MoveIt 2 interface
         self.moveit2 = MoveIt2(
             node=self.node,
