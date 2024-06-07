@@ -40,8 +40,6 @@ class MoveToPose(py_trees.behaviour.Behaviour):
         self.cartesian_avoid_collisions = False
         self.execute = False
         self.node = None
-        self.synchronous = True
-        self.cancel_after_secs = 0.0
         self.moveit2 = None
         self.current_state = None
 
@@ -68,7 +66,7 @@ class MoveToPose(py_trees.behaviour.Behaviour):
             callback_group=ReentrantCallbackGroup()
         )
 
-        self.moveit2.planner_id = "RRTConnectkConfigDefault"
+        self.moveit2.planner_id = "RRTConnect"
 
         # Scale down velocity and acceleration of joints (percentage of maximum)
         self.moveit2.max_velocity = 0.5
@@ -78,20 +76,25 @@ class MoveToPose(py_trees.behaviour.Behaviour):
 
     def update(self) -> py_trees.common.Status:
         self.current_state = self.moveit2.query_state()
-        if self.current_state == MoveIt2State.IDLE:
-            if not self.execute:
-                self.move_to_pose()
+        if not self.execute:
+            if self.current_state == MoveIt2State.EXECUTING:
+                self.logger.info("Another motion is in progress. Waiting for current motion to complete...")
                 result = py_trees.common.Status.RUNNING
             else:
-                result = py_trees.common.Status.SUCCESS
-        elif self.current_state == MoveIt2State.EXECUTING:
-            self.logger.info(f"Executing joint pose....")
-            result = py_trees.common.Status.RUNNING
-            self.execute = True
+                self.logger.info("No motion in progress. Initiating move to goal pose...")
+                self.move_to_pose()
+                result = py_trees.common.Status.RUNNING
+                self.execute = True
         else:
-            self.logger.info(f"Requesting joint pose....")
-            result = py_trees.common.Status.RUNNING
-
+            if self.current_state == MoveIt2State.IDLE:
+                self.logger.info("Motion to goal pose successful.")
+                result = py_trees.common.Status.SUCCESS
+            elif self.current_state == MoveIt2State.EXECUTING:
+                self.logger.info("Motion to goal pose in progress...")
+                result = py_trees.common.Status.RUNNING
+            else:
+                self.logger.info("Unknown state encountered while executing motion. Requesting goal pose again...")
+                result = py_trees.common.Status.RUNNING
         return result
 
     def move_to_pose(self):

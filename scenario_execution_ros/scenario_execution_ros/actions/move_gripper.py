@@ -35,8 +35,6 @@ class MoveGripper(py_trees.behaviour.Behaviour):
         self.gripper = gripper
         self.execute = False
         self.node = None
-        self.synchronous = True
-        self.cancel_after_secs = 0.0
         self.gripper_interface = None
         self.current_state = None
 
@@ -59,21 +57,32 @@ class MoveGripper(py_trees.behaviour.Behaviour):
             gripper_command_action_name="gripper_action_controller/gripper_cmd"
         )
 
+        if self.gripper not in ['open', 'close']:
+            raise ValueError("Invalid gripper state speficied. Allowed values are 'open' or 'close'.")
+
     def update(self) -> py_trees.common.Status:
         self.current_state = self.gripper_interface.query_state()
-        self.logger.info(f"Current State: {self.current_state}")
-        if self.current_state == MoveIt2State.IDLE:
-            if not self.execute:
-                self.gripper_interface.open()
+        if not self.execute:
+            if self.current_state == MoveIt2State.EXECUTING:
+                self.logger.info("Another motion is in progress. Waiting for the current motion to complete...")
                 result = py_trees.common.Status.RUNNING
             else:
-                result = py_trees.common.Status.SUCCESS
-        elif self.current_state == MoveIt2State.EXECUTING:
-            self.logger.info(f"Executing gripper....")
-            result = py_trees.common.Status.RUNNING
-            self.execute = True
+                if self.gripper == 'open':
+                    self.gripper_interface.open()
+                else:
+                    self.gripper_interface.close()
+                self.logger.info(f"No motion in progress. Setting gripper to {self.gripper} state...")
+                self.execute = True
+                result = py_trees.common.Status.RUNNING
         else:
-            self.logger.info(f"Requesting gripper pose....")
-            result = py_trees.common.Status.RUNNING
-
+            if self.current_state == MoveIt2State.IDLE:
+                self.logger.info(f"Gripper state {self.gripper} set successfully.")
+                result = py_trees.common.Status.SUCCESS
+                self.execute = False  # Reset for potential future executions
+            elif self.current_state == MoveIt2State.EXECUTING:
+                self.logger.info("Motion in progress...")
+                result = py_trees.common.Status.RUNNING
+            else:
+                self.logger.info("Unknown state encountered while executing motion. Requesting again...")
+                result = py_trees.common.Status.RUNNING
         return result

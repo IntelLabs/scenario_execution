@@ -19,6 +19,9 @@ scenario example_moveit:
             wx200.move_gripper() with:
                 keep(it.gripper == 'open')
             wait elapsed(3s)
+            wx200.move_gripper() with:
+                keep(it.gripper == 'close')
+            wait elapsed(3s)
             emit end
         time_out: serial:
             wait elapsed(60s)
