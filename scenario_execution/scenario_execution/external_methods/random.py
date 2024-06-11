@@ -16,5 +16,5 @@
 import random
 
 
-def get_float(min: dict, max: float):
-    return random.uniform(min, max)  # nosec B311
+def get_float(min_val: dict, max_val: float):
+    return random.uniform(min_val, max_val)  # nosec B311

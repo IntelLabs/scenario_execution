@@ -312,4 +312,7 @@ class ModelResolver(ModelBaseVisitor):
 
         comp, methodname = node.func_name.rsplit('.', 1)
         resolved_comp = node.resolve(comp)
+        if not resolved_comp:
+            raise OSC2ParsingError(msg=f'Could not find "{comp}"', context=node.get_ctx())
+
         node.func_name = resolved_comp.get_named_child(methodname, MethodDeclaration)
