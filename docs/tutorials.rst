@@ -416,7 +416,7 @@ Currently, terminating the scenario will not stop the ongoing navigation, and th
 Use External Methods
 --------------------
 
-It is possible to call external python methods and use their return value within a scenario. A basic example of this functionality can be found in :repo_link:`examples/example_external_method/`providing a factorial method.
+It is possible to call external python methods and use their return value within a scenario. A basic example of this functionality can be found in :repo_link:`examples/example_external_method/` providing a factorial method.
 
 .. code-block::
 
