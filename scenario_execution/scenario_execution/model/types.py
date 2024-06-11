@@ -156,6 +156,16 @@ class ModelElement(object):  # pylint: disable=too-many-public-methods
                 children_of_type.extend(child.find_children_of_type(typename))
         return children_of_type
 
+    def get_named_child(self, name, typename=None): 
+        # if typename is not none, type is checked
+        for child in self.__children:
+            if name == child.name:
+                if typename:
+                    if not isinstance(child, typename):
+                        return None
+                return child
+        return None
+    
     def find_first_child_of_type(self, typename, unique=True):
         found = None
         for child in self.__children:
@@ -463,6 +473,17 @@ class PhysicalTypeDeclaration(Declaration):
     def get_type_string(self):
         return self.type_name
 
+    def get_base_type(self):
+        child = self.get_only_child()
+        if isinstance(child, IntegerLiteral):
+            return "int"
+        elif isinstance(child, FloatLiteral):
+            return "float"
+        elif isinstance(child, StringLiteral):
+            return "string"
+        elif isinstance(child, BoolLiteral):
+            return "bool"
+        return None
 
 class UnitDeclaration(Declaration):
 
@@ -1045,7 +1066,7 @@ class EventCondition(ModelElement):
 class MethodDeclaration(Declaration):
 
     def __init__(self, method_name, return_type):
-        super().__init__()
+        super().__init__(method_name)
         self.method_name = method_name
         self.return_type = return_type
 
@@ -1063,6 +1084,12 @@ class MethodDeclaration(Declaration):
         else:
             return visitor.visit_children(self)
 
+    def get_resolved_value(self):
+        params = {}
+        for child in self.get_children():
+            if isinstance(child, Argument):
+                params[child.name] = child.default_value
+        return params
 
 class MethodBody(ModelElement):
 
@@ -1129,11 +1156,10 @@ class RecordDeclaration(Declaration):
             return visitor.visit_children(self)
 
 
-class Argument(ModelElement):
+class Argument(Parameter):
 
     def __init__(self, argument_name, argument_type, default_value):
-        super().__init__()
-        self.argument_name = argument_name
+        super().__init__(argument_name)
         self.argument_type = argument_type
         self.default_value = default_value
 
@@ -1151,6 +1177,9 @@ class Argument(ModelElement):
         else:
             return visitor.visit_children(self)
 
+    # def get_type(self):
+    #     declared_type = self.find_first_child_of_type(Type)
+    #     return declared_type
 
 class NamedArgument(ModelElement):
 
@@ -1684,9 +1713,7 @@ class FunctionApplicationExpression(Expression):
             return visitor.visit_children(self)
 
     def get_resolved_value(self):
-        ref = self.find_first_child_of_type(IdentifierReference)
-        params = ref.get_resolved_value()
-
+        params = self.func_name.get_resolved_value()
         named = False
         pos = 0
         param_keys = list(params.keys())
@@ -1697,12 +1724,16 @@ class FunctionApplicationExpression(Expression):
                     raise OSC2ParsingError(
                         msg=f'Positional argument after named argument not allowed.', context=child.get_ctx())
                 key = param_keys[pos]
+                pos += 1
             elif isinstance(child, NamedArgument):
                 named = True
                 key = child.name
             if key:
                 params[key] = child.get_resolved_value()
-        return params
+        
+        body = self.func_name.find_first_child_of_type(MethodBody)
+        result = body.external_name(**params)
+        return result
 
     def get_type(self):
         ref = self.find_first_child_of_type(IdentifierReference)

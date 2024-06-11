@@ -16,11 +16,12 @@
 
 from scenario_execution.model.types import ActionDeclaration, ActionInherits, EnumDeclaration, EnumValueReference, KeepConstraintDeclaration, EmitDirective, Type
 
-from .types import UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree
+from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, FunctionApplicationExpression, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree
 
 from .model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
-
+import importlib
+import inspect
 
 def resolve_internal_model(model, logger, log_tree):
     osc2scenario_resolver = ModelResolver(logger)
@@ -278,3 +279,45 @@ class ModelResolver(ModelBaseVisitor):
                     next_numeric_val = child.numeric_value + 1
 
         return super().visit_enum_declaration(node)
+
+    def visit_method_declaration(self, node: MethodDeclaration):
+        super().visit_method_declaration(node)
+        body = node.find_first_child_of_type(MethodBody)
+        if body.type_ref == 'external':
+            if not body.external_name:
+                raise OSC2ParsingError(msg=f'No external name defined.', context=node.get_ctx())
+            package, method = body.external_name.rsplit('.', 1)
+            mod = importlib.import_module(package)
+            met = getattr(mod, method)
+            #TODO: test parameters
+            #TODO: met not found?
+            body.external_name = met
+            
+            external_args = inspect.getfullargspec(met).args
+            
+            args = node.find_children_of_type(Argument)
+            for arg in args:
+                param_type, _ =  arg.get_type()
+                if param_type.get_base_type() not in ['string', 'int', 'bool', 'float', 'uint']:
+                    raise OSC2ParsingError(msg=f'Only base types are currently supported.', context=node.get_ctx())
+                if arg.name not in external_args:
+                    raise OSC2ParsingError(msg=f'OSC Argument {arg.name} not found in external method definition', context=node.get_ctx())
+                external_args.remove(arg.name)
+            # print(external_args)
+            
+    def visit_function_application_expression(self, node: FunctionApplicationExpression):
+        #super().visit_function_application_expression(node)
+        for child in node.get_children():
+            if not isinstance(child, IdentifierReference):
+                child.accept(self)
+                
+        comp, methodname = node.func_name.rsplit('.', 1)
+        resolved_comp = node.resolve(comp)
+        node.func_name = resolved_comp.get_named_child(methodname, MethodDeclaration)
+        
+    # def visit_argument(self, node: Argument):
+    #     super().visit_argument(node)
+    # #     resolved = node.resolve(node.argument_type)
+    # #     if resolved is None:
+    # #         raise OSC2ParsingError(
+    # #             msg=f'Type "{node.argument_type}" not defined.', context=node.get_ctx())
