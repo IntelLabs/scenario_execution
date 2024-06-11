@@ -15,10 +15,5 @@
 # SPDX-License-Identifier: Apache-2.0
 import random
 
-def get_time(in_text):
-    print("GET_TIME CALLED")
-    return in_text + "-" + in_text
-
-def get_length(min: float=0., max: float=float("inf")):
-    print("GET_LENGTH CALLED")
+def get_float(min: float, max: float):
     return random.uniform(min, max)

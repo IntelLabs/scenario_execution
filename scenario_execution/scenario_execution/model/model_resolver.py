@@ -298,7 +298,9 @@ class ModelResolver(ModelBaseVisitor):
             args = node.find_children_of_type(Argument)
             for arg in args:
                 param_type, _ =  arg.get_type()
-                if param_type.get_base_type() not in ['string', 'int', 'bool', 'float', 'uint']:
+                if isinstance(param_type, ModelElement):
+                    param_type = param_type.get_base_type()
+                if param_type not in ['string', 'int', 'bool', 'float', 'uint']:
                     raise OSC2ParsingError(msg=f'Only base types are currently supported.', context=node.get_ctx())
                 if arg.name not in external_args:
                     raise OSC2ParsingError(msg=f'OSC Argument {arg.name} not found in external method definition', context=node.get_ctx())
