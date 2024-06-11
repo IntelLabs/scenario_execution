@@ -370,7 +370,7 @@ In the first part we run the executable ``scenario_batch_execution``. This requi
 Finally, The output of the above command will display two values ``foo`` and ``bar`` on the terminal along with the success message.
 
 Control Scenarios with Rviz
---------------------------------
+---------------------------
 In this example, let's learn how to control multiple scenarios directly from ``RVIZ`` control panel.
 
 We'll use :repo_link:`examples/example_scenario_control/` as the base package to launch scenes turtlebot4 inside the ``maze`` simulation environment.
@@ -412,3 +412,34 @@ After completing the initialization scenario, you can run any of the ``nav_to_po
     While the scenario is running, you can click the stop/pause button to terminate it. Afterwards, you have the option to either start the same scenario again or choose another one.
 
 Currently, terminating the scenario will not stop the ongoing navigation, and the robot will continue to move towards its goal pose. However, please note that this behavior will be addressed in future updates.
+
+Use External Methods
+--------------------
+
+It is possible to call external python methods and use their return value within a scenario. A basic example of this functionality can be found in :repo_link:`examples/example_external_method/`providing a factorial method.
+
+.. code-block::
+
+    import osc.standard.base
+    import osc.helpers
+
+    struct lib:
+        def factorial(n: int) -> int is external example_external_method.external_methods.factorial.factorial()
+
+    scenario example_external_method:        
+        do serial:
+            log(lib.factorial(4))
+
+The external method, defined within a python module (in this example ``example_external_method.external_methods.factorial.factorial()``) is referenced within an osc definition with the same signature using the ``external`` keyword.
+
+.. note::
+
+    The osc definition of an external method needs to be placed within a composition type (e.g. a ``struct``) and can be called by using ``<struct-name>.<method-name>``.
+ 
+
+Use this code to see a launch of this tutorial:
+
+.. code-block:: bash
+
+   colcon build --packages-up-to example_external_method && source install/setup.bash \
+   && ros2 run scenario_execution scenario_execution examples/example_external_method/scenarios/example_external_method.osc
