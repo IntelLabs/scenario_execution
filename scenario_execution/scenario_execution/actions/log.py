@@ -52,6 +52,6 @@ class Log(py_trees.behaviour.Behaviour):
             self.published = True
             if not self.msg:
                 raise ValueError("log(): Empty message.")
-            self.logger.info(self.msg)
+            self.logger.info(f"{self.msg}")
 
         return Status.SUCCESS
