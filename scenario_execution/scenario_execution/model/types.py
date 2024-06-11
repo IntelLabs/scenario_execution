@@ -1723,7 +1723,7 @@ class FunctionApplicationExpression(Expression):
             result = body.external_name(**params)
         except Exception as e:
             raise OSC2ParsingError(
-                msg=f'Error while calling external method: {e}', context=self.get_ctx())
+                msg=f'Error while calling external method: {e}', context=self.get_ctx()) from e
 
         return result
 
