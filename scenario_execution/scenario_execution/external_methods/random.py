@@ -17,4 +17,4 @@ import random
 
 
 def get_float(min: dict, max: float):
-    return random.uniform(min, max)
+    return random.uniform(min, max)  # nosec B311
