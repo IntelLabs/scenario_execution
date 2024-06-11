@@ -156,7 +156,7 @@ class ModelElement(object):  # pylint: disable=too-many-public-methods
                 children_of_type.extend(child.find_children_of_type(typename))
         return children_of_type
 
-    def get_named_child(self, name, typename=None): 
+    def get_named_child(self, name, typename=None):
         # if typename is not none, type is checked
         for child in self.__children:
             if name == child.name:
@@ -165,7 +165,7 @@ class ModelElement(object):  # pylint: disable=too-many-public-methods
                         return None
                 return child
         return None
-    
+
     def find_first_child_of_type(self, typename, unique=True):
         found = None
         for child in self.__children:
@@ -473,17 +473,6 @@ class PhysicalTypeDeclaration(Declaration):
     def get_type_string(self):
         return self.type_name
 
-    def get_base_type(self):
-        child = self.get_only_child()
-        if isinstance(child, IntegerLiteral):
-            return "int"
-        elif isinstance(child, FloatLiteral):
-            return "float"
-        elif isinstance(child, StringLiteral):
-            return "string"
-        elif isinstance(child, BoolLiteral):
-            return "bool"
-        return None
 
 class UnitDeclaration(Declaration):
 
@@ -1091,6 +1080,7 @@ class MethodDeclaration(Declaration):
                 params[child.name] = child.default_value
         return params
 
+
 class MethodBody(ModelElement):
 
     def __init__(self, qualifier, type_ref, external_name):
@@ -1177,9 +1167,6 @@ class Argument(Parameter):
         else:
             return visitor.visit_children(self)
 
-    # def get_type(self):
-    #     declared_type = self.find_first_child_of_type(Type)
-    #     return declared_type
 
 class NamedArgument(ModelElement):
 
@@ -1730,15 +1717,14 @@ class FunctionApplicationExpression(Expression):
                 key = child.name
             if key:
                 params[key] = child.get_resolved_value()
-        
+
         body = self.func_name.find_first_child_of_type(MethodBody)
         try:
             result = body.external_name(**params)
         except Exception as e:
             raise OSC2ParsingError(
                 msg=f'Error while calling external method: {e}', context=child.get_ctx())
-        
-            
+
         return result
 
     def get_type(self):

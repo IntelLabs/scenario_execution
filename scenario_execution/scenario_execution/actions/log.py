@@ -53,5 +53,5 @@ class Log(py_trees.behaviour.Behaviour):
             if not self.msg:
                 raise ValueError("log(): Empty message.")
             self.logger.info(self.msg)
-                
+
         return Status.SUCCESS

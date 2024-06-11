@@ -23,6 +23,7 @@ from scenario_execution.model.error import OSC2ParsingError
 import importlib
 import inspect
 
+
 def resolve_internal_model(model, logger, log_tree):
     osc2scenario_resolver = ModelResolver(logger)
     try:
@@ -288,30 +289,27 @@ class ModelResolver(ModelBaseVisitor):
                 raise OSC2ParsingError(msg=f'No external name defined.', context=node.get_ctx())
             package, method = body.external_name.rsplit('.', 1)
             mod = importlib.import_module(package)
-            met = getattr(mod, method)
-            #TODO: test parameters
-            #TODO: met not found?
-            body.external_name = met
-            
-            external_args = inspect.getfullargspec(met).args
-            
+            body.external_name = getattr(mod, method)
+
+            external_args = inspect.getfullargspec(body.external_name).args
+
             args = node.find_children_of_type(Argument)
             for arg in args:
-                param_type, _ =  arg.get_type()
+                param_type, _ = arg.get_type()
                 if isinstance(param_type, ModelElement):
                     param_type = param_type.get_base_type()
-                # if param_type not in ['string', 'int', 'bool', 'float', 'uint']:
-                #     raise OSC2ParsingError(msg=f'Only base types are currently supported.', context=node.get_ctx())
                 if arg.name not in external_args:
                     raise OSC2ParsingError(msg=f'OSC Argument {arg.name} not found in external method definition', context=node.get_ctx())
                 external_args.remove(arg.name)
-            
+        else:
+            raise OSC2ParsingError(
+                msg=f'MethodDeclaration currently only supports "external", not "{body.type_ref}"', context=node.get_ctx())
+
     def visit_function_application_expression(self, node: FunctionApplicationExpression):
         for child in node.get_children():
             if not isinstance(child, IdentifierReference):
                 child.accept(self)
-                
+
         comp, methodname = node.func_name.rsplit('.', 1)
         resolved_comp = node.resolve(comp)
         node.func_name = resolved_comp.get_named_child(methodname, MethodDeclaration)
-        

@@ -262,11 +262,11 @@ class ModelToPyTree(object):
             elem = node.find_first_child_of_type(PhysicalLiteral)
             if not elem:
                 elem = node.find_first_child_of_type(FunctionApplicationExpression)
-                
+
             if not elem:
                 raise OSC2ParsingError(
                     msg=f'Elapsed expression currently only supports PhysicalLiteral and FunctionApplicationExpression.', context=node.get_ctx())
-                
+
             return elem.get_resolved_value()
 
         def visit_event_declaration(self, node: EventDeclaration):
