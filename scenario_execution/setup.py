@@ -71,7 +71,6 @@ setup(
         ],
         'scenario_execution.actions': [
             'log = scenario_execution.actions.log:Log',
-            'length_action = scenario_execution.actions.length_action:LengthAction',
             'run_process = scenario_execution.actions.run_process:RunProcess',
         ],
         'scenario_execution.osc_libraries': [

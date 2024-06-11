@@ -300,15 +300,13 @@ class ModelResolver(ModelBaseVisitor):
                 param_type, _ =  arg.get_type()
                 if isinstance(param_type, ModelElement):
                     param_type = param_type.get_base_type()
-                if param_type not in ['string', 'int', 'bool', 'float', 'uint']:
-                    raise OSC2ParsingError(msg=f'Only base types are currently supported.', context=node.get_ctx())
+                # if param_type not in ['string', 'int', 'bool', 'float', 'uint']:
+                #     raise OSC2ParsingError(msg=f'Only base types are currently supported.', context=node.get_ctx())
                 if arg.name not in external_args:
                     raise OSC2ParsingError(msg=f'OSC Argument {arg.name} not found in external method definition', context=node.get_ctx())
                 external_args.remove(arg.name)
-            # print(external_args)
             
     def visit_function_application_expression(self, node: FunctionApplicationExpression):
-        #super().visit_function_application_expression(node)
         for child in node.get_children():
             if not isinstance(child, IdentifierReference):
                 child.accept(self)
@@ -317,9 +315,3 @@ class ModelResolver(ModelBaseVisitor):
         resolved_comp = node.resolve(comp)
         node.func_name = resolved_comp.get_named_child(methodname, MethodDeclaration)
         
-    # def visit_argument(self, node: Argument):
-    #     super().visit_argument(node)
-    # #     resolved = node.resolve(node.argument_type)
-    # #     if resolved is None:
-    # #         raise OSC2ParsingError(
-    # #             msg=f'Type "{node.argument_type}" not defined.', context=node.get_ctx())

@@ -23,7 +23,6 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
-
 class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
     """

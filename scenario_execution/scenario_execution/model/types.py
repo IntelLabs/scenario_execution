@@ -1732,7 +1732,13 @@ class FunctionApplicationExpression(Expression):
                 params[key] = child.get_resolved_value()
         
         body = self.func_name.find_first_child_of_type(MethodBody)
-        result = body.external_name(**params)
+        try:
+            result = body.external_name(**params)
+        except Exception as e:
+            raise OSC2ParsingError(
+                msg=f'Error while calling external method: {e}', context=child.get_ctx())
+        
+            
         return result
 
     def get_type(self):

@@ -15,5 +15,5 @@
 # SPDX-License-Identifier: Apache-2.0
 import random
 
-def get_float(min: float, max: float):
+def get_float(min: dict, max: float):
     return random.uniform(min, max)
