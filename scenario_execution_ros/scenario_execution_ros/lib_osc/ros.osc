@@ -138,6 +138,13 @@ action wait_for_data:
     qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
     clearing_policy: clearing_policy = clearing_policy!on_initialise     # when to clear the data
 
+action wait_for_message_count:
+    # Wait until a certain amount of messages was received.
+    topic_name: string                                # name of the topic to connect to
+    topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
+    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
+    count: uint                                       # amount of messages to wait for
+
 action wait_for_topics:
     # wait for topics to get available
     topics: list of topics

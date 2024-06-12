@@ -213,6 +213,16 @@ In the background, this action uses `wait_for_data() <https://py-trees-ros.readt
 - ``qos_profile: qos_preset_profiles``: QoS Preset Profile for the subscriber (default: ``qos_preset_profiles!system_default``)
 - ``clearing_policy: clearing_policy``: When to clear the data (default: ``clearing_policy!on_initialise``)
 
+``wait_for_message_count()``
+""""""""""""""""""""""""""""
+
+Wait until a certain amount of messages was received on the specified ROS topic.
+
+- ``topic_name: string``: Name of the topic to connect to
+- ``topic_type: string``: Class of the message type (e.g. ``std_msgs.msg.String``)
+- ``qos_profile: qos_preset_profiles``: QoS Preset Profile for the subscriber (default: ``qos_preset_profiles!system_default``)
+- ``count: uint``: Amount of messages to wait for
+
 
 ``wait_for_topics()``
 """""""""""""""""""""
