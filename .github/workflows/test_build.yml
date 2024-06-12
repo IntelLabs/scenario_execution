@@ -86,17 +86,6 @@ jobs:
           rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
           apt install -y ros-humble-gazebo-ros2-control
           pip3 install -r requirements.txt
-      - name: Build IGN_ROS_CONTROL # build from source for now because base package has errors.
-        shell: bash
-        run: |
-          mkdir -p /ros_ign/src
-          cd /ros_ign/src
-          git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
-          rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
-          cd /ros_ign
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
       - name: Build
         shell: bash
         run: |

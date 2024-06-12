@@ -35,7 +35,7 @@ class MoveGripper(py_trees.behaviour.Behaviour):
         self.gripper = gripper
         self.execute = False
         self.node = None
-        self.logger = None
+
         self.gripper_interface = None
         self.current_state = None
 
