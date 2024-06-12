@@ -133,7 +133,6 @@ jobs:
       - name: Test Example Nav2
         shell: bash
         run: |
-          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
@@ -147,7 +146,6 @@ jobs:
       - name: Test Example Simulation
         shell: bash
         run: |
-          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
@@ -161,7 +159,6 @@ jobs:
       - name: Test Example Multirobot
         shell: bash
         run: |
-          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
