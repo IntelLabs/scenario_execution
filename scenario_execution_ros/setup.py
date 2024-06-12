@@ -63,9 +63,6 @@ setup(
             'assert_topic_latency = scenario_execution_ros.actions.assert_topic_latency:AssertTopicLatency',
             'assert_tf_moving = scenario_execution_ros.actions.assert_tf_moving:AssertTfMoving',
             'assert_lifecycle_state = scenario_execution_ros.actions.assert_lifecycle_state:AssertLifecycleState',
-            'robotic_arm.move_to_joint_pose = scenario_execution_ros.actions.move_to_joint_pose:MoveToJointPose',
-            'robotic_arm.move_gripper = scenario_execution_ros.actions.move_gripper:MoveGripper',
-            'robotic_arm.move_to_pose = scenario_execution_ros.actions.move_to_pose:MoveToPose',
         ],
         'scenario_execution.osc_libraries': [
             'ros = '

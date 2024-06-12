@@ -1,4 +1,4 @@
-import osc.ros
+import osc.moveit
 import osc.gazebo
 
 scenario example_moveit:

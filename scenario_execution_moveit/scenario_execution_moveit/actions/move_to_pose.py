@@ -16,7 +16,7 @@
 
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
-
+from rclpy.logging import get_logger
 from pymoveit2 import MoveIt2, MoveIt2State
 import py_trees
 
@@ -42,6 +42,7 @@ class MoveToPose(py_trees.behaviour.Behaviour):
         self.node = None
         self.moveit2 = None
         self.current_state = None
+        self.logger = None
 
     def setup(self, **kwargs):
         try:
@@ -50,6 +51,8 @@ class MoveToPose(py_trees.behaviour.Behaviour):
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
+
+        self.logger = get_logger(self.name)
 
         # Create MoveIt 2 interface
         self.moveit2 = MoveIt2(

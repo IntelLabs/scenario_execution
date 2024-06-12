@@ -1,19 +1,23 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>example_moveit_simulation</name>
+  <name>scenario_execution_moveit</name>
   <version>1.1.0</version>
-  <description>Scenario Execution Example for Moveit Simulation</description>
+  <description>Scenario Execution for MOVEIT</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
-  <license file="../../LICENSE">Apache-2.0</license>
+  <license file="../LICENSE">Apache-2.0</license>
 
   <depend>scenario_execution</depend>
-  <depend>scenario_execution_gazebo</depend>
-  <depend>arm_sim_scenario</depend>
-  <depend>scenario_execution_moveit</depend>
-  
+
   <exec_depend>rclpy</exec_depend>
+  <exec_depend>py_trees</exec_depend>
+  <exec_depend>py_trees_ros</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>nav2_simple_commander</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>rcl_interfaces</exec_depend>
+  <exec_depend>scenario_status</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
