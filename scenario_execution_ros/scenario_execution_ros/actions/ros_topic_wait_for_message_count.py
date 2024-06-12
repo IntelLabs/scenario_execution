@@ -43,7 +43,7 @@ class RosWaitForMessageCount(py_trees.behaviour.Behaviour):
         )
 
         self.qos_profile = get_qos_preset_profile(qos_profile)
-        self.qos_profile.depth=self.expected_count
+        self.qos_profile.depth = self.expected_count
 
     def setup(self, **kwargs):
         """

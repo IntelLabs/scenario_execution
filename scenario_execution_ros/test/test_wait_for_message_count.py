@@ -27,6 +27,7 @@ from scenario_execution.utils.logging import Logger
 
 from antlr4.InputStream import InputStream
 
+
 class TestWaitForMessageCount(unittest.TestCase):
     # pylint: disable=missing-function-docstring,missing-class-docstring
 
