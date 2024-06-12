@@ -20,10 +20,14 @@
       </xacro:if>
 
       <!-- If simulating the robot in Gazebo Classic -->
-      <!-- <xacro:if value="${hardware_type == 'gz_classic'}"> -->
-        <!-- <plugin>gazebo_ros2_control/GazeboSystem</plugin> -->
-      <plugin>ign_ros2_control/IgnitionSystem</plugin>
-      <!-- </xacro:if> -->
+      <xacro:if value="${hardware_type == 'gz_classic'}">
+        <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+      </xacro:if>
+    
+    <!-- If simulating the robot in Gazebo Modern -->
+      <xacro:if value="${hardware_type == 'ignition'}">
+        <plugin>ign_ros2_control/IgnitionSystem</plugin>
+      </xacro:if>
 
     </hardware>
 
@@ -80,12 +84,12 @@
     </xacro:if>
 
     <xacro:if value="$(arg use_gripper)">
-      <!-- <xacro:if value="${hardware_type in ('fake', 'gz_classic')}"> -->
-      <joint name="gripper">
-        <command_interface name="position"/>
-        <state_interface name="position"/>
-      </joint>
-      <!-- </xacro:if> -->
+      <xacro:if value="${hardware_type in ('fake', 'gz_classic', 'ignition')}">
+        <joint name="gripper">
+          <command_interface name="position"/>
+          <state_interface name="position"/>
+        </joint>
+      </xacro:if>
 
       <xacro:if value="$(arg show_gripper_fingers)">
         <joint name="left_finger">
@@ -96,7 +100,7 @@
           <state_interface name="position"/>
         </joint>
 
-        <!-- <xacro:if value="${hardware_type == 'gz_classic'}"> -->
+        <xacro:if value="${hardware_type in ('gz_classic', 'ignition')}">
           <joint name="right_finger">
             <!-- <param name="mimic">left_finger</param>
             <param name="multiplier">1</param> -->
@@ -106,27 +110,43 @@
             </command_interface>
             <state_interface name="position"/>
           </joint>
-        <!-- </xacro:if> -->
+        </xacro:if>
       </xacro:if>
     </xacro:if>
 
   </ros2_control>
 
   <!-- Load the gazebo_ros2_control plugin if using Gazebo hardware -->
-  <!-- <xacro:if value="${hardware_type == 'gz_classic'}"> -->
-  <gazebo>
+  <xacro:if value="${hardware_type == 'gz_classic'}">
+    <gazebo>
 
-    <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
-      <ros>
-        <namespace>/$(arg robot_name)</namespace>
-      </ros>
-      <robot_param>robot_description</robot_param>
-      <robot_param_node>robot_state_publisher</robot_param_node>
-      <parameters>$(find arm_sim_scenario)/config/trajectory_controllers/${robot_model}_trajectory_controllers.yaml</parameters>
-    </plugin>
+      <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+        <ros>
+          <namespace>/$(arg robot_name)</namespace>
+        </ros>
+        <robot_param>robot_description</robot_param>
+        <robot_param_node>robot_state_publisher</robot_param_node>
+        <parameters>$(find arm_sim_scenario)/config/trajectory_controllers/${robot_model}_trajectory_controllers.yaml</parameters>
+      </plugin>
 
-  </gazebo>
-  <xacro:include filename="$(find arm_sim_scenario)/meshes/interbotix_texture.gazebo"/>
-  <!-- </xacro:if> -->
+    </gazebo>
+    <xacro:include filename="$(find arm_sim_scenario)/meshes/interbotix_texture.gazebo"/>
+  </xacro:if>
+
+  <xacro:if value="${hardware_type == 'ignition'}">
+    <gazebo>
+
+      <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+        <ros>
+          <namespace>/$(arg robot_name)</namespace>
+        </ros>
+        <robot_param>robot_description</robot_param>
+        <robot_param_node>robot_state_publisher</robot_param_node>
+        <parameters>$(find arm_sim_scenario)/config/trajectory_controllers/${robot_model}_trajectory_controllers.yaml</parameters>
+      </plugin>
+
+    </gazebo>
+    <xacro:include filename="$(find arm_sim_scenario)/meshes/interbotix_texture.gazebo"/>
+  </xacro:if>
 
 </robot>

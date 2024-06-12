@@ -16,7 +16,7 @@
   <xacro:arg name="show_gripper_fingers"            default="true"/>
   <xacro:arg name="use_world_frame"                 default="false"/>
   <xacro:arg name="external_urdf_loc"               default=""/>
-  <xacro:arg name="hardware_type"                   default="actual"/>
+  <xacro:arg name="hardware_type"                   default="ignition"/>
 
   <xacro:property name="mesh_directory"             value="package://arm_sim_scenario/meshes/${robot_model}_meshes"/>
   <xacro:property name="urdf_loc"                   value="$(arg external_urdf_loc)"/>
@@ -51,7 +51,7 @@
   <xacro:property name="gripper_limit_vel"          value="${pi}"/>
 
   <xacro:property name="finger_limit_effort"        value="5"/>
-  <xacro:property name="finger_limit_lower"         value="-0.037"/>
+  <xacro:property name="finger_limit_lower"         value="0.015"/>
   <xacro:property name="finger_limit_upper"         value="0.037"/>
   <xacro:property name="finger_limit_vel"           value="1"/>
 
@@ -627,7 +627,7 @@
           <dynamics
             friction="0.1"
             damping="0.1"/>
-          <xacro:if value="${hardware_type != 'gz_classic'}">
+          <xacro:if value="${hardware_type not in ('ignition','gz_classic')}">
             <mimic
               joint="left_finger"
               multiplier="-1"
@@ -705,9 +705,9 @@
   <xacro:include filename="$(find arm_sim_scenario)/urdf/control.urdf.xacro"/>
   <xacro:include filename="$(find arm_sim_scenario)/urdf/gazebo_configs.urdf.xacro"/>
 
-  <!-- <xacro:if value="${hardware_type == 'gz_classic'}"> -->
+  <xacro:if value="${hardware_type == 'gz_classic'}">
     <xacro:gazebo_configs/>
-  <!-- </xacro:if> -->
+  </xacro:if>
 
   <xacro:if value="${urdf_loc != ''}">
     <xacro:include filename="${urdf_loc}"/>

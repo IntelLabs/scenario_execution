@@ -28,20 +28,37 @@ ARGUMENTS = [
     DeclareLaunchArgument('robot_model', default_value='wx200',
                           choices=['wx200'],
                           description='robot_model type of the Interbotix Arm'),
-    DeclareLaunchArgument('use_sim_time', default_value='false',
-                          choices=['true', 'false'],
-                          description='use_sim_time'),
-    DeclareLaunchArgument('robot_name', default_value=LaunchConfiguration('robot_model'),
+    DeclareLaunchArgument('robot_name', default_value=LaunchConfiguration('robot_model'), #namespace
                           description='Robot name'),
     DeclareLaunchArgument('use_rviz', default_value='true',
                           choices=['true', 'false'],
                           description='launches RViz if set to `true`.'),
     DeclareLaunchArgument('rviz_config',
-                          default_value=PathJoinSubstitution([get_package_share_directory('arm_sim_scenario'),
-                                                              'rviz',
-                                                              'xsarm_description.rviz',
-                                                              ]),
-                          description='file path to the config file RViz should load.',)
+                        default_value=PathJoinSubstitution([get_package_share_directory('arm_sim_scenario'),
+                                                            'rviz',
+                                                            'xsarm_description.rviz',
+                                                            ]),
+                        description='file path to the config file RViz should load.'),
+    DeclareLaunchArgument('use_sim_time', default_value='false',
+                          choices=['true', 'false'],
+                          description='use_sim_time'),
+    DeclareLaunchArgument('use_joint_pub',
+            default_value='false',
+            choices=('true', 'false'),
+            description='launches the joint_state_publisher node.',
+        ),
+    DeclareLaunchArgument('use_joint_pub_gui',
+            default_value='false',
+            choices=('true', 'false'),
+            description='launches the joint_state_publisher GUI.',
+        ),
+    DeclareLaunchArgument('hardware_type',
+            default_value='ignition',
+            choices=['actual', 'fake', 'gz_classic', 'ignition'],
+            description='configure robot_description to use actual, fake, or simulated hardware',
+        )
+
+
 ]
 
 
@@ -50,11 +67,14 @@ def generate_launch_description():
     xacro_file = PathJoinSubstitution([pkg_arm_sim_scenario,
                                        'urdf',
                                        'wx200.urdf.xacro'])
-    use_rviz = LaunchConfiguration('use_rviz')
-    robot_name = LaunchConfiguration('robot_name')
     robot_model = LaunchConfiguration('robot_model')
-    use_sim_time = LaunchConfiguration('use_sim_time')
+    robot_name = LaunchConfiguration('robot_name')
+    use_rviz = LaunchConfiguration('use_rviz')
     rviz_config = LaunchConfiguration('rviz_config')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    use_joint_pub = LaunchConfiguration('use_joint_pub')
+    use_joint_pub_gui = LaunchConfiguration('use_joint_pub_gui')
+    hardware_type = LaunchConfiguration('hardware_type')
 
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -65,27 +85,35 @@ def generate_launch_description():
             {'use_sim_time': use_sim_time},
             {'robot_description': ParameterValue(Command([
                 'xacro', ' ', xacro_file, ' ',
-                'gazebo:=ignition', ' ',
+                'robot_model:=', robot_model, ' ',
+                'robot_name:=', robot_name, ' ',
                 'base_link_frame:=', 'base_link', ' ',
                 'use_gripper:=', 'true', ' ',
                 'show_ar_tag:=', 'false', ' ',
                 'show_gripper_bar:=', 'true', ' ',
                 'show_gripper_fingers:=', 'true', ' ',
                 'use_world_frame:=', 'true', ' ',
-                'robot_model:=', robot_model, ' ',
-                'robot_name:=', robot_name, ' ',
-                'hardware_type:=', 'gz_classic']), value_type=str)},
+                'hardware_type:=', hardware_type]), value_type=str)},
         ],
         namespace=robot_name
     )
 
     joint_state_publisher = Node(
+        condition=IfCondition(use_joint_pub),
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}],
         namespace=robot_name
+    )
+
+    joint_state_publisher_gui = Node(
+        condition=IfCondition(use_joint_pub_gui),
+        package='joint_state_publisher_gui',
+        executable='joint_state_publisher_gui',
+        namespace=robot_name,
+        output={'both': 'log'},
     )
 
     rviz2 = Node(
@@ -106,5 +134,6 @@ def generate_launch_description():
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(robot_state_publisher)
     ld.add_action(joint_state_publisher)
+    ld.add_action(joint_state_publisher_gui)
     ld.add_action(rviz2)
     return ld
