@@ -705,7 +705,7 @@
   <xacro:include filename="$(find arm_sim_scenario)/urdf/control.urdf.xacro"/>
   <xacro:include filename="$(find arm_sim_scenario)/urdf/gazebo_configs.urdf.xacro"/>
 
-  <xacro:if value="${hardware_type == 'gz_classic'}">
+  <xacro:if value="${hardware_type in ('gz_classic', 'ignition')}">
     <xacro:gazebo_configs/>
   </xacro:if>
 

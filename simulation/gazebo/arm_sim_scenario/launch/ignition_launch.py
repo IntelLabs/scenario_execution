@@ -29,17 +29,21 @@ ARGUMENTS = [
     DeclareLaunchArgument('robot_model', default_value='wx200',
                           choices=['wx200'],
                           description='model type of the Interbotix Arm'),
-    DeclareLaunchArgument('use_sim_time', default_value='true',
-                          choices=['true', 'false'],
-                          description='use_sim_time'),
     DeclareLaunchArgument('robot_name', default_value='wx200',
                           description='Robot name'),
     DeclareLaunchArgument('use_rviz', default_value='false',
                           choices=['true', 'false'],
                           description='launches RViz if set to `true`.'),
-
+    DeclareLaunchArgument('use_sim_time', default_value='true',
+                          choices=['true', 'false'],
+                          description='use_sim_time'),
     DeclareLaunchArgument('headless', default_value='False',
                           description='Whether to execute simulation gui'),
+    DeclareLaunchArgument('hardware_type',
+            default_value='ignition',
+            choices=['actual', 'fake', 'gz_classic', 'ignition'],
+            description='configure robot_description to use actual, fake, or simulated hardware',
+        )
 
 ]
 
@@ -50,6 +54,7 @@ def generate_launch_description():
     robot_name = LaunchConfiguration('robot_name')
     use_rviz = LaunchConfiguration('use_rviz')
     use_sim_time = LaunchConfiguration('use_sim_time')
+    hardware_type = LaunchConfiguration('hardware_type')
 
     env = {'IGN_GAZEBO_SYSTEM_PLUGIN_PATH': os.environ['LD_LIBRARY_PATH'],
            'IGN_GAZEBO_RESOURCE_PATH': os.path.dirname(
@@ -97,7 +102,8 @@ def generate_launch_description():
             'robot_model': robot_model,
             'robot_name': robot_name,
             'use_rviz': use_rviz,
-            'use_sim_time': use_sim_time
+            'use_sim_time': use_sim_time,
+            'hardware_type' : hardware_type
         }.items(),
     )
 
