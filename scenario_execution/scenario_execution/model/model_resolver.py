@@ -58,7 +58,8 @@ class ModelResolver(ModelBaseVisitor):
         if '.' in node.ref:  # first level of members can also be referenced (e.g. methods)
             comp, member = node.ref.rsplit('.', 1)
             resolved = node.resolve(comp)
-            resolved = resolved.get_named_child(member)
+            if resolved:
+                resolved = resolved.get_named_child(member)
         else:
             resolved = node.resolve(node.ref)
         if resolved is None:
@@ -213,9 +214,9 @@ class ModelResolver(ModelBaseVisitor):
         for child in node.get_children():
             if isinstance(child, NamedArgument):
                 named = True
-                if child.argument_name not in param_keys:
+                if child.name not in param_keys:
                     raise OSC2ParsingError(
-                        msg=f'Named argument {child.argument_name} unknown.', context=node.get_ctx())
+                        msg=f'Named argument {child.name} unknown.', context=node.get_ctx())
 
             elif isinstance(child, PositionalArgument):
                 if named:

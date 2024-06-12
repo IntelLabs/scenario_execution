@@ -1150,6 +1150,7 @@ class Argument(Parameter):
 
     def __init__(self, argument_name, argument_type, default_value):
         super().__init__(argument_name)
+        self.argument_name = argument_name
         self.argument_type = argument_type
         self.default_value = default_value
 
@@ -1172,7 +1173,7 @@ class NamedArgument(ModelElement):
 
     def __init__(self, argument_name):
         super().__init__(argument_name)
-        self.argument_name = argument_name  # TODO REQUIRED?
+        self.argument_name = argument_name
 
     def enter_node(self, listener):
         if hasattr(listener, "enter_named_argument"):
@@ -1683,7 +1684,7 @@ class FunctionApplicationExpression(Expression):
 
     def __init__(self, func_name):
         super().__init__()
-        self.func_name = func_name  # REQUIRED?
+        self.func_name = func_name
 
     def enter_node(self, listener):
         if hasattr(listener, "enter_function_application_expression"):
