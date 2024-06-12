@@ -1,0 +1,10 @@
+import osc.standard.base
+import osc.helpers
+
+struct lib:
+    def factorial(n: int) -> int is external example_external_method.external_methods.factorial.factorial()
+
+scenario example_external_method:
+    
+    do serial:
+        log(lib.factorial(4))
