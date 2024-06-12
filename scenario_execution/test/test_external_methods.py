@@ -21,7 +21,6 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
-from scenario_execution.model.error import OSC2ParsingError
 
 
 class TestScenarioExecutionSuccess(unittest.TestCase):
@@ -83,7 +82,7 @@ scenario test_param:
         wait elapsed(test.get_float(min_val: 1))
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        self.parser.create_internal_model(parsed_tree, "test.osc", False)
         self.assertFalse(self.scenario_execution.process_results())
 
     def test_call_parameters_differ(self):
@@ -98,7 +97,7 @@ scenario test_param:
         wait elapsed(test.get_float(min_val: 1))
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        self.parser.create_internal_model(parsed_tree, "test.osc", False)
         self.assertFalse(self.scenario_execution.process_results())
 
     def test_call_parameters_differ_2(self):
@@ -113,7 +112,7 @@ scenario test_param:
         wait elapsed(test.get_float(min_val: 1, UNKNOWN: 3))
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        self.parser.create_internal_model(parsed_tree, "test.osc", False)
         self.assertFalse(self.scenario_execution.process_results())
 
     def test_call_parameters_differ_3(self):
@@ -128,5 +127,5 @@ scenario test_param:
         wait elapsed(test.get_float(min_val: 1, UNKNOWN: 3))
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        self.parser.create_internal_model(parsed_tree, "test.osc", False)
         self.assertFalse(self.scenario_execution.process_results())
