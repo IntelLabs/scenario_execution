@@ -310,22 +310,3 @@ class ModelResolver(ModelBaseVisitor):
         else:
             raise OSC2ParsingError(
                 msg=f'MethodDeclaration currently only supports "external", not "{body.type_ref}"', context=node.get_ctx())
-
-    def visit_function_application_expression(self, node: FunctionApplicationExpression):
-        super().visit_function_application_expression(node)
-        print("a")
-        # for child in node.get_children():
-        #     if not isinstance(child, IdentifierReference):
-        #         child.accept(self)
-
-        # comp = node.func_name
-        # methodname = None
-        # if '.' in node.func_name:
-        #     comp, methodname = node.func_name.rsplit('.', 1)
-
-        # resolved_comp = node.resolve(comp)
-        # if not resolved_comp:
-        #     raise OSC2ParsingError(msg=f'Could not find "{comp}"', context=node.get_ctx())
-
-        # if methodname:
-        #     node.func_name = resolved_comp.get_named_child(methodname, MethodDeclaration)
