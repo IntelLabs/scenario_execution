@@ -55,7 +55,12 @@ class ModelResolver(ModelBaseVisitor):
                 msg=f'SIUnitSpecifier of physical unit "{node.unit.name}" not defined.', context=node.get_ctx())
 
     def visit_identifier_reference(self, node: IdentifierReference):
-        resolved = node.resolve(node.ref)
+        if '.' in node.ref:  # first level of members can also be referenced (e.g. methods)
+            comp, member = node.ref.rsplit('.', 1)
+            resolved = node.resolve(comp)
+            resolved = resolved.get_named_child(member)
+        else:
+            resolved = node.resolve(node.ref)
         if resolved is None:
             raise OSC2ParsingError(
                 msg=f'Identifier "{node.ref}" not defined.', context=node.get_ctx())
@@ -299,20 +304,27 @@ class ModelResolver(ModelBaseVisitor):
                 if isinstance(param_type, ModelElement):
                     param_type = param_type.get_base_type()
                 if arg.name not in external_args:
-                    raise OSC2ParsingError(msg=f'OSC Argument {arg.name} not found in external method definition', context=node.get_ctx())
+                    raise OSC2ParsingError(msg=f'Argument "{arg.name}" not found in external method definition', context=node.get_ctx())
                 external_args.remove(arg.name)
         else:
             raise OSC2ParsingError(
                 msg=f'MethodDeclaration currently only supports "external", not "{body.type_ref}"', context=node.get_ctx())
 
     def visit_function_application_expression(self, node: FunctionApplicationExpression):
-        for child in node.get_children():
-            if not isinstance(child, IdentifierReference):
-                child.accept(self)
+        super().visit_function_application_expression(node)
+        print("a")
+        # for child in node.get_children():
+        #     if not isinstance(child, IdentifierReference):
+        #         child.accept(self)
 
-        comp, methodname = node.func_name.rsplit('.', 1)
-        resolved_comp = node.resolve(comp)
-        if not resolved_comp:
-            raise OSC2ParsingError(msg=f'Could not find "{comp}"', context=node.get_ctx())
+        # comp = node.func_name
+        # methodname = None
+        # if '.' in node.func_name:
+        #     comp, methodname = node.func_name.rsplit('.', 1)
 
-        node.func_name = resolved_comp.get_named_child(methodname, MethodDeclaration)
+        # resolved_comp = node.resolve(comp)
+        # if not resolved_comp:
+        #     raise OSC2ParsingError(msg=f'Could not find "{comp}"', context=node.get_ctx())
+
+        # if methodname:
+        #     node.func_name = resolved_comp.get_named_child(methodname, MethodDeclaration)

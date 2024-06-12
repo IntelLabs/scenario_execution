@@ -1172,7 +1172,7 @@ class NamedArgument(ModelElement):
 
     def __init__(self, argument_name):
         super().__init__(argument_name)
-        self.argument_name = argument_name
+        self.argument_name = argument_name  # TODO REQUIRED?
 
     def enter_node(self, listener):
         if hasattr(listener, "enter_named_argument"):
@@ -1683,7 +1683,7 @@ class FunctionApplicationExpression(Expression):
 
     def __init__(self, func_name):
         super().__init__()
-        self.func_name = func_name
+        self.func_name = func_name  # REQUIRED?
 
     def enter_node(self, listener):
         if hasattr(listener, "enter_function_application_expression"):
@@ -1700,7 +1700,8 @@ class FunctionApplicationExpression(Expression):
             return visitor.visit_children(self)
 
     def get_resolved_value(self):
-        params = self.func_name.get_resolved_value()
+        ref = self.find_first_child_of_type(IdentifierReference)
+        params = ref.get_resolved_value()
         named = False
         pos = 0
         param_keys = list(params.keys())
@@ -1718,14 +1719,15 @@ class FunctionApplicationExpression(Expression):
             if key:
                 params[key] = child.get_resolved_value()
 
-        body = self.func_name.find_first_child_of_type(MethodBody)
-        try:
-            result = body.external_name(**params)
-        except Exception as e:
-            raise OSC2ParsingError(
-                msg=f'Error while calling external method: {e}', context=self.get_ctx()) from e
+        if isinstance(ref.ref, MethodDeclaration):
+            body = ref.ref.find_first_child_of_type(MethodBody)
+            try:
+                params = body.external_name(**params)
+            except Exception as e:
+                raise OSC2ParsingError(
+                    msg=f'Error while calling external method: {e}', context=self.get_ctx()) from e
 
-        return result
+        return params
 
     def get_type(self):
         ref = self.find_first_child_of_type(IdentifierReference)
