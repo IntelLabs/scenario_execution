@@ -47,28 +47,31 @@ ARGUMENTS = [
     DeclareLaunchArgument('robot_model', default_value='wx200',
                           choices=['wx200'],
                           description='robot_model type of the Interbotix Arm'),
-    DeclareLaunchArgument('use_sim_time', default_value='true',
-                          choices=['true', 'false'],
-                          description='use_sim_time'),
     DeclareLaunchArgument('robot_name', default_value=LaunchConfiguration('robot_model'),
                           description='Robot name'),
     DeclareLaunchArgument('use_rviz', default_value='false',
                           choices=['true', 'false'],
                           description='launches RViz if set to `true`.'),
+    DeclareLaunchArgument('use_sim_time', default_value='true',
+                          choices=['true', 'false'],
+                          description='use_sim_time'),
     DeclareLaunchArgument('rviz_config',
                           default_value=PathJoinSubstitution([get_package_share_directory('arm_sim_scenario'),
                                                               'rviz',
                                                               'xsarm_moveit.rviz',
                                                               ]),
                           description='file path to the config file RViz should load.',),
-    DeclareLaunchArgument(
-        'rviz_frame',
-        default_value='world',
-        description=(
-            'defines the fixed frame parameter in RViz. Note that if `use_world_frame` is '
-            '`false`, this parameter should be changed to a frame that exists.'
-        ),
-    )
+    DeclareLaunchArgument('hardware_type',
+                          default_value='ignition',
+                          choices=['actual', 'fake', 'gz_classic', 'ignition'],
+                          description='configure robot_description to use actual, fake, or simulated hardware',
+                          ),
+    DeclareLaunchArgument('rviz_frame', default_value='world',
+                          description=(
+                              'defines the fixed frame parameter in RViz. Note that if `use_world_frame` is '
+                              '`false`, this parameter should be changed to a frame that exists.'
+                          ),
+                          )
 ]
 
 
@@ -76,12 +79,13 @@ def generate_launch_description():
 
     pkg_arm_sim_scenario = get_package_share_directory('arm_sim_scenario')
 
-    use_sim_time = LaunchConfiguration('use_sim_time')
-    rviz_config = LaunchConfiguration('rviz_config')
-    use_rviz = LaunchConfiguration('use_rviz')
-    rviz_frame = LaunchConfiguration('rviz_frame')
-    robot_name = LaunchConfiguration('robot_name')
     robot_model = LaunchConfiguration('robot_model')
+    robot_name = LaunchConfiguration('robot_name')
+    use_rviz = LaunchConfiguration('use_rviz')
+    rviz_config = LaunchConfiguration('rviz_config')
+    rviz_frame = LaunchConfiguration('rviz_frame')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    hardware_type = LaunchConfiguration('hardware_type')
 
     xacro_file = PathJoinSubstitution([pkg_arm_sim_scenario,
                                        'urdf',
@@ -107,7 +111,7 @@ def generate_launch_description():
         'use_world_frame:=', 'true', ' ',
         'robot_model:=', robot_model, ' ',
         'robot_name:=', robot_name, ' ',
-        'hardware_type:=', 'gz_classic']), value_type=str)}
+        'hardware_type:=', hardware_type]), value_type=str)}
 
     robot_description_semantic = {'robot_description_semantic': ParameterValue(Command([
         'xacro', ' ', srdf_xacro_file, ' ',
@@ -120,7 +124,7 @@ def generate_launch_description():
         'use_world_frame:=', 'true', ' ',
         'external_urdf_loc:=', '', ' ',
         'external_srdf_loc:=', '', ' ',
-        'hardware_type:=', 'gz_classic']), value_type=str)}
+        'hardware_type:=', hardware_type]), value_type=str)}
 
     ompl_planning_pipeline_config = {
         'move_group': {
@@ -184,30 +188,28 @@ def generate_launch_description():
 
     remappings = [
         (
-            'wx200/get_planning_scene',
-            'wx200/get_planning_scene'
+            [robot_name, '/get_planning_scene'],
+            [robot_name, '/get_planning_scene']
         ),
         (
-            '/arm_controller/follow_joint_trajectory',
-            'wx200/arm_controller/follow_joint_trajectory'
+            '/arm_controller/follow_joint_trajectory', [robot_name, '/arm_controller/follow_joint_trajectory']
+
         ),
         (
-            '/gripper_controller/follow_joint_trajectory',
-            'wx200/gripper_controller/follow_joint_trajectory'
+            '/gripper_controller/follow_joint_trajectory', [robot_name, '/gripper_controller/follow_joint_trajectory']
+
         ),
     ]
 
     move_group_node = Node(
         package='moveit_ros_move_group',
         executable='move_group',
-        # namespace=robot_name_launch_arg,
         parameters=[
             {
                 'planning_scene_monitor_options': {
                     'robot_description':
                         'robot_description',
-                    'joint_state_topic':
-                        'wx200/joint_states',
+                    'joint_state_topic': [robot_name, '/joint_states'],
                 },
                 'use_sim_time': use_sim_time,
             },
@@ -230,7 +232,6 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         name='rviz2',
-        # namespace=robot_name_launch_arg,
         arguments=[
             '-d', rviz_config,
             '-f', rviz_frame,

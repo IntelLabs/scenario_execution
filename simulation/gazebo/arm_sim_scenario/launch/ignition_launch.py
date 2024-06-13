@@ -45,10 +45,10 @@ ARGUMENTS = [
                           description='configure robot_description to use actual, fake, or simulated hardware',
                           ),
     DeclareLaunchArgument('use_joint_pub_gui',
-                        default_value='false',
-                        choices=('true', 'false'),
-                        description='launches the joint_state_publisher GUI.',
-                        ),
+                          default_value='false',
+                          choices=('true', 'false'),
+                          description='launches the joint_state_publisher GUI.',
+                          ),
 
 ]
 
