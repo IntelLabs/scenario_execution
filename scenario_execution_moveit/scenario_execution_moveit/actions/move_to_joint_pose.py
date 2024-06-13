@@ -14,6 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from time import sleep
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 from rclpy.logging import get_logger
@@ -64,6 +65,7 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
 
     def update(self) -> py_trees.common.Status:
         self.current_state = self.moveit2.query_state()
+        result = py_trees.common.Status.RUNNING
         if not self.execute:
             if self.current_state == MoveIt2State.EXECUTING:
                 self.logger.info("Another motion is in progress. Waiting for current motion to complete...")
@@ -73,14 +75,23 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
                 self.moveit2.move_to_configuration(self.joint_pose)
                 result = py_trees.common.Status.RUNNING
                 self.execute = True
-        else:
-            if self.current_state == MoveIt2State.IDLE:
-                self.logger.info("Motion to joint pose successful.")
-                result = py_trees.common.Status.SUCCESS
-            elif self.current_state == MoveIt2State.EXECUTING:
-                self.logger.info("Motion to joint pose in progress...")
-                result = py_trees.common.Status.RUNNING
+        elif self.current_state == MoveIt2State.EXECUTING:
+            future = self.moveit2.get_execution_future()
+            if future:
+                while not future.done():
+                    self.logger.info("Motion to joint pose in progress...")
+                    sleep(1)
+                if str(future.result().status) == '4':
+                    self.logger.info("Motion to joint pose successful.")
+                    result = py_trees.common.Status.SUCCESS
+                else:
+                    self.logger.info(f"{str(future.result().result.error_code)}")
+                    result = py_trees.common.Status.FAILURE
             else:
-                self.logger.info("Unknown state encountered while executing motion. Requesting joint pose again...")
+                self.logger.info("Waiting for response from arm...")
                 result = py_trees.common.Status.RUNNING
+        elif self.current_state == MoveIt2State.IDLE:
+            self.logger.info("Postion not reachable or arm is already at the specified position!")
+            result = py_trees.common.Status.FAILURE
+
         return result

@@ -40,10 +40,15 @@ ARGUMENTS = [
     DeclareLaunchArgument('headless', default_value='False',
                           description='Whether to execute simulation gui'),
     DeclareLaunchArgument('hardware_type',
-            default_value='ignition',
-            choices=['actual', 'fake', 'gz_classic', 'ignition'],
-            description='configure robot_description to use actual, fake, or simulated hardware',
-        )
+                          default_value='ignition',
+                          choices=['actual', 'fake', 'gz_classic', 'ignition'],
+                          description='configure robot_description to use actual, fake, or simulated hardware',
+                          ),
+    DeclareLaunchArgument('use_joint_pub_gui',
+                        default_value='false',
+                        choices=('true', 'false'),
+                        description='launches the joint_state_publisher GUI.',
+                        ),
 
 ]
 
@@ -55,6 +60,7 @@ def generate_launch_description():
     use_rviz = LaunchConfiguration('use_rviz')
     use_sim_time = LaunchConfiguration('use_sim_time')
     hardware_type = LaunchConfiguration('hardware_type')
+    use_joint_pub_gui = LaunchConfiguration('use_joint_pub_gui')
 
     env = {'IGN_GAZEBO_SYSTEM_PLUGIN_PATH': os.environ['LD_LIBRARY_PATH'],
            'IGN_GAZEBO_RESOURCE_PATH': os.path.dirname(
@@ -103,7 +109,8 @@ def generate_launch_description():
             'robot_name': robot_name,
             'use_rviz': use_rviz,
             'use_sim_time': use_sim_time,
-            'hardware_type' : hardware_type
+            'hardware_type': hardware_type,
+            'use_joint_pub_gui': use_joint_pub_gui
         }.items(),
     )
 

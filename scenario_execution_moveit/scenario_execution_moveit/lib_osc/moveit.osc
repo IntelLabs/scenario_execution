@@ -8,6 +8,8 @@ actor robotic_arm inherits robot:
     gripper_joint_names: list of string
     move_group_arm: string = ''
     move_group_gripper: string = ''
+    open_gripper_position: string = ''
+    close_gripper_position: string = ''
 
 
 action robotic_arm.move_to_joint_pose:
