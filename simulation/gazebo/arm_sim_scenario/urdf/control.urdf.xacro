@@ -97,7 +97,9 @@
             <param name="min">"${finger_limit_lower}"</param>
             <param name="max">"${-finger_limit_lower}"</param>
           </command_interface>
-          <state_interface name="position"/>
+          <state_interface name="position">
+            <param name="initial_value">0.0195</param>
+          </state_interface>
         </joint>
 
         <xacro:if value="${hardware_type in ('gz_classic', 'ignition')}">
@@ -108,7 +110,9 @@
               <param name="min">"${-finger_limit_lower}"</param>
               <param name="max">"${finger_limit_lower}"</param>
             </command_interface>
-            <state_interface name="position"/>
+          <state_interface name="position">
+            <param name="initial_value">-0.0195</param>
+          </state_interface>
           </joint>
         </xacro:if>
       </xacro:if>
