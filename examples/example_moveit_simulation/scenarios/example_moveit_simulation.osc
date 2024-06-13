@@ -10,6 +10,8 @@ scenario example_moveit:
         keep(it.gripper_joint_names == ["right_finger","left_finger"]) 
         keep(it.move_group_arm == 'interbotix_arm') 
         keep(it.move_group_gripper == 'interbotix_gripper')
+        keep(it.open_gripper_position == '[-0.037, +0.037]')
+        keep(it.close_gripper_position == '[-0.015, +0.015]')
     box: osc_actor
     do parallel:
         serial:
