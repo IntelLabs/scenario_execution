@@ -18,6 +18,7 @@ from ast import literal_eval
 import importlib
 from enum import Enum
 from rclpy.node import Node
+from rclpy.callback_groups import ReentrantCallbackGroup
 from rosidl_runtime_py.set_message import set_message_fields
 import py_trees  # pylint: disable=import-error
 from rclpy.action import ActionClient
@@ -53,6 +54,7 @@ class RosActionCall(py_trees.behaviour.Behaviour):
         except Exception as e:  # pylint: disable=broad-except
             raise ValueError(f"Error while parsing sevice call data:") from e
         self.current_state = ActionCallActionState.IDLE
+        self.cb_group = ReentrantCallbackGroup()
 
     def setup(self, **kwargs):
         """
@@ -74,7 +76,7 @@ class RosActionCall(py_trees.behaviour.Behaviour):
         except ValueError as e:
             raise ValueError(f"Invalid action_type '{self.action_type}': {e}")
         
-        self.client = ActionClient(self.node, self.action_type, self.action_name)
+        self.client = ActionClient(self.node, self.action_type, self.action_name, callback_group=self.cb_group)
 
     def update(self) -> py_trees.common.Status:
         """
@@ -133,9 +135,9 @@ class RosActionCall(py_trees.behaviour.Behaviour):
                 self.feedback_message = f"action successfully finished."  # pylint: disable= attribute-defined-outside-init
             elif status == GoalStatus.STATUS_CANCELED:
                 self.current_state = ActionCallActionState.ERROR
-                self.get_logger().info('Goal canceled')
+                self.feedback_message = f"Goal canceled."   # pylint: disable= attribute-defined-outside-init
             elif status == GoalStatus.STATUS_ABORTED:
                 self.current_state = ActionCallActionState.ERROR
-                self.get_logger().info('Goal aborted')
+                self.feedback_message = f"Goal aborted."   # pylint: disable= attribute-defined-outside-init
         else:
             self.current_state = ActionCallActionState.ERROR
