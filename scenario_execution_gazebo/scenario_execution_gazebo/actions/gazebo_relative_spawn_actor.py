@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import random # nosec B311 random is only used to create random distance offset
 import subprocess  # nosec B404
 from enum import Enum
 
@@ -54,9 +53,9 @@ class GazeboRelativeSpawnActor(RunProcess):
     """
 
     def __init__(self, name, associated_actor,
-                 frame_id: str, parent_frame_id: str, seed: int,
-                 offset_min: float, offset_max: float,
-                 world_name: str, xacro_arguments: list, model: str, **kwargs):
+                 frame_id: str, parent_frame_id: str,
+                 distance: float, world_name: str, xacro_arguments: list,
+                 model: str, **kwargs):
         """
         init
         """
@@ -65,9 +64,7 @@ class GazeboRelativeSpawnActor(RunProcess):
         self.model_file = model
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
-        self.seed = seed
-        self.offset_min = offset_min
-        self.offset_max = offset_max
+        self.distance = distance
         self.world_name = world_name
         self.xacro_arguments = xacro_arguments
         self.current_state = SpawnActionState.WAITING_FOR_TOPIC
@@ -181,7 +178,7 @@ class GazeboRelativeSpawnActor(RunProcess):
     def calculate_new_pose(self):
         """
         Get position of the frame with frame_id relative to the parent_frame_id
-        and create a pose with and offset in front of it
+        and create a pose with specified distance in front of it
 
         """
         try:
@@ -199,11 +196,9 @@ class GazeboRelativeSpawnActor(RunProcess):
 
             rotation_angle = 2 * atan2(current_orientation.z, current_orientation.w)
 
-            # Calculate new position with offset in front
-            random.seed(self.seed) # nosec B311 random is only used to create random distance offset
-            offset = random.uniform(self.offset_min, self.offset_max) # nosec B311 random is only used to create random distance offset
-            new_x = current_position.x + offset * cos(rotation_angle)
-            new_y = current_position.y + offset * sin(rotation_angle)
+            # Calculate new position with distance in front
+            new_x = current_position.x + self.distance * cos(rotation_angle)
+            new_y = current_position.y + self.distance * sin(rotation_angle)
 
             # Create new pose
             new_pose = PoseStamped()

@@ -1,5 +1,6 @@
 import osc.ros
 import osc.gazebo
+import osc.helpers
 
 scenario example_simulation:
     robot: differential_drive_robot
@@ -16,15 +17,12 @@ scenario example_simulation:
                         keep(it.threshold == 0.35m)
                         keep(it.robot_frame_id ==  'turtlebot4_base_link_gt')
                     box.relative_spawn(
-                        offset_min: 0.5,
-                        offset_max: 1.5,
-                        seed: 42,
+                        distance: random.get_float(0.5, 1.5),
                         model: 'example_simulation://models/box.sdf',
                         world_name: 'maze')
                     wait elapsed(7s)
                     box.relative_spawn(
-                        offset_min: 0.5,
-                        offset_max: 1.5,
+                        distance: random.get_float(0.5, 1.5),
                         model: 'example_simulation://models/box.sdf',
                         world_name: 'maze')
             emit end

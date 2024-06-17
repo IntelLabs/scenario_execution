@@ -8,4 +8,4 @@ action run_process:
     command: string # Command to execute
 
 struct random:
-    def get_float(min_val: float, max_val: float) -> float is external scenario_execution.external_methods.random.get_float()
+    def get_float(min_val: float, max_val: float, seed: int) -> float is external scenario_execution.external_methods.random.get_float()
