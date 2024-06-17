@@ -16,10 +16,12 @@
 
 from scenario_execution.model.types import ActionDeclaration, ActionInherits, EnumDeclaration, EnumValueReference, KeepConstraintDeclaration, EmitDirective, Type
 
-from .types import UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree
+from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree
 
 from .model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
+import importlib
+import inspect
 
 
 def resolve_internal_model(model, logger, log_tree):
@@ -53,7 +55,13 @@ class ModelResolver(ModelBaseVisitor):
                 msg=f'SIUnitSpecifier of physical unit "{node.unit.name}" not defined.', context=node.get_ctx())
 
     def visit_identifier_reference(self, node: IdentifierReference):
-        resolved = node.resolve(node.ref)
+        if '.' in node.ref:  # first level of members can also be referenced (e.g. methods)
+            comp, member = node.ref.rsplit('.', 1)
+            resolved = node.resolve(comp)
+            if resolved:
+                resolved = resolved.get_named_child(member)
+        else:
+            resolved = node.resolve(node.ref)
         if resolved is None:
             raise OSC2ParsingError(
                 msg=f'Identifier "{node.ref}" not defined.', context=node.get_ctx())
@@ -206,9 +214,9 @@ class ModelResolver(ModelBaseVisitor):
         for child in node.get_children():
             if isinstance(child, NamedArgument):
                 named = True
-                if child.argument_name not in param_keys:
+                if child.name not in param_keys:
                     raise OSC2ParsingError(
-                        msg=f'Named argument {child.argument_name} unknown.', context=node.get_ctx())
+                        msg=f'Named argument {child.name} unknown.', context=node.get_ctx())
 
             elif isinstance(child, PositionalArgument):
                 if named:
@@ -278,3 +286,27 @@ class ModelResolver(ModelBaseVisitor):
                     next_numeric_val = child.numeric_value + 1
 
         return super().visit_enum_declaration(node)
+
+    def visit_method_declaration(self, node: MethodDeclaration):
+        super().visit_method_declaration(node)
+        body = node.find_first_child_of_type(MethodBody)
+        if body.type_ref == 'external':
+            if not body.external_name:
+                raise OSC2ParsingError(msg=f'No external name defined.', context=node.get_ctx())
+            package, method = body.external_name.rsplit('.', 1)
+            mod = importlib.import_module(package)
+            body.external_name = getattr(mod, method)
+
+            external_args = inspect.getfullargspec(body.external_name).args
+
+            args = node.find_children_of_type(Argument)
+            for arg in args:
+                param_type, _ = arg.get_type()
+                if isinstance(param_type, ModelElement):
+                    param_type = param_type.get_base_type()
+                if arg.name not in external_args:
+                    raise OSC2ParsingError(msg=f'Argument "{arg.name}" not found in external method definition', context=node.get_ctx())
+                external_args.remove(arg.name)
+        else:
+            raise OSC2ParsingError(
+                msg=f'MethodDeclaration currently only supports "external", not "{body.type_ref}"', context=node.get_ctx())

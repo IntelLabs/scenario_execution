@@ -34,7 +34,7 @@ Element Tag             Support              Notes
 ``bool``                :raw-html:`&#9989;`          
 ``call``                :raw-html:`&#10060;`       
 ``cover``               :raw-html:`&#10060;`       
-``def``                 :raw-html:`&#10060;`       
+``def``                 :raw-html:`&#9989;`  only ``external``
 ``default``             :raw-html:`&#10060;`      
 ``do``                  :raw-html:`&#9989;`          
 ``elapsed``             :raw-html:`&#9989;`           

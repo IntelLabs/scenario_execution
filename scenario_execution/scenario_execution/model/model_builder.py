@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from .types import CompilationUnit, PhysicalTypeDeclaration, UnitDeclaration, EnumDeclaration, EnumMemberDeclaration, EnumValueReference, StructDeclaration, StructInherits, ActionDeclaration, ActionInherits, ActorDeclaration, ActorInherits, FieldAccessExpression,  FloatLiteral, FunctionApplicationExpression, Argument, BehaviorInvocation, BinaryExpression, BoolLiteral, DoDirective, ElapsedExpression, DoMember, EmitDirective,  EventCondition, EventDeclaration, EventFieldDecl, EventReference,  GlobalParameterDeclaration, Identifier, IdentifierReference, IntegerLiteral, KeepConstraintDeclaration,  LogicalExpression, MethodBody,    NamedArgument, OnDirective, ParameterDeclaration, PhysicalLiteral, ParameterReference, PositionalArgument,  RelationExpression,     ScenarioInherits, SIUnitSpecifier, StringLiteral, ScenarioDeclaration, StructuredTypeExtension,  Type, VariableDeclaration, WaitDirective, ListExpression
+from .types import CompilationUnit, PhysicalTypeDeclaration, UnitDeclaration, EnumDeclaration, EnumMemberDeclaration, EnumValueReference, StructDeclaration, StructInherits, ActionDeclaration, ActionInherits, ActorDeclaration, ActorInherits, FieldAccessExpression,  FloatLiteral, FunctionApplicationExpression, Argument, BehaviorInvocation, BinaryExpression, BoolLiteral, DoDirective, ElapsedExpression, DoMember, EmitDirective,  EventCondition, EventDeclaration, EventFieldDecl, EventReference,  GlobalParameterDeclaration, Identifier, IdentifierReference, IntegerLiteral, KeepConstraintDeclaration,  LogicalExpression, MethodBody, MethodDeclaration, NamedArgument, OnDirective, ParameterDeclaration, PhysicalLiteral, ParameterReference, PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier, StringLiteral, ScenarioDeclaration, StructuredTypeExtension,  Type, VariableDeclaration, WaitDirective, ListExpression
 
 
 from ..osc2_parsing.OpenSCENARIO2Parser import OpenSCENARIO2Parser
@@ -1298,18 +1298,17 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
 
     # Enter a parse tree produced by OpenSCENARIO2Parser#methodDeclaration.
     def enterMethodDeclaration(self, ctx: OpenSCENARIO2Parser.MethodDeclarationContext):
-        raise OSC2ParsingError(msg=f"method declaration not supported yet.", context=ctx)
-        # self.__node_stack.append(self.__cur_node)
-        # method_name = ctx.methodName().getText()
-        # return_type = None
-        # if ctx.returnType():
-        #     return_type = ctx.returnType().getText()
+        self.__node_stack.append(self.__cur_node)
+        method_name = ctx.methodName().getText()
+        return_type = None
+        if ctx.returnType():
+            return_type = ctx.returnType().getText()
 
-        # node = MethodDeclaration(method_name, return_type)
-        # node.set_ctx(ctx, self.current_file)
+        node = MethodDeclaration(method_name, return_type)
+        node.set_ctx(ctx, self.current_file)
 
-        # self.__cur_node.set_children(node)
-        # self.__cur_node = node
+        self.__cur_node.set_children(node)
+        self.__cur_node = node
 
     # Exit a parse tree produced by OpenSCENARIO2Parser#methodDeclaration.
     def exitMethodDeclaration(self, ctx: OpenSCENARIO2Parser.MethodDeclarationContext):

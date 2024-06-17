@@ -20,7 +20,7 @@ from pkg_resources import iter_entry_points
 
 import inspect
 
-from scenario_execution.model.types import EventReference, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral
+from scenario_execution.model.types import EventReference, FunctionApplicationExpression, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 
@@ -259,11 +259,15 @@ class ModelToPyTree(object):
             return expression
 
         def visit_elapsed_expression(self, node: ElapsedExpression):
-            child = node.find_first_child_of_type(PhysicalLiteral)
-            if child is None:
+            elem = node.find_first_child_of_type(PhysicalLiteral)
+            if not elem:
+                elem = node.find_first_child_of_type(FunctionApplicationExpression)
+
+            if not elem:
                 raise OSC2ParsingError(
-                    msg=f'Elapsed expression currently only supports PhysicalLiteral.', context=node.get_ctx())
-            return child.get_resolved_value()
+                    msg=f'Elapsed expression currently only supports PhysicalLiteral and FunctionApplicationExpression.', context=node.get_ctx())
+
+            return elem.get_resolved_value()
 
         def visit_event_declaration(self, node: EventDeclaration):
             if node.name in ['start', 'end', 'fail']:
