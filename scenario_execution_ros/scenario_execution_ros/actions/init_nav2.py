@@ -223,12 +223,11 @@ class InitNav2(py_trees.behaviour.Behaviour):
         Callback function when the GetState future is done
         """
         self.logger.debug(f"Received state {future.result()}")
+        if not future.result():
+            return
         if self.current_state == InitNav2State.LOCALIZER_STATE_REQUESTED:
-            if future.result():
-                self.localizer_state = future.result().current_state.label
-                self.current_state = InitNav2State.LOCALIZER_STATE_RECEIVED
-            else:
-                self.current_state = InitNav2State.FAILURE
+            self.localizer_state = future.result().current_state.label
+            self.current_state = InitNav2State.LOCALIZER_STATE_RECEIVED
         elif self.current_state == InitNav2State.NAVIGATOR_STATE_REQUESTED:
             self.navigator_state = future.result().current_state.label
             self.current_state = InitNav2State.NAVIGATOR_STATE_RECEIVED
