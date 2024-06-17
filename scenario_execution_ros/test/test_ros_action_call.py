@@ -54,7 +54,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
-        
+
         self.goal_callback_reponse = GoalResponse.ACCEPT
         self.cancel_callback_reponse = CancelResponse.ACCEPT
         self.goal_response = GoalEvent.SUCCEED
@@ -66,7 +66,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
             callback_group=ReentrantCallbackGroup(),
             goal_callback=self.goal_callback,
             cancel_callback=self.cancel_callback)
-        
+
     def goal_callback(self, goal_request):
         return self.goal_callback_reponse
 
@@ -75,7 +75,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def execute_callback(self, goal_handle):
         feedback_msg = Fibonacci.Feedback()
-        
+
         for i in range(1, 3):
             if goal_handle.is_cancel_requested:
                 goal_handle.canceled()
@@ -99,7 +99,6 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.node.destroy_node()
         rclpy.try_shutdown()
 
-
     def test_success(self):
         scenario_content = """
 import osc.ros
@@ -120,7 +119,6 @@ scenario test:
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
-
 
     def test_goal_not_accepted(self):
         scenario_content = """
@@ -144,7 +142,6 @@ scenario test:
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-
     def test_action_aborted(self):
         scenario_content = """
 import osc.ros
@@ -167,7 +164,6 @@ scenario test:
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-
     def test_action_canceled(self):
         scenario_content = """
 import osc.ros
@@ -189,7 +185,6 @@ scenario test:
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
-        
 
     def test_invalid_type(self):
         scenario_content = """

@@ -24,6 +24,7 @@ import py_trees  # pylint: disable=import-error
 from rclpy.action import ActionClient
 from action_msgs.msg import GoalStatus
 
+
 class ActionCallActionState(Enum):
     """
     States for executing a service call
@@ -75,7 +76,7 @@ class RosActionCall(py_trees.behaviour.Behaviour):
                 datatype_in_list[-1])
         except ValueError as e:
             raise ValueError(f"Invalid action_type '{self.action_type}': {e}")
-        
+
         self.client = ActionClient(self.node, self.action_type, self.action_name, callback_group=self.cb_group)
 
     def update(self) -> py_trees.common.Status:
@@ -122,7 +123,7 @@ class RosActionCall(py_trees.behaviour.Behaviour):
         self.feedback_message = f"Goal accepted."  # pylint: disable= attribute-defined-outside-init
         self.get_result_future = goal_handle.get_result_async()
         self.get_result_future.add_done_callback(self.get_result_callback)
-        
+
     def get_result_callback(self, future):
         """
         Callback function when the action future is done
