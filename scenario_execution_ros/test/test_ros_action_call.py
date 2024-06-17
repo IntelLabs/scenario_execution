@@ -17,6 +17,10 @@
 import os
 import unittest
 import rclpy
+from rclpy.action import ActionServer, CancelResponse, GoalResponse
+from rclpy.action.server import GoalEvent
+from rclpy.callback_groups import ReentrantCallbackGroup
+
 import threading
 from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
@@ -27,10 +31,6 @@ from antlr4.InputStream import InputStream
 
 from example_interfaces.action import Fibonacci
 
-import rclpy
-from rclpy.action import ActionServer, CancelResponse, GoalResponse
-from rclpy.action.server import GoalEvent
-from rclpy.callback_groups import ReentrantCallbackGroup
 
 import time
 
@@ -76,7 +76,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def execute_callback(self, goal_handle):
         feedback_msg = Fibonacci.Feedback()
 
-        for i in range(1, 3):
+        for _ in range(1, 3):
             if goal_handle.is_cancel_requested:
                 goal_handle.canceled()
                 return Fibonacci.Result()
