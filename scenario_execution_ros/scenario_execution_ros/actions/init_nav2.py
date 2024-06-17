@@ -224,8 +224,11 @@ class InitNav2(py_trees.behaviour.Behaviour):
         """
         self.logger.debug(f"Received state {future.result()}")
         if self.current_state == InitNav2State.LOCALIZER_STATE_REQUESTED:
-            self.localizer_state = future.result().current_state.label
-            self.current_state = InitNav2State.LOCALIZER_STATE_RECEIVED
+            if future.result():
+                self.localizer_state = future.result().current_state.label
+                self.current_state = InitNav2State.LOCALIZER_STATE_RECEIVED
+            else:
+                self.current_state = InitNav2State.FAILURE
         elif self.current_state == InitNav2State.NAVIGATOR_STATE_REQUESTED:
             self.navigator_state = future.result().current_state.label
             self.current_state = InitNav2State.NAVIGATOR_STATE_RECEIVED
