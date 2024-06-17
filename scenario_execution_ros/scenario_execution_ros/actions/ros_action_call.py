@@ -19,9 +19,9 @@ import importlib
 from enum import Enum
 from rclpy.node import Node
 from rclpy.callback_groups import ReentrantCallbackGroup
+from rclpy.action import ActionClient
 from rosidl_runtime_py.set_message import set_message_fields
 import py_trees  # pylint: disable=import-error
-from rclpy.action import ActionClient
 from action_msgs.msg import GoalStatus
 
 
@@ -75,7 +75,7 @@ class RosActionCall(py_trees.behaviour.Behaviour):
                 importlib.import_module(".".join(datatype_in_list[0:-1])),
                 datatype_in_list[-1])
         except ValueError as e:
-            raise ValueError(f"Invalid action_type '{self.action_type}': {e}")
+            raise ValueError(f"Invalid action_type '{self.action_type}':") from e
 
         self.client = ActionClient(self.node, self.action_type, self.action_name, callback_group=self.cb_group)
 
@@ -112,12 +112,12 @@ class RosActionCall(py_trees.behaviour.Behaviour):
     def feedback_callback(self, msg):
         if self.current_state not in [ActionCallActionState.DONE, ActionCallActionState.ERROR]:
             print(msg.feedback)
-            self.feedback_message = f"Current: {msg.feedback}"
+            self.feedback_message = f"Current: {msg.feedback}"  # pylint: disable= attribute-defined-outside-init
 
     def goal_response_callback(self, future):
         goal_handle = future.result()
         if not goal_handle.accepted:
-            self.feedback_message = f"Goal rejected."
+            self.feedback_message = f"Goal rejected."  # pylint: disable= attribute-defined-outside-init
             self.current_state = ActionCallActionState.ERROR
             return
         self.feedback_message = f"Goal accepted."  # pylint: disable= attribute-defined-outside-init
