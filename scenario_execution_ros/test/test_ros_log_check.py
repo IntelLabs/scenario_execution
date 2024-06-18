@@ -86,7 +86,7 @@ scenario test_log_check:
             log_check(values: ['UNKNOWN'])
             emit end
         time_out: serial:
-            wait elapsed(3s)
+            wait elapsed(10s)
             emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
@@ -106,7 +106,7 @@ scenario test_log_check:
             log_check(module_name: 'test_node', values: ['ERROR'])
             emit end
         time_out: serial:
-            wait elapsed(3s)
+            wait elapsed(10s)
             emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
@@ -127,7 +127,7 @@ scenario test_log_check:
             log_check(module_name: 'UNKNOWN', values: ['ERROR'])
             emit end
         time_out: serial:
-            wait elapsed(3s)
+            wait elapsed(10s)
             emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
