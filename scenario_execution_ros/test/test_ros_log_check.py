@@ -39,7 +39,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
-        self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
+        self.executor_thread = threading.Thread(target=self.executor.spin)
         self.executor_thread.start()
 
         self.callback_group = rclpy.callback_groups.ReentrantCallbackGroup()
@@ -51,6 +51,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def tearDown(self):
         self.node.destroy_node()
         rclpy.try_shutdown()
+        self.executor_thread.join()
 
     def callback(self):
         self.node.get_logger().info("ERROR")

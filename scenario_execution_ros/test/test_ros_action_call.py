@@ -47,7 +47,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
-        self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
+        self.executor_thread = threading.Thread(target=self.executor.spin)
         self.executor_thread.start()
 
         self.scenario_dir = get_package_share_directory('scenario_execution_ros')
@@ -98,6 +98,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def tearDown(self):
         self.node.destroy_node()
         rclpy.try_shutdown()
+        self.executor_thread.join()
 
     def test_success(self):
         scenario_content = """
