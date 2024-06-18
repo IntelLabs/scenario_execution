@@ -19,7 +19,7 @@ from rclpy.qos import QoSProfile, DurabilityPolicy, HistoryPolicy
 import rclpy
 from rcl_interfaces.msg import Log
 from py_trees.common import Status
-
+import sys
 
 class RosLogCheck(py_trees.behaviour.Behaviour):
     """
@@ -83,17 +83,17 @@ class RosLogCheck(py_trees.behaviour.Behaviour):
             return
 
         if msg.name == self.node.get_name():  # skip own logs
-            print(f"Skip own {msg.name} {msg.msg}")
+            print(f"Skip own {msg.name} {msg.msg}", file=sys.stderr)
             return
 
         if self.module_name and self.module_name != msg.name:
-            print(f"not right module {self.module_name} {msg.name}")
+            print(f"not right module {self.module_name} {msg.name}", file=sys.stderr)
             return
 
         for val in self.values:
-            print(f"{val}")
+            print(f"{val}", file=sys.stderr)
             if val in msg.msg:
-                print(f"found! {msg.msg}")
+                print(f"found! {msg.msg}", file=sys.stderr)
                 self.feedback_message = f"Found string '{val}' in '{msg}'"  # pylint: disable= attribute-defined-outside-init
                 self.found = True
                 break
