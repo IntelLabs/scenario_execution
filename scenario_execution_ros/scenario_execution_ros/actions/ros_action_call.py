@@ -115,13 +115,13 @@ class RosActionCall(py_trees.behaviour.Behaviour):
             self.feedback_message = f"Current: {msg.feedback}"  # pylint: disable= attribute-defined-outside-init
 
     def goal_response_callback(self, future):
-        goal_handle = future.result()
-        if not goal_handle.accepted:
+        self.goal_handle = future.result()
+        if not self.goal_handle.accepted:
             self.feedback_message = f"Goal rejected."  # pylint: disable= attribute-defined-outside-init
             self.current_state = ActionCallActionState.ERROR
             return
         self.feedback_message = f"Goal accepted."  # pylint: disable= attribute-defined-outside-init
-        self.get_result_future = goal_handle.get_result_async()
+        self.get_result_future = self.goal_handle.get_result_async()
         self.get_result_future.add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future):
@@ -134,11 +134,18 @@ class RosActionCall(py_trees.behaviour.Behaviour):
             if status == GoalStatus.STATUS_SUCCEEDED:
                 self.current_state = ActionCallActionState.DONE
                 self.feedback_message = f"action successfully finished."  # pylint: disable= attribute-defined-outside-init
+                self.goal_handle = None
             elif status == GoalStatus.STATUS_CANCELED:
                 self.current_state = ActionCallActionState.ERROR
                 self.feedback_message = f"Goal canceled."   # pylint: disable= attribute-defined-outside-init
+                self.goal_handle = None
             elif status == GoalStatus.STATUS_ABORTED:
                 self.current_state = ActionCallActionState.ERROR
                 self.feedback_message = f"Goal aborted."   # pylint: disable= attribute-defined-outside-init
+                self.goal_handle = None
         else:
             self.current_state = ActionCallActionState.ERROR
+
+    def shutdown(self):
+        if self.goal_handle:
+            self.goal_handle.cancel_goal()
