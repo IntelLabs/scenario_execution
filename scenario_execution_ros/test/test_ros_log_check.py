@@ -61,7 +61,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         scenario_content = """
 import osc.ros
 
-scenario test_log_check:
+scenario test_success:
     do parallel:
         serial:
             log_check(values: ['ERROR'])
@@ -81,7 +81,7 @@ scenario test_log_check:
         scenario_content = """
 import osc.ros
 
-scenario test_log_check:
+scenario test_timeout:
     do parallel:
         serial:
             log_check(values: ['UNKNOWN'])
@@ -101,7 +101,7 @@ scenario test_log_check:
         scenario_content = """
 import osc.ros
 
-scenario test_log_check:
+scenario test_module_success:
     do parallel:
         serial:
             log_check(module_name: 'test_node', values: ['ERROR'])
@@ -122,7 +122,7 @@ scenario test_log_check:
         scenario_content = """
 import osc.ros
 
-scenario test_log_check:
+scenario test_module_timeout:
     do parallel:
         serial:
             log_check(module_name: 'UNKNOWN', values: ['ERROR'])
