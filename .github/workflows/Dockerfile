@@ -1,12 +1,10 @@
 # Use the ROS Humble desktop-full image as the base
 FROM osrf/ros:humble-desktop-full
 
-# Copy the repository into the container
-COPY . /scenario_execution/
-
 # Install system dependencies
 # hadolint ignore=DL3008
-RUN apt-get update && \
+RUN --mount=type=bind,source=scenario_execution,target=/scenario_execution \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         python3-pip \
         xvfb \
@@ -17,6 +15,7 @@ RUN apt-get update && \
     rosdep install --rosdistro=humble --from-paths /scenario_execution/ --ignore-src -r -y
 
 # hadolint ignore=DL3042
-RUN pip3 install -r /scenario_execution/requirements.txt && \
+RUN --mount=type=bind,source=scenario_execution,target=/scenario_execution \
+    pip3 install -r /scenario_execution/requirements.txt && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /scenario_execution/
