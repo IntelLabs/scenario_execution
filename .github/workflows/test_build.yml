@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build-and-cache:
-    #TODO model dependency to image workflow. Workaround: retrigger run after image-workflow finished.
+    #TODO model dependency to image-workflow. Workaround: retrigger run after image-workflow finished.
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
@@ -31,12 +31,12 @@ jobs:
           source /opt/ros/humble/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
-      - name: Cache node modules
+      - name: Cache Build
         id: cache-test-id
         uses: actions/cache@v3
         with:
           path: .
-          key: ${{ runner.os }}-build
+          key: ${{ runner.os }}-build-${{ github.ref }}
   run-tests:
     needs: [build-and-cache]
     runs-on: intellabs-01
@@ -46,26 +46,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Build
-        shell: bash
-        run: |
-          ls -l
-      - name: Cache Gradle packages
+      - name: Restore cache
         uses: actions/cache@v3
         with:
-          key: ${{ runner.os }}-build
+          key: ${{ runner.os }}-build-${{ github.ref }}
           path: .
-      - name: Build
-        shell: bash
-        run: |
-          ls -l
-          false
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
       - name: Test
         shell: bash
         run: |
