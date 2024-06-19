@@ -46,7 +46,7 @@ class RosActionCall(py_trees.behaviour.Behaviour):
         self.node = None
         self.client = None
         self.send_goal_future = None
-        self.get_result_future = None
+        self.goal_handle = None
         self.action_type = action_type
         self.action_name = action_name
         try:
@@ -121,8 +121,8 @@ class RosActionCall(py_trees.behaviour.Behaviour):
             self.current_state = ActionCallActionState.ERROR
             return
         self.feedback_message = f"Goal accepted."  # pylint: disable= attribute-defined-outside-init
-        self.get_result_future = self.goal_handle.get_result_async()
-        self.get_result_future.add_done_callback(self.get_result_callback)
+        get_result_future = self.goal_handle.get_result_async()
+        get_result_future.add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future):
         """
