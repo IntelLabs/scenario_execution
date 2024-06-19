@@ -76,7 +76,7 @@ scenario test_run_process:
             time_out_shutdown: emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution.scenarios = scenarios
         self.scenario_execution.run()
@@ -97,7 +97,7 @@ scenario test_run_process:
             time_out_shutdown: emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution.scenarios = scenarios
         self.scenario_execution.run()

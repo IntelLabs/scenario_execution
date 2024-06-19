@@ -36,7 +36,7 @@ jobs:
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error --packages-up-to test_scenario_execution_gazebo
+          colcon build --continue-on-error
           source install/setup.bash
       - name: Test
         shell: bash
@@ -46,14 +46,14 @@ jobs:
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
           colcon test --packages-select \
-          test_scenario_execution_gazebo \
+          scenario_execution \
+          scenario_execution_ros \
+          scenario_coverage \
           --event-handlers console_direct+ \
           --return-code-on-test-failure \
           --pytest-args \
           --junit-xml=TEST.xml
-          #           scenario_execution \
-          # scenario_execution_ros \
-          # scenario_coverage \
+          # Add "--capture=no" to see output of tests
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
         if: always()
@@ -63,7 +63,6 @@ jobs:
             scenario_execution//TEST.xml
             scenario_execution_ros//TEST.xml
             scenario_coverage//TEST.xml
-            test_scenario_execution_gazebo//TEST.xml
   test-scenarios:
     runs-on: intellabs-01
     container:
@@ -103,20 +102,6 @@ jobs:
           source /opt/ros/humble/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
-      - name: Test Scenario Execution Gazebo
-        shell: bash
-        run: |
-          source /ros_ign/install/setup.bash
-          source /opt/ros/humble/setup.bash
-          source install/setup.bash
-          Xvfb :1 -screen 0 800x600x16 &
-          export DISPLAY=:1.0
-          export -n CYCLONEDDS_URI
-          export ROS_DOMAIN_ID=119
-          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          sed -i 's/60s/600s/g' examples/example_nav2/example_nav2.osc
-          # shellcheck disable=SC1083
-          scenario_batch_execution -i simulation/test_scenario_execution_gazebo/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Test Scenario Files Syntax
         shell: bash
         run: |

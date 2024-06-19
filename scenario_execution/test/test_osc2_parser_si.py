@@ -48,7 +48,7 @@ unit cm         of length is SI(m: 1, factor: 0.01)
 global val1: length = 3.2cm
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         param = model._ModelElement__children[2]
         self.assertEqual(param.get_resolved_value(), 0.032)
@@ -60,7 +60,7 @@ unit m          of length is SI(m: 1, factor: 1)
 global val1: length = 3.2m
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         param = model._ModelElement__children[2]
         self.assertEqual(param.get_resolved_value(), 3.2)

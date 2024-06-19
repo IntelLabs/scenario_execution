@@ -54,8 +54,16 @@ A differential drive robot actor inheriting from the more general ``robot`` acto
 Actions
 ^^^^^^^
 
+``action_call()``
+"""""""""""""""""
+Call a ROS action and wait for the result.
+
+- ``action_name: string``: Name of the action to connect to
+- ``action_type: string``: Class of the action type (e.g. ``example_interfaces.action.Fibonacci``)
+- ``data: string``: Call content (e.g. ``{\"order\": 3}``)
+
 ``assert_lifecycle_state()``
-""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""
 Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/node_lifecycle.html>`__ node.
 
 - ``node_name: string``: Name of ``lifecycle-managed`` node.
