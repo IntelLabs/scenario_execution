@@ -35,11 +35,11 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         rclpy.init()
 
         self.received_msgs = []
-        self.node = rclpy.create_node('test_node')
+        self.node = rclpy.create_node('test_node_logging')
 
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
-        self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
+        self.executor_thread = threading.Thread(target=self.executor.spin)
         self.executor_thread.start()
 
         self.callback_group = rclpy.callback_groups.ReentrantCallbackGroup()
@@ -51,6 +51,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def tearDown(self):
         self.node.destroy_node()
         rclpy.try_shutdown()
+        self.executor_thread.join()
 
     def callback(self):
         self.node.get_logger().info("ERROR")
@@ -59,7 +60,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         scenario_content = """
 import osc.ros
 
-scenario test_log_check:
+scenario test_success:
     do parallel:
         serial:
             log_check(values: ['ERROR'])
@@ -79,17 +80,17 @@ scenario test_log_check:
         scenario_content = """
 import osc.ros
 
-scenario test_log_check:
+scenario test_timeout:
     do parallel:
         serial:
             log_check(values: ['UNKNOWN'])
             emit end
         time_out: serial:
-            wait elapsed(3s)
+            wait elapsed(10s)
             emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
@@ -99,20 +100,19 @@ scenario test_log_check:
         scenario_content = """
 import osc.ros
 
-scenario test_log_check:
+scenario test_module_success:
     do parallel:
         serial:
-            log_check(module_name: 'test_node', values: ['ERROR'])
+            log_check(module_name: 'test_node_logging', values: ['ERROR'])
             emit end
         time_out: serial:
-            wait elapsed(3s)
+            wait elapsed(10s)
             emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
 
@@ -120,17 +120,17 @@ scenario test_log_check:
         scenario_content = """
 import osc.ros
 
-scenario test_log_check:
+scenario test_module_timeout:
     do parallel:
         serial:
             log_check(module_name: 'UNKNOWN', values: ['ERROR'])
             emit end
         time_out: serial:
-            wait elapsed(3s)
+            wait elapsed(10s)
             emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()

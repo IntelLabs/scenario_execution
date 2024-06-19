@@ -42,7 +42,7 @@ action odometry_distance_traveled:
     distance: length = 3m
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         action = model._ModelElement__children[4].get_resolved_value()
         self.assertEqual({'distance': 3.0}, action)
