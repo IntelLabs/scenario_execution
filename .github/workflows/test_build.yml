@@ -57,6 +57,7 @@ jobs:
           REPO: intellabs/scenario_execution
           #${{ github.repository }}
           CACHE_ENTRY: ${{ runner.os }}-build-${{ github.run_number }}
+          BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
   run-tests:
     needs: [build-and-cache]
     runs-on: intellabs-01
