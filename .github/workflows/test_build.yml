@@ -33,7 +33,7 @@ jobs:
           source install/setup.bash
       - name: Cache Build
         id: cache-test-id
-        uses: actions/cache@v3
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: .
           key: ${{ runner.os }}-build-${{ github.ref }}
@@ -47,7 +47,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@v3
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           key: ${{ runner.os }}-build-${{ github.ref }}
           path: .
@@ -87,16 +87,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          submodules: true
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
+          key: ${{ runner.os }}-build-${{ github.ref }}
+          path: .
       - name: Test Scenario Files
         shell: bash
         run: |
@@ -115,16 +110,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          submodules: true
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
+          key: ${{ runner.os }}-build-${{ github.ref }}
+          path: .
       - name: Test Example Scenario
         shell: bash
         run: |
@@ -147,16 +137,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          submodules: true
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
+          key: ${{ runner.os }}-build-${{ github.ref }}
+          path: .
       - name: Test Example Library
         shell: bash
         run: |
@@ -179,16 +164,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          submodules: true
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
+          key: ${{ runner.os }}-build-${{ github.ref }}
+          path: .
       - name: Test Example Variation
         shell: bash
         run: |
@@ -212,16 +192,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          submodules: true
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
+          key: ${{ runner.os }}-build-${{ github.ref }}
+          path: .
       - name: Test Example Nav2
         shell: bash
         run: |
@@ -250,16 +225,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          submodules: true
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
+          key: ${{ runner.os }}-build-${{ github.ref }}
+          path: .
       - name: Test Example Simulation
         shell: bash
         run: |
@@ -288,16 +258,11 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          submodules: true
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
+          key: ${{ runner.os }}-build-${{ github.ref }}
+          path: .
       - name: Test Example Multirobot
         shell: bash
         run: |
