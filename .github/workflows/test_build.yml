@@ -60,6 +60,11 @@ jobs:
           cache-name: cache-test-cache-name
         with:
           path: .
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
   run-tests:
     needs: [build-and-push]
     runs-on: intellabs-01
