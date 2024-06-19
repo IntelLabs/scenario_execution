@@ -36,7 +36,8 @@ jobs:
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: .
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          key: ${{ runner.os }}-build-${{ github.ref }}-${{ hashFiles('.') }}
+          restore-key: ${{ runner.os }}-build-${{ github.ref }}
   run-tests:
     needs: [build-and-cache]
     runs-on: intellabs-01
