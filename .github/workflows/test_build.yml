@@ -52,7 +52,6 @@ jobs:
           scenario_coverage \
           --event-handlers console_direct+ \
           --return-code-on-test-failure \
-          --executor sequential \
           --pytest-args \
           --capture=no \
           --junit-xml=TEST.xml
