@@ -156,6 +156,16 @@ class ModelElement(object):  # pylint: disable=too-many-public-methods
                 children_of_type.extend(child.find_children_of_type(typename))
         return children_of_type
 
+    def get_named_child(self, name, typename=None):
+        # if typename is not none, type is checked
+        for child in self.__children:
+            if name == child.name:
+                if typename:
+                    if not isinstance(child, typename):
+                        return None
+                return child
+        return None
+
     def find_first_child_of_type(self, typename, unique=True):
         found = None
         for child in self.__children:
@@ -1045,7 +1055,7 @@ class EventCondition(ModelElement):
 class MethodDeclaration(Declaration):
 
     def __init__(self, method_name, return_type):
-        super().__init__()
+        super().__init__(method_name)
         self.method_name = method_name
         self.return_type = return_type
 
@@ -1062,6 +1072,13 @@ class MethodDeclaration(Declaration):
             return visitor.visit_method_declaration(self)
         else:
             return visitor.visit_children(self)
+
+    def get_resolved_value(self):
+        params = {}
+        for child in self.get_children():
+            if isinstance(child, Argument):
+                params[child.name] = child.default_value
+        return params
 
 
 class MethodBody(ModelElement):
@@ -1129,10 +1146,10 @@ class RecordDeclaration(Declaration):
             return visitor.visit_children(self)
 
 
-class Argument(ModelElement):
+class Argument(Parameter):
 
     def __init__(self, argument_name, argument_type, default_value):
-        super().__init__()
+        super().__init__(argument_name)
         self.argument_name = argument_name
         self.argument_type = argument_type
         self.default_value = default_value
@@ -1686,7 +1703,6 @@ class FunctionApplicationExpression(Expression):
     def get_resolved_value(self):
         ref = self.find_first_child_of_type(IdentifierReference)
         params = ref.get_resolved_value()
-
         named = False
         pos = 0
         param_keys = list(params.keys())
@@ -1697,11 +1713,21 @@ class FunctionApplicationExpression(Expression):
                     raise OSC2ParsingError(
                         msg=f'Positional argument after named argument not allowed.', context=child.get_ctx())
                 key = param_keys[pos]
+                pos += 1
             elif isinstance(child, NamedArgument):
                 named = True
                 key = child.name
             if key:
                 params[key] = child.get_resolved_value()
+
+        if isinstance(ref.ref, MethodDeclaration):
+            body = ref.ref.find_first_child_of_type(MethodBody)
+            try:
+                params = body.external_name(**params)
+            except Exception as e:
+                raise OSC2ParsingError(
+                    msg=f'Error while calling external method: {e}', context=self.get_ctx()) from e
+
         return params
 
     def get_type(self):
