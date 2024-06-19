@@ -1,10 +1,6 @@
 ---
 name: test-build
 on:
-  # Triggers the workflow on push or pull request events but
-  # only for the main branch
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -39,25 +35,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ github.run_number }}
             #${{ github.ref }}
           #-${{ hashFiles('.') }}
-          # restore-key: ${{ runner.os }}-build-${{ github.run_number }}
-      - name: Cleanup Cache
-        run: |
-          gh extension install actions/gh-actions-cache
-          
-          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH -L 100 | cut -f 1 )
-          
-          for cacheKey in $cacheKeysForPR
-          do
-            echo $cacheKey
-          done
-          echo gh actions-cache delete $CACHE_ENTRY -R $REPO -B $BRANCH --confirm
-          gh actions-cache delete $CACHE_ENTRY -R $REPO -B $BRANCH --confirm
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: intellabs/scenario_execution
-          #${{ github.repository }}
-          CACHE_ENTRY: ${{ runner.os }}-build-${{ github.run_number }}
-          BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
+          restore-keys: ${{ runner.os }}-build-${{ github.run_number }}
   run-tests:
     needs: [build-and-cache]
     runs-on: intellabs-01
