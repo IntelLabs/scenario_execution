@@ -57,6 +57,7 @@ jobs:
       - name: Test
         shell: bash
         run: |
+          false
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
@@ -81,7 +82,7 @@ jobs:
             scenario_execution_ros//TEST.xml
             scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml      
-  scenario-files-dry-run:
+  scenario-files-validation:
     needs: [build-and-cache]
     runs-on: intellabs-01
     container:
@@ -293,7 +294,7 @@ jobs:
           name: test-example-multirobot-result
           path: test_example_multirobot/test.xml
   publish-scenario-results:
-    needs: [run-tests, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot]
+    needs: [run-tests, scenario-files-validation, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot]
     runs-on: intellabs-01
     if: ${{ always() }}
     steps:
