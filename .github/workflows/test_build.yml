@@ -102,6 +102,19 @@ jobs:
           source /opt/ros/humble/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
+      - name: Test Scenario Execution Gazebo
+        shell: bash
+        run: |
+          source /ros_ign/install/setup.bash
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          Xvfb :1 -screen 0 800x600x16 &
+          export DISPLAY=:1.0
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=119
+          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i simulation/test_scenario_execution_gazebo/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Test Scenario Files Syntax
         shell: bash
         run: |
