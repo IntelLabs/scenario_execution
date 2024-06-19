@@ -54,6 +54,7 @@ jobs:
           --return-code-on-test-failure \
           --executor sequential \
           --pytest-args \
+          --capture=no \
           --junit-xml=TEST.xml
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
