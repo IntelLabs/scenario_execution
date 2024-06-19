@@ -14,7 +14,6 @@ on:
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-permissions: read-all
 jobs:
   build-and-push:
     runs-on: intellabs-01
