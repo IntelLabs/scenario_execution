@@ -312,7 +312,7 @@ jobs:
           gh actions-cache delete $CACHE_ENTRY -R $REPO -B $BRANCH --confirm
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: intellabs/scenario_execution 
+          REPO: intellabs/scenario_execution
           #${{ github.repository }}
           CACHE_ENTRY: ${{ runner.os }}-build-${{ github.run_number }}
       - name: Download all artifacts
