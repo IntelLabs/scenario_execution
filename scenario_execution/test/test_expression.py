@@ -42,7 +42,7 @@ global test2: time = 2.0s + 1.1s
 global test3: time = 2.0s + 1ms
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertEqual(model._ModelElement__children[3].get_resolved_value(), 3.1)
         self.assertEqual(model._ModelElement__children[4].get_resolved_value(), 3.1)
@@ -60,7 +60,7 @@ global test2: time = 2.0s - 1.1s
 global test3: time = 2.0s - 1ms
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertEqual(model._ModelElement__children[3].get_resolved_value(), 0.9)
         self.assertEqual(model._ModelElement__children[4].get_resolved_value(), 0.9)
@@ -76,7 +76,7 @@ global test1: float = 2.0 * 1.1
 global test2: time = 2.0ms * 1.1
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertEqual(model._ModelElement__children[3].get_resolved_value(), 2.2)
         self.assertEqual(model._ModelElement__children[4].get_resolved_value(), 0.0022)
@@ -91,7 +91,7 @@ global test1: float = 5.0 / 2.0
 global test2: time = 5.0ms / 2.0
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertEqual(model._ModelElement__children[3].get_resolved_value(), 2.5)
         self.assertEqual(model._ModelElement__children[4].get_resolved_value(), 0.0025)
@@ -111,7 +111,7 @@ global test6: bool = 5 >= 2
 global test7: bool = 5 <= 2
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertEqual(model._ModelElement__children[3].get_resolved_value(), True)
         self.assertEqual(model._ModelElement__children[4].get_resolved_value(), True)
@@ -128,7 +128,7 @@ global test1: bool = not True
 global test1: bool = not 5 > 2
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertEqual(model._ModelElement__children[0].get_resolved_value(), False)
         self.assertEqual(model._ModelElement__children[1].get_resolved_value(), False)
@@ -140,7 +140,7 @@ global test1: bool = 2 > 1 and 3 >= 2
 global test1: bool = 2 > 1 or 3 < 2
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertEqual(model._ModelElement__children[0].get_resolved_value(), True)
         self.assertEqual(model._ModelElement__children[1].get_resolved_value(), True)

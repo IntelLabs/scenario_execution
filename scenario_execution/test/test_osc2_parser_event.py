@@ -36,7 +36,7 @@ scenario test:
         emit UNKNOWN
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc", True)
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc", False)
 
     def test_event_success(self):
         scenario_content = """
@@ -46,7 +46,7 @@ scenario test:
         emit test1
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
     def test_event_end(self):
         scenario_content = """
@@ -55,4 +55,4 @@ scenario test:
         emit end
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)

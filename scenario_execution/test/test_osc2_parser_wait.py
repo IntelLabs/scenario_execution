@@ -41,7 +41,7 @@ scenario test:
         wait elapsed(1s)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         model = create_py_tree(model, self.parser.logger, False)
 
     def test_wait_invalid(self):
@@ -54,7 +54,7 @@ scenario test:
         wait(1s)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertRaises(ValueError, create_py_tree, model, self.parser.logger, False)
 
@@ -65,7 +65,7 @@ scenario test:
         wait(1)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertRaises(ValueError, create_py_tree, model, self.parser.logger, False)
 
@@ -76,6 +76,6 @@ scenario test:
         wait elapsed(1)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         self.assertRaises(ValueError, create_py_tree, model, self.parser.logger, False)
