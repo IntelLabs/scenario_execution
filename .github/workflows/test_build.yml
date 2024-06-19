@@ -34,14 +34,14 @@ jobs:
           file: .github/workflows/Dockerfile
           push: true
           tags: ghcr.io/${{ env.REPOSITORY_LOWERCASE }}/scenario-execution:humble
-  build:
-    # needs: [build-and-push]
+  build-and-cache:
+    needs: [build-and-push]
     runs-on: intellabs-01
-    # container:
-    #   image: ghcr.io/intellabs/scenario-execution:humble
-    #   credentials:
-    #     username: ${{ github.repository_owner }}
-    #     password: ${{ secrets.GITHUB_TOKEN }}
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
