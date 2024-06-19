@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+    <actor name="actor1">
+        <pose>0 0 0 0 0 0</pose>
+        <skin>
+            <filename>file://walk.dae</filename>
+            <scale>1.0</scale>
+        </skin>
+        <animation name="NAME">
+            <filename>file://walk.dae</filename>
+            <scale>1.000000</scale>
+            <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+            <trajectory id="0" type="NAME">
+                <waypoint>
+                    <time>0</time>
+                    <pose>0 2 0 0 0 -1.57</pose>
+                </waypoint>
+                <waypoint>
+                    <time>2</time>
+                    <pose>0 -2 0 0 0 -1.57</pose>
+                </waypoint>
+            </trajectory>
+        </script>
+    </actor>
+</sdf>

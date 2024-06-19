@@ -30,6 +30,7 @@ setup(
             ['resource/' + PACKAGE_NAME]),
         ('share/' + PACKAGE_NAME, ['package.xml']),
         (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
+        (os.path.join('share', PACKAGE_NAME, 'models'), glob('models/*.sdf*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -38,5 +39,6 @@ setup(
     description='Tests for Scenario Execution library for Gazebo',
     license='Apache License 2.0',
     tests_require=['pytest'],
+    include_package_data=True,
     entry_points={},
 )
