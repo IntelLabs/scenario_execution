@@ -19,7 +19,7 @@ from glob import glob
 import os
 from setuptools import find_namespace_packages, setup
 
-PACKAGE_NAME = 'scenario_execution_gazebo'
+PACKAGE_NAME = 'scenario_execution_gazebo_test'
 
 setup(
     name=PACKAGE_NAME,
@@ -28,26 +28,15 @@ setup(
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
-        ('share/' + PACKAGE_NAME, ['package.xml'])
+        ('share/' + PACKAGE_NAME, ['package.xml']),
+        (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='Scenario Execution library for Gazebo',
+    description='Tests for Scenario Execution library for Gazebo',
     license='Apache License 2.0',
     tests_require=['pytest'],
-    include_package_data=True,
-    entry_points={
-        'scenario_execution.actions': [
-            'osc_actor.spawn = scenario_execution_gazebo.actions.gazebo_spawn_actor:GazeboSpawnActor',
-            'actor_exists = scenario_execution_gazebo.actions.gazebo_actor_exists:GazeboActorExists',
-            'osc_actor.delete = scenario_execution_gazebo.actions.gazebo_delete_actor:GazeboDeleteActor',
-            'wait_for_sim = scenario_execution_gazebo.actions.gazebo_wait_for_sim:GazeboWaitForSim',
-        ],
-        'scenario_execution.osc_libraries': [
-            'gazebo = '
-            'scenario_execution_gazebo.get_osc_library:get_gazebo_library',
-        ]
-    },
+    entry_points={},
 )
