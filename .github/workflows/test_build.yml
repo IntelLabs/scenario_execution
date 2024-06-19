@@ -21,21 +21,18 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           submodules: true
-      # - name: Build
-      #   shell: bash
-      #   run: |
-      #     source /opt/ros/humble/setup.bash
-      #     colcon build --continue-on-error
-      #     source install/setup.bash
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
       - name: Cache Build
         id: cache-test-id
         uses: actions/cache/save@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: .
           key: ${{ runner.os }}-build-${{ github.run_number }}
-            #${{ github.ref }}
-          #-${{ hashFiles('.') }}
-          restore-keys: ${{ runner.os }}-build-${{ github.run_number }}
   run-tests:
     needs: [build-and-cache]
     runs-on: intellabs-01
@@ -53,7 +50,6 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          false
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
@@ -95,7 +91,6 @@ jobs:
       - name: Test Scenario Files
         shell: bash
         run: |
-          false
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           find . -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation|scenario_coverage|fail*|install|build" | while read -r file; do 
@@ -119,7 +114,6 @@ jobs:
       - name: Test Example Scenario
         shell: bash
         run: |
-          false
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           #shellcheck disable=SC1083
@@ -147,7 +141,6 @@ jobs:
       - name: Test Example Library
         shell: bash
         run: |
-          false
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           # shellcheck disable=SC1083
@@ -175,7 +168,6 @@ jobs:
       - name: Test Example Variation
         shell: bash
         run: |
-          false
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
@@ -204,7 +196,6 @@ jobs:
       - name: Test Example Nav2
         shell: bash
         run: |
-          false
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
@@ -238,7 +229,6 @@ jobs:
       - name: Test Example Simulation
         shell: bash
         run: |
-          false
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
@@ -272,7 +262,6 @@ jobs:
       - name: Test Example Multirobot
         shell: bash
         run: |
-          false
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
@@ -294,23 +283,6 @@ jobs:
     runs-on: intellabs-01
     if: ${{ always() }}
     steps:
-      - name: Cleanup Cache
-        run: |
-          gh extension install actions/gh-actions-cache
-          
-          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH -L 100 | cut -f 1 )
-          
-          for cacheKey in $cacheKeysForPR
-          do
-            echo $cacheKey
-          done
-          echo gh actions-cache delete $CACHE_ENTRY -R $REPO -B $BRANCH --confirm
-          gh actions-cache delete $CACHE_ENTRY -R $REPO -B $BRANCH --confirm
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: intellabs/scenario_execution
-          #${{ github.repository }}
-          CACHE_ENTRY: ${{ runner.os }}-build-${{ github.run_number }}
       - name: Download all artifacts
         uses: actions/download-artifact@7a1cd3216ca9260cd8022db641d960b1db4d1be4 #v4.0
         with:

@@ -1,8 +1,8 @@
-name: cleanup caches by a branch
+name: Cleanup Cache on closed PR
 on:
   pull_request:
-    # types:
-    #   - closed
+    types:
+      - closed
 
 jobs:
   cleanup:
