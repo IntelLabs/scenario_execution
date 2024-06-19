@@ -114,7 +114,7 @@ jobs:
           export ROS_DOMAIN_ID=119
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
           # shellcheck disable=SC1083
-          scenario_batch_execution -i simulation/test_scenario_execution_gazebo/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+          scenario_batch_execution -i simulation/test_scenario_execution_gazebo/scenarios/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Test Scenario Files Syntax
         shell: bash
         run: |
