@@ -301,10 +301,19 @@ jobs:
       - name: Cleanup Cache
         run: |
           gh extension install actions/gh-actions-cache
+          
+          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH -L 100 | cut -f 1 )
+          
+          for cacheKey in $cacheKeysForPR
+          do
+            echo $cacheKey
+          done
+          echo gh actions-cache delete $CACHE_ENTRY -R $REPO -B $BRANCH --confirm
           gh actions-cache delete $CACHE_ENTRY -R $REPO -B $BRANCH --confirm
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
+          REPO: intellabs/scenario_execution 
+          #${{ github.repository }}
           CACHE_ENTRY: ${{ runner.os }}-build-${{ github.run_number }}
       - name: Download all artifacts
         uses: actions/download-artifact@7a1cd3216ca9260cd8022db641d960b1db4d1be4 #v4.0
