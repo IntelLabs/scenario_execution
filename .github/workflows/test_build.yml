@@ -34,6 +34,32 @@ jobs:
           file: .github/workflows/Dockerfile
           push: true
           tags: ghcr.io/${{ env.REPOSITORY_LOWERCASE }}/scenario-execution:humble
+  build:
+    needs: [build-and-push]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+        with:
+          submodules: true
+      - name: Build
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon build --continue-on-error
+          source install/setup.bash
+      - name: Cache node modules
+        id: cache-test-id
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-test-cache-name
+        with:
+          path: .
   run-tests:
     needs: [build-and-push]
     runs-on: intellabs-01
