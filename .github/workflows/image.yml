@@ -14,11 +14,12 @@ on:
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-permissions:
-  packages: write
+permissions: read-all
 jobs:
   build-and-push:
     runs-on: intellabs-01
+    permissions:
+      packages: write
     steps:
     - name: Checkout code
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
