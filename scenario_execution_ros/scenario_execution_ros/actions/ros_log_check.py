@@ -81,9 +81,10 @@ class RosLogCheck(py_trees.behaviour.Behaviour):
     def _callback(self, msg):
         if self.found is None:
             return
-
+        self.logger.error(f"CALLBACK {msg}")
         if msg.name == self.node.get_name():  # skip own logs
             print(f"Skip own {msg.name} {msg.msg}", file=sys.stderr)
+            self.logger.error(f"Skip own {msg.name} {msg.msg}")
             return
 
         if self.module_name and self.module_name != msg.name:
