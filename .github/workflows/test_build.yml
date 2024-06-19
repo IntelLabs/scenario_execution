@@ -25,12 +25,12 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           submodules: true
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
+      # - name: Build
+      #   shell: bash
+      #   run: |
+      #     source /opt/ros/humble/setup.bash
+      #     colcon build --continue-on-error
+      #     source install/setup.bash
       - name: Cache Build
         id: cache-test-id
         uses: actions/cache/save@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
@@ -40,6 +40,23 @@ jobs:
             #${{ github.ref }}
           #-${{ hashFiles('.') }}
           # restore-key: ${{ runner.os }}-build-${{ github.run_number }}
+      - name: Cleanup Cache
+        run: |
+          gh extension install actions/gh-actions-cache
+          
+          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH -L 100 | cut -f 1 )
+          
+          for cacheKey in $cacheKeysForPR
+          do
+            echo $cacheKey
+          done
+          echo gh actions-cache delete $CACHE_ENTRY -R $REPO -B $BRANCH --confirm
+          gh actions-cache delete $CACHE_ENTRY -R $REPO -B $BRANCH --confirm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: intellabs/scenario_execution
+          #${{ github.repository }}
+          CACHE_ENTRY: ${{ runner.os }}-build-${{ github.run_number }}
   run-tests:
     needs: [build-and-cache]
     runs-on: intellabs-01
