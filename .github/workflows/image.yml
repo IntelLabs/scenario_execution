@@ -8,8 +8,7 @@ on:
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-env:
-  REPOSITORY_LOWERCASE: intellabs
+permissions: read-all
 jobs:
   build-and-push:
     runs-on: intellabs-01
@@ -30,4 +29,4 @@ jobs:
         context: .
         file: .github/workflows/Dockerfile
         push: true
-        tags: ghcr.io/${{ env.REPOSITORY_LOWERCASE }}/scenario-execution:humble
+        tags: ghcr.io/intellabs/scenario-execution:humble
