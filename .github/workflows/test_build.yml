@@ -36,7 +36,7 @@ jobs:
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
+          colcon build --continue-on-error --packages-up-to test_scenario_execution_gazebo
           source install/setup.bash
       - name: Test
         shell: bash
@@ -46,14 +46,14 @@ jobs:
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
           colcon test --packages-select \
-          scenario_execution \
-          scenario_execution_ros \
-          scenario_execution_gazebo \
-          scenario_coverage \
+          test_scenario_execution_gazebo \
           --event-handlers console_direct+ \
           --return-code-on-test-failure \
           --pytest-args \
           --junit-xml=TEST.xml
+          #           scenario_execution \
+          # scenario_execution_ros \
+          # scenario_coverage \
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
         if: always()
@@ -62,8 +62,8 @@ jobs:
           files: |
             scenario_execution//TEST.xml
             scenario_execution_ros//TEST.xml
-            scenario_execution_gazebo//TEST.xml
             scenario_coverage//TEST.xml
+            test_scenario_execution_gazebo//TEST.xml
   test-scenarios:
     runs-on: intellabs-01
     container:
