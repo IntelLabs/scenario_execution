@@ -39,7 +39,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ github.run_number }}
             #${{ github.ref }}
           #-${{ hashFiles('.') }}
-          # restore-key: ${{ runner.os }}-build-${{ github.ref }}
+          # restore-key: ${{ runner.os }}-build-${{ github.run_number }}
   run-tests:
     needs: [build-and-cache]
     runs-on: intellabs-01
@@ -52,7 +52,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test
         shell: bash
@@ -93,7 +93,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Scenario Files
         shell: bash
@@ -117,7 +117,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Scenario
         shell: bash
@@ -145,7 +145,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Library
         shell: bash
@@ -173,7 +173,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Variation
         shell: bash
@@ -202,7 +202,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Nav2
         shell: bash
@@ -236,7 +236,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Simulation
         shell: bash
@@ -270,7 +270,7 @@ jobs:
       - name: Restore cache
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          key: ${{ runner.os }}-build-${{ github.ref }}
+          key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Multirobot
         shell: bash
@@ -304,7 +304,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-          CACHE_ENTRY: ${{ runner.os }}-build-${{ github.ref }}
+          CACHE_ENTRY: ${{ runner.os }}-build-${{ github.run_number }}
       - name: Download all artifacts
         uses: actions/download-artifact@7a1cd3216ca9260cd8022db641d960b1db4d1be4 #v4.0
         with:
