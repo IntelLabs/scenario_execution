@@ -1,6 +1,12 @@
 name: Image
 on:
   push:
+    branches: [main]
+    paths:
+    - 'deb_requirements.txt'
+    - 'requirements.txt'
+  pull_request:
+    branches: [main]
     paths:
     - 'deb_requirements.txt'
     - 'requirements.txt'
