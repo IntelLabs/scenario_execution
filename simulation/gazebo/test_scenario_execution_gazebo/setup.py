@@ -39,6 +39,5 @@ setup(
     description='Tests for Scenario Execution library for Gazebo',
     license='Apache License 2.0',
     tests_require=['pytest'],
-    include_package_data=True,
     entry_points={},
 )

@@ -262,14 +262,16 @@ Spawn an actor within simulation by using the ``model`` and ``namespace`` of the
 - ``model: string``: Model definition
 - ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
 
-The model definition can be specified in different formats:
+.. note::
 
-- ``file://<path-to-model>``: Local path to model file
-- ``model://<path-to-model>``: Path relative to available model search paths
-- ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`simulation/gazebo/test_scenario_execution_gazebo/scenarios/test_spawn_exists_delete.osc`)
-- ``https:://fuel``: Model from `https://app.gazebosim.org/fuel/models`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
+    The model definition can be specified in different formats:
 
-If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
+    - ``file://<path-to-model>``: Local path to model file
+    - ``model://<path-to-model>``: Path relative to available model search paths
+    - ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`simulation/gazebo/test_scenario_execution_gazebo/scenarios/test_spawn_exists_delete.osc`)
+    - ``https:://fuel``: Model from `fuel.gazebosim.org <https://app.gazebosim.org/>`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
+
+    If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
 
 
 ``wait_for_sim()``
