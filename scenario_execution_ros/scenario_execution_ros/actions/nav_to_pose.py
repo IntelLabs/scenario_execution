@@ -16,8 +16,6 @@
 
 from rclpy.duration import Duration
 
-import py_trees
-
 from .nav2_common import get_pose_stamped
 from .ros_action_call import RosActionCall, ActionCallActionState
 from nav2_msgs.action import NavigateToPose
