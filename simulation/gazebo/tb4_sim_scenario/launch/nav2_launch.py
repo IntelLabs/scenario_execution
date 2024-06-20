@@ -35,10 +35,10 @@ ARGUMENTS = [
     DeclareLaunchArgument('model', default_value='standard',
                           choices=['standard', 'lite'],
                           description='Turtlebot4 Model'),
-    
+
     DeclareLaunchArgument('nav2', default_value='True',
                           description='Set "False" to skip nav2 startup.'),
-    
+
     DeclareLaunchArgument('headless', default_value='True',
                           description='Start Igniton GUI or not'),
 

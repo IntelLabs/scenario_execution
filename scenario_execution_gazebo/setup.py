@@ -15,8 +15,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """ Setup python package """
-from glob import glob
-import os
 from setuptools import find_namespace_packages, setup
 
 PACKAGE_NAME = 'scenario_execution_gazebo'
