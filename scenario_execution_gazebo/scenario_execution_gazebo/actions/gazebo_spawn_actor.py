@@ -76,7 +76,7 @@ class GazeboSpawnActor(RunProcess):
 
         self.logger = get_logger(self.name)
         self.utils = SpawnUtils(logger=self.logger)
-        
+
         if self.model.startswith('topic://'):
             transient_local_qos = QoSProfile(
                 durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
@@ -108,7 +108,7 @@ class GazeboSpawnActor(RunProcess):
                 self.current_state = SpawnActionState.WAITING_FOR_RESPONSE
                 return super().update()
             except ValueError as e:
-                self.feedback_message = str(e) # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = str(e)  # pylint: disable= attribute-defined-outside-init
                 self.current_state = SpawnActionState.FAILURE
                 return py_trees.common.Status.FAILURE
         else:
@@ -176,13 +176,13 @@ class GazeboSpawnActor(RunProcess):
         except KeyError as e:
             raise ValueError("Could not get values") from e
         return pose
-        
+
     def set_command(self, command):
         """
         Set execution command
         """
         pose = self.get_spawn_pose()
-        
+
         super().set_command(["ign", "service", "-s", "/world/" + self.world_name + "/create",
                              "--reqtype", "ignition.msgs.EntityFactory",
                              "--reptype", "ignition.msgs.Boolean",

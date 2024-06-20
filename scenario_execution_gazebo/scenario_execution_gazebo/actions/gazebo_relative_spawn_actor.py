@@ -14,23 +14,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import subprocess  # nosec B404
-from enum import Enum
-
-from std_msgs.msg import String
-
 import rclpy
 from math import sin, cos, atan2
-from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
-from rclpy.logging import get_logger
-from rclpy.node import Node
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
 from tf2_geometry_msgs import PoseStamped
-import py_trees
-from .gazebo_spawn_actor import GazeboSpawnActor, SpawnActionState
-from .utils import SpawnUtils
+from .gazebo_spawn_actor import GazeboSpawnActor
 
 
 class GazeboRelativeSpawnActor(GazeboSpawnActor):
@@ -47,7 +37,7 @@ class GazeboRelativeSpawnActor(GazeboSpawnActor):
         init
         """
         super().__init__(name, associated_actor, [], world_name, xacro_arguments, model)
-        
+
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.distance = distance
