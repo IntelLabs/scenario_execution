@@ -2,7 +2,7 @@ import osc.gazebo
 
 scenario test_spawn_and_exists:
         
-    test_obstacle: amr_object with:
+    test_obstacle: osc_actor with:
         keep(it.model == 'scenario_execution_gazebo://models/box.sdf')
 
     do parallel:
