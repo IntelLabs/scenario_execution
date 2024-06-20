@@ -27,6 +27,8 @@ jobs:
           source /opt/ros/humble/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
+          rm -rf log
+          rm -rf build
       - name: Cache Build
         id: cache-test-id
         uses: actions/cache/save@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2

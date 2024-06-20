@@ -16,10 +16,10 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
 
 # hadolint ignore=DL3042
 RUN --mount=type=bind,source=.,target=/scenario_execution \
-    if [[ "$ROS_DISTRO" == "humble" ]] ; then \
+    if [ "$ROS_DISTRO" == "humble" ] ; then \
         pip3 install -r /scenario_execution/requirements.txt; \
     fi && \
-    if [[ "$ROS_DISTRO" == "jazzy" ]] ; then \
+    if [ "$ROS_DISTRO" == "jazzy" ] ; then \
         pip3 install --break-system-packages -r /scenario_execution/requirements.txt; \
     fi && \
     rm -rf /var/lib/apt/lists/*
