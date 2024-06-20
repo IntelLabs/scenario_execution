@@ -12,7 +12,7 @@ action osc_actor.delete:
     world_name: string = 'default'      # simulation world name
 
 action osc_actor.spawn:
-    # Spawn a simulation entity, uses namespace of entity
+    # Spawn a simulation entity
     entity_name: string                 # name of the actor within simulation
     spawn_pose: pose_3d                 # position at which the object gets spawned
     world_name: string = 'default'      # simulation world name

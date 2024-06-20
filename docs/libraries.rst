@@ -248,6 +248,7 @@ Waits for an actor to exist within simulation.
 
 Delete an object from the simulation.
 
+- ``entity_name``: Entity name within simulation
 - ``world_name: string``: Gazebo world name (default: ``default``)
 
 ``osc_object.spawn()``
@@ -255,9 +256,20 @@ Delete an object from the simulation.
 
 Spawn an actor within simulation by using the ``model`` and ``namespace`` of the associated actor.
 
+- ``entity_name``: Entity name within simulation
 - ``spawn_pose: pose_3d``: Pose of the spawned actor.
 - ``world_name: string``: Gazebo world name (default: ``default``)
-- ``xacro_arguments: string``: Comma-separated list of argument key:=value pairs
+- ``model: string``: Model definition
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
+
+The model definition can be specified in different formats:
+- `file://<oath-to-model>`: Local path to model file
+- `model://<path-to-model>`: Path relative to available model search paths
+- `<package-name>://`: Path relative to an available package ()
+- `https:://fuel`
+
+If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
+
 
 ``wait_for_sim()``
 """"""""""""""""""
