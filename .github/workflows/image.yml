@@ -43,5 +43,5 @@ jobs:
         file: .github/workflows/Dockerfile
         push: true
         tags: ghcr.io/intellabs/scenario-execution:${{ matrix.ros_distro }}
-        build-args:
-        - ROS_DISTRO=${{ matrix.ros_distro }}
+        build-args: |
+          ROS_DISTRO=${{ matrix.ros_distro }}
