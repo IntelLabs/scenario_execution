@@ -7,7 +7,6 @@ permissions: read-all
 jobs:
   cleanup:
     permissions:
-      contents: read
       actions: write
     runs-on: intellabs-01
     steps:
