@@ -310,9 +310,6 @@ jobs:
   tests:
     needs: [test-scenario-execution, test-scenario-execution-ros, scenario-files-validation, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot]
     runs-on: intellabs-01
-  publish-scenario-results:
-    needs: [test-scenario-execution, test-scenario-execution-ros, scenario-files-validation, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot]
-    runs-on: intellabs-01
     if: ${{ always() }}
     steps:
       - name: Download all artifacts
