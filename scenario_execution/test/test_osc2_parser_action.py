@@ -36,7 +36,7 @@ action test_action:
     param1: string = "value1"
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
     def test_action_unknown_actor(self):
         scenario_content = """
@@ -54,4 +54,4 @@ action base.test_action:
     param1: string = "value1"
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)

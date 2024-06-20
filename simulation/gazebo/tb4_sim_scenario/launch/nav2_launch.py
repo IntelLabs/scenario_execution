@@ -19,6 +19,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
@@ -34,8 +35,10 @@ ARGUMENTS = [
     DeclareLaunchArgument('model', default_value='standard',
                           choices=['standard', 'lite'],
                           description='Turtlebot4 Model'),
-    DeclareLaunchArgument('launch_simulation', default_value='True',
-                          description='Set "false" to skip simulation startup.'),
+
+    DeclareLaunchArgument('nav2', default_value='True',
+                          description='Set "False" to skip nav2 startup.'),
+
     DeclareLaunchArgument('headless', default_value='True',
                           description='Start Igniton GUI or not'),
 
@@ -59,9 +62,11 @@ def generate_launch_description():
 
     # Launch args
     map_yaml = LaunchConfiguration('map_yaml')
+    nav2 = LaunchConfiguration('nav2')
 
     nav2_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([pkg_nav2_bringup, 'launch', 'bringup_launch.py'])]),
+        condition=IfCondition(nav2),
         launch_arguments={
             'map': PathJoinSubstitution([pkg_tb4_nav, 'maps', map_yaml]),
             'use_sim_time': 'True',

@@ -1,0 +1,23 @@
+import osc.gazebo
+
+scenario test_spawn_and_exists:
+        
+    test_obstacle: osc_actor
+
+    do parallel:
+        test_obstacle.spawn(
+            spawn_pose: pose_3d(position: position_3d(x: 1m, y: 0m, z: 1m)),
+            world_name: 'maze',
+            model: 'test_scenario_execution_gazebo://models/box.sdf')
+        test_case: serial:
+            wait elapsed(5s)
+            test: actor_exists(
+                entity_name: 'test_obstacle',
+                world_name: 'maze')
+            delete_obstacle: test_obstacle.delete(
+                world_name: 'maze',
+                entity_name: 'test_obstacle')
+            success: emit end
+        time_out: serial:
+            wait elapsed(30s)
+            emit fail
