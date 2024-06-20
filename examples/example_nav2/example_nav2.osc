@@ -6,6 +6,10 @@ scenario example_nav2:
         serial:
             robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
             robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
+            
+            #action_call(action_name: "/navigate_to_pose", action_type: "nav2_msgs.action.NavigateToPose", data: '{\"pose\": { \"header\": { \"frame_id\": \"map\" }, \"pose\": { \"position\": { \"x\": 3, \"y\": -3 } } } }')
+
+            #geometry_msgs.msg.PoseStamped(header=std_msgs.msg.Header(stamp=builtin_interfaces.msg.Time(sec=1718893082, nanosec=690759054), frame_id='map'), pose=geometry_msgs.msg.Pose(position=geometry_msgs.msg.Point(x=3.0, y=-3.0, z=0.0), orientation=geometry_msgs.msg.Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)))
             emit end
         time_out: serial:
             wait elapsed(60s)

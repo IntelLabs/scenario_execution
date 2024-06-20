@@ -49,11 +49,13 @@ class RosActionCall(py_trees.behaviour.Behaviour):
         self.goal_handle = None
         self.action_type = action_type
         self.action_name = action_name
-        try:
-            trimmed_data = data.encode('utf-8').decode('unicode_escape')
-            self.data = literal_eval(trimmed_data)
-        except Exception as e:  # pylint: disable=broad-except
-            raise ValueError(f"Error while parsing sevice call data:") from e
+        self.received_feedback = None
+        if data:
+            try:
+                trimmed_data = data.encode('utf-8').decode('unicode_escape')
+                self.data = literal_eval(trimmed_data)
+            except Exception as e:  # pylint: disable=broad-except
+                raise ValueError(f"Error while parsing sevice call data:") from e
         self.current_state = ActionCallActionState.IDLE
         self.cb_group = ReentrantCallbackGroup()
 
@@ -86,7 +88,6 @@ class RosActionCall(py_trees.behaviour.Behaviour):
         self.logger.debug(f"Current State {self.current_state}")
         result = py_trees.common.Status.FAILURE
         if self.current_state == ActionCallActionState.IDLE:
-            self.feedback_message = f"Waiting for action server {self.action_name}"  # pylint: disable= attribute-defined-outside-init
             if self.client.wait_for_server(0.0):
                 self.current_state = ActionCallActionState.ACTION_SERVER_AVAILABLE
             result = py_trees.common.Status.RUNNING
@@ -94,11 +95,8 @@ class RosActionCall(py_trees.behaviour.Behaviour):
             self.current_state = ActionCallActionState.ACTION_CALLED
             if self.send_goal_future:
                 self.send_goal_future.cancel()
-            req = self.action_type.Goal()
-            set_message_fields(req, self.data)
-            self.send_goal_future = self.client.send_goal_async(req, feedback_callback=self.feedback_callback)
+            self.send_goal_future = self.client.send_goal_async(self.get_goal_msg(), feedback_callback=self.feedback_callback)
             self.send_goal_future.add_done_callback(self.goal_response_callback)
-            self.feedback_message = f"action {self.action_name} called."  # pylint: disable= attribute-defined-outside-init
             result = py_trees.common.Status.RUNNING
         elif self.current_state == ActionCallActionState.ACTION_CALLED:
             result = py_trees.common.Status.RUNNING
@@ -106,13 +104,19 @@ class RosActionCall(py_trees.behaviour.Behaviour):
             result = py_trees.common.Status.SUCCESS
         else:
             self.logger.error(f"Invalid state {self.current_state}")
+        feedback_msg = self.get_feedback_message(self.current_state)
+        if feedback_msg is not None:
+            self.feedback_message = feedback_msg  # pylint: disable= attribute-defined-outside-init
 
         return result
 
+    def get_goal_msg(self):
+        req = self.action_type.Goal()
+        set_message_fields(req, self.data)
+        return req
+
     def feedback_callback(self, msg):
-        if self.current_state not in [ActionCallActionState.DONE, ActionCallActionState.ERROR]:
-            print(msg.feedback)
-            self.feedback_message = f"Current: {msg.feedback}"  # pylint: disable= attribute-defined-outside-init
+        self.received_feedback = msg.feedback
 
     def goal_response_callback(self, future):
         self.goal_handle = future.result()
@@ -133,7 +137,6 @@ class RosActionCall(py_trees.behaviour.Behaviour):
         if self.current_state == ActionCallActionState.ACTION_CALLED:
             if status == GoalStatus.STATUS_SUCCEEDED:
                 self.current_state = ActionCallActionState.DONE
-                self.feedback_message = f"action successfully finished."  # pylint: disable= attribute-defined-outside-init
                 self.goal_handle = None
             elif status == GoalStatus.STATUS_CANCELED:
                 self.current_state = ActionCallActionState.ERROR
@@ -149,3 +152,16 @@ class RosActionCall(py_trees.behaviour.Behaviour):
     def shutdown(self):
         if self.goal_handle:
             self.goal_handle.cancel_goal()
+
+    def get_feedback_message(self, current_state):
+        feedback_message = None
+        if current_state == ActionCallActionState.IDLE:
+            feedback_message = f"Waiting for action server {self.action_name}"
+        elif current_state == ActionCallActionState.ACTION_CALLED:
+            if self.received_feedback is not None:
+                feedback_message = f"Current: {self.received_feedback}"
+            else:
+                feedback_message = f"Action {self.action_name} called."
+        elif current_state == ActionCallActionState.DONE:
+            feedback_message = f"Action successfully finished."
+        return feedback_message
