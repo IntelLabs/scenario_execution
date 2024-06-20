@@ -1,7 +1,7 @@
-# Use the ROS Humble desktop-full image as the base
-FROM osrf/ros:humble-desktop-full
+ARG ROS_DISTRO
 
-# Install system dependencies
+FROM osrf/ros:${ROS_DISTRO}-desktop-full
+
 # hadolint ignore=DL3008
 RUN --mount=type=bind,source=.,target=/scenario_execution \
     apt-get update && \
@@ -11,8 +11,8 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
         tk \
         libgl1 && \
     xargs -a /scenario_execution/deb_requirements.txt apt-get install -y --no-install-recommends && \
-    rosdep update --rosdistro=humble && \
-    rosdep install --rosdistro=humble --from-paths /scenario_execution/ --ignore-src -r -y
+    rosdep update --rosdistro=${ROS_DISTRO} && \
+    rosdep install --rosdistro=${ROS_DISTRO} --from-paths /scenario_execution/ --ignore-src -r -y
 
 # hadolint ignore=DL3042
 RUN --mount=type=bind,source=.,target=/scenario_execution \
