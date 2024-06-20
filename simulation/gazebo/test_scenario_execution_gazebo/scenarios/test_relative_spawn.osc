@@ -11,11 +11,10 @@ scenario test_relative_spawn:
             parallel:
                 robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
                 serial:
-                    robot.tf_close_to() with:
-                        keep(it.reference_point.x == -1.5m)
-                        keep(it.reference_point.y == 0.0m)
-                        keep(it.threshold == 0.35m)
-                        keep(it.robot_frame_id ==  'turtlebot4_base_link_gt')
+                    robot.tf_close_to(
+                        reference_point: position_3d(x: -1.5m, y: 0.0m), 
+                        threshold: 0.35m, 
+                        robot_frame_id: 'turtlebot4_base_link_gt')
                     test_obstace.relative_spawn(
                         distance: random.get_float(0.5, 1.5, 42),
                         model: 'test_scenario_execution_gazebo://models/box.sdf')

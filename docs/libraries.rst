@@ -150,8 +150,8 @@ Use nav2 to navigate to goal pose.
 
 Wait until a defined distance was traveled, based on odometry.
 
-- ``namespace: string``:  Namespace of the odometry topic
 - ``distance: length``: Traveled distance at which the action succeeds.
+- ``namespace_override: string``: if set, it's used as namespace (instead of the associated actor's namespace)
 
 ``differential_drive_robot.tf_close_to()``
 """"""""""""""""""""""""""""""""""""""""""
