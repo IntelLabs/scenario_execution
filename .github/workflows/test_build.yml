@@ -8,7 +8,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build-and-cache:
+  build:
     #TODO model dependency to image-workflow. Workaround: retrigger run after image-workflow finished.
     runs-on: intellabs-01
     container:
@@ -34,7 +34,7 @@ jobs:
           path: .
           key: ${{ runner.os }}-build-${{ github.run_number }}
   test-scenario-execution:
-    needs: [build-and-cache]
+    needs: [build]
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
@@ -70,7 +70,7 @@ jobs:
           name: test-scenario-execution
           path: ./**/TEST.xml
   test-scenario-execution-ros:
-    needs: [build-and-cache]
+    needs: [build]
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
@@ -104,7 +104,7 @@ jobs:
           name: test-scenario-execution-ros
           path: ./**/TEST.xml
   scenario-files-validation:
-    needs: [build-and-cache]
+    needs: [build]
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
@@ -127,7 +127,7 @@ jobs:
             ros2 run scenario_execution scenario_execution "$file" -n; 
           done
   test-example-scenario:
-    needs: [build-and-cache]
+    needs: [build]
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
@@ -154,7 +154,7 @@ jobs:
           name: test-example-scenario-result
           path: test_example_scenario/test.xml
   test-example-library:
-    needs: [build-and-cache]
+    needs: [build]
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
@@ -181,7 +181,7 @@ jobs:
           name: test-example-library-result
           path: test_example_library/test.xml
   test-example-variation:
-    needs: [build-and-cache]
+    needs: [build]
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
@@ -209,7 +209,7 @@ jobs:
           name: test-example-variation-result
           path: test_example_variation/test.xml
   test-example-nav2:
-    needs: [build-and-cache]
+    needs: [build]
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
@@ -242,7 +242,7 @@ jobs:
           name: test-example-nav2-result
           path: test_example_nav2/test.xml
   test-example-simulation:
-    needs: [build-and-cache]
+    needs: [build]
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
@@ -275,7 +275,7 @@ jobs:
           name: test-example-simulation-result
           path: test_example_simulation/test.xml
   test-example-multirobot:
-    needs: [build-and-cache]
+    needs: [build]
     runs-on: intellabs-01
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
