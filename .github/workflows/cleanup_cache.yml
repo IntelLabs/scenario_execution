@@ -6,6 +6,8 @@ on:
 permissions: read-all
 jobs:
   cleanup:
+    permissions:
+      actions: write
     runs-on: intellabs-01
     steps:
       - name: Cleanup
