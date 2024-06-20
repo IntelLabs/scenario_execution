@@ -2,9 +2,9 @@ import osc.ros
 import osc.gazebo
 import osc.helpers
 
-scenario example_simulation:
+scenario test_relative_spawn:
     robot: differential_drive_robot
-    box: osc_actor
+    test_obstacle: osc_actor
     do parallel:
         serial:
             robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
@@ -16,14 +16,9 @@ scenario example_simulation:
                         keep(it.reference_point.y == 0.0m)
                         keep(it.threshold == 0.35m)
                         keep(it.robot_frame_id ==  'turtlebot4_base_link_gt')
-                    box.relative_spawn(
-                        distance: random.get_float(0.5, 1.5),
-                        model: 'example_simulation://models/box.sdf',
-                        world_name: 'maze')
-                    wait elapsed(7s)
-                    box.relative_spawn(
-                        distance: random.get_float(0.5, 1.5),
-                        model: 'example_simulation://models/box.sdf',
+                    test_obstace.relative_spawn(
+                        distance: random.get_float(0.5, 1.5, 42),
+                        model: 'test_scenario_execution_gazebo://models/box.sdf')
                         world_name: 'maze')
             emit end
         time_out: serial:
