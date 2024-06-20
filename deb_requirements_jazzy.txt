@@ -1,4 +1,4 @@
-ros-jazzy-turtlebot4-simulator
+ros-jazzy-nav2-minimal-tb4-sim
 ros-jazzy-py-trees-ros-interfaces
 python3-autopep8
 clang-format
