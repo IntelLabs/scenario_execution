@@ -340,7 +340,7 @@ jobs:
           name: test-example-simulation-result
           path: test_example_simulation/test.xml
   tests:
-    needs: [test-scenario-execution, test-scenario-execution-ros, scenario-files-validation, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot]
+    needs: [test-scenario-execution, test-scenario-execution-ros, scenario-files-validation, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot, test-scenario-execution-gazebo]
     runs-on: intellabs-01
     if: ${{ always() }}
     steps:
