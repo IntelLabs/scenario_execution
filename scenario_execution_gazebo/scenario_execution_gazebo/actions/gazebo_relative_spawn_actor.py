@@ -29,24 +29,11 @@ from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
 from tf2_geometry_msgs import PoseStamped
 import py_trees
-from scenario_execution.actions.run_process import RunProcess
+from .gazebo_spawn_actor import GazeboSpawnActor, SpawnActionState
 from .utils import SpawnUtils
 
 
-class SpawnActionState(Enum):
-    """
-    States for executing a spawn-entity in gazebo
-    """
-    WAITING_FOR_TOPIC = 1
-    WAITING_FOR_POSE = 2
-    POSE_AVAILABLE = 3
-    MODEL_AVAILABLE = 4
-    WAITING_FOR_RESPONSE = 5
-    DONE = 6
-    FAILURE = 7
-
-
-class GazeboRelativeSpawnActor(RunProcess):
+class GazeboRelativeSpawnActor(GazeboSpawnActor):
     """
     Class to spawn an entity into simulation
 
@@ -59,121 +46,22 @@ class GazeboRelativeSpawnActor(RunProcess):
         """
         init
         """
-        super().__init__(name, "")
-        self.entity_name = associated_actor["name"]
-        self.model_file = model
+        super().__init__(name, associated_actor, [], world_name, xacro_arguments, model)
+        
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.distance = distance
-        self.world_name = world_name
-        self.xacro_arguments = xacro_arguments
-        self.current_state = SpawnActionState.WAITING_FOR_TOPIC
-        self.node = None
-        self.logger = None
-        self.model_sub = None
-        self.sdf = None
-        self.utils = None
-        self._pose = None
-        self.sdf = None
+        self._pose = '{}'
         self.tf_buffer = Buffer()
+        self.tf_listener = None
 
     def setup(self, **kwargs):
-        """
-        Setup ROS2 node and model
+        super().setup(**kwargs)
+        self.tf_listener = TransformListener(self.tf_buffer, self.node)
 
-        """
-        try:
-            self.node: Node = kwargs['node']
-        except KeyError as e:
-            error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
-                self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
-
-        self.logger = get_logger(self.name)
-        self.utils = SpawnUtils(logger=self.logger)
-        _ = TransformListener(self.tf_buffer, self.node)
-
-        if self.model_file.startswith('topic://'):
-            transient_local_qos = QoSProfile(
-                durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
-                reliability=QoSReliabilityPolicy.RELIABLE,
-                history=QoSHistoryPolicy.KEEP_LAST,
-                depth=1)
-            topic = self.model_file.replace('topic://', '', 1)
-            self.current_state = SpawnActionState.WAITING_FOR_TOPIC
-            self.feedback_message = f"Waiting for model on topic {topic}"  # pylint: disable= attribute-defined-outside-init
-            self.model_sub = self.node.create_subscription(
-                String, topic, self.topic_callback, transient_local_qos)
-        else:
-            self.sdf = self.utils.parse_model_file(
-                self.model_file, self.entity_name, self.xacro_arguments)
-            self.current_state = SpawnActionState.WAITING_FOR_POSE
-
-    def update(self) -> py_trees.common.Status:
-        """
-        Send request
-        """
-        if self.current_state == SpawnActionState.WAITING_FOR_TOPIC:
-            return py_trees.common.Status.RUNNING
-        elif self.current_state == SpawnActionState.WAITING_FOR_POSE:
-            self.calculate_new_pose()
-            return py_trees.common.Status.RUNNING
-        elif self.current_state == SpawnActionState.POSE_AVAILABLE:
-            if self.sdf:
-                self.set_command(self.sdf)
-            else:
-                raise ValueError(f'Invalid model specified ({self.model_file})')
-            return py_trees.common.Status.RUNNING
-        else:
-            return super().update()
-
-    def on_executed(self):
-        """
-        Hook when process gets executed
-        """
-        self.current_state = SpawnActionState.WAITING_FOR_RESPONSE
-        self.feedback_message = f"Executed spawning, waiting for response..."  # pylint: disable= attribute-defined-outside-init
-
-    def shutdown(self):
-        """
-        Cleanup on shutdown
-        """
-        if self.current_state in [SpawnActionState.WAITING_FOR_TOPIC, SpawnActionState.MODEL_AVAILABLE]:
-            return
-
-        self.logger.info(f"Deleting entity '{self.entity_name}' from simulation.")
-        subprocess.run(["ign", "service", "-s", "/world/" + self.world_name + "/remove",  # pylint: disable=subprocess-run-check
-                        "--reqtype", "ignition.msgs.Entity",
-                        "--reptype", "ignition.msgs.Boolean",
-                        "--timeout", "1000", "--req", "name: \"" + self.entity_name + "\" type: MODEL"])
-
-    def on_process_finished(self, ret):
-        """
-        check result of process
-
-        return:
-            py_trees.common.Status
-        """
-        if self.current_state == SpawnActionState.WAITING_FOR_RESPONSE:
-            if ret == 0:
-                while True:
-                    try:
-                        line = self.output.popleft()
-                        line = line.lower()
-                        if 'error' in line or 'timed out' in line:
-                            self.logger.warn(line)
-                            self.feedback_message = f"Found error output while executing '{self.command}'"  # pylint: disable= attribute-defined-outside-init
-                            self.current_state = SpawnActionState.FAILURE
-                            return py_trees.common.Status.FAILURE
-                    except IndexError:
-                        break
-                self.current_state = SpawnActionState.DONE
-                return py_trees.common.Status.SUCCESS
-            else:
-                self.current_state = SpawnActionState.FAILURE
-                return py_trees.common.Status.FAILURE
-        else:
-            return py_trees.common.Status.INVALID
+    def get_spawn_pose(self):
+        self.calculate_new_pose()
+        return self._pose
 
     def calculate_new_pose(self):
         """
@@ -187,7 +75,7 @@ class GazeboRelativeSpawnActor(RunProcess):
                 self.parent_frame_id,
                 self.frame_id,
                 now,
-                timeout=rclpy.duration.Duration(seconds=1.0),
+                timeout=rclpy.duration.Duration(seconds=0.0),
             )
 
             # Extract current position and orientation
@@ -216,33 +104,5 @@ class GazeboRelativeSpawnActor(RunProcess):
                 ' } orientation: {' \
                 f' w: {new_pose.pose.orientation.w} x: {new_pose.pose.orientation.x} y: {new_pose.pose.orientation.y} z: {new_pose.pose.orientation.z}' \
                 ' } }'
-
-            self.current_state = SpawnActionState.POSE_AVAILABLE
-
-        except TransformException as ex:
-            self.feedback_message = f"Could not transform {self.parent_frame_id} to {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
-            self.logger().warn(
-                f'Could not transform {self.parent_frame_id} to {self.frame_id} at time {now}: {ex}')
-
-    def set_command(self, command):
-        """
-        Set execution command
-        """
-        super().set_command(["ign", "service", "-s", "/world/" + self.world_name + "/create",
-                             "--reqtype", "ignition.msgs.EntityFactory",
-                             "--reptype", "ignition.msgs.Boolean",
-                             "--timeout", "30000", "--req", "pose: " + str(self._pose) + " name: \"" + self.entity_name + "\" allow_renaming: true sdf: \"" + command + "\""])
-
-        self.logger.info(f'Command: {" ".join(self.get_command())}')
-        self.current_state = SpawnActionState.MODEL_AVAILABLE
-
-    def topic_callback(self, msg):
-        '''
-        Callback to receive model description from topic
-        '''
-
-        self.feedback_message = f"Model received from topic."  # pylint: disable= attribute-defined-outside-init
-        self.logger.info("Received robot_description.")
-        self.node.destroy_subscription(self.model_sub)
-        self.set_command(msg.data.replace("\"", "\\\"").replace("\n", ""))
-        self.current_state = SpawnActionState.WAITING_FOR_POSE
+        except TransformException as e:
+            raise ValueError(f"No transform available ({self.parent_frame_id}->{self.frame_id})")
