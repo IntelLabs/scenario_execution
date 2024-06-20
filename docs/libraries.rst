@@ -251,6 +251,18 @@ Delete an object from the simulation.
 - ``entity_name``: Entity name within simulation
 - ``world_name: string``: Gazebo world name (default: ``default``)
 
+``osc_object.relative_spawn()``
+"""""""""""""""""""""""""""""""
+
+Spawn an actor relative to a given ``frame_id`` within simulation (at a specified ``distance`` in front of ``frame_id``) by using the ``model`` and ``namespace`` of the associated actor. 
+
+- ``frame_id``: The frame Id to spawn the actor relative to. (default: ``base_link``)
+- ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
+- ``distance``: distance value relative to the frame_id at which to spawn the new actor (default: 1.0)
+- ``world_name: string``: Gazebo world name (default: ``default``)
+- ``model: string``: Model definition
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
+
 ``osc_object.spawn()``
 """"""""""""""""""""""
 
@@ -271,18 +283,6 @@ Spawn an actor within simulation.
     - ``https:://fuel``: Model from `fuel.gazebosim.org <https://app.gazebosim.org/>`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
 
     If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
-
-``osc_object.relative_spawn()``
-"""""""""""""""""""""""""""""""
-
-Spawn an actor relative to a given ``frame_id`` within simulation (at a specified ``distance`` in front of ``frame_id``) by using the ``model`` and ``namespace`` of the associated actor. 
-
-- ``frame_id``: The frame Id to spawn the actor relative to. (default: ``base_link``)
-- ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
-- ``distance``: distance value relative to the frame_id at which to spawn the new actor (default: 1.0)
-- ``world_name: string``: Gazebo world name (default: ``default``)
-- ``model: string``: Model definition
-- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
 
 ``wait_for_sim()``
 """"""""""""""""""
