@@ -95,4 +95,4 @@ class GazeboRelativeSpawnActor(GazeboSpawnActor):
                 f' w: {new_pose.pose.orientation.w} x: {new_pose.pose.orientation.x} y: {new_pose.pose.orientation.y} z: {new_pose.pose.orientation.z}' \
                 ' } }'
         except TransformException as e:
-            raise ValueError(f"No transform available ({self.parent_frame_id}->{self.frame_id})")
+            raise ValueError(f"No transform available ({self.parent_frame_id}->{self.frame_id})") from e
