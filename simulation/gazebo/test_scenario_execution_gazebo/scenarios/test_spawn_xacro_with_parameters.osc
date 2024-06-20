@@ -6,7 +6,6 @@ scenario test_spawn_xacro_with_parameters:
 
     do parallel:
         test_obstacle.spawn(
-            entity_name: 'test_obstacle',
             spawn_pose: pose_3d(position: position_3d(z: 2m)),
             world_name: 'maze',
             xacro_arguments: 'box_width_length:=1 1,box_height:=4',

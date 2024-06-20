@@ -15,7 +15,6 @@ scenario example_simulation:
                         threshold: 0.4m,
                         robot_frame_id: 'turtlebot4_base_link_gt')
                     box.spawn(
-                        entity_name: 'box',
                         spawn_pose: pose_3d(
                             position: position_3d(x: 2.0m, y: -2.0m, z: 0.1m),
                             orientation: orientation_3d(yaw: 0.0rad)),

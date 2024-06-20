@@ -254,9 +254,8 @@ Delete an object from the simulation.
 ``osc_object.spawn()``
 """"""""""""""""""""""
 
-Spawn an actor within simulation by using the ``model`` and ``namespace`` of the associated actor.
+Spawn an actor within simulation.
 
-- ``entity_name``: Entity name within simulation
 - ``spawn_pose: pose_3d``: Pose of the spawned actor.
 - ``world_name: string``: Gazebo world name (default: ``default``)
 - ``model: string``: Model definition

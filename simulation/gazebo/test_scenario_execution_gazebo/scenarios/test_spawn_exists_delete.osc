@@ -6,7 +6,6 @@ scenario test_spawn_and_exists:
 
     do parallel:
         test_obstacle.spawn(
-            entity_name: 'test_obstacle',
             spawn_pose: pose_3d(position: position_3d(x: 1m, y: 0m, z: 1m)),
             world_name: 'maze',
             model: 'test_scenario_execution_gazebo://models/box.sdf')
