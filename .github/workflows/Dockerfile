@@ -1,7 +1,20 @@
 ARG ROS_DISTRO
 
 FROM osrf/ros:${ROS_DISTRO}-desktop-full
+SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
+# hadolint ignore=DL3042
+RUN --mount=type=bind,source=.,target=/scenario_execution \
+    if [[ "$ROS_DISTRO" == "humble" ]] ; then \
+        pip3 install -r /scenario_execution/requirements.txt && \
+        rm -rf /var/lib/apt/lists/* \
+    ;fi
 
+RUN --mount=type=bind,source=.,target=/scenario_execution \
+    if [[ "$ROS_DISTRO" == "jazzy" ]] ; then \
+        pip3 install --break-system-packages -r /scenario_execution/requirements.txt && \
+        rm -rf /var/lib/apt/lists/* \
+    ;fi \
+    
 # hadolint ignore=DL3008
 RUN --mount=type=bind,source=.,target=/scenario_execution \
     apt-get update && \
@@ -14,15 +27,4 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
     rosdep update --rosdistro=${ROS_DISTRO} && \
     rosdep install --rosdistro=${ROS_DISTRO} --from-paths /scenario_execution/ --ignore-src -r -y
 
-# hadolint ignore=DL3042
-RUN --mount=type=bind,source=.,target=/scenario_execution \
-    if [ "$ROS_DISTRO" == "humble" ] ; then \
-        pip3 install -r /scenario_execution/requirements.txt && \
-        rm -rf /var/lib/apt/lists/* \
-    ;fi
 
-RUN --mount=type=bind,source=.,target=/scenario_execution \
-    if [ "$ROS_DISTRO" == "jazzy" ] ; then \
-        pip3 install --break-system-packages -r /scenario_execution/requirements.txt && \
-        rm -rf /var/lib/apt/lists/* \
-    ;fi \
