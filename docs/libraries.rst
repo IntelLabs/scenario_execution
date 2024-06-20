@@ -248,17 +248,29 @@ Waits for an actor to exist within simulation.
 
 Delete an object from the simulation.
 
+- ``entity_name``: Entity name within simulation
 - ``world_name: string``: Gazebo world name (default: ``default``)
 
 ``osc_object.spawn()``
 """"""""""""""""""""""
 
-Spawn an actor within simulation by using the ``model`` and ``namespace`` of the associated actor.
+Spawn an actor within simulation.
 
 - ``spawn_pose: pose_3d``: Pose of the spawned actor.
 - ``world_name: string``: Gazebo world name (default: ``default``)
 - ``model: string``: Model definition
-- ``xacro_arguments: string``: Comma-separated list of argument key:=value pairs
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
+
+.. note::
+
+    The model definition can be specified in different formats:
+
+    - ``file://<path-to-model>``: Local path to model file
+    - ``model://<path-to-model>``: Path relative to available model search paths
+    - ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`simulation/gazebo/test_scenario_execution_gazebo/scenarios/test_spawn_exists_delete.osc`)
+    - ``https:://fuel``: Model from `fuel.gazebosim.org <https://app.gazebosim.org/>`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
+
+    If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
 
 ``osc_object.relative_spawn()``
 """""""""""""""""""""""""""""""
@@ -270,7 +282,7 @@ Spawn an actor relative to a given ``frame_id`` within simulation (at a specifie
 - ``distance``: distance value relative to the frame_id at which to spawn the new actor (default: 1.0)
 - ``world_name: string``: Gazebo world name (default: ``default``)
 - ``model: string``: Model definition
-- ``xacro_arguments: string``: Comma-separated list of argument key:=value pairs
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
 
 ``wait_for_sim()``
 """"""""""""""""""
