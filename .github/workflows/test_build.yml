@@ -1,43 +1,52 @@
 ---
 name: test-build
 on:
-  # Triggers the workflow on push or pull request events but
-  # only for the main branch
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-permissions: read-all
 jobs:
   build:
+    #TODO model dependency to image-workflow. Workaround: retrigger run after image-workflow finished.
     runs-on: intellabs-01
     container:
-      image: osrf/ros:humble-desktop-full
-    permissions:
-      # checks: write
-      pull-requests: write
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
         with:
           submodules: true
-      - name: Setup Dependencies
-        run: |
-          apt update
-          apt install -y python3-pip
-          xargs -a deb_requirements.txt apt install -y --no-install-recommends
-          rosdep update --rosdistro=humble 
-          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
-          pip3 install -r requirements.txt
       - name: Build
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
+      - name: Cache Build
+        id: cache-test-id
+        uses: actions/cache/save@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          path: .
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+  test-scenario-execution:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
       - name: Test
         shell: bash
         run: |
@@ -47,75 +56,68 @@ jobs:
           export ROS_DOMAIN_ID=2
           colcon test --packages-select \
           scenario_execution \
-          scenario_execution_ros \
+          scenario_execution_gazebo \
           scenario_coverage \
           --event-handlers console_direct+ \
           --return-code-on-test-failure \
           --pytest-args \
           --junit-xml=TEST.xml
           # Add "--capture=no" to see output of tests
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
         with:
-          check_run: false
-          files: |
-            scenario_execution//TEST.xml
-            scenario_execution_ros//TEST.xml
-            scenario_coverage//TEST.xml
-  test-scenarios:
+          name: test-scenario-execution
+          path: ./**/TEST.xml
+  test-scenario-execution-ros:
+    needs: [build]
     runs-on: intellabs-01
     container:
-      image: osrf/ros:humble-desktop
-    permissions:
-      # checks: write
-      pull-requests: write
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      - name: Restore cache
+        uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
-          submodules: true
-      - name: Setup Dependencies
-        run: |
-          apt update
-          apt install -y xvfb tk
-          apt install -y libgl1
-          apt install -y python3-pip
-          xargs -a deb_requirements.txt apt install -y --no-install-recommends
-          rosdep update --rosdistro=humble 
-          rosdep install --rosdistro=humble --from-paths . --ignore-src -r -y
-          apt install -y ros-humble-gazebo-ros2-control
-          pip3 install -r requirements.txt
-      - name: Build IGN_ROS_CONTROL # build from source for now because base package has errors.
-        shell: bash
-        run: |
-          mkdir -p /ros_ign/src
-          cd /ros_ign/src
-          git clone --branch humble https://github.com/ros-controls/gz_ros2_control.git
-          rosdep install -r --from-paths . --ignore-src --rosdistro humble -y
-          cd /ros_ign
-          source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
-          source install/setup.bash
-      - name: Build
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
+      - name: Test
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
-          colcon build --continue-on-error
           source install/setup.bash
-      - name: Test Scenario Execution Gazebo
-        shell: bash
-        run: |
-          source /ros_ign/install/setup.bash
-          source /opt/ros/humble/setup.bash
-          source install/setup.bash
-          Xvfb :1 -screen 0 800x600x16 &
-          export DISPLAY=:1.0
           export -n CYCLONEDDS_URI
-          export ROS_DOMAIN_ID=119
-          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          # shellcheck disable=SC1083
-          scenario_batch_execution -i simulation/test_scenario_execution_gazebo/scenarios/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-      - name: Test Scenario Files Syntax
+          export ROS_DOMAIN_ID=2
+          colcon test --packages-select \
+          scenario_execution_ros \
+          --event-handlers console_direct+ \
+          --return-code-on-test-failure \
+          --pytest-args \
+          --junit-xml=TEST.xml
+          # Add "--capture=no" to see output of tests
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-scenario-execution-ros
+          path: ./**/TEST.xml
+  scenario-files-validation:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
+      - name: Test Scenario Files
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
@@ -124,6 +126,20 @@ jobs:
             echo "$file"; 
             ros2 run scenario_execution scenario_execution "$file" -n; 
           done
+  test-example-scenario:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
       - name: Test Example Scenario
         shell: bash
         run: |
@@ -131,6 +147,26 @@ jobs:
           source install/setup.bash
           #shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-scenario-result
+          path: test_example_scenario/test.xml
+  test-example-library:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
       - name: Test Example Library
         shell: bash
         run: |
@@ -138,6 +174,26 @@ jobs:
           source install/setup.bash
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-library-result
+          path: test_example_library/test.xml
+  test-example-variation:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
       - name: Test Example Variation
         shell: bash
         run: |
@@ -146,82 +202,166 @@ jobs:
           scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i scenario_variation_out -o test_example_variation -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-      - name: Test Example Scenario Control
-        shell: bash
-        run: |
-          source /opt/ros/humble/setup.bash
-          source install/setup.bash
-          mkdir test_example_control
-          python3 scenario_execution_control/test/scenario_execution_control_test_ci.py
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-variation-result
+          path: test_example_variation/test.xml
+  test-example-nav2:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
       - name: Test Example Nav2
         shell: bash
         run: |
-          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
           export -n CYCLONEDDS_URI
-          export ROS_DOMAIN_ID=119
+          export ROS_DOMAIN_ID=2
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
           sed -i 's/60s/600s/g' examples/example_nav2/example_nav2.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_nav2/ -o test_example_nav2 -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-nav2-result
+          path: test_example_nav2/test.xml
+  test-example-simulation:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
       - name: Test Example Simulation
         shell: bash
         run: |
-          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
           export -n CYCLONEDDS_URI
-          export ROS_DOMAIN_ID=119
+          export ROS_DOMAIN_ID=2
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          sed -i 's/120s/900s/g' examples/example_simulation/scenarios/example_simulation.osc
+          sed -i 's/120s/600s/g' examples/example_simulation/scenarios/example_simulation.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_simulation/scenarios/ -o test_example_simulation -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-simulation-result
+          path: test_example_simulation/test.xml
+  test-example-multirobot:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
       - name: Test Example Multirobot
         shell: bash
         run: |
-          source /ros_ign/install/setup.bash
           source /opt/ros/humble/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
           export -n CYCLONEDDS_URI
-          export ROS_DOMAIN_ID=119
+          export ROS_DOMAIN_ID=2
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          sed -i 's/240s/1500s/g' examples/example_multi_robot/example_multi_robot.osc
+          sed -i 's/240s/900s/g' examples/example_multi_robot/example_multi_robot.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_multi_robot/ -o test_example_multirobot -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR}
-      - name: Publish Scenario Results
-        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
         with:
-          check_name: Scenario Results
+          name: test-example-multirobot-result
+          path: test_example_multirobot/test.xml
+  test-scenario-execution-gazebo:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
+      - name: Test Scenario Execution Gazebo
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          Xvfb :1 -screen 0 800x600x16 &
+          export DISPLAY=:1.0
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=2
+          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i simulation/test_scenario_execution_gazebo/scenarios/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-simulation-result
+          path: test_example_simulation/test.xml
+  tests:
+    needs: [test-scenario-execution, test-scenario-execution-ros, scenario-files-validation, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot]
+    runs-on: intellabs-01
+    if: ${{ always() }}
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@7a1cd3216ca9260cd8022db641d960b1db4d1be4 #v4.0
+        with:
+          path: downloaded-artifacts
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+        with:
+          check_name: Test Results
           check_run: false
           action_fail: true
           comment_mode: always
           files: |
-            test_example_scenario/test.xml
-            test_example_library/test.xml
-            test_example_variation/test.xml
-            test_example_control/test.xml
-            test_example_nav2/test.xml
-            test_example_simulation/test.xml
-            test_example_multirobot/test.xml
-      - name: Upload Scenario Results
-        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
-        if: always()
-        with:
-          name: test-scenario-results
-          path: |
-            test_example_scenario/test.xml
-            test_example_library/test.xml
-            test_example_variation/test.xml
-            test_example_control/test.xml
-            test_example_nav2/test.xml
-            test_example_simulation/test.xml
-            test_example_nav2/test.xml
-            test_example_multirobot/test.xml
+            downloaded-artifacts/test-scenario-execution/scenario_execution/TEST.xml
+            downloaded-artifacts/test-scenario-execution-ros/scenario_execution_ros/TEST.xml
+            downloaded-artifacts/test-scenario-execution/scenario_coverage/TEST.xml
+            downloaded-artifacts/test-example-scenario-result/test.xml
+            downloaded-artifacts/test-example-library-result/test.xml
+            downloaded-artifacts/test-example-variation-result/test.xml
+            downloaded-artifacts/test-example-nav2-result/test.xml
+            downloaded-artifacts/test-example-simulation-result/test.xml
+            downloaded-artifacts/test-example-multirobot-result/test.xml
