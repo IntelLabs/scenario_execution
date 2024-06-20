@@ -49,6 +49,7 @@ setup(
             'differential_drive_robot.init_nav2 = scenario_execution_ros.actions.init_nav2:InitNav2',
             'differential_drive_robot.nav_to_pose = scenario_execution_ros.actions.nav_to_pose:NavToPose',
             'differential_drive_robot.nav_through_poses = scenario_execution_ros.actions.nav_through_poses:NavThroughPoses',
+            'action_call = scenario_execution_ros.actions.ros_action_call:RosActionCall',
             'wait_for_data = scenario_execution_ros.actions.ros_topic_wait_for_data:RosTopicWaitForData',
             'check_data = scenario_execution_ros.actions.ros_topic_check_data:RosTopicCheckData',
             'service_call = scenario_execution_ros.actions.ros_service_call:RosServiceCall',

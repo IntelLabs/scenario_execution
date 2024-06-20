@@ -57,7 +57,7 @@ scenario test:
                 keep(it.namespace == 'bll')
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         behavior = model._ModelElement__children[3]._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
         self.assertEqual({'spawn_pose': {'x': 'x_val'}, 'world_name': 'default',
@@ -77,7 +77,7 @@ scenario test:
         spawn_it: test_obstacle1.spawn(param1: 'override1')
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         behavior = model._ModelElement__children[2]._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
@@ -98,7 +98,7 @@ scenario test:
         spawn_it: test_obstacle1.spawn(param1: 'override1')
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
     def test_behavior_invalid_param_name(self):
         scenario_content = """
@@ -141,7 +141,7 @@ scenario test:
         spawn_it: test('override1')
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         behavior = model._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
@@ -159,7 +159,7 @@ scenario test:
         spawn_it: test()
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         self.assertIsNone(model)
 
     @unittest.skip(reason="requires porting")
@@ -262,7 +262,7 @@ scenario test:
             keep(it.struct_param == test_struct(param2: 'OVERRIDE'))
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         behavior = model._ModelElement__children[2]._ModelElement__children[1]._ModelElement__children[0]._ModelElement__children[1]
         params = behavior.get_resolved_value()
@@ -283,7 +283,7 @@ scenario test:
             keep(it.struct_param == test_struct('OVERRIDE'))
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         behavior = model._ModelElement__children[2]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
@@ -305,7 +305,7 @@ scenario test:
             keep(it.struct_param == test_struct('OVERRIDE1', param3: 'OVERRIDE3'))
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         behavior = model._ModelElement__children[2]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
         params = behavior.get_resolved_value()
@@ -373,7 +373,7 @@ scenario nav2_simulation_nav_to_pose:
                 keep(it.spawn_pose.orientation.roll == 1.0rad)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", True)
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
 
         pose_struct = model._ModelElement__children[7].get_resolved_value()
         self.assertEqual({'position': {'x': 0., 'y': 0., 'z': 0.}, 'orientation': {
