@@ -25,4 +25,4 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
     if [ "$ROS_DISTRO" == "jazzy" ] ; then \
         pip3 install --break-system-packages -r /scenario_execution/requirements.txt && \
         rm -rf /var/lib/apt/lists/* \
-    ;fi && \
+    ;fi \
