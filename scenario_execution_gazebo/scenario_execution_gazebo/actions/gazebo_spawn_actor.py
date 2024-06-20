@@ -45,12 +45,12 @@ class GazeboSpawnActor(RunProcess):
 
     """
 
-    def __init__(self, name, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str, **kwargs):
+    def __init__(self, name, associated_actor, entity_name, spawn_pose: list, world_name: str, xacro_arguments: list, model: str, **kwargs):
         """
         init
         """
         super().__init__(name, "")
-        self.entity_name = associated_actor["name"]
+        self.entity_name = entity_name
         self.model_file = model
         self.spawn_pose = spawn_pose
         self.world_name = world_name

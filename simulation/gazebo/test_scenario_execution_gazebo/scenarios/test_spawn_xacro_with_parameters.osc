@@ -1,0 +1,21 @@
+import osc.gazebo
+
+scenario test_spawn_xacro_with_parameters:
+        
+    test_obstacle: osc_actor
+
+    do parallel:
+        test_obstacle.spawn(
+            entity_name: 'test_obstacle',
+            spawn_pose: pose_3d(position: position_3d(z: 2m)),
+            world_name: 'maze',
+            xacro_arguments: 'box_width_length:=1 1,box_height:=4',
+            model: 'test_scenario_execution_gazebo://models/box.sdf.xacro')
+        test_case: serial:
+            test: actor_exists(
+                entity_name: 'test_obstacle',
+                world_name: 'maze')
+            success: emit end
+        time_out: serial:
+            wait elapsed(30s)
+            time_out_shutdown: emit fail
