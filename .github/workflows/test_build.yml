@@ -298,7 +298,7 @@ jobs:
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=119
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          sed -i 's/240s/600s/g' examples/example_multi_robot/example_multi_robot.osc
+          sed -i 's/240s/900s/g' examples/example_multi_robot/example_multi_robot.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_multi_robot/ -o test_example_multirobot -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR}
       - name: Upload result
@@ -307,6 +307,9 @@ jobs:
         with:
           name: test-example-multirobot-result
           path: test_example_multirobot/test.xml
+  tests:
+    needs: [test-scenario-execution, test-scenario-execution-ros, scenario-files-validation, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot]
+    runs-on: intellabs-01
   publish-scenario-results:
     needs: [test-scenario-execution, test-scenario-execution-ros, scenario-files-validation, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot]
     runs-on: intellabs-01
@@ -316,10 +319,10 @@ jobs:
         uses: actions/download-artifact@7a1cd3216ca9260cd8022db641d960b1db4d1be4 #v4.0
         with:
           path: downloaded-artifacts
-      - name: Publish Scenario Results
+      - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
         with:
-          check_name: Scenario Results
+          check_name: Test Results
           check_run: false
           action_fail: true
           comment_mode: always
