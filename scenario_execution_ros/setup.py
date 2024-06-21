@@ -63,6 +63,7 @@ setup(
             'assert_topic_latency = scenario_execution_ros.actions.assert_topic_latency:AssertTopicLatency',
             'assert_tf_moving = scenario_execution_ros.actions.assert_tf_moving:AssertTfMoving',
             'assert_lifecycle_state = scenario_execution_ros.actions.assert_lifecycle_state:AssertLifecycleState',
+            'wait_for_message_count = scenario_execution_ros.actions.ros_topic_wait_for_message_count:RosWaitForMessageCount',
         ],
         'scenario_execution.osc_libraries': [
             'ros = '
