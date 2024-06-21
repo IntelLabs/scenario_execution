@@ -27,11 +27,11 @@ class OdometryDistanceTraveled(py_trees.behaviour.Behaviour):
     Class to wait for a certain covered distance, based on odometry
     """
 
-    def __init__(self, name, associated_actor, distance: float):
+    def __init__(self, name, associated_actor, distance: float, namespace_override: str):
         super().__init__(name)
         self.namespace = associated_actor["namespace"]
         self.distance_expected = distance
-        self.distance_traveled = 0.
+        self.distance_traveled = 0.0
         self.previous_x = 0
         self.previous_y = 0
         self.first_run = True
@@ -39,6 +39,8 @@ class OdometryDistanceTraveled(py_trees.behaviour.Behaviour):
         self.node = None
         self.subscriber = None
         self.callback_group = None
+        if namespace_override:
+            self.namespace = namespace_override
 
     def setup(self, **kwargs):
         """
@@ -86,7 +88,7 @@ class OdometryDistanceTraveled(py_trees.behaviour.Behaviour):
         '''
         Initialize before ticking.
         '''
-        self.distance_traveled = 0.
+        self.distance_traveled = 0.0
         self.previous_x = 0
         self.previous_y = 0
         self.first_run = True
@@ -101,8 +103,8 @@ class OdometryDistanceTraveled(py_trees.behaviour.Behaviour):
 
         self.logger.debug(f"ticking: {self.distance_traveled}")
         if self.distance_traveled >= self.distance_expected:
-            self.feedback_message = f"expected traveled distance reached: {self.distance_expected:.3}"  # pylint: disable= attribute-defined-outside-init
+            self.feedback_message = f"expected traveled distance reached: {float(self.distance_expected):.3}"  # pylint: disable= attribute-defined-outside-init
             return Status.SUCCESS
         else:
-            self.feedback_message = f"distance traveled: {self.distance_traveled:.3} < {self.distance_expected:.3}"  # pylint: disable= attribute-defined-outside-init
+            self.feedback_message = f"distance traveled: {float(self.distance_traveled):.3} < {float(self.distance_expected):.3}"  # pylint: disable= attribute-defined-outside-init
         return Status.RUNNING

@@ -13,8 +13,10 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-import random
+import random as rd
 
+def seed(seed_value: int = 0):
+    rd.seed(seed_value)  # nosec B311
 
 def get_float(min_val: dict, max_val: float):
-    return random.uniform(min_val, max_val)  # nosec B311
+    return rd.uniform(min_val, max_val)  # nosec B311

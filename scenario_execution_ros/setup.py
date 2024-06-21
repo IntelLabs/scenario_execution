@@ -54,8 +54,7 @@ setup(
             'check_data = scenario_execution_ros.actions.ros_topic_check_data:RosTopicCheckData',
             'service_call = scenario_execution_ros.actions.ros_service_call:RosServiceCall',
             'topic_publish = scenario_execution_ros.actions.ros_topic_publish:RosTopicPublish',
-            'odometry_distance_traveled = '
-            'scenario_execution_ros.actions.odometry_distance_traveled:OdometryDistanceTraveled',
+            'differential_drive_robot.odometry_distance_traveled = scenario_execution_ros.actions.odometry_distance_traveled:OdometryDistanceTraveled',
             'set_node_parameter = scenario_execution_ros.actions.ros_set_node_parameter:RosSetNodeParameter',
             'record_bag = scenario_execution_ros.actions.ros_bag_record:RosBagRecord',
             'wait_for_topics = scenario_execution_ros.actions.ros_topic_wait_for_topics:RosTopicWaitForTopics',
