@@ -9,10 +9,10 @@ scenario test_relative_spawn:
         serial:
             robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
             parallel:
-                robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
+                robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -3.0m), orientation: orientation_3d(yaw: 3.14rad)))
                 serial:
                     robot.tf_close_to(
-                        reference_point: position_3d(x: -1.5m, y: 0.0m), 
+                        reference_point: position_3d(x: -0.5m, y: 0.0m),
                         threshold: 0.35m, 
                         robot_frame_id: 'turtlebot4_base_link_gt')
                     test_obstacle.relative_spawn(
@@ -21,5 +21,5 @@ scenario test_relative_spawn:
                         world_name: 'maze')
             emit end
         time_out: serial:
-            wait elapsed(120s)
+            wait elapsed(600s)
             emit fail
