@@ -307,6 +307,34 @@ jobs:
         with:
           name: test-example-multirobot-result
           path: test_example_multirobot/test.xml
+  test-example-external-method:
+    needs: [build]
+    runs-on: intellabs-01
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
+      - name: Test Example External Method
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=2
+          scenario_batch_execution -i examples/example_external_method/ -o test_example_external_method -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-external-method-result
+          path: test_example_external_method/test.xml
   test-scenario-execution-gazebo:
     needs: [build]
     runs-on: intellabs-01
@@ -332,7 +360,7 @@ jobs:
           export ROS_DOMAIN_ID=2
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
           # shellcheck disable=SC1083
-          scenario_batch_execution -i simulation/gazebo/test_scenario_execution_gazebo/scenarios/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR} live_tree:=True
+          scenario_batch_execution -i simulation/gazebo/test_scenario_execution_gazebo/scenarios/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Upload result
         uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
@@ -340,7 +368,18 @@ jobs:
           name: test-example-simulation-result
           path: test_example_simulation/test.xml
   tests:
-    needs: [test-scenario-execution, test-scenario-execution-ros, scenario-files-validation, test-example-scenario, test-example-library, test-example-variation, test-example-nav2, test-example-simulation, test-example-multirobot, test-scenario-execution-gazebo]
+    needs: 
+    - test-scenario-execution
+    - test-scenario-execution-ros
+    - scenario-files-validation
+    - test-example-scenario
+    - test-example-library
+    - test-example-variation
+    - test-example-nav2
+    - test-example-simulation
+    - test-example-multirobot
+    - test-example-external-method-result
+    - test-scenario-execution-gazebo
     runs-on: intellabs-01
     if: ${{ always() }}
     steps:
@@ -365,3 +404,4 @@ jobs:
             downloaded-artifacts/test-example-nav2-result/test.xml
             downloaded-artifacts/test-example-simulation-result/test.xml
             downloaded-artifacts/test-example-multirobot-result/test.xml
+            downloaded-artifacts/test-example-external-method-result/test.xml
