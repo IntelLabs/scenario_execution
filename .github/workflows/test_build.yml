@@ -378,7 +378,7 @@ jobs:
     - test-example-nav2
     - test-example-simulation
     - test-example-multirobot
-    - test-example-external-method-result
+    - test-example-external-method
     - test-scenario-execution-gazebo
     runs-on: intellabs-01
     if: ${{ always() }}
