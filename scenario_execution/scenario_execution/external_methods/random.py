@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 import random as rd
 
-def seed(seed: int = 0):
+def seed(seed: int = 0): # nosec W0621
     rd.seed(seed)  # nosec B311
 
 def get_float(min_val: dict, max_val: float):
