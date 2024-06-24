@@ -66,9 +66,12 @@ class RosServiceCall(py_trees.behaviour.Behaviour):
             raise KeyError(error_message) from e
 
         datatype_in_list = self.service_type.split(".")
-        self.service_type = getattr(
-            importlib.import_module(".".join(datatype_in_list[0:-1])),
-            datatype_in_list[-1])
+        try:
+            self.service_type = getattr(
+                importlib.import_module(".".join(datatype_in_list[0:-1])),
+                datatype_in_list[-1])
+        except ValueError as e:
+            raise ValueError(f"Invalid service_type '{self.service_type}':") from e
 
         self.client = self.node.create_client(
             self.service_type, self.service_name, callback_group=self.cb_group)

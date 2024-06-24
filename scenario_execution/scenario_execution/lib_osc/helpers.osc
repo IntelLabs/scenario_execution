@@ -6,3 +6,7 @@ action log:
 action run_process:
     # Run an external process
     command: string # Command to execute
+
+struct random:
+    def seed(seed_value: int = 0) is external scenario_execution.external_methods.random.seed()
+    def get_float(min_val: float, max_val: float) -> float is external scenario_execution.external_methods.random.get_float()

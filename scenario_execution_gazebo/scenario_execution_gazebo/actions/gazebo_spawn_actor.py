@@ -51,7 +51,7 @@ class GazeboSpawnActor(RunProcess):
         """
         super().__init__(name, "")
         self.entity_name = associated_actor["name"]
-        self.model_file = model
+        self.model = model
         self.spawn_pose = spawn_pose
         self.world_name = world_name
         self.xacro_arguments = xacro_arguments
@@ -77,25 +77,24 @@ class GazeboSpawnActor(RunProcess):
         self.logger = get_logger(self.name)
         self.utils = SpawnUtils(logger=self.logger)
 
-        if self.model_file.startswith('topic://'):
+        if self.model.startswith('topic://'):
             transient_local_qos = QoSProfile(
                 durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
                 reliability=QoSReliabilityPolicy.RELIABLE,
                 history=QoSHistoryPolicy.KEEP_LAST,
                 depth=1)
-            topic = self.model_file.replace('topic://', '', 1)
+            topic = self.model.replace('topic://', '', 1)
             self.current_state = SpawnActionState.WAITING_FOR_TOPIC
             self.feedback_message = f"Waiting for model on topic {topic}"  # pylint: disable= attribute-defined-outside-init
             self.model_sub = self.node.create_subscription(
                 String, topic, self.topic_callback, transient_local_qos)
         else:
-            sdf = self.utils.parse_model_file(
-                self.model_file, self.entity_name, self.xacro_arguments)
+            self.sdf = self.utils.parse_model_file(
+                self.model, self.entity_name, self.xacro_arguments)
 
-            if sdf:
-                self.set_command(sdf)
-            else:
-                raise ValueError(f'Invalid model specified ({self.model_file})')
+            if not self.sdf:
+                raise ValueError(f'Invalid model specified ({self.model})')
+            self.current_state = SpawnActionState.MODEL_AVAILABLE
 
     def update(self) -> py_trees.common.Status:
         """
@@ -103,6 +102,15 @@ class GazeboSpawnActor(RunProcess):
         """
         if self.current_state == SpawnActionState.WAITING_FOR_TOPIC:
             return py_trees.common.Status.RUNNING
+        elif self.current_state == SpawnActionState.MODEL_AVAILABLE:
+            try:
+                self.set_command(self.sdf)
+                self.current_state = SpawnActionState.WAITING_FOR_RESPONSE
+                return super().update()
+            except ValueError as e:
+                self.feedback_message = str(e)  # pylint: disable= attribute-defined-outside-init
+                self.current_state = SpawnActionState.FAILURE
+                return py_trees.common.Status.FAILURE
         else:
             return super().update()
 
@@ -110,7 +118,6 @@ class GazeboSpawnActor(RunProcess):
         """
         Hook when process gets executed
         """
-        self.current_state = SpawnActionState.WAITING_FOR_RESPONSE
         self.feedback_message = f"Executed spawning, waiting for response..."  # pylint: disable= attribute-defined-outside-init
 
     def shutdown(self):
@@ -154,10 +161,7 @@ class GazeboSpawnActor(RunProcess):
         else:
             return py_trees.common.Status.INVALID
 
-    def set_command(self, command):
-        """
-        Set execution command
-        """
+    def get_spawn_pose(self):
         # euler2quat() requires "zyx" convention,
         # while in YAML, we define as pitch-roll-yaw (xyz), since it's more intuitive.
         try:
@@ -171,13 +175,18 @@ class GazeboSpawnActor(RunProcess):
                 ' } }'
         except KeyError as e:
             raise ValueError("Could not get values") from e
+        return pose
+
+    def set_command(self, command):
+        """
+        Set execution command
+        """
+        pose = self.get_spawn_pose()
+
         super().set_command(["ign", "service", "-s", "/world/" + self.world_name + "/create",
                              "--reqtype", "ignition.msgs.EntityFactory",
                              "--reptype", "ignition.msgs.Boolean",
                              "--timeout", "30000", "--req", "pose: " + pose + " name: \"" + self.entity_name + "\" allow_renaming: false sdf: \"" + command + "\""])
-
-        self.logger.info(f'Command: {" ".join(self.get_command())}')
-        self.current_state = SpawnActionState.MODEL_AVAILABLE
 
     def topic_callback(self, msg):
         '''
@@ -188,3 +197,4 @@ class GazeboSpawnActor(RunProcess):
         self.logger.info("Received robot_description.")
         self.node.destroy_subscription(self.model_sub)
         self.set_command(msg.data.replace("\"", "\\\"").replace("\n", ""))
+        self.current_state = SpawnActionState.MODEL_AVAILABLE

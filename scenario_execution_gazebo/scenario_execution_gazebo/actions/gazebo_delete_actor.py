@@ -37,7 +37,7 @@ class GazeboDeleteActor(RunProcess):
 
     """
 
-    def __init__(self, name, entity_name: str, world_name: str):
+    def __init__(self, name, associated_actor, entity_name: str, world_name: str):
         """
         init
         """

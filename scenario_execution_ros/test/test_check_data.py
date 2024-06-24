@@ -63,7 +63,6 @@ scenario test:
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
 
@@ -126,7 +125,6 @@ scenario test:
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
         scenarios = create_py_tree(model, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
         self.assertFalse(self.scenario_execution_ros.process_results())
 

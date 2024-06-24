@@ -15,8 +15,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """ Setup python package """
-from glob import glob
-import os
 from setuptools import find_namespace_packages, setup
 
 PACKAGE_NAME = 'scenario_execution_gazebo'
@@ -28,15 +26,7 @@ setup(
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
-        ('share/' + PACKAGE_NAME, ['package.xml']),
-        (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
-        (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py')),
-        (os.path.join('share', PACKAGE_NAME, 'params'), glob('params/*.yaml')),
-        (os.path.join('share', PACKAGE_NAME, 'models'), glob('models/*.sdf*')),
-        (os.path.join('share', PACKAGE_NAME, 'models'), glob('models/*.dae*')),
-        (os.path.join('share', PACKAGE_NAME, 'models'), glob('models/*.png*')),
-        (os.path.join('share', PACKAGE_NAME, 'worlds'), glob('worlds/*.world')),
-        (os.path.join('share', PACKAGE_NAME, 'worlds'), glob('worlds/*.model'))
+        ('share/' + PACKAGE_NAME, ['package.xml'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -48,6 +38,7 @@ setup(
     include_package_data=True,
     entry_points={
         'scenario_execution.actions': [
+            'osc_actor.relative_spawn = scenario_execution_gazebo.actions.gazebo_relative_spawn_actor:GazeboRelativeSpawnActor',
             'osc_actor.spawn = scenario_execution_gazebo.actions.gazebo_spawn_actor:GazeboSpawnActor',
             'actor_exists = scenario_execution_gazebo.actions.gazebo_actor_exists:GazeboActorExists',
             'osc_actor.delete = scenario_execution_gazebo.actions.gazebo_delete_actor:GazeboDeleteActor',

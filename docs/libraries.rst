@@ -54,8 +54,16 @@ A differential drive robot actor inheriting from the more general ``robot`` acto
 Actions
 ^^^^^^^
 
+``action_call()``
+"""""""""""""""""
+Call a ROS action and wait for the result.
+
+- ``action_name: string``: Name of the action to connect to
+- ``action_type: string``: Class of the action type (e.g. ``example_interfaces.action.Fibonacci``)
+- ``data: string``: Call content (e.g. ``{\"order\": 3}``)
+
 ``assert_lifecycle_state()``
-""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""
 Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/node_lifecycle.html>`__ node.
 
 - ``node_name: string``: Name of ``lifecycle-managed`` node.
@@ -142,8 +150,8 @@ Use nav2 to navigate to goal pose.
 
 Wait until a defined distance was traveled, based on odometry.
 
-- ``namespace: string``:  Namespace of the odometry topic
 - ``distance: length``: Traveled distance at which the action succeeds.
+- ``namespace_override: string``: if set, it's used as namespace (instead of the associated actor's namespace)
 
 ``differential_drive_robot.tf_close_to()``
 """"""""""""""""""""""""""""""""""""""""""
@@ -240,16 +248,41 @@ Waits for an actor to exist within simulation.
 
 Delete an object from the simulation.
 
+- ``entity_name``: Entity name within simulation
 - ``world_name: string``: Gazebo world name (default: ``default``)
+
+``osc_object.relative_spawn()``
+"""""""""""""""""""""""""""""""
+
+Spawn an actor relative to a given ``frame_id`` within simulation (at a specified ``distance`` in front of ``frame_id``).
+
+- ``frame_id``: The frame Id to spawn the actor relative to. (default: ``base_link``)
+- ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
+- ``distance``: distance value relative to the frame_id at which to spawn the new actor (default: 1.0)
+- ``world_name: string``: Gazebo world name (default: ``default``)
+- ``model: string``: Model definition
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
 
 ``osc_object.spawn()``
 """"""""""""""""""""""
 
-Spawn an actor within simulation by using the ``model`` and ``namespace`` of the associated actor.
+Spawn an actor within simulation.
 
 - ``spawn_pose: pose_3d``: Pose of the spawned actor.
 - ``world_name: string``: Gazebo world name (default: ``default``)
-- ``xacro_arguments: string``: Comma-separated list of argument key:=value pairs
+- ``model: string``: Model definition
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
+
+.. note::
+
+    The model definition can be specified in different formats:
+
+    - ``file://<path-to-model>``: Local path to model file
+    - ``model://<path-to-model>``: Path relative to available model search paths
+    - ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`simulation/gazebo/test_scenario_execution_gazebo/scenarios/test_spawn_exists_delete.osc`)
+    - ``https:://fuel``: Model from `fuel.gazebosim.org <https://app.gazebosim.org/>`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
+
+    If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
 
 ``wait_for_sim()``
 """"""""""""""""""

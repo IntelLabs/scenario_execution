@@ -1,6 +1,6 @@
 # Example Library
 
-To run the Example Library Scenario, first build the Example Scenario Package:
+To run the Example Library Scenario, first build the package:
 
 ```bash
 colcon build --packages-up-to example_library

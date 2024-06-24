@@ -38,6 +38,12 @@ enum lifecycle_state: [
 actor differential_drive_robot inherits robot:
     namespace: string = ''
     
+action action_call:
+    # call a ros action and wait for the result
+    action_name: string                              # name of the action to connect to
+    action_type: string                              # class of the message type
+    data: string                                     # call content
+
 action assert_lifecycle_state:
   node_name: string # Name of lifecycle-managed node
   state_sequence: list of lifecycle_state # list of allowed lifecycle states to follow
@@ -94,7 +100,7 @@ action differential_drive_robot.nav_to_pose:
     monitor_progress: bool = true # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
 
 action differential_drive_robot.odometry_distance_traveled:
-    namespace: string = ''
+    namespace_override: string = ''
     distance: length
 
 action differential_drive_robot.tf_close_to:
