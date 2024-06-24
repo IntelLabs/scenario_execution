@@ -17,7 +17,8 @@
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 from rclpy.logging import get_logger
-from pymoveit2 import MoveIt2, MoveIt2State
+from pymoveit2 import MoveIt2State
+from scenario_execution_moveit.moveit_common import MoveIt2Interface
 import py_trees
 from time import sleep
 
@@ -56,7 +57,7 @@ class MoveToPose(py_trees.behaviour.Behaviour):
         self.logger = get_logger(self.name)
 
         # Create MoveIt 2 interface
-        self.moveit2 = MoveIt2(
+        self.moveit2 = MoveIt2Interface(
             node=self.node,
             joint_names=self.joint_names,
             base_link_name=self.namespace + '/' + self.base_link_name,

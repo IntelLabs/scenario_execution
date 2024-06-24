@@ -17,7 +17,8 @@
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 from rclpy.logging import get_logger
-from pymoveit2 import MoveIt2State, GripperInterface
+from pymoveit2 import MoveIt2State
+from scenario_execution_moveit.moveit_common import Gripper
 import py_trees
 import ast
 
@@ -52,7 +53,7 @@ class MoveGripper(py_trees.behaviour.Behaviour):
         self.logger = get_logger(self.name)
 
         # Create MoveIt 2 interface
-        self.gripper_interface = GripperInterface(
+        self.gripper_interface = Gripper(
             node=self.node,
             gripper_joint_names=self.gripper_joint_names,
             open_gripper_joint_positions=self.open_gripper_position,
