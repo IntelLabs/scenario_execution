@@ -74,9 +74,11 @@ class MoveGripper(py_trees.behaviour.Behaviour):
             else:
                 if self.gripper == 'open':
                     self.gripper_interface.open()
+                    self.feedback_message = f"Setting gripper to {self.gripper} state."  # pylint: disable= attribute-defined-outside-init
                 else:
                     self.gripper_interface.close()
                 self.logger.info(f"Setting gripper to {self.gripper} state...")
+                self.feedback_message = f"Setting gripper to {self.gripper} state."  # pylint: disable= attribute-defined-outside-init
                 self.execute = True
                 result = py_trees.common.Status.RUNNING
         else:

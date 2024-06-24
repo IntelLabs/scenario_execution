@@ -72,6 +72,7 @@ class MoveToJointPose(py_trees.behaviour.Behaviour):
                 result = py_trees.common.Status.RUNNING
             else:
                 self.logger.info("No motion in progress. Initiating move to joint pose...")
+                self.feedback_message = f"Moving to joint pose {self.joint_pose}."  # pylint: disable= attribute-defined-outside-init
                 self.moveit2.move_to_configuration(self.joint_pose)
                 result = py_trees.common.Status.RUNNING
                 self.execute = True

@@ -11,29 +11,41 @@ scenario example_moveit:
         keep(it.move_group_arm == 'interbotix_arm') 
         keep(it.move_group_gripper == 'interbotix_gripper')
         keep(it.open_gripper_position == '[-0.037, +0.037]')
-        keep(it.close_gripper_position == '[-0.015, +0.015]')
+        keep(it.close_gripper_position == '[-0.030, +0.030]')
     box: osc_actor
+    box2: osc_actor
     do parallel:
         serial:
-            box.spawn(spawn_pose: pose_3d(
-                            position: position_3d(x: 0.25m, y: 0.0m, z: 0.02m),
-                            orientation: orientation_3d(yaw: 0.0rad)),
-                        model: 'example_moveit_simulation://models/box.sdf',world_name: 'empty')
-        serial:
-            wx200.move_to_joint_pose() with:
-                keep(it.joint_pose == '[0.0, 0.122173, 0.296706, 1.0472, 0.0]')
             wx200.move_gripper() with:
                 keep(it.gripper == 'open')
             wx200.move_to_joint_pose() with:
-                keep(it.joint_pose == '[0.0, 0.296706, 0.296706, 1.22173, 0.0]')
+                keep(it.joint_pose == '[0.0, 0.576332, -0.0523599, 0.418879, 0.0]')
             wx200.move_gripper() with:
                 keep(it.gripper == 'close')
-            wx200.move_to_pose(pose_3d(position: position_3d(x: 0.1m, y: 0.0m, z: 0.4m)))
             wx200.move_to_joint_pose() with:
-                keep(it.joint_pose == '[0.5235, 0.0, 0.0, 0.0, 0.0]')
+                keep(it.joint_pose == '[0.0, -0.8377, -0.0523599, 0.418879, 0.0]')
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[0.5235, 0.5, -0.0523599, 0.418879, 0.0]')
             wx200.move_gripper() with:
                 keep(it.gripper == 'open')
-            wx200.move_to_pose(pose_3d(position: position_3d(x: 0.1m, y: 0.0m, z: 0.4m)))
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[0.5235, 0.1, -0.0523599, 0.418879, 0.0]')
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[1.22, 0.1, -0.0523599, 0.418879, 0.0]')
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[1.22, 0.576332, -0.0523599, 0.418879, 0.0]')
+            wx200.move_gripper() with:
+                keep(it.gripper == 'close')
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[1.22, 0.1, -0.0523599, 0.418879, 0.0]')
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[0.0, 0.1, -0.0523599, 0.418879, 0.0]')
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[0.0, 0.436332, -0.0523599, 0.418879, 0.0]')
+            wx200.move_gripper() with:
+                keep(it.gripper == 'open')
+            wx200.move_to_joint_pose() with:
+                keep(it.joint_pose == '[0.0, -1.40, 1.55, 0.8, 0.0]')
             wait elapsed(3s)
             emit end
         time_out: serial:

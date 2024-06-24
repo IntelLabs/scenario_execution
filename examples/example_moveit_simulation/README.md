@@ -1,4 +1,4 @@
-# Example Simulation Navigation
+# Example Simulation MoveIt
 
 To run the Example Simulation Moveit with scenario, first build the `example_moveit_simulation` package:
 
