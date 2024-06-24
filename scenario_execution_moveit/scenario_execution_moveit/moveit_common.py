@@ -16,6 +16,7 @@
 
 from pymoveit2 import MoveIt2, GripperInterface
 
+
 class _MoveIt2InterfaceSingleton:
     _instance = None
 
@@ -32,11 +33,12 @@ class _MoveIt2InterfaceSingleton:
     def __getattr__(self, name):
         return getattr(self.moveit2, name)
 
+
 class _GripperSingleton:
     _instance = None
 
     def __init__(self, node, gripper_joint_names, open_gripper_joint_positions, closed_gripper_joint_positions, gripper_group_name, callback_group, gripper_command_action_name) -> None:
-         self.gripper_interface = GripperInterface(
+        self.gripper_interface = GripperInterface(
             node=node,
             gripper_joint_names=gripper_joint_names,
             open_gripper_joint_positions=open_gripper_joint_positions,
@@ -45,18 +47,20 @@ class _GripperSingleton:
             callback_group=callback_group,
             gripper_command_action_name=gripper_command_action_name
         )
-         
+
     def __getattr__(self, name):
         return getattr(self.gripper_interface, name)
-        
-
-def MoveIt2Interface(node, joint_names, base_link_name, end_effector_name, group_name, callback_group):
-    if _MoveIt2InterfaceSingleton._instance is None:
-        _MoveIt2InterfaceSingleton._instance = _MoveIt2InterfaceSingleton(node, joint_names, base_link_name, end_effector_name, group_name, callback_group)
-    return _MoveIt2InterfaceSingleton._instance
 
 
-def Gripper(node, gripper_joint_names, open_gripper_joint_positions, closed_gripper_joint_positions, gripper_group_name, callback_group, gripper_command_action_name):
-    if _GripperSingleton._instance is None:
-            _GripperSingleton._instance = _GripperSingleton(node, gripper_joint_names, open_gripper_joint_positions, closed_gripper_joint_positions, gripper_group_name, callback_group, gripper_command_action_name)
-    return _GripperSingleton._instance
+def MoveIt2Interface(node, joint_names, base_link_name, end_effector_name, group_name, callback_group):  # pylint: disable=C0103
+    if _MoveIt2InterfaceSingleton._instance is None:  # pylint: disable=protected-access
+        _MoveIt2InterfaceSingleton._instance = _MoveIt2InterfaceSingleton(  # pylint: disable=protected-access
+            node, joint_names, base_link_name, end_effector_name, group_name, callback_group)
+    return _MoveIt2InterfaceSingleton._instance  # pylint: disable=protected-access
+
+
+def Gripper(node, gripper_joint_names, open_gripper_joint_positions, closed_gripper_joint_positions, gripper_group_name, callback_group, gripper_command_action_name):  # pylint: disable=C0103
+    if _GripperSingleton._instance is None:  # pylint: disable=protected-access
+        _GripperSingleton._instance = _GripperSingleton(node, gripper_joint_names, open_gripper_joint_positions,  # pylint: disable=protected-access
+                                                        closed_gripper_joint_positions, gripper_group_name, callback_group, gripper_command_action_name)
+    return _GripperSingleton._instance  # pylint: disable=protected-access

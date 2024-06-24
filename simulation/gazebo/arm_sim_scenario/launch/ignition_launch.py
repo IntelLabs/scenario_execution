@@ -70,7 +70,8 @@ def generate_launch_description():
         get_package_share_directory('arm_sim_scenario'))}
 
     ignition_gazebo = ExecuteProcess(
-        cmd=['ign', 'gazebo', [PathJoinSubstitution([pkg_arm_sim_scenario, 'worlds', LaunchConfiguration('world')]), '.sdf'], '-r', '-v', '4'],
+        cmd=['ign', 'gazebo', [PathJoinSubstitution(
+            [pkg_arm_sim_scenario, 'worlds', LaunchConfiguration('world')]), '.sdf'], '-r', '-v', '4'],
         output='screen',
         additional_env=env,
         on_exit=Shutdown(),
