@@ -49,12 +49,15 @@ ARGUMENTS = [
                           choices=('true', 'false'),
                           description='launches the joint_state_publisher GUI.',
                           ),
+    DeclareLaunchArgument('world', default_value='maze',
+                          description='Ignition World'),
 
 ]
 
 
 def generate_launch_description():
-
+    pkg_arm_sim_scenario = get_package_share_directory(
+        'arm_sim_scenario')
     robot_model = LaunchConfiguration('robot_model')
     robot_name = LaunchConfiguration('robot_name')
     use_rviz = LaunchConfiguration('use_rviz')
@@ -67,7 +70,7 @@ def generate_launch_description():
         get_package_share_directory('arm_sim_scenario'))}
 
     ignition_gazebo = ExecuteProcess(
-        cmd=['ign', 'gazebo', 'empty.sdf', '-r', '-v', '4'],
+        cmd=['ign', 'gazebo', [PathJoinSubstitution([pkg_arm_sim_scenario, 'worlds', LaunchConfiguration('world')]), '.sdf'], '-r', '-v', '4'],
         output='screen',
         additional_env=env,
         on_exit=Shutdown(),
