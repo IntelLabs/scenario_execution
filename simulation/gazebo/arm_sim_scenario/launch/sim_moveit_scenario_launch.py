@@ -40,6 +40,10 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'ignition_launch.py'])]),
     )
 
+    robot = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'ignition_arm_launch.py'])]),
+    )
+
     moveit_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'moveit_launch.py'])]),
     )
@@ -57,6 +61,7 @@ def generate_launch_description():
         arg_scenario_execution
     ])
     ld.add_action(ignition)
+    ld.add_action(robot)
     ld.add_action(moveit_bringup)
     ld.add_action(scenario_exec)
     return ld
