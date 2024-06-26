@@ -17,6 +17,7 @@
 import os
 import py_trees
 
+
 class CheckFileExists(py_trees.behaviour.Behaviour):
     """
     Check existance of a file
