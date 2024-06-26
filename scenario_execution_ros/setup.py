@@ -31,7 +31,8 @@ setup(
         ('share/' + PACKAGE_NAME, ['package.xml']),
         (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
         (os.path.join('share', PACKAGE_NAME, 'scenarios', 'test'), glob('scenarios/test/*osc')),
-        (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py'))
+        (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py')),
+        (os.path.join('share', PACKAGE_NAME, 'launch'), glob('test/launch/*launch.py'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -57,6 +58,7 @@ setup(
             'differential_drive_robot.odometry_distance_traveled = scenario_execution_ros.actions.odometry_distance_traveled:OdometryDistanceTraveled',
             'set_node_parameter = scenario_execution_ros.actions.ros_set_node_parameter:RosSetNodeParameter',
             'record_bag = scenario_execution_ros.actions.ros_bag_record:RosBagRecord',
+            'ros_launch = scenario_execution_ros.actions.ros_launch:RosLaunch',
             'wait_for_topics = scenario_execution_ros.actions.ros_topic_wait_for_topics:RosTopicWaitForTopics',
             'log_check = scenario_execution_ros.actions.ros_log_check:RosLogCheck',
             'differential_drive_robot.tf_close_to = scenario_execution_ros.actions.tf_close_to:TfCloseTo',

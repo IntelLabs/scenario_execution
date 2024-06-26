@@ -112,7 +112,15 @@ Actions
 
 Report success if a file exists.
 
-- ``file_name: string``: File name to check
+- ``file_name: string``: File to check
+
+
+``check_file_not_exists()``
+"""""""""""""""""""""""""""
+
+Report success if a file does not exist.
+
+- ``file_name: string``: File to check
 
 
 Robotics
