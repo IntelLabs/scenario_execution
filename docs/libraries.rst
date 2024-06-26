@@ -10,8 +10,76 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
 
 Additional features can be implemented by defining your own library.
 
-``osc.helpers``
----------------
+
+Gazebo
+------
+
+The library contains actions to interact with the `Gazebo Simulation <https://gazebosim.org/>`_. Import it with ``import osc.gazebo``. It's provided by the package :repo_link:`scenario_execution_gazebo`.
+
+Actions
+^^^^^^^
+
+``actor_exists()``
+""""""""""""""""""
+
+Waits for an actor to exist within simulation.
+
+- ``entity_name``: Entity name within simulation
+- ``world_name: string``: Gazebo world name (default: ``default``)
+
+``osc_object.delete()``
+"""""""""""""""""""""""
+
+Delete an object from the simulation.
+
+- ``entity_name``: Entity name within simulation
+- ``world_name: string``: Gazebo world name (default: ``default``)
+
+``osc_object.relative_spawn()``
+"""""""""""""""""""""""""""""""
+
+Spawn an actor relative to a given ``frame_id`` within simulation (at a specified ``distance`` in front of ``frame_id``).
+
+- ``frame_id``: The frame Id to spawn the actor relative to. (default: ``base_link``)
+- ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
+- ``distance``: distance value relative to the frame_id at which to spawn the new actor (default: 1.0)
+- ``world_name: string``: Gazebo world name (default: ``default``)
+- ``model: string``: Model definition
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
+
+``osc_object.spawn()``
+""""""""""""""""""""""
+
+Spawn an actor within simulation.
+
+- ``spawn_pose: pose_3d``: Pose of the spawned actor.
+- ``world_name: string``: Gazebo world name (default: ``default``)
+- ``model: string``: Model definition
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
+
+.. note::
+
+    The model definition can be specified in different formats:
+
+    - ``file://<path-to-model>``: Local path to model file
+    - ``model://<path-to-model>``: Path relative to available model search paths
+    - ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`simulation/gazebo/test_scenario_execution_gazebo/scenarios/test_spawn_exists_delete.osc`)
+    - ``https:://fuel``: Model from `fuel.gazebosim.org <https://app.gazebosim.org/>`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
+
+    If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
+
+``wait_for_sim()``
+""""""""""""""""""
+Wait for simulation to become active (checks for simulation clock).
+
+- ``world_name: string``: Gazebo world name (default: ``default``)
+- ``timeout: time``:  time to wait for the simulation. return failure afterwards. (default: ``60s``)
+
+
+Helpers
+-------
+
+The library contains basic helper methods. Import it with ``import osc.helpers``.
 
 Actions
 ^^^^^^^
@@ -31,18 +99,39 @@ Run a process. Reports `running` while the process has not finished.
 - ``command: string``: Command to execute
 
 
-``osc.robotics``
-----------------
+OS
+--
+
+The library contains actions to interact with the operating system. Import it with ``import osc.os``. It is provided by the package :repo_link:`libs/scenario_execution_os`.
+
+Actions
+^^^^^^^
+
+``check_file_exists()``
+"""""""""""""""""""""""
+
+Report success if a file exists.
+
+- ``file_name: string``: File name to check
+
+
+Robotics
+--------
+
+The library contains elements reusable in different robotic contexts. Import it with ``import osc.robotics``. It is provided by the package :repo_link:`scenario_execution`.
 
 Actors
 ^^^^^^
 
 ``robot``
-""""""""""""""""""""""""""""
+"""""""""
 A general robot actor.
 
-``osc.ros``
------------
+
+ROS
+---
+
+The library contains actions to interact with ROS nodes. Import it with ``import osc.ros``. It is provided by the package :repo_link:`scenario_execution_ros`.
 
 Actors
 ^^^^^^
@@ -228,65 +317,3 @@ In the background, this action uses `wait_for_data() <https://py-trees-ros.readt
 Wait for topics to get available (i.e. publisher gets available).
 
 - ``topics: list of string``: List of topics to wait for
-
-``osc.gazebo``
---------------
-
-Actions
-^^^^^^^
-
-``actor_exists()``
-""""""""""""""""""
-
-Waits for an actor to exist within simulation.
-
-- ``entity_name``: Entity name within simulation
-- ``world_name: string``: Gazebo world name (default: ``default``)
-
-``osc_object.delete()``
-"""""""""""""""""""""""
-
-Delete an object from the simulation.
-
-- ``entity_name``: Entity name within simulation
-- ``world_name: string``: Gazebo world name (default: ``default``)
-
-``osc_object.relative_spawn()``
-"""""""""""""""""""""""""""""""
-
-Spawn an actor relative to a given ``frame_id`` within simulation (at a specified ``distance`` in front of ``frame_id``).
-
-- ``frame_id``: The frame Id to spawn the actor relative to. (default: ``base_link``)
-- ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
-- ``distance``: distance value relative to the frame_id at which to spawn the new actor (default: 1.0)
-- ``world_name: string``: Gazebo world name (default: ``default``)
-- ``model: string``: Model definition
-- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
-
-``osc_object.spawn()``
-""""""""""""""""""""""
-
-Spawn an actor within simulation.
-
-- ``spawn_pose: pose_3d``: Pose of the spawned actor.
-- ``world_name: string``: Gazebo world name (default: ``default``)
-- ``model: string``: Model definition
-- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
-
-.. note::
-
-    The model definition can be specified in different formats:
-
-    - ``file://<path-to-model>``: Local path to model file
-    - ``model://<path-to-model>``: Path relative to available model search paths
-    - ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`simulation/gazebo/test_scenario_execution_gazebo/scenarios/test_spawn_exists_delete.osc`)
-    - ``https:://fuel``: Model from `fuel.gazebosim.org <https://app.gazebosim.org/>`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
-
-    If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
-
-``wait_for_sim()``
-""""""""""""""""""
-Wait for simulation to become active (checks for simulation clock).
-
-- ``world_name: string``: Gazebo world name (default: ``default``)
-- ``timeout: time``:  time to wait for the simulation. return failure afterwards. (default: ``60s``)

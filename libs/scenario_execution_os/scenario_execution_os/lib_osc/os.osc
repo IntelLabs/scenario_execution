@@ -1,0 +1,5 @@
+import osc.standard.base
+
+action check_file_exists:
+    # report success if a file exists
+    file_name: string  # file to check

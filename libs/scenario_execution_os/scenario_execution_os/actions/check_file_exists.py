@@ -13,12 +13,22 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-import random as rd
+
+import os
+import py_trees
 
 
-def seed(seed_value: int = 0):
-    rd.seed(seed_value)  # nosec B311
+class CheckFileExists(py_trees.behaviour.Behaviour):
+    """
+    Check existance of a file
+    """
 
+    def __init__(self, name, file_name):
+        super().__init__(name)
+        self.file_name = file_name
 
-def get_float(min_val: dict, max_val: float):
-    return rd.uniform(min_val, max_val)  # nosec B311
+    def update(self) -> py_trees.common.Status:
+        if os.path.isfile(self.file_name):
+            return py_trees.common.Status.SUCCESS
+        else:
+            return py_trees.common.Status.FAILURE
