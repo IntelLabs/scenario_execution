@@ -77,7 +77,7 @@ class RosLaunch(RunProcess):
             if not arg["key"] or not arg["value"]:
                 raise ValueError(f'Invalid ros argument key:{arg["key"]}, value:{arg["value"]}')
             self.command.append(f'{arg["key"]}:={arg["value"]}')
-                
+
         self.logger.info(f'Command: {" ".join(self.command)}')
 
     # def get_scenario_name(self):
@@ -136,7 +136,6 @@ class RosLaunch(RunProcess):
         if self.current_state == RosLaunchActionState.WAITING_FOR_TOPICS and self.bag_dir and os.path.exists(self.bag_dir):
             self.logger.info(
                 f'Shutdown while waiting for topics. Removing incomplete bag {self.bag_dir}...')
-            
 
     # def on_process_finished(self, ret):
     #     """

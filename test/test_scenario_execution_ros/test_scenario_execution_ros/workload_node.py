@@ -26,6 +26,7 @@ class TestNode(Node):
         self.get_logger().info('Timeout')
         raise SystemExit()
 
+
 def main(args=None):
     rclpy.init(args=args)
 
@@ -38,7 +39,7 @@ def main(args=None):
         pass
     except BaseException:
         result = False
-    
+
     if result:
         print("Success!")
         with open(os.path.join(node.test_path, 'test_success'), 'w') as f:

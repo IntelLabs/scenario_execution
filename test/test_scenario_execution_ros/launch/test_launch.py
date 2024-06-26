@@ -4,6 +4,7 @@ from launch.actions import ExecuteProcess
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 
+
 def generate_launch_description():
 
     test_param = LaunchConfiguration('test_param')
@@ -12,7 +13,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('test_param', description='test parameter'),
         DeclareLaunchArgument('test_path', description='Test path parameter'),
-        
+
         Node(
             # condition=IfCondition(scenario_status),
             package='test_scenario_execution_ros',
@@ -24,7 +25,7 @@ def generate_launch_description():
             }],
             output='screen'
         ),
-        
+
         # ExecuteProcess(
         #     cmd=['sleep', '5'],
         #     output='screen'),

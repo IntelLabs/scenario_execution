@@ -41,5 +41,5 @@ setup(
     entry_points={
         'console_scripts': [
             'test_scenario_execution_ros = test_scenario_execution_ros.workload_node:main',
-    ]}
+        ]}
 )
