@@ -17,9 +17,6 @@
 import os
 import unittest
 import rclpy
-from rclpy.action import ActionServer, CancelResponse, GoalResponse
-from rclpy.action.server import GoalEvent
-from rclpy.callback_groups import ReentrantCallbackGroup
 
 import tempfile
 import threading

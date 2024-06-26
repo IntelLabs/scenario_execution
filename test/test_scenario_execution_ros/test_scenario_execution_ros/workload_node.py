@@ -1,10 +1,6 @@
-import sys
 import os
 import rclpy
-from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
-
-from std_msgs.msg import String
 
 
 class TestNode(Node):

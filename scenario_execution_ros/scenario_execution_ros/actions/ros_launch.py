@@ -17,9 +17,7 @@
 import os
 from enum import Enum
 
-import py_trees
 from scenario_execution.actions.run_process import RunProcess
-import shutil
 import signal
 
 

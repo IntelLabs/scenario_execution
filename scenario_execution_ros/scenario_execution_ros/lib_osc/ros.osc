@@ -127,10 +127,11 @@ action record_bag:
     storage: string = ''         # storage type to use (empty string: use default)
 
 action ros_launch:
-    package_name: string = ''
-    launch_file: string
-    arguments: list of ros_argument
-    wait_for_finish: bool = false # if true, the action waits until the execution has finished
+    # Execute a ros launch file
+    package_name: string            # package that contains the launch file
+    launch_file: string             # launch file name
+    arguments: list of ros_argument # ros arguments (get forwarded as key:=value pairs)
+    wait_for_finish: bool = true   # if true, the action waits until the execution has finished
 
 action service_call:
     service_name: string                              # name of the service to connect to

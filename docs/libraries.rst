@@ -278,6 +278,15 @@ Record a ROS bag, stored in directory ``output_dir`` defined by command-line par
 - ``hidden_topics: bool``: Whether to record hidden topics (default: ``false``)
 - ``storage: string``: Storage type to use (empty string: use ROS bag record default)
 
+``ros_launch()``
+""""""""""""""""
+
+Execute a ros launch file
+
+- ``package_name: string``: Package that contains the launch file
+- ``launch_file: string``: Launch file name
+- ``arguments: list of ros_argument``: ROS arguments (get forwarded as key:=value pairs)
+
 ``service_call()``
 """"""""""""""""""
 
