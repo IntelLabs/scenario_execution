@@ -14,15 +14,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import copy
 import py_trees
 from py_trees.common import Access, Status
 from pkg_resources import iter_entry_points
 
 import inspect
 
-from scenario_execution.model.types import EventReference, FunctionApplicationExpression, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral
+from scenario_execution.model.types import ActionDeclaration, ActorDeclaration, EventReference, FunctionApplicationExpression, ParameterDeclaration, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, StructuredDeclaration, VariableDeclaration
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
+from scenario_execution.actions.base_action import BaseAction
 
 
 def create_py_tree(model, logger, log_tree):
@@ -106,6 +108,8 @@ class ModelToPyTree(object):
 
     def __init__(self, logger):
         self.logger = logger
+        self.blackboard = None
+        
 
     def build(self, tree, log_tree):
         behavior_builder = self.BehaviorInit(self.logger)
@@ -135,8 +139,42 @@ class ModelToPyTree(object):
             behavior_tree = py_trees.composites.Sequence(name=scenario_name)
             self.__cur_behavior = behavior_tree
             self.behavior_trees.append(behavior_tree)
+            
+            self.blackboard = self.__cur_behavior.attach_blackboard_client(
+                name="ModelToPyTree",
+                namespace=scenario_name)
 
             super().visit_scenario_declaration(node)
+        
+        # def visit_actor_declaration(self, node: ActorDeclaration):
+        #     super().visit_actor_declaration(node)
+        #     for variable_def in node.find_children_of_type(VariableDeclaration):
+        #         print(variable_def)
+        
+        # def visit_variable_declaration(self, node: VariableDeclaration):
+        #     print(node.get_fully_qualified_name())
+        #     print(node)
+            
+        
+        def visit_parameter_declaration(self, node: ParameterDeclaration):
+            
+            def get_fully_qualified_var_name(node: ParameterDeclaration):
+                name = node.name
+                parent = node.get_parent()
+                while not isinstance(parent, ScenarioDeclaration):
+                    name = parent.name + "_" + name
+                    parent = parent.get_parent()
+                return name
+            
+            super().visit_parameter_declaration(node)
+            parameter_type = node.get_type()
+            if isinstance(parameter_type[0], StructuredDeclaration):
+                blackboard_var_name = get_fully_qualified_var_name(node)
+                for variable_dec in parameter_type[0].find_children_of_type(VariableDeclaration):
+                    blackboard_var_name += "_" + variable_dec.name
+                    self.blackboard.register_key(blackboard_var_name, access=py_trees.common.Access.WRITE)
+                    setattr(self.blackboard, blackboard_var_name, variable_dec.get_resolved_value())
+            
 
         def visit_do_member(self, node: DoMember):
             composition_operator = node.composition_operator
@@ -177,8 +215,6 @@ class ModelToPyTree(object):
         def visit_behavior_invocation(self, node: BehaviorInvocation):
             behavior_name = node.behavior.name
 
-            final_args = node.get_resolved_value()
-
             available_plugins = []
             for entry_point in iter_entry_points(group='scenario_execution.actions', name=None):
                 # self.logger.debug(f'entry_point.name is {entry_point.name}')
@@ -201,38 +237,53 @@ class ModelToPyTree(object):
                 )
             behavior_cls = available_plugins[0].load()
 
-            if not issubclass(behavior_cls, py_trees.behaviour.Behaviour):
+            if not issubclass(behavior_cls, BaseAction):
                 raise OSC2ParsingError(
-                    msg=f"Found plugin for '{behavior_name}', but it's not derived from py_trees.behaviour.Behaviour.",
+                    msg=f"Found plugin for '{behavior_name}', but it's not derived from BaseAction.",
                     context=node.get_ctx()
                 )
+            
+            # check plugin constructor
+            plugin_init_args = inspect.getfullargspec(behavior_cls.__init__).args
+            expected_init_args = ["self", "name"]
+            if plugin_init_args != expected_init_args:
+                raise OSC2ParsingError(
+                    msg=f'Plugin {behavior_name}.__init__ requires to have exactly the following arguments: {", ".join(expected_init_args)}', context=node.get_ctx()
+                )
 
-            plugin_args = inspect.getfullargspec(behavior_cls.__init__).args
-            plugin_args.remove("self")
+            # check plugin execute() method
+            plugin_execute_args = inspect.getfullargspec(behavior_cls.execute).args
+            plugin_execute_args.remove("self")
 
-            final_args["name"] = node.name
-
+            expected_args = node.get_parameter_names()
             if node.actor:
-                final_args["associated_actor"] = node.actor.get_resolved_value()
-                final_args["associated_actor"]["name"] = node.actor.name
+                expected_args.append("associated_actor")
 
             missing_args = []
-            for element in plugin_args:
-                if element not in final_args:
+            unknown_args = copy.copy(expected_args)
+            for element in plugin_execute_args:
+                if element not in expected_args:
                     missing_args.append(element)
+                else:
+                    unknown_args.remove(element)
             if missing_args:
                 raise OSC2ParsingError(
-                    msg=f'Plugin {behavior_name} requires arguments that are not defined in osc. Missing: {missing_args}', context=node.get_ctx()
+                    msg=f'Plugin {behavior_name} requires arguments that are not defined in osc. Missing: {", ".join(missing_args)}', context=node.get_ctx()
                 )
-            log_name = None
-            if final_args["name"]:
-                log_name = final_args["name"]
-            else:
-                log_name = type(node).__name__
+            if unknown_args:
+                raise OSC2ParsingError(
+                    msg=f'Plugin {behavior_name} provides more arguments than expected. Missing: {", ".join(unknown_args)}', context=node.get_ctx()
+                )
+            
+            # initialize plugin instance
+            action_name = node.name
+            if not action_name:
+                action_name = behavior_name
             self.logger.debug(
-                f"Instantiate action '{log_name}', plugin '{behavior_name}' with:\nArguments: {final_args}")
+                f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected Arguments: {expected_args}")
             try:
-                instance = behavior_cls(**final_args)
+                instance = behavior_cls(action_name)
+                instance.set_model(node)
             except Exception as e:
                 raise OSC2ParsingError(msg=f'Error while initializing plugin {behavior_name}: {e}', context=node.get_ctx()) from e
             self.__cur_behavior.add_child(instance)

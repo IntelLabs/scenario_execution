@@ -269,7 +269,7 @@ class ModelElement(object):  # pylint: disable=too-many-public-methods
                 else:
                     output += "=" + str(attr_val)
         return output
-
+        
 
 class CompilationUnit(ModelElement):
 

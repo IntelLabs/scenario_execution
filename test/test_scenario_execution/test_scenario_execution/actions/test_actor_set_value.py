@@ -16,18 +16,33 @@
 
 import os
 import py_trees
+from scenario_execution.actions.base_action import BaseAction
 
+class TestActorSetValue(BaseAction):
 
-class TestActorSetValue(py_trees.behaviour.Behaviour):
-
-    def __init__(self, name, associated_actor, value):
+    def __init__(self, name):
         super().__init__(name)
         #self.file_name = file_name
+        self.i = 0
+        self.associated_actor = None
+        self.value = None
+    
+    def setup(self, **kwargs):
+        return super().setup(**kwargs)
 
-    # def update(self) -> py_trees.common.Status:
+    def execute(self, associated_actor, value):
+        self.associated_actor = associated_actor
+        self.value = value
+        
+    def update(self) -> py_trees.common.Status:
     #     if os.path.isfile(self.file_name):
     #         self.feedback_message = f"File '{self.file_name}' exists"  # pylint: disable= attribute-defined-outside-init
-    #         return py_trees.common.Status.SUCCESS
+        print(self.associated_actor)
+        self.i += 1
+        if self.i < 10:
+            return py_trees.common.Status.RUNNING
+        else:
+            return py_trees.common.Status.SUCCESS
     #     else:
     #         self.feedback_message = f"File '{self.file_name}' does not exist"  # pylint: disable= attribute-defined-outside-init
     #         return py_trees.common.Status.FAILURE
