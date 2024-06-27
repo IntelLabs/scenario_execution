@@ -281,7 +281,7 @@ Record a ROS bag, stored in directory ``output_dir`` defined by command-line par
 ``ros_launch()``
 """"""""""""""""
 
-Execute a ros launch file
+Execute a ROS launch file.
 
 - ``package_name: string``: Package that contains the launch file
 - ``launch_file: string``: Launch file name
