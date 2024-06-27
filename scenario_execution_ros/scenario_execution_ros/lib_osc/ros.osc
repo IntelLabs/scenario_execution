@@ -132,7 +132,7 @@ action ros_launch:
     launch_file: string             # launch file name
     arguments: list of ros_argument # ros arguments (get forwarded as key:=value pairs)
     wait_for_shutdown: bool = true   # if true, the action waits until the execution has finished
-    shutdown_timeout: time = 10s # (only used if wait_for_shutdown is false) timespan to wait between SIGTERM and SIGKILL getting sent if process is still running on scenario shutdown
+    shutdown_timeout: time = 10s # (only used if wait_for_shutdown is false) time to wait between SIGINT and SIGKILL getting sent, if process is still running on scenario shutdown
 
 action service_call:
     service_name: string                              # name of the service to connect to

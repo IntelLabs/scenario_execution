@@ -101,7 +101,7 @@ If ``wait_for_shutdown`` is ``false`` and the process is still running on scenar
 - ``command: string``: Command to execute
 - ``wait_for_shutdown: bool``:  Wait for the process to be finished. If false, the action immediately finishes (default: ``true``)
 - ``shutdown_signal: signal``: (Only used if ``wait_for_shutdown`` is ``false``) Signal that is sent if a process is still running on scenario shutdown (default: ``signal!sigterm``)
-- ``shutdown_timeout: time``: (Only used if ``wait_for_shutdown`` is ``false``) timespan to wait between ``shutdown_signal`` and SIGKILL getting sent if process is still running on scenario shutdown (default: ``10s``)
+- ``shutdown_timeout: time``: (Only used if ``wait_for_shutdown`` is ``false``) time to wait between ``shutdown_signal`` and SIGKILL getting sent if process is still running on scenario shutdown (default: ``10s``)
 
 OS
 --
