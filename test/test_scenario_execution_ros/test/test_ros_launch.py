@@ -114,7 +114,7 @@ scenario test:
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
 
-    def test_success_not_wait_for_shutdown(self):
+    def test_success_not_wait_for_shutdown_terminate(self):
         scenario_content = """
 import osc.ros
 import osc.os

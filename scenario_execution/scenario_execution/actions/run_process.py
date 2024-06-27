@@ -146,11 +146,11 @@ class RunProcess(py_trees.behaviour.Behaviour):
         ret = self.process.poll()
         if ret is None:
             # kill running process
-            self.logger.error(f'Sending {signal.Signals(self.shutdown_signal).name} to process...')
+            self.logger.info(f'Sending {signal.Signals(self.shutdown_signal).name} to process...')
             self.process.send_signal(self.shutdown_signal)
             self.process.wait(self.shutdown_timeout)
             if self.process.poll() is None:
-                self.logger.error('Sending SIGKILL to process...')
+                self.logger.info('Sending SIGKILL to process...')
                 self.process.send_signal(signal.SIGKILL)
                 self.process.wait()
-            self.logger.error('Process finished.')
+            self.logger.info('Process finished.')
