@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 from enum import Enum
 
 from scenario_execution.actions.run_process import RunProcess
@@ -35,40 +34,15 @@ class RosLaunch(RunProcess):
     Class to execute ros bag recording
     """
 
-    def __init__(self, name, package_name: str, launch_file: str, arguments: list, wait_for_finished: bool):
-        super().__init__(name, None, wait_for_finished)
+    def __init__(self, name, package_name: str, launch_file: str, arguments: list, wait_for_finished: bool, shutdown_timeout: float):
+        super().__init__(name, None, wait_for_finished, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
         self.package_name = package_name
         self.launch_file = launch_file
         self.arguments = arguments
         self.wait_for_finish = wait_for_finished
-        # if not isinstance(topics, list):
-        #     raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
-        # else:
-        #     self.topics = topics
-        # self.timestamp_suffix = timestamp_suffix
-        # self.include_hidden_topics = hidden_topics
-        # self.current_state = RosLaunchActionState.WAITING_FOR_TOPICS
-        # self.bag_dir = ''
-        # self.storage = storage
         self.command = None
 
     def setup(self, **kwargs):
-        """
-        set up
-        """
-        # if "output_dir" not in kwargs:
-        #     raise ValueError("output_dir not defined.")
-
-        # if kwargs['output_dir']:
-        #     if not os.path.exists(kwargs['output_dir']):
-        #         raise ValueError(
-        #             f"Specified destination dir '{kwargs['output_dir']}' does not exist")
-        #     self.bag_dir = kwargs['output_dir'] + '/'
-        # self.bag_dir += "rosbag2"
-
-        # if self.timestamp_suffix:
-        #     self.bag_dir += '_' + datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
-
         self.command = ["ros2", "launch", self.package_name, self.launch_file]
 
         for arg in self.arguments:
@@ -77,71 +51,3 @@ class RosLaunch(RunProcess):
             self.command.append(f'{arg["key"]}:={arg["value"]}')
 
         self.logger.info(f'Command: {" ".join(self.command)}')
-
-    # def get_scenario_name(self):
-    #     """
-    #     get scenario name from py tree root
-    #     """
-    #     parent = self.parent
-    #     scenario_name = "INVALID"
-    #     while parent:
-    #         scenario_name = parent.name
-    #         parent = parent.parent
-    #     return scenario_name
-
-    def get_logger_stderr(self):
-        """
-        get logger for stderr messages
-        """
-        return self.logger.info  # ros2 bag record reports all messages on stderr
-
-    # def on_executed(self):
-    #     """
-    #     Hook when process gets executed
-    #     """
-    #     self.feedback_message = f"Waiting for all topics to subscribe..."  # pylint: disable= attribute-defined-outside-init
-    #     self.current_state = RosLaunchActionState.WAITING_FOR_TOPICS
-
-    # def check_running_process(self):
-    #     """
-    #     hook to check running process
-
-    #     return:
-    #         py_trees.common.Status
-    #     """
-    #     if self.current_state == RosLaunchActionState.WAITING_FOR_TOPICS:
-    #         while True:
-    #             try:
-    #                 line = self.output.popleft()
-    #                 if line.endswith('All requested topics are subscribed. Stopping discovery...'):
-    #                     self.feedback_message = f"Recording..."  # pylint: disable= attribute-defined-outside-init
-    #                     self.current_state = RosLaunchActionState.RECORDING
-    #                     return py_trees.common.Status.SUCCESS
-    #             except IndexError:
-    #                 break
-    #         return py_trees.common.Status.RUNNING
-    #     else:
-    #         self.current_state = RosLaunchActionState.FAILURE
-    #         return py_trees.common.Status.FAILURE
-
-    # def shutdown(self):
-    #     if self.current_state != RosLaunchActionState.FAILURE:
-    #         self.logger.info('Waiting for process to quit...')
-    #         if self.process:
-    #             self.process.send_signal(signal.SIGINT)
-    #             self.process.wait()
-    #         self.logger.info('Process finished.')
-    #     if self.current_state == RosLaunchActionState.WAITING_FOR_TOPICS and self.bag_dir and os.path.exists(self.bag_dir):
-    #         self.logger.info(
-    #             f'Shutdown while waiting for topics. Removing incomplete bag {self.bag_dir}...')
-
-    # def on_process_finished(self, ret):
-    #     """
-    #     check result of process
-
-    #     return:
-    #         py_trees.common.Status
-    #     """
-    #     if self.current_state == RosLaunchActionState.RECORDING:
-    #         self.current_state = RosLaunchActionState.FAILURE
-    #     return py_trees.common.Status.FAILURE

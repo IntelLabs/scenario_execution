@@ -18,6 +18,8 @@ import os
 import rclpy
 from rclpy.node import Node
 
+import sys
+
 
 class TestNode(Node):
 
@@ -25,11 +27,11 @@ class TestNode(Node):
         super().__init__('test_node')
         self.declare_parameter('test_path', rclpy.Parameter.Type.STRING)
         self.declare_parameter('test_param', rclpy.Parameter.Type.STRING)
-        self.declare_parameter('timtout', rclpy.Parameter.Type.INTEGER)
+        self.declare_parameter('timeout', rclpy.Parameter.Type.INTEGER)
         self.test_path = self.get_parameter_or('test_path', '.').value
         self.test_param = self.get_parameter_or('test_param', '').value
         self.timeout = self.get_parameter_or('timeout', 5).value
-        self.get_logger().info(f"Writing to '{self.test_path}'...")
+        self.get_logger().info(f"Writing to '{self.test_path}'... (timeout: {self.timeout})")
         if not os.path.exists(self.test_path):
             os.makedirs(self.test_path)
         with open(os.path.join(self.test_path, 'test_started'), 'w') as f:
@@ -59,7 +61,7 @@ def main(args=None):
         with open(os.path.join(node.test_path, 'test_success'), 'w') as f:
             f.write(node.test_param)
     else:
-        print("Aborted!")
+        print("Aborted!", file=sys.stderr)
         with open(os.path.join(node.test_path, 'test_aborted'), 'w') as f:
             f.write(node.test_param)
 

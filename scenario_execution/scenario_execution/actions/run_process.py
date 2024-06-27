@@ -20,18 +20,18 @@ from threading import Thread
 from collections import deque
 import signal
 
+
 class RunProcess(py_trees.behaviour.Behaviour):
     """
-    Class to execute an process. It finishes when the process finishes
-
-    Args:
-        command[str]: command to execute
+    Class to execute an process.
     """
 
-    def __init__(self, name, command=None, wait_for_finished=True):
+    def __init__(self, name, command=None, wait_for_finished=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
         super().__init__(name)
         self.command = command.split(" ") if isinstance(command, str) else command
         self.wait_for_finished = wait_for_finished
+        self.shutdown_timeout = shutdown_timeout
+        self.shutdown_signal = shutdown_signal[1]
         self.executed = False
         self.process = None
         self.log_stdout_thread = None
@@ -87,7 +87,7 @@ class RunProcess(py_trees.behaviour.Behaviour):
         if ret is None:
             return self.check_running_process()
         else:
-            return  self.on_process_finished(ret)
+            return self.on_process_finished(ret)
 
     def get_logger_stdout(self):
         """
@@ -142,11 +142,15 @@ class RunProcess(py_trees.behaviour.Behaviour):
     def shutdown(self):
         if self.process is None:
             return
-        
+
         ret = self.process.poll()
         if ret is None:
             # kill running process
-            self.logger.info('Waiting for process to quit...')
-            self.process.send_signal(signal.SIGINT)
-            self.process.wait()
-            self.logger.info('Process finished.')
+            self.logger.error(f'Sending {signal.Signals(self.shutdown_signal).name} to process...')
+            self.process.send_signal(self.shutdown_signal)
+            self.process.wait(self.shutdown_timeout)
+            if self.process.poll() is None:
+                self.logger.error('Sending SIGKILL to process...')
+                self.process.send_signal(signal.SIGKILL)
+                self.process.wait()
+            self.logger.error('Process finished.')

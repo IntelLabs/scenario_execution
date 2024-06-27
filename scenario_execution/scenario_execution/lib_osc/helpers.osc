@@ -1,12 +1,23 @@
 
+enum signal: [
+    sighup = 1,
+    sigint = 2,
+    sigkill = 9,
+    sigusr1 = 10,
+    sigusr2 = 12,
+    sigterm = 15
+]
+
 action log:
     # Print out a message
     msg: string # Message to print
 
 action run_process:
-    # Run an external process
+    # Run an external process. If wait_for_finished is false and the process is still running on scenario shutdown, shutdown_signal is sent. If the process does not shutdown within shutdown_timeout, SIGKILL is sent.
     command: string # Command to execute
-    wait_for_finished: True # wait for the process to be finished. If false, the action immediately finishes.
+    wait_for_finished: bool = true # wait for the process to be finished. If false, the action immediately finishes.
+    shutdown_signal: signal = signal!sigterm # (only used if wait_for_finished is false) signal that is sent if a process is still running on scenario shutdown
+    shutdown_timeout: time = 10s # (only used if wait_for_finished is false) timespan to wait between shutdown_signal and SIGKILL getting sent if process is still running on scenario shutdown
 
 struct random:
     def seed(seed_value: int = 0) is external scenario_execution.external_methods.random.seed()

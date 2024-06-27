@@ -29,7 +29,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('test_param', description='test parameter'),
         DeclareLaunchArgument('test_path', description='Test path parameter'),
-        DeclareLaunchArgument('timeout', description='Timeout', default_value=5),
+        DeclareLaunchArgument('timeout', description='Timeout', default_value='5'),
 
         Node(
             # condition=IfCondition(scenario_status),

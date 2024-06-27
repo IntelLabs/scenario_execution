@@ -60,7 +60,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 # scenario test:
 #     do parallel:
 #         serial:
-#             ros_launch('test_scenario_execution_ros', 'test_launch.py', [ 
+#             ros_launch('test_scenario_execution_ros', 'test_launch.py', [
 #                 ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
 #                 ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
 #             ])
@@ -88,7 +88,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 # scenario test:
 #     do parallel:
 #         serial:
-#             ros_launch('test_scenario_execution_ros', 'test_launch.py', [ 
+#             ros_launch('test_scenario_execution_ros', 'test_launch.py', [
 #                     ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
 #                     ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
 #                 ],
@@ -100,7 +100,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 #             wait elapsed(10s)
 #             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
 #             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
-#             check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')            
+#             check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
 #             emit end
 #         time_out: serial:
 #             wait elapsed(20s)
@@ -114,7 +114,6 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 #         self.scenario_execution_ros.run()
 #         self.assertTrue(self.scenario_execution_ros.process_results())
 
-
     def test_success_not_wait_for_finished(self):
         scenario_content = """
 import osc.ros
@@ -127,7 +126,8 @@ scenario test:
                 ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """'),
                 ros_argument(key: 'timeout', value: '15')
             ],
-            wait_for_finished: false)
+            wait_for_finished: false,
+            shutdown_timeout: 5s)
         wait elapsed(2s)
         emit end
 """
@@ -141,4 +141,3 @@ scenario test:
         self.assertFalse(os.path.isfile(self.tmp_dir.name + '/test_success'))
         self.assertTrue(os.path.isfile(self.tmp_dir.name + '/test_aborted'))
         self.assertTrue(self.scenario_execution_ros.process_results())
-

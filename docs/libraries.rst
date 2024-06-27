@@ -96,9 +96,12 @@ For debugging purposes, log a string using the available log mechanism.
 
 Run a process. Reports `running` while the process has not finished.
 
+If ``wait_for_finished`` is ``false`` and the process is still running on scenario shutdown, ``shutdown_signal`` is sent. If the process does not shutdown within shutdown_timeout, ``signal.sigkill`` is sent.
+
 - ``command: string``: Command to execute
 - ``wait_for_finished: bool``:  Wait for the process to be finished. If false, the action immediately finishes (default: ``true``)
-
+- ``shutdown_signal: signal``: (Only used if ``wait_for_finished`` is ``false``) Signal that is sent if a process is still running on scenario shutdown (default: ``signal!sigterm``)
+- ``shutdown_timeout: time``: (Only used if ``wait_for_finished`` is ``false``) timespan to wait between ``shutdown_signal`` and SIGKILL getting sent if process is still running on scenario shutdown (default: ``10s``)
 
 OS
 --
