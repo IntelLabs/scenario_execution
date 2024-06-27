@@ -97,6 +97,7 @@ For debugging purposes, log a string using the available log mechanism.
 Run a process. Reports `running` while the process has not finished.
 
 - ``command: string``: Command to execute
+- ``wait_for_finished: bool``:  Wait for the process to be finished. If false, the action immediately finishes (default: ``true``)
 
 
 OS

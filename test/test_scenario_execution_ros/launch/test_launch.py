@@ -24,10 +24,12 @@ def generate_launch_description():
 
     test_param = LaunchConfiguration('test_param')
     test_path = LaunchConfiguration('test_path')
+    timeout = LaunchConfiguration('timeout')
 
     return LaunchDescription([
         DeclareLaunchArgument('test_param', description='test parameter'),
         DeclareLaunchArgument('test_path', description='Test path parameter'),
+        DeclareLaunchArgument('timeout', description='Timeout', default_value=5),
 
         Node(
             # condition=IfCondition(scenario_status),
@@ -37,6 +39,7 @@ def generate_launch_description():
             parameters=[{
                 'test_param': test_param,
                 'test_path': test_path,
+                'timeout': timeout,
             }],
             output='screen'
         ),

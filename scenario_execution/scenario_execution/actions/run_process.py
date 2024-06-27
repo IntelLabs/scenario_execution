@@ -18,7 +18,7 @@ import py_trees  # pylint: disable=import-error
 import subprocess  # nosec B404
 from threading import Thread
 from collections import deque
-
+import signal
 
 class RunProcess(py_trees.behaviour.Behaviour):
     """
@@ -28,9 +28,10 @@ class RunProcess(py_trees.behaviour.Behaviour):
         command[str]: command to execute
     """
 
-    def __init__(self, name, command=None):
+    def __init__(self, name, command=None, wait_for_finished=True):
         super().__init__(name)
         self.command = command.split(" ") if isinstance(command, str) else command
+        self.wait_for_finished = wait_for_finished
         self.executed = False
         self.process = None
         self.log_stdout_thread = None
@@ -78,6 +79,7 @@ class RunProcess(py_trees.behaviour.Behaviour):
             self.log_stderr_thread.start()
 
         if self.process is None:
+            self.process = None
             return py_trees.common.Status.FAILURE
 
         ret = self.process.poll()
@@ -85,7 +87,7 @@ class RunProcess(py_trees.behaviour.Behaviour):
         if ret is None:
             return self.check_running_process()
         else:
-            return self.on_process_finished(ret)
+            return  self.on_process_finished(ret)
 
     def get_logger_stdout(self):
         """
@@ -106,7 +108,10 @@ class RunProcess(py_trees.behaviour.Behaviour):
         return:
             py_trees.common.Status
         """
-        return py_trees.common.Status.RUNNING
+        if self.wait_for_finished:
+            return py_trees.common.Status.RUNNING
+        else:
+            return py_trees.common.Status.SUCCESS
 
     def on_process_finished(self, ret):
         """
@@ -133,3 +138,15 @@ class RunProcess(py_trees.behaviour.Behaviour):
 
     def get_command(self):
         return self.command
+
+    def shutdown(self):
+        if self.process is None:
+            return
+        
+        ret = self.process.poll()
+        if ret is None:
+            # kill running process
+            self.logger.info('Waiting for process to quit...')
+            self.process.send_signal(signal.SIGINT)
+            self.process.wait()
+            self.logger.info('Process finished.')

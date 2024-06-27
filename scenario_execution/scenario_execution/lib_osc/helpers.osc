@@ -6,6 +6,7 @@ action log:
 action run_process:
     # Run an external process
     command: string # Command to execute
+    wait_for_finished: True # wait for the process to be finished. If false, the action immediately finishes.
 
 struct random:
     def seed(seed_value: int = 0) is external scenario_execution.external_methods.random.seed()

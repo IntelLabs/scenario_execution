@@ -35,12 +35,12 @@ class RosLaunch(RunProcess):
     Class to execute ros bag recording
     """
 
-    def __init__(self, name, package_name: str, launch_file: str, arguments: list, wait_for_finish: bool):
-        super().__init__(name)
+    def __init__(self, name, package_name: str, launch_file: str, arguments: list, wait_for_finished: bool):
+        super().__init__(name, None, wait_for_finished)
         self.package_name = package_name
         self.launch_file = launch_file
         self.arguments = arguments
-        self.wait_for_finish = wait_for_finish
+        self.wait_for_finish = wait_for_finished
         # if not isinstance(topics, list):
         #     raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
         # else:
@@ -124,16 +124,16 @@ class RosLaunch(RunProcess):
     #         self.current_state = RosLaunchActionState.FAILURE
     #         return py_trees.common.Status.FAILURE
 
-    def shutdown(self):
-        if self.current_state != RosLaunchActionState.FAILURE:
-            self.logger.info('Waiting for process to quit...')
-            if self.process:
-                self.process.send_signal(signal.SIGINT)
-                self.process.wait()
-            self.logger.info('Process finished.')
-        if self.current_state == RosLaunchActionState.WAITING_FOR_TOPICS and self.bag_dir and os.path.exists(self.bag_dir):
-            self.logger.info(
-                f'Shutdown while waiting for topics. Removing incomplete bag {self.bag_dir}...')
+    # def shutdown(self):
+    #     if self.current_state != RosLaunchActionState.FAILURE:
+    #         self.logger.info('Waiting for process to quit...')
+    #         if self.process:
+    #             self.process.send_signal(signal.SIGINT)
+    #             self.process.wait()
+    #         self.logger.info('Process finished.')
+    #     if self.current_state == RosLaunchActionState.WAITING_FOR_TOPICS and self.bag_dir and os.path.exists(self.bag_dir):
+    #         self.logger.info(
+    #             f'Shutdown while waiting for topics. Removing incomplete bag {self.bag_dir}...')
 
     # def on_process_finished(self, ret):
     #     """
