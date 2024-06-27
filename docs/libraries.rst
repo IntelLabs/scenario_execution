@@ -290,6 +290,8 @@ Execute a ROS launch file.
 - ``package_name: string``: Package that contains the launch file
 - ``launch_file: string``: Launch file name
 - ``arguments: list of ros_argument``: ROS arguments (get forwarded as key:=value pairs)
+- ``wait_for_shutdown: bool``: If true, the action waits until the execution is finished (default: ``true``)
+- ``shutdown_timeout: time``: (Only used ``if wait_for_shutdown`` is ``false``) Time to wait between ``SIGINT`` and ``SIGKILL`` getting sent, if process is still running on scenario shutdown (default: ``10s``)
 
 ``service_call()``
 """"""""""""""""""
