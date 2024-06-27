@@ -15,9 +15,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """ Setup python package """
+from glob import glob
+import os
 from setuptools import find_namespace_packages, setup
 
-PACKAGE_NAME = 'scenario_execution_os'
+PACKAGE_NAME = 'test_scenario_execution_ros'
 
 setup(
     name=PACKAGE_NAME,
@@ -26,24 +28,18 @@ setup(
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
-        ('share/' + PACKAGE_NAME, ['package.xml'])
+        ('share/' + PACKAGE_NAME, ['package.xml']),
+        (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='Scenario Execution library for OS interactions',
+    description='Tests for Scenario Execution library for ROS',
     license='Apache License 2.0',
     tests_require=['pytest'],
-    include_package_data=True,
     entry_points={
-        'scenario_execution.actions': [
-            'check_file_exists = scenario_execution_os.actions.check_file_exists:CheckFileExists',
-            'check_file_not_exists = scenario_execution_os.actions.check_file_not_exists:CheckFileNotExists',
-        ],
-        'scenario_execution.osc_libraries': [
-            'os = '
-            'scenario_execution_os.get_osc_library:get_osc_library',
-        ]
-    },
+        'console_scripts': [
+            'test_scenario_execution_ros = test_scenario_execution_ros.workload_node:main',
+        ]}
 )

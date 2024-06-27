@@ -96,8 +96,12 @@ For debugging purposes, log a string using the available log mechanism.
 
 Run a process. Reports `running` while the process has not finished.
 
-- ``command: string``: Command to execute
+If ``wait_for_shutdown`` is ``false`` and the process is still running on scenario shutdown, ``shutdown_signal`` is sent. If the process does not shutdown within shutdown_timeout, ``signal.sigkill`` is sent.
 
+- ``command: string``: Command to execute
+- ``wait_for_shutdown: bool``:  Wait for the process to be finished. If false, the action immediately finishes (default: ``true``)
+- ``shutdown_signal: signal``: (Only used if ``wait_for_shutdown`` is ``false``) Signal that is sent if a process is still running on scenario shutdown (default: ``signal!sigterm``)
+- ``shutdown_timeout: time``: (Only used if ``wait_for_shutdown`` is ``false``) time to wait between ``shutdown_signal`` and SIGKILL getting sent, if process is still running on scenario shutdown (default: ``10s``)
 
 OS
 --
@@ -112,7 +116,15 @@ Actions
 
 Report success if a file exists.
 
-- ``file_name: string``: File name to check
+- ``file_name: string``: File to check
+
+
+``check_file_not_exists()``
+"""""""""""""""""""""""""""
+
+Report success if a file does not exist.
+
+- ``file_name: string``: File to check
 
 
 Robotics
@@ -269,6 +281,17 @@ Record a ROS bag, stored in directory ``output_dir`` defined by command-line par
 - ``timestamp_suffix: bool``: Add a timestamp suffix to output directory name (default: ``true``)
 - ``hidden_topics: bool``: Whether to record hidden topics (default: ``false``)
 - ``storage: string``: Storage type to use (empty string: use ROS bag record default)
+
+``ros_launch()``
+""""""""""""""""
+
+Execute a ROS launch file.
+
+- ``package_name: string``: Package that contains the launch file
+- ``launch_file: string``: Launch file name
+- ``arguments: list of ros_argument``: ROS arguments (get forwarded as key:=value pairs)
+- ``wait_for_shutdown: bool``: If true, the action waits until the execution is finished (default: ``true``)
+- ``shutdown_timeout: time``: (Only used ``if wait_for_shutdown`` is ``false``) Time to wait between ``SIGINT`` and ``SIGKILL`` getting sent, if process is still running on scenario shutdown (default: ``10s``)
 
 ``service_call()``
 """"""""""""""""""

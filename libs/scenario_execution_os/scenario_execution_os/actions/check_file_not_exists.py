@@ -18,9 +18,9 @@ import os
 import py_trees
 
 
-class CheckFileExists(py_trees.behaviour.Behaviour):
+class CheckFileNotExists(py_trees.behaviour.Behaviour):
     """
-    Check existance of a file
+    Check that a file does not exist
     """
 
     def __init__(self, name, file_name):
@@ -30,7 +30,7 @@ class CheckFileExists(py_trees.behaviour.Behaviour):
     def update(self) -> py_trees.common.Status:
         if os.path.isfile(self.file_name):
             self.feedback_message = f"File '{self.file_name}' exists"  # pylint: disable= attribute-defined-outside-init
-            return py_trees.common.Status.SUCCESS
+            return py_trees.common.Status.FAILURE
         else:
             self.feedback_message = f"File '{self.file_name}' does not exist"  # pylint: disable= attribute-defined-outside-init
-            return py_trees.common.Status.FAILURE
+            return py_trees.common.Status.SUCCESS

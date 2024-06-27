@@ -1,5 +1,9 @@
 import osc.robotics
 
+struct ros_argument:
+    key: string
+    value: string = ''
+    
 # Policy rules for behaviours to dictate when data should be cleared/reset.
 #    on_initialise     Clear when entering the py_trees.behaviour.Behaviour.initialise method.
 #    on_success        Clear when returning py_trees.common.Status.SUCCESS
@@ -121,6 +125,14 @@ action record_bag:
     timestamp_suffix: bool = true# Add a timestamp suffix to output directory name
     hidden_topics: bool = false  # whether to record hidden topics
     storage: string = ''         # storage type to use (empty string: use default)
+
+action ros_launch:
+    # Execute a ros launch file
+    package_name: string            # package that contains the launch file
+    launch_file: string             # launch file name
+    arguments: list of ros_argument # ros arguments (get forwarded as key:=value pairs)
+    wait_for_shutdown: bool = true   # if true, the action waits until the execution has finished
+    shutdown_timeout: time = 10s # (only used if wait_for_shutdown is false) time to wait between SIGINT and SIGKILL getting sent, if process is still running on scenario shutdown
 
 action service_call:
     service_name: string                              # name of the service to connect to
