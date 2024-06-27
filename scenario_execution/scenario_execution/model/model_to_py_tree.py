@@ -172,6 +172,7 @@ class ModelToPyTree(object):
                 blackboard_var_name = get_fully_qualified_var_name(node)
                 for variable_dec in parameter_type[0].find_children_of_type(VariableDeclaration):
                     blackboard_var_name += "_" + variable_dec.name
+                    
                     self.blackboard.register_key(blackboard_var_name, access=py_trees.common.Access.WRITE)
                     setattr(self.blackboard, blackboard_var_name, variable_dec.get_resolved_value())
             
@@ -272,7 +273,7 @@ class ModelToPyTree(object):
                 )
             if unknown_args:
                 raise OSC2ParsingError(
-                    msg=f'Plugin {behavior_name} provides more arguments than expected. Missing: {", ".join(unknown_args)}', context=node.get_ctx()
+                    msg=f'Plugin {behavior_name} has unknown arguments: {", ".join(unknown_args)}', context=node.get_ctx()
                 )
             
             # initialize plugin instance
@@ -280,7 +281,7 @@ class ModelToPyTree(object):
             if not action_name:
                 action_name = behavior_name
             self.logger.debug(
-                f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected Arguments: {expected_args}")
+                f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected execute() arguments: {expected_args}")
             try:
                 instance = behavior_cls(action_name)
                 instance.set_model(node)
