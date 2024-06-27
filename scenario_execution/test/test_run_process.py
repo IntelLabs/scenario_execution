@@ -104,7 +104,7 @@ scenario test_run_process:
         self.scenario_execution.run()
         self.assertTrue(self.scenario_execution.process_results())
 
-    def test_wait_for_finished_false(self):
+    def test_wait_for_shutdown_false(self):
         scenario_content = """
 import osc.standard.base
 import osc.helpers
@@ -112,7 +112,7 @@ import osc.helpers
 scenario test_run_process:
     do parallel:
         serial:
-            run_process('sleep 15', wait_for_finished: false)
+            run_process('sleep 15', wait_for_shutdown: false)
             emit end
         time_out: serial:
             wait elapsed(10s)
@@ -137,7 +137,7 @@ import osc.standard.base
 import osc.helpers
 
 scenario test_run_process:
-    do run_process('sleep 15', wait_for_finished: false, shutdown_signal: signal!sigint)
+    do run_process('sleep 15', wait_for_shutdown: false, shutdown_signal: signal!sigint)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)

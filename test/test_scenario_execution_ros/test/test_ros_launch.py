@@ -52,69 +52,69 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.executor_thread.join()
         self.tmp_dir.cleanup()
 
-#     def test_success(self):
-#         scenario_content = """
-# import osc.ros
-# import osc.os
+    def test_success(self):
+        scenario_content = """
+import osc.ros
+import osc.os
 
-# scenario test:
-#     do parallel:
-#         serial:
-#             ros_launch('test_scenario_execution_ros', 'test_launch.py', [
-#                 ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
-#                 ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
-#             ])
-#             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
-#             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
-#             check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
-#             emit end
-#         time_out: serial:
-#             wait elapsed(10s)
-#             emit fail
-# """
-#         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-#         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-#         scenarios = create_py_tree(model, self.parser.logger, False)
-#         self.scenario_execution_ros.scenarios = scenarios
-#         self.scenario_execution_ros.live_tree = True
-#         self.scenario_execution_ros.run()
-#         self.assertTrue(self.scenario_execution_ros.process_results())
+scenario test:
+    do parallel:
+        serial:
+            ros_launch('test_scenario_execution_ros', 'test_launch.py', [
+                ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
+                ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
+            ])
+            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
+            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
+            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.live_tree = True
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
-#     def test_success_not_wait_for_finished(self):
-#         scenario_content = """
-# import osc.ros
-# import osc.os
+    def test_success_not_wait_for_shutdown(self):
+        scenario_content = """
+import osc.ros
+import osc.os
 
-# scenario test:
-#     do parallel:
-#         serial:
-#             ros_launch('test_scenario_execution_ros', 'test_launch.py', [
-#                     ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
-#                     ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
-#                 ],
-#                 wait_for_finished: false)
-#             wait elapsed(4s)
-#             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
-#             check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
-#             check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
-#             wait elapsed(10s)
-#             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
-#             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
-#             check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
-#             emit end
-#         time_out: serial:
-#             wait elapsed(20s)
-#             emit fail
-# """
-#         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-#         model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-#         scenarios = create_py_tree(model, self.parser.logger, False)
-#         self.scenario_execution_ros.scenarios = scenarios
-#         self.scenario_execution_ros.live_tree = True
-#         self.scenario_execution_ros.run()
-#         self.assertTrue(self.scenario_execution_ros.process_results())
+scenario test:
+    do parallel:
+        serial:
+            ros_launch('test_scenario_execution_ros', 'test_launch.py', [
+                    ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
+                    ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
+                ],
+                wait_for_shutdown: false)
+            wait elapsed(4s)
+            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
+            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
+            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
+            wait elapsed(10s)
+            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
+            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
+            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
+            emit end
+        time_out: serial:
+            wait elapsed(20s)
+            emit fail
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        scenarios = create_py_tree(model, self.parser.logger, False)
+        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.live_tree = True
+        self.scenario_execution_ros.run()
+        self.assertTrue(self.scenario_execution_ros.process_results())
 
-    def test_success_not_wait_for_finished(self):
+    def test_success_not_wait_for_shutdown(self):
         scenario_content = """
 import osc.ros
 import osc.os
@@ -126,7 +126,7 @@ scenario test:
                 ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """'),
                 ros_argument(key: 'timeout', value: '15')
             ],
-            wait_for_finished: false,
+            wait_for_shutdown: false,
             shutdown_timeout: 5s)
         wait elapsed(2s)
         emit end

@@ -34,12 +34,12 @@ class RosLaunch(RunProcess):
     Class to execute ros bag recording
     """
 
-    def __init__(self, name, package_name: str, launch_file: str, arguments: list, wait_for_finished: bool, shutdown_timeout: float):
-        super().__init__(name, None, wait_for_finished, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
+    def __init__(self, name, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):
+        super().__init__(name, None, wait_for_shutdown, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
         self.package_name = package_name
         self.launch_file = launch_file
         self.arguments = arguments
-        self.wait_for_finish = wait_for_finished
+        self.wait_for_shutdown = wait_for_shutdown
         self.command = None
 
     def setup(self, **kwargs):

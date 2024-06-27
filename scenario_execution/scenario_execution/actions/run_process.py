@@ -26,10 +26,10 @@ class RunProcess(py_trees.behaviour.Behaviour):
     Class to execute an process.
     """
 
-    def __init__(self, name, command=None, wait_for_finished=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
+    def __init__(self, name, command=None, wait_for_shutdown=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
         super().__init__(name)
         self.command = command.split(" ") if isinstance(command, str) else command
-        self.wait_for_finished = wait_for_finished
+        self.wait_for_shutdown = wait_for_shutdown
         self.shutdown_timeout = shutdown_timeout
         self.shutdown_signal = shutdown_signal[1]
         self.executed = False
@@ -108,7 +108,7 @@ class RunProcess(py_trees.behaviour.Behaviour):
         return:
             py_trees.common.Status
         """
-        if self.wait_for_finished:
+        if self.wait_for_shutdown:
             return py_trees.common.Status.RUNNING
         else:
             return py_trees.common.Status.SUCCESS
