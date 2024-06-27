@@ -1,3 +1,4 @@
+import osc.standard.base
 
 enum signal: [
     sighup = 1,
