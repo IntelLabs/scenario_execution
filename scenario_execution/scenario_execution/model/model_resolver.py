@@ -16,13 +16,13 @@
 
 from scenario_execution.model.types import ActionDeclaration, ActionInherits, EnumDeclaration, EnumValueReference, KeepConstraintDeclaration, EmitDirective, Type
 
-from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree
+from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree, ScenarioDeclaration
 
 from .model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 import importlib
 import inspect
-
+import py_trees
 
 def resolve_internal_model(model, logger, log_tree):
     osc2scenario_resolver = ModelResolver(logger)
@@ -42,6 +42,7 @@ class ModelResolver(ModelBaseVisitor):
     def __init__(self, logger) -> None:
         super().__init__()
         self.logger = logger
+        self.blackboard = py_trees.blackboard.Client(name="ModelResolver")
 
     def visit_physical_literal(self, node: PhysicalLiteral):
         unit = node.resolve(node.unit)
@@ -56,10 +57,25 @@ class ModelResolver(ModelBaseVisitor):
 
     def visit_identifier_reference(self, node: IdentifierReference):
         if '.' in node.ref:  # first level of members can also be referenced (e.g. methods)
-            comp, member = node.ref.rsplit('.', 1)
-            resolved = node.resolve(comp)
+            splitted = node.ref.split('.')
+            if len(splitted) != 2:
+                raise OSC2ParsingError(
+                    msg=f'Identifier "{node.ref}" with more than one sub-level not supported.', context=node.get_ctx())
+                
+            member = splitted[1]
+            resolved = node.resolve(splitted[0])
             if resolved:
-                resolved = resolved.get_named_child(member)
+                if isinstance(resolved, ParameterDeclaration):
+                    print(member)
+                    typ = resolved.get_type()[0]
+                    print(typ)
+                    resolved = typ.get_named_child(member)
+                    print("resolved")
+                    # for child in resolved.__children:
+                    #     if member == child.name:
+                    #         return child
+                else:
+                    resolved = resolved.get_named_child(member)
         else:
             resolved = node.resolve(node.ref)
         if resolved is None:
@@ -155,6 +171,10 @@ class ModelResolver(ModelBaseVisitor):
     def visit_parameter_declaration(self, node: ParameterDeclaration):
         self.visit_children(node)
         self.check_parameter_type(node)
+        if isinstance(node.get_parent(), ScenarioDeclaration):
+            print("YEs")
+            self.blackboard.register_key(key=node.name, access=py_trees.common.Access.WRITE)
+            
 
     def visit_actor_inherits(self, node: ActorInherits):
         resolved = node.resolve(node.actor)

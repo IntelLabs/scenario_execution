@@ -26,7 +26,7 @@ from scenario_execution.model.model_builder import ModelBuilder
 from scenario_execution.model.types import print_tree
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.model.model_resolver import resolve_internal_model
-
+import py_trees
 
 class OpenScenario2Parser(object):
     """ Helper class for parsing openscenario 2 files """
@@ -42,9 +42,10 @@ class OpenScenario2Parser(object):
 
         model = self.create_internal_model(parsed_tree, file, log_model, debug)
 
-        scenarios = create_py_tree(model, self.logger, log_model)
+        tree = py_trees.composites.Sequence()
+        create_py_tree(model, tree, self.logger, log_model)
 
-        return scenarios
+        return tree
 
     def load_internal_model(self, tree, file_name: str, log_model: bool = False, debug: bool = False):
         model_builder = ModelBuilder(self.logger, self.parse_file, file_name, log_model)

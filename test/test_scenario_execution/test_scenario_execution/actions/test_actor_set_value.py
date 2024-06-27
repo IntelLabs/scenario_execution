@@ -23,40 +23,11 @@ class TestActorSetValue(BaseAction):
 
     def __init__(self, name):
         super().__init__(name)
-        #self.file_name = file_name
         self.i = 0
         self.associated_actor = None
         self.value = None
-    
-    def get_associated_actor_variables(self):    
         
-        def get_blackboard_namespace(node: ParameterDeclaration):
-            parent = node.get_parent()
-            while parent is not None and not isinstance(parent, ScenarioDeclaration):
-                parent = parent.get_parent()
-            if parent:
-                return parent.name
-            else:
-                return None
-        
-        self.blackboard_client = self.attach_blackboard_client(self.name, get_blackboard_namespace(self.model))
-        
-        self.blackboard_client.register_key("actor1_test", access=py_trees.common.Access.WRITE)
-        print("m")
-        print(f"AAAAAAAAA {self.blackboard_client.actor1_test}")
-    #         self,
-    #         name: str = None,
-    #         namespace: str = None
-    # )
-        # self.blackboard = self.__cur_behavior.attach_blackboard_client(
-        #     name="ModelToPyTree",
-        #     namespace=scenario_name)
-        #         self.blackboard.register_key(blackboard_var_name, access=py_trees.common.Access.WRITE)
-        #         setattr(self.blackboard, blackboard_var_name, variable_dec.get_resolved_value())
-        
-        
-    def get_blackboard_client(self):    
-        
+    def get_blackboard_client(self):
         def get_blackboard_namespace(node: ParameterDeclaration):
             parent = node.get_parent()
             while parent is not None and not isinstance(parent, ScenarioDeclaration):
@@ -91,7 +62,6 @@ class TestActorSetValue(BaseAction):
 
     def execute(self, associated_actor, value):
         self.associated_actor = associated_actor
-        self.get_associated_actor_variables()
         self.value = value
         
     def update(self) -> py_trees.common.Status:
@@ -102,7 +72,7 @@ class TestActorSetValue(BaseAction):
         if self.i < 3:
             return py_trees.common.Status.RUNNING
         else:
-            self.set_variable(self.model.actor, "test", "NEW")
+            self.set_variable(self.model.actor, "test", self.value)
             return py_trees.common.Status.SUCCESS
     #     else:
     #         self.feedback_message = f"File '{self.file_name}' does not exist"  # pylint: disable= attribute-defined-outside-init

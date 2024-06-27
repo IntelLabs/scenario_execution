@@ -27,15 +27,13 @@ from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.actions.base_action import BaseAction
 
 
-def create_py_tree(model, logger, log_tree):
+def create_py_tree(model, tree, logger, log_tree):
     model_to_py_tree = ModelToPyTree(logger)
-    behavior_trees = None
     try:
-        behavior_trees = model_to_py_tree.build(model, log_tree)
+        model_to_py_tree.build(model, tree, log_tree)
     except OSC2ParsingError as e:
         raise ValueError(
             f'Error while creating py-tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}') from e
-    return behavior_trees
 
 
 class TopicEquals(py_trees.behaviour.Behaviour):
@@ -104,31 +102,32 @@ class TopicPublish(py_trees.behaviour.Behaviour):
         return Status.SUCCESS
 
 
+class Scenario(py_trees.composites.Sequence):
+    def __init__(self, name):
+        super().__init__(name)
+
+
 class ModelToPyTree(object):
 
     def __init__(self, logger):
         self.logger = logger
-        self.blackboard = None
         
 
-    def build(self, tree, log_tree):
-        behavior_builder = self.BehaviorInit(self.logger)
-        behavior_builder.visit(tree)
+    def build(self, model, tree, log_tree):
+    
+        self.blackboard = tree.attach_blackboard_client(name="ModelToPyTree")
+        behavior_builder = self.BehaviorInit(self.logger, tree)
+        behavior_builder.visit(model)
 
-        behavior_trees = behavior_builder.get_behavior_trees()
-
-        if behavior_trees and log_tree:
-            for t in behavior_trees:
+        if log_tree:
+            for t in tree:
                 print(py_trees.display.ascii_tree(t))
 
-        return behavior_trees
-
     class BehaviorInit(ModelBaseVisitor):
-        def __init__(self, logger) -> None:
+        def __init__(self, logger, tree) -> None:
             super().__init__()
             self.logger = logger
-            self.behavior_trees = []
-            self.__cur_behavior = None
+            self.__cur_behavior = tree
 
         def get_behavior_trees(self):
             return self.behavior_trees
@@ -136,9 +135,10 @@ class ModelToPyTree(object):
         def visit_scenario_declaration(self, node: ScenarioDeclaration):
             scenario_name = node.qualified_behavior_name
 
-            behavior_tree = py_trees.composites.Sequence(name=scenario_name)
+            behavior_tree = Scenario(name=scenario_name)
+            self.__cur_behavior.append(behavior_tree)
             self.__cur_behavior = behavior_tree
-            self.behavior_trees.append(behavior_tree)
+            #self.behavior_trees.append(behavior_tree)
             
             self.blackboard = self.__cur_behavior.attach_blackboard_client(
                 name="ModelToPyTree",

@@ -207,7 +207,8 @@ class ScenarioExecution(object):
                                            processing_time=datetime.now() - start))
             return False
         try:
-            self.scenarios = parser.process_file(self.scenario_file, self.log_model, self.debug)
+            tree = parser.process_file(self.scenario_file, self.log_model, self.debug)
+            if tree.get_children()
         except Exception as e:  # pylint: disable=broad-except
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
