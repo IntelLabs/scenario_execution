@@ -23,8 +23,8 @@ class RosTopicWaitForTopics(py_trees.behaviour.Behaviour):
     Class to check if ROS topic are available
     """
 
-    def __init__(self, topics: list):
-        super().__init__('RosTopicWaitForTopics')
+    def __init__(self, name, topics: list):
+        super().__init__(name)
         if not isinstance(topics, list):
             raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
         else:
