@@ -26,11 +26,6 @@ from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
-from example_interfaces.action import Fibonacci
-
-
-import time
-
 os.environ["PYTHONUNBUFFERED"] = '1'
 
 
