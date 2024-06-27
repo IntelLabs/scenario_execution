@@ -918,7 +918,11 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
     # Enter a parse tree produced by OpenSCENARIO2Parser#variableDeclaration.
     def enterVariableDeclaration(self, ctx: OpenSCENARIO2Parser.VariableDeclarationContext):
         self.__node_stack.append(self.__cur_node)
-        field_name = []
+        
+        if len(ctx.fieldName()) != 1:
+            raise OSC2ParsingError(msg="Only single field names are currently supported", context=ctx)
+        field_name = ctx.fieldName()[0].Identifier().getText()
+        
         default_value = None
         if ctx.sampleExpression():
             default_value = ctx.sampleExpression().getText()

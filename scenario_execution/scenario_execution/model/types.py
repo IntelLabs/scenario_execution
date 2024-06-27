@@ -1225,7 +1225,7 @@ class PositionalArgument(ModelElement):
 class VariableDeclaration(Parameter):
 
     def __init__(self, field_name, field_type, default_value):
-        super().__init__()
+        super().__init__(field_name)
         self.field_name = field_name  # unused?
         self.field_type = field_type
         self.default_value = default_value
