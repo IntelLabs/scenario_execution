@@ -16,7 +16,7 @@
 
 from scenario_execution.model.types import ActionDeclaration, ActionInherits, EnumDeclaration, EnumValueReference, KeepConstraintDeclaration, EmitDirective, Type
 
-from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree, ScenarioDeclaration
+from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree, ScenarioDeclaration, VariableDeclaration
 
 from .model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
@@ -24,8 +24,8 @@ import importlib
 import inspect
 import py_trees
 
-def resolve_internal_model(model, logger, log_tree):
-    osc2scenario_resolver = ModelResolver(logger)
+def resolve_internal_model(model, tree, logger, log_tree):
+    osc2scenario_resolver = ModelResolver(logger, tree)
     try:
         osc2scenario_resolver.visit(model)
     except OSC2ParsingError as e:
@@ -39,10 +39,10 @@ def resolve_internal_model(model, logger, log_tree):
 
 class ModelResolver(ModelBaseVisitor):
 
-    def __init__(self, logger) -> None:
+    def __init__(self, logger, tree) -> None:
         super().__init__()
         self.logger = logger
-        self.blackboard = py_trees.blackboard.Client(name="ModelResolver")
+        self.blackboard = tree.attach_blackboard_client(name="ModelResolver")
 
     def visit_physical_literal(self, node: PhysicalLiteral):
         unit = node.resolve(node.unit)
@@ -172,8 +172,12 @@ class ModelResolver(ModelBaseVisitor):
         self.visit_children(node)
         self.check_parameter_type(node)
         if isinstance(node.get_parent(), ScenarioDeclaration):
-            print("YEs")
-            self.blackboard.register_key(key=node.name, access=py_trees.common.Access.WRITE)
+            type_def = node.get_type()[0]
+            if isinstance(type_def, StructuredDeclaration):
+                for child in type_def.find_children_of_type(VariableDeclaration):
+                    key = node.get_parent().name + '/' + node.name + '/' + child.name
+                    self.blackboard.register_key(key=key, access=py_trees.common.Access.WRITE)
+                    setattr(self.blackboard, key, node.get_type()[0])
             
 
     def visit_actor_inherits(self, node: ActorInherits):

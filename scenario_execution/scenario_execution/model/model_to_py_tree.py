@@ -102,11 +102,6 @@ class TopicPublish(py_trees.behaviour.Behaviour):
         return Status.SUCCESS
 
 
-class Scenario(py_trees.composites.Sequence):
-    def __init__(self, name):
-        super().__init__(name)
-
-
 class ModelToPyTree(object):
 
     def __init__(self, logger):
@@ -120,8 +115,7 @@ class ModelToPyTree(object):
         behavior_builder.visit(model)
 
         if log_tree:
-            for t in tree:
-                print(py_trees.display.ascii_tree(t))
+            print(py_trees.display.ascii_tree(tree))
 
     class BehaviorInit(ModelBaseVisitor):
         def __init__(self, logger, tree) -> None:
@@ -135,10 +129,9 @@ class ModelToPyTree(object):
         def visit_scenario_declaration(self, node: ScenarioDeclaration):
             scenario_name = node.qualified_behavior_name
 
-            behavior_tree = Scenario(name=scenario_name)
-            self.__cur_behavior.append(behavior_tree)
+            behavior_tree = py_trees.composites.Sequence(name=scenario_name)
+            self.__cur_behavior.add_child(behavior_tree)
             self.__cur_behavior = behavior_tree
-            #self.behavior_trees.append(behavior_tree)
             
             self.blackboard = self.__cur_behavior.attach_blackboard_client(
                 name="ModelToPyTree",

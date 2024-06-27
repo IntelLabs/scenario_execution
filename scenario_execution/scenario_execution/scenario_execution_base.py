@@ -207,8 +207,7 @@ class ScenarioExecution(object):
                                            processing_time=datetime.now() - start))
             return False
         try:
-            tree = parser.process_file(self.scenario_file, self.log_model, self.debug)
-            if tree.get_children()
+            self.tree = parser.process_file(self.scenario_file, self.log_model, self.debug)
         except Exception as e:  # pylint: disable=broad-except
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
@@ -216,29 +215,12 @@ class ScenarioExecution(object):
                                            failure_output=str(e),
                                            processing_time=datetime.now() - start))
             return False
-        if len(self.scenarios) == 0:
-            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
-                                           result=False,
-                                           failure_message="parsing failed",
-                                           failure_output="no scenario defined",
-                                           processing_time=datetime.now() - start))
-            return False
-        if len(self.scenarios) != 1:
-            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
-                                           result=False,
-                                           failure_message="parsing failed",
-                                           failure_output=f"more than one ({len(self.scenarios)}) scenario defined",
-                                           processing_time=datetime.now() - start))
-            return False
 
         return True
 
     def run(self):
-        if len(self.scenarios) != 1:
-            self.logger.error(f"Only one scenario per file is supported.")
-            return
         try:
-            self.setup(self.scenarios[0])
+            self.setup(self.tree)
         except Exception as e:  # pylint: disable=broad-except
             self.on_scenario_shutdown(False, "Setup failed", f"{e}")
             return
