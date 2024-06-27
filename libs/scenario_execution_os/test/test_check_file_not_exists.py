@@ -41,7 +41,7 @@ import osc.os
 scenario test:
     do parallel:
         serial:
-            check_file_not_exists('""" + self.tmp_file.name + """')
+            check_file_not_exists('UNKNOWN_FILE')
             emit end
         time_out: serial:
             wait elapsed(1s)
@@ -62,7 +62,7 @@ import osc.os
 scenario test:
     do parallel:
         serial:
-            check_file_not_exists('UNKNOWN_FILE')
+            check_file_not_exists('""" + self.tmp_file.name + """')
             emit end
         time_out: serial:
             wait elapsed(1s)
