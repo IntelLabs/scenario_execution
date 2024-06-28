@@ -30,6 +30,7 @@ from datetime import datetime, timedelta
 import py_trees
 
 from .nav2_common import NamespaceAwareBasicNavigator, get_pose_stamped, NamespacedTransformListener
+from scenario_execution.actions.base_action import BaseAction
 
 
 class InitNav2State(Enum):
@@ -50,14 +51,13 @@ class InitNav2State(Enum):
     FAILURE = 12
 
 
-class InitNav2(py_trees.behaviour.Behaviour):
+class InitNav2(BaseAction):
     """
     Class for initializing nav2 by setting an initial pose and activate required nodes
 
     """
 
-    def __init__(self, name, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):
-        super().__init__(name)
+    def execute(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):
         self.initial_pose = initial_pose
         self.base_frame_id = base_frame_id
         self.wait_for_initial_pose = wait_for_initial_pose

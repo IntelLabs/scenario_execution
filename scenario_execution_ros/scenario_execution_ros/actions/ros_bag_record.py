@@ -22,6 +22,7 @@ import py_trees
 from scenario_execution.actions.run_process import RunProcess
 import shutil
 import signal
+from scenario_execution.actions.base_action import BaseAction
 
 
 class RosBagRecordActionState(Enum):
@@ -38,8 +39,7 @@ class RosBagRecord(RunProcess):
     Class to execute ros bag recording
     """
 
-    def __init__(self, name, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
-        super().__init__(name)
+    def execute(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
         if not isinstance(topics, list):
             raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
         else:

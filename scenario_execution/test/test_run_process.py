@@ -39,8 +39,8 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.tree, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution.tree = self.tree
         self.scenario_execution.run()
 
     def test_failure(self):
@@ -111,9 +111,9 @@ scenario test_run_process:
             time_out_shutdown: emit fail
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution.tree = self.tree
 
         start = datetime.now()
         self.scenario_execution.run()
@@ -131,5 +131,5 @@ scenario test_run_process:
     do run_process('sleep 15', wait_for_shutdown: false, shutdown_signal: signal!sigint)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        _ = create_py_tree(model, self.parser.logger, False)
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        _ = create_py_tree(model, self.tree, self.parser.logger, False)

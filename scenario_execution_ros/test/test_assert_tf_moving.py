@@ -16,8 +16,7 @@
 
 import unittest
 import threading
-
-from ament_index_python.packages import get_package_share_directory
+import py_trees
 
 import rclpy
 import rclpy.executors
@@ -39,7 +38,6 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
         self.running = True
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
-        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
         self.node = rclpy.create_node('test_node')
         self.tf_broadcaster = tf2_ros.StaticTransformBroadcaster(self.node)
         self.timer = self.node.create_timer(0.1, self.publish_tf)
@@ -50,6 +48,14 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
         self.executor.add_node(self.node)
         self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
         self.executor_thread.start()
+        self.tree = py_trees.composites.Sequence()
+
+    def execute(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.run()
 
     def publish_static_tf(self):
         static_transform_stamped = TransformStamped()
@@ -151,11 +157,7 @@ scenario test_assert_tf_moving:
             timeout: 10)
         emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_2(self):
@@ -172,11 +174,7 @@ scenario test_assert_tf_moving:
             wait elapsed(12s)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_case_3(self):
@@ -193,11 +191,7 @@ scenario test_assert_tf_moving:
             wait elapsed(12s)
             emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_4(self):
@@ -211,11 +205,7 @@ scenario test_assert_tf_moving:
             timeout: 10)
         emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_5(self):
@@ -229,11 +219,7 @@ scenario test_assert_tf_moving:
             timeout: 10)
         emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_6(self):
@@ -247,11 +233,7 @@ scenario test_assert_tf_moving:
             fail_on_finish: false)
         emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_case_7(self):
@@ -265,11 +247,7 @@ scenario test_assert_tf_moving:
             wait_for_first_transform: false)
         emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_8(self):
@@ -283,11 +261,7 @@ scenario test_assert_tf_moving:
             wait_for_first_transform: false)
         emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_9(self):
@@ -305,9 +279,5 @@ scenario test_assert_tf_moving:
             wait elapsed(12s)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())

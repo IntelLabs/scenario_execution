@@ -24,16 +24,15 @@ import py_trees
 from py_trees.common import Status
 
 from scenario_execution_ros.actions.conversions import get_qos_preset_profile
+from scenario_execution.actions.base_action import BaseAction
 
 
-class RosTopicPublish(py_trees.behaviour.Behaviour):
+class RosTopicPublish(BaseAction):
     """
     class for publish a message on a ROS topic
     """
 
-    def __init__(self, name, topic_type: str, topic_name: str, qos_profile: str, value: str
-                 ):
-        super().__init__(name)
+    def execute(self, topic_type: str, topic_name: str, qos_profile: str, value: str):
         self.qos_profile = get_qos_preset_profile(qos_profile)
 
         # Parse message

@@ -23,6 +23,7 @@ from rclpy.action import ActionClient
 from rosidl_runtime_py.set_message import set_message_fields
 import py_trees  # pylint: disable=import-error
 from action_msgs.msg import GoalStatus
+from scenario_execution.actions.base_action import BaseAction
 
 
 class ActionCallActionState(Enum):
@@ -36,13 +37,12 @@ class ActionCallActionState(Enum):
     ERROR = 5
 
 
-class RosActionCall(py_trees.behaviour.Behaviour):
+class RosActionCall(BaseAction):
     """
     ros service call behavior
     """
 
-    def __init__(self, name, action_name: str, action_type: str, data: str):
-        super().__init__(name)
+    def execute(self, action_name: str, action_type: str, data: str):
         self.node = None
         self.client = None
         self.send_goal_future = None

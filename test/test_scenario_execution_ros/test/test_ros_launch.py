@@ -109,11 +109,7 @@ scenario test:
             wait elapsed(20s)
             emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_success_not_wait_for_shutdown_terminate(self):
@@ -133,11 +129,7 @@ scenario test:
         wait elapsed(2s)
         emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(os.path.isfile(self.tmp_dir.name + '/test_started'))
         self.assertFalse(os.path.isfile(self.tmp_dir.name + '/test_success'))
         self.assertTrue(os.path.isfile(self.tmp_dir.name + '/test_aborted'))

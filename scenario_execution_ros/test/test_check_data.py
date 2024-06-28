@@ -15,9 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-
-from ament_index_python.packages import get_package_share_directory
-
+import py_trees
 import rclpy
 
 from scenario_execution_ros import ROSScenarioExecution
@@ -35,8 +33,14 @@ class TestCheckData(unittest.TestCase):
         rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
+        self.tree = py_trees.composites.Sequence()
 
-        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
+    def execute(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.run()
 
     def tearDown(self):
         rclpy.try_shutdown()
@@ -58,12 +62,7 @@ scenario test:
             wait elapsed(5s)
             emit fail
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_sucess_field(self):
@@ -89,12 +88,7 @@ scenario test:
             wait elapsed(10s)
             emit fail
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_error_empty_variable_name(self):
@@ -120,12 +114,7 @@ scenario test:
             wait elapsed(10s)
             emit fail
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_fail_if_bad_comparison(self):
@@ -152,12 +141,7 @@ scenario test:
             wait elapsed(10s)
             emit end
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_wait_for_comparison_to_succeed(self):
@@ -188,10 +172,5 @@ scenario test:
             wait elapsed(10s)
             emit fail
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())

@@ -17,6 +17,7 @@
 import importlib
 from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_clearing_policy
 from .py_trees_ros_common import SubscriberWaitForData
+from scenario_execution.actions.base_action import BaseAction
 
 
 class RosTopicWaitForData(SubscriberWaitForData):
@@ -30,16 +31,16 @@ class RosTopicWaitForData(SubscriberWaitForData):
         clearing_policy[str]: when to clear the data
     """
 
-    def __init__(self, name: str, topic_name: str, topic_type: str, qos_profile: str, clearing_policy: str):
+    def execute(self, topic_name: str, topic_type: str, qos_profile: str, clearing_policy: str):
         datatype_in_list = topic_type.split(".")
         topic_type = getattr(
             importlib.import_module(".".join(datatype_in_list[0:-1])),
             datatype_in_list[-1]
         )
-
-        super().__init__(
-            name=name,
-            topic_name=topic_name,
-            topic_type=topic_type,
-            qos_profile=get_qos_preset_profile(qos_profile),
-            clearing_policy=get_clearing_policy(clearing_policy))
+        pass
+        # super().__init__(
+        #     name=name,
+        #     topic_name=topic_name,
+        #     topic_type=topic_type,
+        #     qos_profile=get_qos_preset_profile(qos_profile),
+        #     clearing_policy=get_clearing_policy(clearing_policy))

@@ -30,8 +30,8 @@ class ModelFileLoader(object):
         model = self.load_file(file_name, log_tree)
         tree = py_trees.composites.Sequence()
         resolve_internal_model(model, tree, self.logger, log_tree)
-        scenarios = create_py_tree(model, tree, self.logger, log_tree)
-        return scenarios
+        create_py_tree(model, tree, self.logger, log_tree)
+        return tree
 
     def load_file(self, file_name, log_tree):
         try:

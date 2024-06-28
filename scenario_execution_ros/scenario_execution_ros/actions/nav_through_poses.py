@@ -25,6 +25,7 @@ from nav2_simple_commander.robot_navigator import TaskResult  # pylint: disable=
 
 from .nav2_common import NamespaceAwareBasicNavigator
 from .nav2_common import get_pose_stamped
+from scenario_execution.actions.base_action import BaseAction
 
 
 class NavThroughPosesState(Enum):
@@ -36,13 +37,12 @@ class NavThroughPosesState(Enum):
     DONE = 3
 
 
-class NavThroughPoses(py_trees.behaviour.Behaviour):
+class NavThroughPoses(BaseAction):
     """
     Class to navigate through poses
     """
 
-    def __init__(self, name: str, associated_actor, goal_poses: list, monitor_progress: bool, namespace_override: str):
-        super().__init__(name)
+    def execute(self, associated_actor, goal_poses: list, monitor_progress: bool, namespace_override: str):
         self.namespace = associated_actor["namespace"]
         self.monitor_progress = monitor_progress
         self.node = None

@@ -19,6 +19,7 @@ from rclpy.duration import Duration
 from .nav2_common import get_pose_stamped
 from .ros_action_call import RosActionCall, ActionCallActionState
 from nav2_msgs.action import NavigateToPose
+from scenario_execution.actions.base_action import BaseAction
 
 
 class NavToPose(RosActionCall):
@@ -26,12 +27,12 @@ class NavToPose(RosActionCall):
     Class to navigate to a pose
     """
 
-    def __init__(self, name: str, associated_actor, goal_pose: list, monitor_progress: bool, action_topic: str, namespace_override: str) -> None:
+    def execute(self, associated_actor, goal_pose: list, monitor_progress: bool, action_topic: str, namespace_override: str) -> None:
         self.namespace = associated_actor["namespace"]
         if namespace_override:
             self.namespace = namespace_override
         self.goal_pose = goal_pose
-        super().__init__(name, self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateToPose", "")
+        super().execute(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateToPose", "")
 
     def get_goal_msg(self):
         goal_msg = NavigateToPose.Goal()

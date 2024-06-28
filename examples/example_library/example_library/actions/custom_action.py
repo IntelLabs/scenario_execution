@@ -16,13 +16,13 @@
 
 """ Example for creating an action plugin for scenario execution """
 import py_trees
+from scenario_execution.actions.base_action import BaseAction
 
 
-class CustomAction(py_trees.behaviour.Behaviour):
+class CustomAction(BaseAction):
     # pylint: disable=missing-class-docstring
-    # Override the __init__ function to accept parsed arguments.
-    def __init__(self, name, data: str):
-        super().__init__(name)
+
+    def execute(self, data: str):
         self.data = data
 
     # Override the update function to define how the behavior is ticking.

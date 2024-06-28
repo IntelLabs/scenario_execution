@@ -49,8 +49,8 @@ invalid
     def test_empty(self):
         scenario_content = ""
         model = self.parse(scenario_content)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.assertEqual([], scenarios)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.assertEqual(0, len(self.tree.children))
 
     def test_global_var(self):
         scenario_content = """

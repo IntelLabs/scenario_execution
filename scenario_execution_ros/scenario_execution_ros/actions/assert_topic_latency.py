@@ -21,12 +21,12 @@ from rclpy.node import Node
 import importlib
 import time
 from scenario_execution_ros.actions.conversions import get_comparison_operator, get_qos_preset_profile
+from scenario_execution.actions.base_action import BaseAction
 
 
-class AssertTopicLatency(py_trees.behaviour.Behaviour):
+class AssertTopicLatency(BaseAction):
 
-    def __init__(self, name, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, fail_on_finish: bool, rolling_average_count: int, wait_for_first_message: bool):
-        super().__init__(name)
+    def execute(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, fail_on_finish: bool, rolling_average_count: int, wait_for_first_message: bool):
         self.topic_name = topic_name
         self.topic_type = topic_type
         self.latency = latency

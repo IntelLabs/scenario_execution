@@ -25,7 +25,7 @@ class RosSetNodeParameter(RosServiceCall):
     class for setting a node parameter
     """
 
-    def __init__(self, name, node_name: str, parameter_name: str, parameter_value: str):
+    def execute(self, node_name: str, parameter_name: str, parameter_value: str):
         service_name = node_name + '/set_parameters'
         if not service_name.startswith('/'):
             service_name = '/' + service_name
