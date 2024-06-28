@@ -23,7 +23,7 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import BaseLogger, Logger
 from scenario_execution.model.types import print_tree, serialize, deserialize
 from antlr4.InputStream import InputStream
-
+import py_trees
 
 class DebugLogger(BaseLogger):
 
@@ -49,7 +49,12 @@ class TestOSC2Parser(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
+        self.tree = py_trees.composites.Sequence()
 
+    def parse(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        
     def test_serialize(self):
         scenario_content = """
 import osc.helpers
@@ -62,8 +67,7 @@ scenario test:
         log("foo")
         emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.load_internal_model(parsed_tree, "test.osc", False, False)
+        model = self.parse(scenario_content)
         serialize_data = serialize(model)['CompilationUnit']['_children']
         self.assertGreater(len(serialize_data), 0)
         deserialized_model = deserialize(serialize_data)

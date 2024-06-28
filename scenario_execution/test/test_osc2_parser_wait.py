@@ -18,7 +18,7 @@
 Test wait parsing
 """
 import unittest
-
+import py_trees
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
@@ -30,6 +30,11 @@ class TestOSC2Parser(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
+        self.tree = py_trees.composites.Sequence()
+
+    def parse(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
 
     def test_wait_success(self):
         scenario_content = """
@@ -40,9 +45,8 @@ scenario test:
     do serial:
         wait elapsed(1s)
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        model = create_py_tree(model, self.parser.logger, False)
+        model = self.parse(scenario_content)
+        model = create_py_tree(model, self.tree, self.parser.logger, False)
 
     def test_wait_invalid(self):
         scenario_content = """
@@ -53,10 +57,8 @@ scenario test:
     do serial:
         wait(1s)
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
-        self.assertRaises(ValueError, create_py_tree, model, self.parser.logger, False)
+        model = self.parse(scenario_content)
+        self.assertRaises(ValueError, create_py_tree, model, self.tree, self.parser.logger, False)
 
     def test_wait_invalid_literal(self):
         scenario_content = """
@@ -64,10 +66,8 @@ scenario test:
     do serial:
         wait(1)
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
-        self.assertRaises(ValueError, create_py_tree, model, self.parser.logger, False)
+        model = self.parse(scenario_content)
+        self.assertRaises(ValueError, create_py_tree, model, self.tree, self.parser.logger, False)
 
     def test_wait_invalid_literal2(self):
         scenario_content = """
@@ -75,7 +75,5 @@ scenario test:
     do serial:
         wait elapsed(1)
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
-        self.assertRaises(ValueError, create_py_tree, model, self.parser.logger, False)
+        model = self.parse(scenario_content)
+        self.assertRaises(ValueError, create_py_tree, model, self.tree, self.parser.logger, False)

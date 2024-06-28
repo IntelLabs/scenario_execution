@@ -19,15 +19,15 @@ import subprocess  # nosec B404
 from threading import Thread
 from collections import deque
 import signal
+from scenario_execution.actions.base_action import BaseAction
 
 
-class RunProcess(py_trees.behaviour.Behaviour):
+class RunProcess(BaseAction):
     """
     Class to execute an process.
     """
 
-    def __init__(self, name, command=None, wait_for_shutdown=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
-        super().__init__(name)
+    def execute(self, command=None, wait_for_shutdown=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
         self.command = command.split(" ") if isinstance(command, str) else command
         self.wait_for_shutdown = wait_for_shutdown
         self.shutdown_timeout = shutdown_timeout

@@ -18,7 +18,7 @@
 Test enum parsing
 """
 import unittest
-
+import py_trees
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
@@ -32,6 +32,11 @@ class TestOSC2Parser(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
+        self.tree = py_trees.composites.Sequence()
+
+    def parse(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
 
     def test_enum_ref(self):
         scenario_content = """
@@ -42,8 +47,7 @@ enum test_enum: [
 struct test:
     param1: test_enum = test_enum!val1
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        model = self.parse(scenario_content)
 
         test_struct = model._ModelElement__children[1]
         self.assertEqual(test_struct.get_resolved_value(), {'param1': ('val1', 0)})
@@ -58,7 +62,7 @@ struct test:
     param1: test_enum = test_enum!UNKNOWN
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
     def test_enum_ref_invalid_type(self):
         scenario_content = """
@@ -70,7 +74,7 @@ struct test:
     param1: test_enum = UNKNOWN!val1
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
     def test_enum_ref_other_enum_type(self):
         scenario_content = """
@@ -88,7 +92,7 @@ struct test:
     param1: test_enum = other_enum!val1
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
     def test_enum_val_non_numeric(self):
         scenario_content = """
@@ -101,9 +105,7 @@ struct test:
     param1: test_enum = test_enum!val1
     param2: test_enum = test_enum!val2
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         test_struct = model._ModelElement__children[1]
         self.assertEqual(test_struct.get_resolved_value(), {'param1': ('val1', 0), 'param2': ('val2', 1)})
 
@@ -118,9 +120,7 @@ struct test:
     param1: test_enum = test_enum!val1
     param2: test_enum = test_enum!val2
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         test_struct = model._ModelElement__children[1]
         self.assertEqual(test_struct.get_resolved_value(), {'param1': ('val1', 4), 'param2': ('val2', 5)})
 
@@ -135,8 +135,6 @@ struct test:
     param1: test_enum = test_enum!val1
     param2: test_enum = test_enum!val2
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         test_struct = model._ModelElement__children[1]
         self.assertEqual(test_struct.get_resolved_value(), {'param1': ('val1', 4), 'param2': ('val2', 19)})

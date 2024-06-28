@@ -19,15 +19,15 @@ from rclpy.qos import QoSProfile, DurabilityPolicy, HistoryPolicy
 import rclpy
 from rcl_interfaces.msg import Log
 from py_trees.common import Status
+from scenario_execution.actions.base_action import BaseAction
 
 
-class RosLogCheck(py_trees.behaviour.Behaviour):
+class RosLogCheck(BaseAction):
     """
     Class for scanning the ros log for specific content
     """
 
-    def __init__(self, name, values: list, module_name: str):
-        super().__init__(name)
+    def execute(self, values: list, module_name: str):
         if not isinstance(values, list):
             raise TypeError(f'Value needs to be list of strings, got {type(values)}.')
         else:

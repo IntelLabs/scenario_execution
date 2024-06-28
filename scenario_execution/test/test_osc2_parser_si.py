@@ -18,7 +18,7 @@
 Test si parsing
 """
 import unittest
-
+import py_trees
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
@@ -29,6 +29,11 @@ class TestOSC2Parser(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
+        self.tree = py_trees.composites.Sequence()
+
+    def parse(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
 
     def test_si_invalid_type(self):
         scenario_content = """
@@ -38,7 +43,7 @@ unit cm         of length is SI(m: 1, factor: 0.01)
 global val1: string = 3.2cm
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
     def test_si(self):
         scenario_content = """
@@ -47,9 +52,7 @@ unit cm         of length is SI(m: 1, factor: 0.01)
 
 global val1: length = 3.2cm
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         param = model._ModelElement__children[2]
         self.assertEqual(param.get_resolved_value(), 0.032)
 
@@ -59,9 +62,7 @@ type length is SI(m: 1)
 unit m          of length is SI(m: 1, factor: 1)
 global val1: length = 3.2m
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         param = model._ModelElement__children[2]
         self.assertEqual(param.get_resolved_value(), 3.2)
 
@@ -71,4 +72,4 @@ type length is SI(m: 1)
 unit m          of UNKNOWN is SI(m: 1, factor: 1)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
