@@ -26,7 +26,7 @@ from scenario_execution.model.model_builder import ModelBuilder
 from scenario_execution.model.types import print_tree, ScenarioDeclaration
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.model.model_resolver import resolve_internal_model
-from scenario_execution.model.model_to_blackboard import create_py_tree_blackboard
+from scenario_execution.model.model_blackboard import create_py_tree_blackboard
 import py_trees
 
 
