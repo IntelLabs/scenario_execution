@@ -276,7 +276,7 @@ class ModelToPyTree(object):
                 f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected execute() arguments: {expected_args}")
             try:
                 instance = behavior_cls(action_name)
-                instance.set_model(node)
+                instance._set_model(node)
             except Exception as e:
                 raise OSC2ParsingError(msg=f'Error while initializing plugin {behavior_name}: {e}', context=node.get_ctx()) from e
             self.__cur_behavior.add_child(instance)

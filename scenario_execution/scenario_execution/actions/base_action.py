@@ -18,14 +18,21 @@ import py_trees
 
 
 class BaseAction(py_trees.behaviour.Behaviour):
-    # pylint: disable= attribute-defined-outside-init
 
     def __init__(self, name):
         super().__init__(name)
         self.model = None
         self.blackboard = None
 
-    def set_model(self, model):
+    # Subclasses might override execute() with additional arguments (similar to osc-defined plugin arguments)
+    def execute(self):
+        pass
+
+    # Subclasses might override shutdown() in order to cleanup on scenario shutdown.
+    def shutdown(self):
+        pass
+
+    def _set_model(self, model):
         self.model = model
 
         self.blackboard = self.attach_blackboard_client(name=self.name)
