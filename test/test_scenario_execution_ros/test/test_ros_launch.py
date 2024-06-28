@@ -59,7 +59,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         scenarios = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
-        
+
     def test_success(self):
         scenario_content = """
 import osc.ros

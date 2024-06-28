@@ -16,13 +16,12 @@
 
 from scenario_execution.model.types import ActionDeclaration, ActionInherits, EnumDeclaration, EnumValueReference, KeepConstraintDeclaration, EmitDirective, Type
 
-from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree, ScenarioDeclaration, VariableDeclaration
+from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree
 
 from .model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 import importlib
 import inspect
-import py_trees
 
 
 def resolve_internal_model(model, tree, logger, log_tree):

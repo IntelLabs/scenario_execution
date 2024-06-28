@@ -50,13 +50,13 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.scenario_execution_ros = ROSScenarioExecution()
         self.tree = py_trees.composites.Sequence()
 
-    def execute(self, scenario_content):        
+    def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
         scenarios = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
-        
+
     def tearDown(self):
         self.node.destroy_node()
         rclpy.try_shutdown()

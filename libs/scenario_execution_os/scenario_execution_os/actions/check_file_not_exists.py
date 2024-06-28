@@ -23,6 +23,7 @@ class CheckFileNotExists(BaseAction):
     """
     Check that a file does not exist
     """
+
     def execute(self, file_name):
         self.file_name = file_name
 

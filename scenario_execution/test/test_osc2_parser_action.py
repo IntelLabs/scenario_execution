@@ -34,7 +34,7 @@ class TestOSC2Parser(unittest.TestCase):
     def parse(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-    
+
     def test_action_valid(self):
         scenario_content = """
 action test_action:

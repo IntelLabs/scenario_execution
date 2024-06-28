@@ -25,6 +25,7 @@ from scenario_execution.model.types import print_tree, serialize, deserialize
 from antlr4.InputStream import InputStream
 import py_trees
 
+
 class DebugLogger(BaseLogger):
 
     def __init__(self, name):
@@ -54,7 +55,7 @@ class TestOSC2Parser(unittest.TestCase):
     def parse(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        
+
     def test_serialize(self):
         scenario_content = """
 import osc.helpers

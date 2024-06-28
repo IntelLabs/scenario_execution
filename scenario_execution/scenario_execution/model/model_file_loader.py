@@ -14,7 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-
+import py_trees
 import yaml
 from scenario_execution.model.types import print_tree, deserialize
 from scenario_execution.model.model_to_py_tree import create_py_tree
@@ -28,8 +28,9 @@ class ModelFileLoader(object):
 
     def process_file(self, file_name, log_tree: bool = False, debug: bool = False):
         model = self.load_file(file_name, log_tree)
-        resolve_internal_model(model, self.logger, log_tree)
-        scenarios = create_py_tree(model, self.logger, log_tree)
+        tree = py_trees.composites.Sequence()
+        resolve_internal_model(model, tree, self.logger, log_tree)
+        scenarios = create_py_tree(model, tree, self.logger, log_tree)
         return scenarios
 
     def load_file(self, file_name, log_tree):

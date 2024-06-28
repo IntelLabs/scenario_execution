@@ -14,17 +14,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import copy
 import py_trees
-from py_trees.common import Access, Status
-from pkg_resources import iter_entry_points
 
-import inspect
-
-from scenario_execution.model.types import ActionDeclaration, ActorDeclaration, EventReference, FunctionApplicationExpression, ParameterDeclaration, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, StructuredDeclaration, VariableDeclaration
+from scenario_execution.model.types import ParameterDeclaration, ScenarioDeclaration, StructuredDeclaration, VariableDeclaration
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
-from scenario_execution.actions.base_action import BaseAction
 
 
 def create_py_tree_blackboard(model, tree, logger, log_tree):
