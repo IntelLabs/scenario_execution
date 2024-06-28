@@ -18,6 +18,7 @@ import py_trees
 
 
 class BaseAction(py_trees.behaviour.Behaviour):
+    # pylint: disable= attribute-defined-outside-init
 
     def __init__(self, name):
         super().__init__(name)

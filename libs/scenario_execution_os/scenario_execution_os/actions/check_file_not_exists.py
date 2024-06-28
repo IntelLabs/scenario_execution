@@ -20,6 +20,7 @@ from scenario_execution.actions.base_action import BaseAction
 
 
 class CheckFileNotExists(BaseAction):
+    # pylint: disable= attribute-defined-outside-init
     """
     Check that a file does not exist
     """
