@@ -122,15 +122,10 @@ class ModelToPyTree(object):
             self.logger = logger
             self.__cur_behavior = tree
 
-        def get_behavior_trees(self):
-            return self.behavior_trees
-
         def visit_scenario_declaration(self, node: ScenarioDeclaration):
             scenario_name = node.qualified_behavior_name
 
-            behavior_tree = py_trees.composites.Sequence(name=scenario_name)
-            self.__cur_behavior.add_child(behavior_tree)
-            self.__cur_behavior = behavior_tree
+            self.__cur_behavior.name = scenario_name
 
             self.blackboard = self.__cur_behavior.attach_blackboard_client(
                 name="ModelToPyTree",
@@ -196,8 +191,11 @@ class ModelToPyTree(object):
 
         def visit_emit_directive(self, node: EmitDirective):
             if node.event_name in ['start', 'end', 'fail']:
+                scenario_elem = node
+                while scenario_elem is not None and not isinstance(scenario_elem, ScenarioDeclaration):
+                    scenario_elem = scenario_elem.get_parent()
                 self.__cur_behavior.add_child(TopicPublish(
-                    name=f"emit {node.event_name}", key=f"/{self.behavior_trees[-1].name}/{node.event_name}", msg=True))
+                    name=f"emit {node.event_name}", key=f"/{scenario_elem.name}/{node.event_name}", msg=True))
             else:
                 qualified_name = node.event.get_qualified_name()
                 self.__cur_behavior.add_child(TopicPublish(
@@ -243,6 +241,10 @@ class ModelToPyTree(object):
                 )
 
             # check plugin execute() method
+            execute_method = getattr(behavior_cls, "execute", None)
+            if execute_method is None and not callable(execute_method):
+                raise OSC2ParsingError(msg=f'Plugin {behavior_name} is missing an execute() method.', context=node.get_ctx())
+    
             plugin_execute_args = inspect.getfullargspec(behavior_cls.execute).args
             plugin_execute_args.remove("self")
 
@@ -263,7 +265,7 @@ class ModelToPyTree(object):
                 )
             if unknown_args:
                 raise OSC2ParsingError(
-                    msg=f'Plugin {behavior_name} has unknown arguments: {", ".join(unknown_args)}', context=node.get_ctx()
+                    msg=f'Plugin {behavior_name} defines the arguments: {", ".join(unknown_args)}, but they are missing as parameter in execute() in python', context=node.get_ctx()
                 )
 
             # initialize plugin instance

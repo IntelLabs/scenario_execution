@@ -16,17 +16,19 @@
 
 import os
 import py_trees
+from scenario_execution.actions.base_action import BaseAction
 
-
-class CheckFileExists(py_trees.behaviour.Behaviour):
+class CheckFileExists(BaseAction):
     """
     Check existance of a file
     """
-
-    def __init__(self, name, file_name):
+    def __init__(self, name):
         super().__init__(name)
-        self.file_name = file_name
+        self.file_name = None
 
+    def execute(self, file_name):
+        self.file_name = file_name
+        
     def update(self) -> py_trees.common.Status:
         if os.path.isfile(self.file_name):
             self.feedback_message = f"File '{self.file_name}' exists"  # pylint: disable= attribute-defined-outside-init

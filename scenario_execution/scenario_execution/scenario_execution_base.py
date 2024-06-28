@@ -133,13 +133,7 @@ class ScenarioExecution(object):
         self.shutdown_requested = False
         self.current_scenario = scenario
         self.current_scenario_start = datetime.now()
-        self.blackboard = scenario.attach_blackboard_client(
-            name="MainBlackboardClient",
-            namespace=scenario.name
-        )
-
-        self.blackboard.register_key("end", access=py_trees.common.Access.READ)
-        self.blackboard.register_key("fail", access=py_trees.common.Access.READ)
+        self.blackboard = scenario.attach_blackboard_client(name="MainBlackboardClient",namespace=scenario.name)
 
         # Initialize end and fail events
         self.blackboard.register_key("end", access=py_trees.common.Access.WRITE)

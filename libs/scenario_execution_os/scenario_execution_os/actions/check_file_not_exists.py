@@ -16,15 +16,18 @@
 
 import os
 import py_trees
+from scenario_execution.actions.base_action import BaseAction
 
-
-class CheckFileNotExists(py_trees.behaviour.Behaviour):
+class CheckFileNotExists(BaseAction):
     """
     Check that a file does not exist
     """
 
-    def __init__(self, name, file_name):
+    def __init__(self, name):
         super().__init__(name)
+        self.file_name = None
+        
+    def execute(self, file_name):
         self.file_name = file_name
 
     def update(self) -> py_trees.common.Status:
