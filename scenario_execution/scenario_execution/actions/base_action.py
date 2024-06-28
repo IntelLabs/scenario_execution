@@ -24,9 +24,8 @@ class BaseAction(py_trees.behaviour.Behaviour):
         self.model = None
         self.blackboard = None
 
-    # Subclasses might override execute() with additional arguments (similar to osc-defined plugin arguments)
-    def execute(self):
-        pass
+    # Subclasses might implement execute() with the same arguments as defined in osc.
+    # def execute(self):
 
     # Subclasses might override shutdown() in order to cleanup on scenario shutdown.
     def shutdown(self):
