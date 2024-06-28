@@ -106,10 +106,9 @@ class ModelToPyTree(object):
 
     def __init__(self, logger):
         self.logger = logger
-        
 
     def build(self, model, tree, log_tree):
-    
+
         self.blackboard = tree.attach_blackboard_client(name="ModelToPyTree")
         behavior_builder = self.BehaviorInit(self.logger, tree)
         behavior_builder.visit(model)
@@ -132,25 +131,24 @@ class ModelToPyTree(object):
             behavior_tree = py_trees.composites.Sequence(name=scenario_name)
             self.__cur_behavior.add_child(behavior_tree)
             self.__cur_behavior = behavior_tree
-            
+
             self.blackboard = self.__cur_behavior.attach_blackboard_client(
                 name="ModelToPyTree",
                 namespace=scenario_name)
 
             super().visit_scenario_declaration(node)
-        
+
         # def visit_actor_declaration(self, node: ActorDeclaration):
         #     super().visit_actor_declaration(node)
         #     for variable_def in node.find_children_of_type(VariableDeclaration):
         #         print(variable_def)
-        
+
         # def visit_variable_declaration(self, node: VariableDeclaration):
         #     print(node.get_fully_qualified_name())
         #     print(node)
-            
-        
+
         def visit_parameter_declaration(self, node: ParameterDeclaration):
-            
+
             # def get_fully_qualified_var_name(node: ParameterDeclaration):
             #     name = node.name
             #     parent = node.get_parent()
@@ -158,17 +156,16 @@ class ModelToPyTree(object):
             #         name = parent.name + "_" + name
             #         parent = parent.get_parent()
             #     return name
-            
+
             super().visit_parameter_declaration(node)
             # parameter_type = node.get_type()
             # if isinstance(parameter_type[0], StructuredDeclaration):
             #     blackboard_var_name = get_fully_qualified_var_name(node)
             #     for variable_dec in parameter_type[0].find_children_of_type(VariableDeclaration):
             #         blackboard_var_name += "_" + variable_dec.name
-                    
+
             #         self.blackboard.register_key(blackboard_var_name, access=py_trees.common.Access.WRITE)
             #         setattr(self.blackboard, blackboard_var_name, variable_dec.get_resolved_value())
-            
 
         def visit_do_member(self, node: DoMember):
             composition_operator = node.composition_operator
@@ -236,7 +233,7 @@ class ModelToPyTree(object):
                     msg=f"Found plugin for '{behavior_name}', but it's not derived from BaseAction.",
                     context=node.get_ctx()
                 )
-            
+
             # check plugin constructor
             plugin_init_args = inspect.getfullargspec(behavior_cls.__init__).args
             expected_init_args = ["self", "name"]
@@ -268,7 +265,7 @@ class ModelToPyTree(object):
                 raise OSC2ParsingError(
                     msg=f'Plugin {behavior_name} has unknown arguments: {", ".join(unknown_args)}', context=node.get_ctx()
                 )
-            
+
             # initialize plugin instance
             action_name = node.name
             if not action_name:

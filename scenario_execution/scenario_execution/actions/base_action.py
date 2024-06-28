@@ -16,24 +16,24 @@
 
 import py_trees
 
+
 class BaseAction(py_trees.behaviour.Behaviour):
-    
+
     def __init__(self, name):
         super().__init__(name)
         self.model = None
         self.blackboard = None
-    
+
     def set_model(self, model):
         self.model = model
-        
+
         self.blackboard = self.attach_blackboard_client(name=self.name)
-        #TODO check if blackboard is required
-        
+        # TODO check if blackboard is required
+
     def initialise(self):
         final_args = self.model.get_resolved_value(self.blackboard)
-        
+
         if self.model.actor:
             final_args["associated_actor"] = self.model.actor.get_resolved_value()
             final_args["associated_actor"]["name"] = self.model.actor.name
         self.execute(**final_args)
-        

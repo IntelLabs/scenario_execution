@@ -18,6 +18,7 @@ import py_trees
 from py_trees.common import Status
 from scenario_execution.actions.base_action import BaseAction
 
+
 class Log(BaseAction):
     """
     Class for logging
@@ -44,7 +45,7 @@ class Log(BaseAction):
     def execute(self, msg: str):
         self.msg = msg
         self.published = False
-        
+
     def update(self) -> py_trees.common.Status:
         """
         execute the action

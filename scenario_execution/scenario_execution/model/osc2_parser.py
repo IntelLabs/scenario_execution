@@ -41,16 +41,16 @@ class OpenScenario2Parser(object):
         """ Convenience method to execute the parsing and print out tree """
 
         parsed_model = self.parse_file(file, log_model)
-        
+
         tree = py_trees.composites.Sequence()
         model = self.create_internal_model(parsed_model, tree, file, log_model, debug)
-        
+
         if len(model.find_children_of_type(ScenarioDeclaration)) == 0:
             raise ValueError("No scenario defined.")
-        
+
         if len(model.find_children_of_type(ScenarioDeclaration)) != 1:
             raise ValueError("More than one scenario defined.")
-            
+
         create_py_tree_blackboard(model, tree, self.logger, debug)
 
         create_py_tree(model, tree, self.logger, log_model)

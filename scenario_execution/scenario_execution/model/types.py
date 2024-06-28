@@ -19,6 +19,7 @@ from scenario_execution.model.error import OSC2ParsingError
 import sys
 import py_trees
 
+
 def print_tree(elem, logger, whitespace=""):
 
     children = ""
@@ -269,7 +270,7 @@ class ModelElement(object):  # pylint: disable=too-many-public-methods
                 else:
                     output += "=" + str(attr_val)
         return output
-        
+
 
 class CompilationUnit(ModelElement):
 
@@ -436,7 +437,7 @@ class StructuredDeclaration(Declaration):
                 merge_nested_dicts(params, tmp, key_must_exist=False)
 
             # set from variables
-        
+
         return params
 
     def get_type(self):
@@ -2138,8 +2139,7 @@ class IdentifierReference(ModelElement):
         return self.ref.get_type_string()
 
     def get_resolved_value(self, blackboard=None):
-        
-        
+
         def get_fully_qualified_var_name(node: ParameterDeclaration):
             name = node.name
             parent = node.get_parent()
@@ -2147,9 +2147,9 @@ class IdentifierReference(ModelElement):
                 name = parent.name + "/" + name
                 parent = parent.get_parent()
             if parent and parent.name:
-                name = parent.name + "/" +  name
+                name = parent.name + "/" + name
             return name
-        
+
         if isinstance(self.ref, list):
             ref = self.ref[0]
             if any(isinstance(x, VariableDeclaration) for x in self.ref):
@@ -2158,7 +2158,7 @@ class IdentifierReference(ModelElement):
                     raise ValueError("Variable Reference found, but no blackboard client available.")
                 for sub_elem in self.ref[1:]:
                     fqn += "/" + sub_elem.name
-                
+
                 blackboard.register_key(fqn, access=py_trees.common.Access.READ)
                 return getattr(blackboard, fqn)
             else:

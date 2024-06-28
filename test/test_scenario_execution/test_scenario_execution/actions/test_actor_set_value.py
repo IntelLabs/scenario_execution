@@ -19,6 +19,7 @@ import py_trees
 from scenario_execution.actions.base_action import BaseAction
 from scenario_execution.model.types import ModelElement, ParameterDeclaration, ScenarioDeclaration
 
+
 class TestActorSetValue(BaseAction):
 
     def __init__(self, name):
@@ -26,7 +27,7 @@ class TestActorSetValue(BaseAction):
         self.i = 0
         self.associated_actor = None
         self.value = None
-        
+
     def get_blackboard_client(self):
         def get_blackboard_namespace(node: ParameterDeclaration):
             parent = node.get_parent()
@@ -36,13 +37,13 @@ class TestActorSetValue(BaseAction):
                 return parent.name
             else:
                 return None
-        
+
         blackboard_client = self.attach_blackboard_client(self.name, get_blackboard_namespace(self.model))
         return blackboard_client
-        
+
     def set_variable(self, model_instance, variable_name, value):
         blackboard = self.get_blackboard_client()
-    
+
         def get_fully_qualified_model_name(node: ModelElement):
             name = node.name
             parent = node.get_parent()
@@ -63,10 +64,10 @@ class TestActorSetValue(BaseAction):
     def execute(self, associated_actor, value):
         self.associated_actor = associated_actor
         self.value = value
-        
+
     def update(self) -> py_trees.common.Status:
-    #     if os.path.isfile(self.file_name):
-    #         self.feedback_message = f"File '{self.file_name}' exists"  # pylint: disable= attribute-defined-outside-init
+        #     if os.path.isfile(self.file_name):
+        #         self.feedback_message = f"File '{self.file_name}' exists"  # pylint: disable= attribute-defined-outside-init
         # print(self.associated_actor)
         self.i += 1
         if self.i < 3:

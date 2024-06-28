@@ -23,6 +23,7 @@ from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
+import py_trees
 
 
 class TestOSC2Parser(unittest.TestCase):
@@ -473,3 +474,42 @@ struct test_struct:
         test_struct = model._ModelElement__children[2]
         self.assertEqual({'param_base_struct': {'base_param1': 'OVERRIDE'}},
                          test_struct.get_resolved_value())
+
+    def test_use_struct_member_as_parameter(self):
+        scenario_content = """
+action log:
+    msg: string
+
+struct test_struct:
+    mem3: string = "STRUCT STRING"
+
+scenario test_scenario:
+    do serial:
+        log(test_struct.mem3)
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, py_trees.composites.Sequence(), "test.osc", False)
+
+        behavior_invocation = model._ModelElement__children[2]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
+        self.assertEqual({'msg': 'STRUCT STRING'}, behavior_invocation.get_resolved_value())
+
+    def test_use_struct_member_as_parameter_two_level(self):
+        scenario_content = """
+action log:
+    msg: string
+
+struct inner_struct:
+    inner_member: string = "INNER"
+    
+struct test_struct:
+    mem: inner_struct
+
+scenario test_scenario:
+    do serial:
+        log(test_struct.mem.inner_member)
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, py_trees.composites.Sequence(), "test.osc", False)
+
+        behavior_invocation = model._ModelElement__children[3]._ModelElement__children[0]._ModelElement__children[0]._ModelElement__children[0]
+        self.assertEqual({'msg': 'INNER'}, behavior_invocation.get_resolved_value())

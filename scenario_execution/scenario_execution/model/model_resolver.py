@@ -24,6 +24,7 @@ import importlib
 import inspect
 import py_trees
 
+
 def resolve_internal_model(model, tree, logger, log_tree):
     osc2scenario_resolver = ModelResolver(logger, tree)
     try:
@@ -69,14 +70,14 @@ class ModelResolver(ModelBaseVisitor):
                 if isinstance(current, ParameterDeclaration):
                     param_type = current.get_type()[0]
                     current = param_type.get_named_child(elem)
-                    
+
                     #current = current.resolve(elem)
                     # for child in resolved.__children:
                     #     if member == child.name:
                     #         return child
                 else:
                     current = current.get_named_child(elem)
-                    
+
                 if not current:
                     raise OSC2ParsingError(
                         msg=f'Identifier "{node.ref}": Could not resolved {elem}.', context=node.get_ctx())
@@ -183,7 +184,6 @@ class ModelResolver(ModelBaseVisitor):
         #             key = node.get_parent().name + '/' + node.name + '/' + child.name
         #             self.blackboard.register_key(key=key, access=py_trees.common.Access.WRITE)
         #             setattr(self.blackboard, key, node.get_type()[0])
-            
 
     def visit_actor_inherits(self, node: ActorInherits):
         resolved = node.resolve(node.actor)
