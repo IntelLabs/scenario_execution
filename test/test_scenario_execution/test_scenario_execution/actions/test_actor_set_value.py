@@ -22,11 +22,10 @@ from scenario_execution.model.types import ModelElement, ParameterDeclaration, S
 
 class TestActorSetValue(BaseAction):
 
-    def __init__(self, name):
-        super().__init__(name)
+    def setup(self, **kwargs):
         self.i = 0
-        self.associated_actor = None
         self.value = None
+        return super().setup(**kwargs)
 
     def get_blackboard_client(self):
         def get_blackboard_namespace(node: ParameterDeclaration):
@@ -57,9 +56,6 @@ class TestActorSetValue(BaseAction):
         current = getattr(blackboard, model_blackboard_name)
         self.logger.debug(f"Set variable '{model_blackboard_name}' from '{current}' to '{value}'")
         setattr(blackboard, model_blackboard_name, value)
-
-    def setup(self, **kwargs):
-        return super().setup(**kwargs)
 
     def execute(self, associated_actor, value):
         self.associated_actor = associated_actor

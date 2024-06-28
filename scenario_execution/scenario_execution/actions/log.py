@@ -22,16 +22,7 @@ from scenario_execution.actions.base_action import BaseAction
 class Log(BaseAction):
     """
     Class for logging
-
-    Args:
-        msg [str]: message to log
     """
-
-    def __init__(self, name):
-        super().__init__(name)
-        self.msg = None
-        self.published = False
-        self.logger = None
 
     def setup(self, **kwargs) -> None:
         """

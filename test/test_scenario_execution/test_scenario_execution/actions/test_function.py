@@ -20,10 +20,6 @@ import py_trees
 
 class TestFunction(py_trees.behaviour.Behaviour):
 
-    def __init__(self, name, value):
-        super().__init__(name)
-        #self.file_name = file_name
-
     # def update(self) -> py_trees.common.Status:
     #     if os.path.isfile(self.file_name):
     #         self.feedback_message = f"File '{self.file_name}' exists"  # pylint: disable= attribute-defined-outside-init

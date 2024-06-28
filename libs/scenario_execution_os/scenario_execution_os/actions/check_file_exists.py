@@ -21,7 +21,7 @@ from scenario_execution.actions.base_action import BaseAction
 
 class CheckFileExists(BaseAction):
     """
-    Check existance of a file
+    Check existence of a file
     """
     def execute(self, file_name):
         self.file_name = file_name
