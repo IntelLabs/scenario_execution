@@ -40,6 +40,7 @@ class RosBagRecord(RunProcess):
     """
 
     def execute(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
+        super().execute()
         if not isinstance(topics, list):
             raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
         else:

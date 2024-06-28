@@ -61,10 +61,9 @@ class RosSetNodeParameter(RosServiceCall):
                     parameter_type = ParameterType.PARAMETER_STRING_ARRAY
                     parameter_assign_name = 'string_array_value'
 
-        super().__init__(name,
-                         service_name=service_name,
-                         service_type='rcl_interfaces.srv.SetParameters',
-                         data='{ "parameters": [{ "name": "' + parameter_name + '", "value": { "type": ' + str(parameter_type) + ', "' + parameter_assign_name + '": ' + parameter_value + '}}]}')
+        super().execute(service_name=service_name,
+                        service_type='rcl_interfaces.srv.SetParameters',
+                        data='{ "parameters": [{ "name": "' + parameter_name + '", "value": { "type": ' + str(parameter_type) + ', "' + parameter_assign_name + '": ' + parameter_value + '}}]}')
 
     @staticmethod
     def is_float(element: any) -> bool:

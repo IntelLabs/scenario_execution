@@ -45,7 +45,6 @@ class ModelToBlackboard(object):
         def __init__(self, logger, tree) -> None:
             super().__init__()
             self.logger = logger
-            self.__cur_behavior = tree
             self.blackboard = tree.attach_blackboard_client(name="ModelToPyTree")
 
         def visit_parameter_declaration(self, node: ParameterDeclaration):

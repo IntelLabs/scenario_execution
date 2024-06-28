@@ -21,7 +21,7 @@ from pkg_resources import iter_entry_points
 
 import inspect
 
-from scenario_execution.model.types import ActionDeclaration, ActorDeclaration, EventReference, FunctionApplicationExpression, ParameterDeclaration, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, StructuredDeclaration, VariableDeclaration
+from scenario_execution.model.types import EventReference, FunctionApplicationExpression, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.actions.base_action import BaseAction

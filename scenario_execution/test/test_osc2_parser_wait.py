@@ -46,7 +46,7 @@ scenario test:
         wait elapsed(1s)
 """
         model = self.parse(scenario_content)
-        model = create_py_tree(model, self.tree, self.parser.logger, False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
 
     def test_wait_invalid(self):
         scenario_content = """

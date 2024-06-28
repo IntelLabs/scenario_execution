@@ -16,6 +16,7 @@
 
 import unittest
 import rclpy
+import py_trees
 from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
@@ -30,6 +31,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
+        self.tree = py_trees.composites.Sequence()
 
     def tearDown(self):
         rclpy.try_shutdown()
