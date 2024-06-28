@@ -41,7 +41,7 @@ class TestCheckData(unittest.TestCase):
         create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution.tree = self.tree
         self.scenario_execution.run()
-        
+
     def test_success(self):
         self.parse("""
 import osc.os

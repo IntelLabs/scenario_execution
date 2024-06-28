@@ -244,7 +244,7 @@ class ModelToPyTree(object):
             execute_method = getattr(behavior_cls, "execute", None)
             if execute_method is None and not callable(execute_method):
                 raise OSC2ParsingError(msg=f'Plugin {behavior_name} is missing an execute() method.', context=node.get_ctx())
-    
+
             plugin_execute_args = inspect.getfullargspec(behavior_cls.execute).args
             plugin_execute_args.remove("self")
 

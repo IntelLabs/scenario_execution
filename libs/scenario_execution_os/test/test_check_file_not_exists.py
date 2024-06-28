@@ -34,7 +34,7 @@ class TestCheckData(unittest.TestCase):
                                                     scenario_file="test.osc", output_dir=None)
         self.tree = py_trees.composites.Sequence()
         self.tmp_file = tempfile.NamedTemporaryFile()
-    
+
     def parse(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
