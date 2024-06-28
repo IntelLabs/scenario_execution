@@ -56,32 +56,37 @@ class ModelResolver(ModelBaseVisitor):
                 msg=f'SIUnitSpecifier of physical unit "{node.unit.name}" not defined.', context=node.get_ctx())
 
     def visit_identifier_reference(self, node: IdentifierReference):
+        reference = None
         if '.' in node.ref:  # first level of members can also be referenced (e.g. methods)
+            reference = []
             splitted = node.ref.split('.')
-            if len(splitted) != 2:
-                raise OSC2ParsingError(
-                    msg=f'Identifier "{node.ref}" with more than one sub-level not supported.', context=node.get_ctx())
-                
-            member = splitted[1]
-            resolved = node.resolve(splitted[0])
-            if resolved:
-                if isinstance(resolved, ParameterDeclaration):
-                    print(member)
-                    typ = resolved.get_type()[0]
-                    print(typ)
-                    resolved = typ.get_named_child(member)
-                    print("resolved")
+            # if len(splitted) != 2:
+            #     raise OSC2ParsingError(
+            #         msg=f'Identifier "{node.ref}" with more than one sub-level not supported.', context=node.get_ctx())
+            current = node.resolve(splitted[0])
+            reference.append(current)
+            for elem in splitted[1:]:
+                if isinstance(current, ParameterDeclaration):
+                    param_type = current.get_type()[0]
+                    current = param_type.get_named_child(elem)
+                    
+                    #current = current.resolve(elem)
                     # for child in resolved.__children:
                     #     if member == child.name:
                     #         return child
                 else:
-                    resolved = resolved.get_named_child(member)
+                    current = current.get_named_child(elem)
+                    
+                if not current:
+                    raise OSC2ParsingError(
+                        msg=f'Identifier "{node.ref}": Could not resolved {elem}.', context=node.get_ctx())
+                reference.append(current)
         else:
-            resolved = node.resolve(node.ref)
-        if resolved is None:
+            reference = node.resolve(node.ref)
+        if reference is None:
             raise OSC2ParsingError(
                 msg=f'Identifier "{node.ref}" not defined.', context=node.get_ctx())
-        node.ref = resolved
+        node.ref = reference
 
     def visit_type(self, node: Type):
         type_string = node.type_def
@@ -171,13 +176,13 @@ class ModelResolver(ModelBaseVisitor):
     def visit_parameter_declaration(self, node: ParameterDeclaration):
         self.visit_children(node)
         self.check_parameter_type(node)
-        if isinstance(node.get_parent(), ScenarioDeclaration):
-            type_def = node.get_type()[0]
-            if isinstance(type_def, StructuredDeclaration):
-                for child in type_def.find_children_of_type(VariableDeclaration):
-                    key = node.get_parent().name + '/' + node.name + '/' + child.name
-                    self.blackboard.register_key(key=key, access=py_trees.common.Access.WRITE)
-                    setattr(self.blackboard, key, node.get_type()[0])
+        # if isinstance(node.get_parent(), ScenarioDeclaration):
+        #     type_def = node.get_type()[0]
+        #     if isinstance(type_def, StructuredDeclaration):
+        #         for child in type_def.find_children_of_type(VariableDeclaration):
+        #             key = node.get_parent().name + '/' + node.name + '/' + child.name
+        #             self.blackboard.register_key(key=key, access=py_trees.common.Access.WRITE)
+        #             setattr(self.blackboard, key, node.get_type()[0])
             
 
     def visit_actor_inherits(self, node: ActorInherits):

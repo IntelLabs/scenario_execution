@@ -47,11 +47,11 @@ class TestActorSetValue(BaseAction):
             name = node.name
             parent = node.get_parent()
             while not isinstance(parent, ScenarioDeclaration):
-                name = parent.name + "_" + name
+                name = parent.name + "/" + name
                 parent = parent.get_parent()
             return name
         model_blackboard_name = get_fully_qualified_model_name(model_instance)
-        model_blackboard_name += "_" + variable_name
+        model_blackboard_name += "/" + variable_name
         blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.WRITE)
         current = getattr(blackboard, model_blackboard_name)
         self.logger.debug(f"Set variable '{model_blackboard_name}' from '{current}' to '{value}'")

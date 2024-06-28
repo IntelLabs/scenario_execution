@@ -151,23 +151,23 @@ class ModelToPyTree(object):
         
         def visit_parameter_declaration(self, node: ParameterDeclaration):
             
-            def get_fully_qualified_var_name(node: ParameterDeclaration):
-                name = node.name
-                parent = node.get_parent()
-                while not isinstance(parent, ScenarioDeclaration):
-                    name = parent.name + "_" + name
-                    parent = parent.get_parent()
-                return name
+            # def get_fully_qualified_var_name(node: ParameterDeclaration):
+            #     name = node.name
+            #     parent = node.get_parent()
+            #     while not isinstance(parent, ScenarioDeclaration):
+            #         name = parent.name + "_" + name
+            #         parent = parent.get_parent()
+            #     return name
             
             super().visit_parameter_declaration(node)
-            parameter_type = node.get_type()
-            if isinstance(parameter_type[0], StructuredDeclaration):
-                blackboard_var_name = get_fully_qualified_var_name(node)
-                for variable_dec in parameter_type[0].find_children_of_type(VariableDeclaration):
-                    blackboard_var_name += "_" + variable_dec.name
+            # parameter_type = node.get_type()
+            # if isinstance(parameter_type[0], StructuredDeclaration):
+            #     blackboard_var_name = get_fully_qualified_var_name(node)
+            #     for variable_dec in parameter_type[0].find_children_of_type(VariableDeclaration):
+            #         blackboard_var_name += "_" + variable_dec.name
                     
-                    self.blackboard.register_key(blackboard_var_name, access=py_trees.common.Access.WRITE)
-                    setattr(self.blackboard, blackboard_var_name, variable_dec.get_resolved_value())
+            #         self.blackboard.register_key(blackboard_var_name, access=py_trees.common.Access.WRITE)
+            #         setattr(self.blackboard, blackboard_var_name, variable_dec.get_resolved_value())
             
 
         def visit_do_member(self, node: DoMember):
