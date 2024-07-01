@@ -49,7 +49,7 @@ class GazeboSpawnActor(RunProcess):
         """
         init
         """
-        super().__init__(name, "")
+        super().__init__("")
         self.entity_name = associated_actor["name"]
         self.model = model
         self.spawn_pose = spawn_pose
