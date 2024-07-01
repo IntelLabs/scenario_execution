@@ -21,8 +21,8 @@ import operator
 from enum import Enum
 from ast import literal_eval
 from rosidl_runtime_py.set_message import set_message_fields
-from scenario_execution_ros.actions.conversions import get_qos_preset_profile, \
-    get_comparison_operator
+from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_comparison_operator
+import builtins
 
 from scenario_execution.actions.base_action import BaseAction
 
@@ -68,10 +68,10 @@ class RosTopicCheckData(BaseAction):
         else:
             msg = self.topic_type()
             self.expected_value = getattr(msg, self.member_name)
-            if isinstance(self.expected_value, dict):
-                set_message_fields(self.expected_value, parsed_value)
-            else:
+            if type(self.expected_value).__name__ in dir(builtins):
                 self.expected_value = parsed_value
+            else:
+                set_message_fields(self.expected_value, parsed_value)
 
         self.comparison_operator = get_comparison_operator(comparison_operator)
         self.fail_if_no_data = fail_if_no_data

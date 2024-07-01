@@ -20,13 +20,14 @@ from scenario_execution.actions.base_action import BaseAction
 
 
 class CustomAction(BaseAction):
-    # pylint: disable=missing-class-docstring
 
-    def execute(self, data: str):
+    def __init__(self, data: str):  # get action arguments, as initialized
+        pass
+
+    def execute(self, data: str):  # get action arguments, at the time of execution (may got updated during scenario execution)
         self.data = data
 
     # Override the update function to define how the behavior is ticking.
     def update(self):
-        # pylint: disable=missing-function-docstring
         print(f"Custom Action Triggered. Data: {self.data}")
         return py_trees.common.Status.SUCCESS
