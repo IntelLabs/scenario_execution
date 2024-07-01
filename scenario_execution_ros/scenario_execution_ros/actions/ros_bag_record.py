@@ -22,7 +22,6 @@ import py_trees
 from scenario_execution.actions.run_process import RunProcess
 import shutil
 import signal
-from scenario_execution.actions.base_action import BaseAction
 
 
 class RosBagRecordActionState(Enum):

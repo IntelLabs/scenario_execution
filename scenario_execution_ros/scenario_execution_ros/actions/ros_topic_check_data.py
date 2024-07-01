@@ -59,6 +59,8 @@ class RosTopicCheckData(BaseAction):
         self.qos_profile = get_qos_preset_profile(qos_profile)
         self.member_name = member_name
 
+        if not isinstance(expected_value, str):
+            raise ValueError("Only string allowed as expected_value.")
         parsed_value = literal_eval("".join(expected_value.split('\\')))
         if self.member_name == "":
             self.expected_value = self.topic_type()

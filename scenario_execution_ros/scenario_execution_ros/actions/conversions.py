@@ -18,7 +18,6 @@
 
 import operator
 from rclpy.qos import QoSPresetProfiles
-import py_trees
 
 
 def get_qos_preset_profile(qos_profile):

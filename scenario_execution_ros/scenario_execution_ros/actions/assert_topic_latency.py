@@ -56,7 +56,7 @@ class AssertTopicLatency(BaseAction):
 
         success = self.check_topic()
         if not success and self.wait_for_first_message:
-            raise ValueError("Invalid topic or type speficied.")
+            raise ValueError("Invalid topic or type specified.")
         elif not success and not self.wait_for_first_message:
             raise ValueError("Topic type must be specified. Please provide a valid topic type.")
 

@@ -70,12 +70,12 @@ scenario test:
         test: serial:
             wait elapsed(1s)
             topic_publish(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 topic_type: 'geometry_msgs.msg.Twist',
                 value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
         receive: serial:
             check_data(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 topic_type: 'geometry_msgs.msg.Twist',
                 expected_value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
             emit end
@@ -95,12 +95,12 @@ scenario test:
         test: serial:
             wait elapsed(1s)
             topic_publish(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 topic_type: 'geometry_msgs.msg.Twist',
                 value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
         receive: serial:
             check_data(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 topic_type: 'geometry_msgs.msg.Twist',
                 expected_value: '{\\\"linear\\\": {\\\"z\\\": 9}}')
             emit end
@@ -120,12 +120,12 @@ scenario test:
         test: serial:
             wait elapsed(1s)
             topic_publish(
-                topic_name: '/bla',
+                topic_name: '/twist_test_success_member',
                 topic_type: 'geometry_msgs.msg.Twist',
                 value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
         receive: serial:
             check_data(
-                topic_name: '/bla',
+                topic_name: '/twist_test_success_member',
                 topic_type: 'geometry_msgs.msg.Twist',
                 member_name: 'linear',
                 expected_value: '{\\\"y\\\": 1.2}')
@@ -146,12 +146,12 @@ scenario test:
         test: serial:
             wait elapsed(1s)
             topic_publish(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 topic_type: 'geometry_msgs.msg.Twist',
                 value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
         receive: serial:
             check_data(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 topic_type: 'geometry_msgs.msg.Twist',
                 member_name: 'linear',
                 expected_value: '{\\\"z\\\": 9}')

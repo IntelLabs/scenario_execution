@@ -326,3 +326,111 @@ scenario test:
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_ne_operator_success(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                comparison_operator: comparison_operator!ne,
+                member_name: 'data',
+                expected_value: 'False')
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_ne_operator_fail(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                comparison_operator: comparison_operator!ne,
+                member_name: 'data',
+                expected_value: 'True')
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_ge_operator_success(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Int32',
+                value: '{\\\"data\\\": 3}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Int32',
+                comparison_operator: comparison_operator!ge,
+                member_name: 'data',
+                expected_value: '2')
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_ge_operator_fail(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Int32',
+                value: '{\\\"data\\\": 3}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Int32',
+                comparison_operator: comparison_operator!ge,
+                member_name: 'data',
+                expected_value: '4')
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())

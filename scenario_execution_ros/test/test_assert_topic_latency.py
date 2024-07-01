@@ -38,7 +38,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.scenario_execution_ros = ROSScenarioExecution()
         self.received_msgs = []
         self.node = rclpy.create_node('test_node')
-        self.publisher = self.node.create_publisher(String, "/bla", 10)
+        self.publisher = self.node.create_publisher(String, "/twist", 10)
         self.publish_timer = self.node.create_timer(1, self.publish_messages)
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
@@ -51,6 +51,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
         create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
 
     def publish_messages(self):
@@ -110,7 +111,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 0.5s)
             emit end
 """
@@ -125,7 +126,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 0.5s,
                 topic_type: 'std_msgs.msg.ring')
             emit end
@@ -141,7 +142,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 0.5s,
                 topic_type: 'std_msgs.msg.Bool')
             emit end
@@ -157,7 +158,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 0.5s,
                 topic_type: 'std_msgs.msg.String')
             emit end
@@ -173,7 +174,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/blabla',
+                topic_name: '/twistbla',
                 latency: 0.5s)
             emit fail
         time_out: serial:
@@ -191,7 +192,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 1.5s)
             emit fail
         serial:
@@ -209,7 +210,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 1.5s,
                 comparison_operator: comparison_operator!ge)
             emit end
@@ -225,7 +226,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 0.5s,
                 fail_on_finish: false)
             emit end
@@ -241,7 +242,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 0.5s,
                 rolling_average_count: 5)
             emit end
@@ -257,7 +258,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 0.5s,
                 wait_for_first_message: false)
             emit end
@@ -273,7 +274,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial: 
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 5s,
                 wait_for_first_message: false,
                 topic_type: 'std_msgs.msg.Bool')
@@ -290,7 +291,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 0.5,
                 wait_for_first_message: false,
                 topic_type: 'std_msgs.msg.String')
@@ -307,7 +308,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/bla',
+                topic_name: '/twist',
                 latency: 5s,
                 wait_for_first_message: false,
                 topic_type: 'std_msgs.msg.String')
@@ -328,7 +329,7 @@ scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
-                topic_name: '/blabla',
+                topic_name: '/twistbla',
                 latency: 5s,
                 wait_for_first_message: false,
                 topic_type: 'std_msgs.msg.String')
