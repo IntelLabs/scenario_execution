@@ -27,19 +27,6 @@ class TestActorSetValue(BaseAction):
         self.value = None
         return super().setup(**kwargs)
 
-    def get_blackboard_client(self):
-        def get_blackboard_namespace(node: ParameterDeclaration):
-            parent = node.get_parent()
-            while parent is not None and not isinstance(parent, ScenarioDeclaration):
-                parent = parent.get_parent()
-            if parent:
-                return parent.name
-            else:
-                return None
-
-        blackboard_client = self.attach_blackboard_client(self.name, get_blackboard_namespace(self.model))
-        return blackboard_client
-
     def set_variable(self, model_instance, variable_name, value):
         blackboard = self.get_blackboard_client()
 

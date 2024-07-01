@@ -2146,8 +2146,8 @@ class IdentifierReference(ModelElement):
             while parent and not isinstance(parent, ScenarioDeclaration):
                 name = parent.name + "/" + name
                 parent = parent.get_parent()
-            if parent and parent.name:
-                name = parent.name + "/" + name
+            # if parent and parent.name:
+            #     name = parent.name + "/" + name
             return name
 
         if isinstance(self.ref, list):

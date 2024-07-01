@@ -172,6 +172,22 @@ class ModelToPyTree(object):
                 self.__cur_behavior.add_child(TopicPublish(
                     name=f"emit {node.event_name}", key=qualified_name, msg=True))
 
+        def compare_method_arguments(self, method, expected_args, behavior_name, node):
+            method_args = inspect.getfullargspec(method).args
+            
+            if "self" not in method_args:
+                raise OSC2ParsingError(msg=f'Plugin {behavior_name} {method.__name__} method is missing argument "self".', context=node.get_ctx())
+            method_args.remove("self")
+
+            missing_args = []
+            unknown_args = copy.copy(expected_args)
+            for element in method_args:
+                if element not in expected_args:
+                    missing_args.append(element)
+                else:
+                    unknown_args.remove(element)
+            return missing_args, unknown_args
+
         def visit_behavior_invocation(self, node: BehaviorInvocation):
             behavior_name = node.behavior.name
 
@@ -203,25 +219,29 @@ class ModelToPyTree(object):
                     context=node.get_ctx()
                 )
 
-            # check plugin constructor
-            plugin_init_args = inspect.getfullargspec(behavior_cls.__init__).args
-            expected_init_args = ["self", "name"]
-            if plugin_init_args != expected_init_args:
-                raise OSC2ParsingError(
-                    msg=f'Plugin {behavior_name}.__init__ requires to have exactly the following arguments: {", ".join(expected_init_args)}', context=node.get_ctx()
-                )
-
-            # check plugin execute() method
-            execute_method = getattr(behavior_cls, "execute", None)
-            if execute_method is None and not callable(execute_method):
-                raise OSC2ParsingError(msg=f'Plugin {behavior_name} is missing an execute() method.', context=node.get_ctx())
-
-            plugin_execute_args = inspect.getfullargspec(behavior_cls.execute).args
-            plugin_execute_args.remove("self")
-
             expected_args = node.get_parameter_names()
             if node.actor:
                 expected_args.append("associated_actor")
+
+            # check plugin constructor         
+            init_method = getattr(behavior_cls.__init__, "__init__", None)
+            if init_method is not None:
+                # raise OSC2ParsingError(msg=f'Plugin {behavior_name} is missing method __init__().', context=node.get_ctx())
+                # if __init__() is defined, check parameters. Allowed:
+                # - __init__(self)
+                # - __init__(self, <all-osc-defined-args)
+                init_args = inspect.getfullargspec(behavior_cls.__init__).args
+                if init_args != ["self"] and set(init_args) != set(expected_args):
+                    missing_args, unknown_args = self.compare_method_arguments(behavior_cls.__init__, expected_args, behavior_name, node)
+                    raise OSC2ParsingError(
+                        msg=f'Plugin {behavior_name}: __init__() either only has "self" argument or all arguments defined in osc (Missing in Python: {", ".join(missing_args)}, Missing in OSC: {", ".join(unknown_args)}.', context=node.get_ctx()
+                    )
+
+
+            plugin_execute_args = inspect.getfullargspec(behavior_cls.execute).args
+            if "self" not in plugin_execute_args:
+                raise OSC2ParsingError(msg=f'Plugin {behavior_name} execute() method is missing argument "self.', context=node.get_ctx())
+            plugin_execute_args.remove("self")
 
             missing_args = []
             unknown_args = copy.copy(expected_args)
@@ -232,11 +252,11 @@ class ModelToPyTree(object):
                     unknown_args.remove(element)
             if missing_args:
                 raise OSC2ParsingError(
-                    msg=f'Plugin {behavior_name} requires arguments that are not defined in osc. Missing: {", ".join(missing_args)}', context=node.get_ctx()
+                    msg=f'Plugin {behavior_name}: execute() method has arguments that are not defined in osc. Missing: {", ".join(missing_args)}', context=node.get_ctx()
                 )
             if unknown_args:
                 raise OSC2ParsingError(
-                    msg=f'Plugin {behavior_name} defines the arguments: {", ".join(unknown_args)}, but they are missing as parameter in execute() in python', context=node.get_ctx()
+                    msg=f'Plugin {behavior_name} execute() method misses arguments define in osc: {", ".join(unknown_args)}', context=node.get_ctx()
                 )
 
             # initialize plugin instance
@@ -246,8 +266,8 @@ class ModelToPyTree(object):
             self.logger.debug(
                 f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected execute() arguments: {expected_args}")
             try:
-                instance = behavior_cls(action_name)
-                instance._set_model(node)  # pylint: disable=protected-access
+                instance = behavior_cls()
+                instance._set_name_and_model(action_name, node)  # pylint: disable=protected-access
             except Exception as e:
                 raise OSC2ParsingError(msg=f'Error while initializing plugin {behavior_name}: {e}', context=node.get_ctx()) from e
             self.__cur_behavior.add_child(instance)
