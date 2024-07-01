@@ -45,7 +45,7 @@ class GazeboSpawnActor(RunProcess):
 
     """
 
-    def __init__(self, name, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str, **kwargs):
+    def __init__(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str, **kwargs):
         """
         init
         """
