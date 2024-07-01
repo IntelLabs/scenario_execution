@@ -404,7 +404,7 @@ jobs:
             downloaded-artifacts/test-scenario-execution/libs/scenario_execution_os/TEST.xml
             downloaded-artifacts/test-scenario-execution/test/scenario_execution_test/TEST.xml
             downloaded-artifacts/test-scenario-execution-ros/scenario_execution_ros/TEST.xml
-            downloaded-artifacts/test-scenario-execution-ros/test/scenario_execution_ros/TEST.xml
+            downloaded-artifacts/test-scenario-execution-ros/test/scenario_execution_ros_test/TEST.xml
             downloaded-artifacts/test-example-scenario-result/test.xml
             downloaded-artifacts/test-example-library-result/test.xml
             downloaded-artifacts/test-example-variation-result/test.xml
