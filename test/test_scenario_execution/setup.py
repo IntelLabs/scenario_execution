@@ -40,7 +40,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'scenario_execution.actions': [
-            'test_actor.set_value = test_scenario_execution.actions.test_actor_set_value:TestActorSetValue',
-            'test_action = test_scenario_execution.actions.test_action:TestAction',
+            'test_actor.set_value = test_scenario_execution.actions.actor_set_value:ActorSetValue',
+            'store_action = test_scenario_execution.actions.store_action:StoreAction',
         ]}
 )
