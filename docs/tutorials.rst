@@ -90,27 +90,28 @@ Then, we can write the implementation of action plugin in Python.
 
 .. code-block::
 
-   import py_trees
+   from scenario_execution.actions.base_action import BaseAction
 
-   # define the py_trees behavior
-   class CustomAction(py_trees.behaviour.Behaviour):
+   class CustomAction(BaseAction):
 
-       # Override the __init__ function to accept parsed arguments.
-       def __init__(self, name, data: str):
-           super().__init__(name)
+       def __init__(self, data: str):
+           super().__init__()
+
+       def execute(self, data: str):
            self.data = data
 
-       # Override the update function to define how the behavior is ticking.
        def update(self):
            print(f"Custom Action Triggered. Data: {self.data}")
            return py_trees.common.Status.SUCCESS
 
 
 In the example, we created a custom action plugin to print a message on the
-screen. The first step is to create a ``py_trees`` behavior for the action
-plugin. First, override the ``__init__()`` function to accept the parsed
-parameter from the action plugin. Beside the fixed parameter ``name`` all parameters defined within the OpenSCENARIO 2 file
-are handed over to `__init__`. 
+screen. The first step is to create an action implementation, based on the class ``BaseAction``. 
+There are two methods that can be overloaded in order to receive the action arguments as defined in the osc file. 
+The first is the ``__init__()`` function which gets the argument values as they get initialized during parsing the scenario file.
+The second is the ``execute()`` function which gets the argument values as they are currently defined at the time the action gets executed.
+This allows to initialize the action and then set the latest values just before the action gets triggered.
+
 The action plugin ``custom_action`` only defines one parameter ``data``, so the behavior only has to accept ``data`` as an
 argument. Then, override the ``update()`` function to define how the
 behavior works. In this case, the behavior prints the message on the screen

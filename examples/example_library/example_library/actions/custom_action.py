@@ -21,8 +21,8 @@ from scenario_execution.actions.base_action import BaseAction
 
 class CustomAction(BaseAction):
 
-    def __init__(self, data: str):  # get action arguments, as initialized
-        pass
+    def __init__(self, data: str):  # get action arguments, at the time of initialization
+        super().__init__()
 
     def execute(self, data: str):  # get action arguments, at the time of execution (may got updated during scenario execution)
         self.data = data
