@@ -41,6 +41,6 @@ setup(
     entry_points={
         'scenario_execution.actions': [
             'test_actor.set_value = test_scenario_execution.actions.test_actor_set_value:TestActorSetValue',
-            'test_function = test_scenario_execution.actions.test_function:TestFunction',
+            'test_action = test_scenario_execution.actions.test_action:TestAction',
         ]}
 )

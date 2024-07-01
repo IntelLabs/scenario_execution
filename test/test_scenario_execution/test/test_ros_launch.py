@@ -44,8 +44,8 @@ class TestCheckData(unittest.TestCase):
 
     def test_success(self):
         scenario_content = """
-action log:
-    msg: string
+action test_action:
+    value: string
 
 action test_actor.set_value
 
@@ -59,7 +59,7 @@ scenario test_scenario:
 
     var result: string = bla.test
 
-    do log(result)
+    do test_action(result)
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution.process_results())

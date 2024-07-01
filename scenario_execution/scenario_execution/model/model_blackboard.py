@@ -16,7 +16,7 @@
 
 import py_trees
 
-from scenario_execution.model.types import ParameterDeclaration, ScenarioDeclaration, StructuredDeclaration, VariableDeclaration
+from scenario_execution.model.types import ParameterDeclaration, StructuredDeclaration, VariableDeclaration
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 
