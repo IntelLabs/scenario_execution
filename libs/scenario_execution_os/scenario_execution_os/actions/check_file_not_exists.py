@@ -24,7 +24,8 @@ class CheckFileNotExists(BaseAction):
     Check that a file does not exist
     """
 
-    def execute(self, file_name):
+    def __init__(self, file_name):
+        super().__init__()
         self.file_name = file_name
 
     def update(self) -> py_trees.common.Status:

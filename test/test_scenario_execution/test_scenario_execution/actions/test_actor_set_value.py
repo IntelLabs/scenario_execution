@@ -14,10 +14,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 import py_trees
 from scenario_execution.actions.base_action import BaseAction
-from scenario_execution.model.types import ModelElement, ParameterDeclaration, ScenarioDeclaration
+from scenario_execution.model.types import ModelElement, ScenarioDeclaration
 
 
 class TestActorSetValue(BaseAction):
@@ -49,15 +48,9 @@ class TestActorSetValue(BaseAction):
         self.value = value
 
     def update(self) -> py_trees.common.Status:
-        #     if os.path.isfile(self.file_name):
-        #         self.feedback_message = f"File '{self.file_name}' exists"  # pylint: disable= attribute-defined-outside-init
-        # print(self.associated_actor)
         self.i += 1
         if self.i < 3:
             return py_trees.common.Status.RUNNING
         else:
             self.set_variable(self.model.actor, "test", self.value)
             return py_trees.common.Status.SUCCESS
-    #     else:
-    #         self.feedback_message = f"File '{self.file_name}' does not exist"  # pylint: disable= attribute-defined-outside-init
-    #         return py_trees.common.Status.FAILURE

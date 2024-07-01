@@ -25,6 +25,7 @@ class RosTopicWaitForTopics(BaseAction):
     """
 
     def __init__(self, topics: list):
+        super().__init__()
         if not isinstance(topics, list):
             raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
         else:
