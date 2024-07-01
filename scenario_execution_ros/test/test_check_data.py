@@ -83,7 +83,7 @@ scenario test:
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
                 member_name: 'data',
-                expected_value: True)
+                expected_value: 'True')
             emit end
         time_out: serial:
             wait elapsed(10s)
@@ -117,7 +117,6 @@ scenario test:
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
-
     def test_error_empty_member_name_comparison_fails(self):
         scenario_content = """
 import osc.ros
@@ -142,7 +141,7 @@ scenario test:
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
-        
+
     def test_fail_if_bad_comparison(self):
         scenario_content = """
 import osc.ros
@@ -238,7 +237,7 @@ scenario test:
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
                 member_name: 'data',
-                expected_value: 'true',
+                expected_value: 'True',
                 wait_for_first_message: false)
             emit end
         time_out: serial:
@@ -265,7 +264,7 @@ scenario test:
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
                 member_name: 'data',
-                expected_value: 'true',
+                expected_value: 'True',
                 wait_for_first_message: true)
             emit end
         time_out: serial:

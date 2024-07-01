@@ -57,17 +57,3 @@ def get_comparison_operator(operator_val):  # pylint: disable=too-many-return-st
         return operator.gt
     else:
         raise ValueError(f"Invalid comparison_operator: {operator_val}")
-
-
-def get_clearing_policy(clearing_policy):
-    """
-    Get clearing policy for enum value
-    """
-    if clearing_policy[0] == 'on_initialise':
-        return py_trees.common.ClearingPolicy.ON_INITIALISE
-    elif clearing_policy[0] == 'on_success':
-        return py_trees.common.ClearingPolicy.ON_SUCCESS
-    elif clearing_policy[0] == 'never':
-        return py_trees.common.ClearingPolicy.NEVER
-    else:
-        raise ValueError(f"Invalid clearing_policy: {clearing_policy}")

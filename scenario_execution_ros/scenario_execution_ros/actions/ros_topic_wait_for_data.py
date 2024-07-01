@@ -20,6 +20,7 @@ from scenario_execution.actions.base_action import BaseAction
 import rclpy
 import py_trees
 
+
 class RosTopicWaitForData(BaseAction):
     """
     Class to check if the message on ROS topic equals to the target message
@@ -65,7 +66,7 @@ class RosTopicWaitForData(BaseAction):
 
     def execute(self, topic_name, topic_type, qos_profile):
         self.found = False
-        
+
     def update(self) -> py_trees.common.Status:
         if self.found is True:
             return py_trees.common.Status.SUCCESS
@@ -73,7 +74,7 @@ class RosTopicWaitForData(BaseAction):
             return py_trees.common.Status.RUNNING
 
     def _callback(self, msg):
-        if self.found is None: # do not check until action gets executed
+        if self.found is None:  # do not check until action gets executed
             return
         self.found = True
         self.feedback_message = f"Received data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init

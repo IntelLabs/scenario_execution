@@ -261,6 +261,11 @@ class ModelToPyTree(object):
             try:
                 if init_args is not None and init_args != ['self']:
                     final_args = node.get_resolved_value()
+
+                    if node.actor:
+                        final_args["associated_actor"] = node.actor.get_resolved_value()
+                        final_args["associated_actor"]["name"] = node.actor.name
+
                     instance = behavior_cls(**final_args)
                 else:
                     instance = behavior_cls()

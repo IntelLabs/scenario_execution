@@ -21,9 +21,8 @@ import operator
 from enum import Enum
 from ast import literal_eval
 from rosidl_runtime_py.set_message import set_message_fields
-from rosidl_runtime_py.convert import message_to_ordereddict
 from scenario_execution_ros.actions.conversions import get_qos_preset_profile, \
-    get_comparison_operator, get_clearing_policy
+    get_comparison_operator
 
 from scenario_execution.actions.base_action import BaseAction
 
@@ -59,7 +58,7 @@ class RosTopicCheckData(BaseAction):
             datatype_in_list[-1])
         self.qos_profile = get_qos_preset_profile(qos_profile)
         self.member_name = member_name
-        
+
         parsed_value = literal_eval("".join(expected_value.split('\\')))
         if self.member_name == "":
             self.expected_value = self.topic_type()
@@ -67,8 +66,11 @@ class RosTopicCheckData(BaseAction):
         else:
             msg = self.topic_type()
             self.expected_value = getattr(msg, self.member_name)
-            set_message_fields(self.expected_value, parsed_value)
-        
+            if isinstance(self.expected_value, dict):
+                set_message_fields(self.expected_value, parsed_value)
+            else:
+                self.expected_value = parsed_value
+
         self.comparison_operator = get_comparison_operator(comparison_operator)
         self.fail_if_no_data = fail_if_no_data
         self.fail_if_bad_comparison = fail_if_bad_comparison
@@ -96,48 +98,46 @@ class RosTopicCheckData(BaseAction):
         )
         self.feedback_message = f"Waiting for data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
 
-    def execute(self, 
-                 topic_name: str,
-                 topic_type: str,
-                 qos_profile: tuple,
-                 member_name: str,
-                 expected_value: str,
-                 comparison_operator: int,
-                 fail_if_no_data: bool,
-                 fail_if_bad_comparison: bool,
-                 wait_for_first_message: bool):
+    def execute(self,
+                topic_name: str,
+                topic_type: str,
+                qos_profile: tuple,
+                member_name: str,
+                expected_value: str,
+                comparison_operator: int,
+                fail_if_no_data: bool,
+                fail_if_bad_comparison: bool,
+                wait_for_first_message: bool):
         if wait_for_first_message:
             self.found = False
-        else: 
+        else:
             self.check_data(self.last_msg)
             if self.found is True:
                 self.feedback_message = f"Found expected value in previously received message."  # pylint: disable= attribute-defined-outside-init
-        
+
     def update(self) -> py_trees.common.Status:
         if self.found is True:
             return py_trees.common.Status.SUCCESS
         elif self.found is False:
             if self.fail_if_bad_comparison:
                 return py_trees.common.Status.FAILURE
-            
-        
+
         return py_trees.common.Status.RUNNING
 
     def _callback(self, msg):
         self.last_msg = msg
         self.check_data(msg)
         if self.found is True:
-            self.feedback_message = f"Found expected value in received message." 
+            self.feedback_message = f"Found expected value in received message."
         else:
-            self.feedback_message = f"Received message does not contain expected value." 
-            
-            
-        #self.feedback_message = f"Received data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
+            self.feedback_message = f"Received message does not contain expected value."
+
+        # self.feedback_message = f"Received data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
 
     def check_data(self, msg):
         if msg is None:
             return
-        
+
         if self.member_name == "":
             value = msg
         else:
@@ -146,10 +146,4 @@ class RosTopicCheckData(BaseAction):
                 value = check_attr(msg)
             except AttributeError:
                 self.feedback_message = "Member name not found {self.member_name}]"
-        bla = dict(message_to_ordereddict(value))
-        
         self.found = self.comparison_operator(value, self.expected_value)
-        
-            
-            
-        

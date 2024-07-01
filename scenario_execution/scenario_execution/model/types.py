@@ -2133,10 +2133,16 @@ class IdentifierReference(ModelElement):
             return visitor.visit_children(self)
 
     def get_type(self):
-        return self.ref[-1].get_type()
+        if isinstance(self.ref, list):
+            return self.ref[-1].get_type()
+        else:
+            return self.ref.get_type()
 
     def get_type_string(self):
-        return self.ref[-1].get_type_string()
+        if isinstance(self.ref, list):
+            return self.ref[-1].get_type_string()
+        else:
+            return self.ref.get_type_string()
 
     def get_resolved_value(self, blackboard=None):
 

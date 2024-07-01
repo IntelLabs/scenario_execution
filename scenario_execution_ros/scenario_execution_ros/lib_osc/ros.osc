@@ -3,17 +3,6 @@ import osc.robotics
 struct ros_argument:
     key: string
     value: string = ''
-    
-# Policy rules for behaviours to dictate when data should be cleared/reset.
-#    on_initialise     Clear when entering the py_trees.behaviour.Behaviour.initialise method.
-#    on_success        Clear when returning py_trees.common.Status.SUCCESS
-#    never             Never clear the data
-
-enum clearing_policy: [
-    on_initialise, 
-    on_success, 
-    never
-]
 
 enum comparison_operator: [
     lt,

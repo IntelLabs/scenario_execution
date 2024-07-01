@@ -111,7 +111,6 @@ scenario test:
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-
     def test_success_member(self):
         scenario_content = """
 import osc.ros
@@ -138,7 +137,6 @@ scenario test:
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
-
     def test_fail_member(self):
         scenario_content = """
 import osc.ros
@@ -156,10 +154,10 @@ scenario test:
                 topic_name: '/bla',
                 topic_type: 'geometry_msgs.msg.Twist',
                 member_name: 'linear',
-                expected_value: '{\\\"z\\\": 9}}')
+                expected_value: '{\\\"z\\\": 9}')
             emit end
         time_out: serial:
-            wait elapsed(10s)
+            wait elapsed(5s)
             emit fail
 """
         self.execute(scenario_content)
