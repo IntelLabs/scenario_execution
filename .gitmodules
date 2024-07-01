@@ -4,3 +4,6 @@
 [submodule "dependencies/py_trees"]
 	path = dependencies/py_trees
 	url = https://github.com/splintered-reality/py_trees.git
+[submodule "dependencies/pymoveit2"]
+	path = dependencies/pymoveit2
+	url = https://github.com/AndrejOrsula/pymoveit2.git

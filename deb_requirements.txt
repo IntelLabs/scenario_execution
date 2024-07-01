@@ -3,3 +3,4 @@ ros-humble-py-trees-ros-interfaces
 python3-autopep8
 clang-format
 pylint
+ros-humble-moveit
