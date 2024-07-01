@@ -30,8 +30,7 @@ class ActorSetValue(BaseAction):
         model_blackboard_name = model_instance.get_fully_qualified_var_name(include_scenario=False)
         model_blackboard_name += "/" + variable_name
         blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.WRITE)
-        current = getattr(blackboard, model_blackboard_name)
-        self.logger.debug(f"Set variable '{model_blackboard_name}' from '{current}' to '{value}'")
+        self.logger.debug(f"Set variable '{model_blackboard_name}' to '{value}'")
         setattr(blackboard, model_blackboard_name, value)
 
     def execute(self, associated_actor, value):

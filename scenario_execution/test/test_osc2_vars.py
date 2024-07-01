@@ -21,7 +21,6 @@ import unittest
 import py_trees
 from scenario_execution import ScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
-from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 

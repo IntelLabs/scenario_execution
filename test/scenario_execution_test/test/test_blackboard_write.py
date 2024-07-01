@@ -66,5 +66,5 @@ scenario test_scenario:
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution.process_results())
         with open(self.tmp_file.name) as f:
-            result = f.read().decode()
+            result = f.read()
         self.assertEqual(result, "two")
