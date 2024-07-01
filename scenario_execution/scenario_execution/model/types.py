@@ -2133,10 +2133,10 @@ class IdentifierReference(ModelElement):
             return visitor.visit_children(self)
 
     def get_type(self):
-        return self.ref.get_type()
+        return self.ref[-1].get_type()
 
     def get_type_string(self):
-        return self.ref.get_type_string()
+        return self.ref[-1].get_type_string()
 
     def get_resolved_value(self, blackboard=None):
 
@@ -2146,8 +2146,6 @@ class IdentifierReference(ModelElement):
             while parent and not isinstance(parent, ScenarioDeclaration):
                 name = parent.name + "/" + name
                 parent = parent.get_parent()
-            # if parent and parent.name:
-            #     name = parent.name + "/" + name
             return name
 
         if isinstance(self.ref, list):

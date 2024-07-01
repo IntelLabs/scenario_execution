@@ -27,7 +27,8 @@ class RosLogCheck(BaseAction):
     Class for scanning the ros log for specific content
     """
 
-    def execute(self, values: list, module_name: str):
+    def __init__(self, values: list, module_name: str):
+        super().__init__()
         if not isinstance(values, list):
             raise TypeError(f'Value needs to be list of strings, got {type(values)}.')
         else:

@@ -42,7 +42,8 @@ class RosActionCall(BaseAction):
     ros service call behavior
     """
 
-    def execute(self, action_name: str, action_type: str, data: str):
+    def __init__(self, action_name: str, action_type: str, data: str):
+        super().__init__()
         self.node = None
         self.client = None
         self.send_goal_future = None

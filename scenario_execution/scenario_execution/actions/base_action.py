@@ -21,25 +21,25 @@ from scenario_execution.model.types import ParameterDeclaration, ScenarioDeclara
 class BaseAction(py_trees.behaviour.Behaviour):
 
     # subclasses might implement __init__() with the same arguments as defined in osc
-    # CAUTION: __init__() only gets the initial parameter values. In case variables get modified during scenario execution, 
+    # CAUTION: __init__() only gets the initial parameter values. In case variables get modified during scenario execution,
     #          the latest values are available in execute() only.
     def __init__(self):
         self.blackboard = None
         super().__init__(self.__class__.__name__)
-    
+
     # Subclasses might implement execute() with the same arguments as defined in osc.
     # def execute(self):
 
     # Subclasses might override shutdown() in order to cleanup on scenario shutdown.
     def shutdown(self):
         pass
-    
+
     #############
     # Internal methods below, do not override in subclass
     #############
 
     def initialise(self):
-        execute_method = getattr(self, "execute")
+        execute_method = getattr(self, "execute", None)
         if execute_method is not None and callable(execute_method):
             final_args = self.model.get_resolved_value(self.get_blackboard_client())
 
@@ -55,7 +55,7 @@ class BaseAction(py_trees.behaviour.Behaviour):
     def get_blackboard_client(self):
         if self.blackboard:
             return self.blackboard
-        
+
         def get_blackboard_namespace(node: ParameterDeclaration):
             parent = node.get_parent()
             while parent is not None and not isinstance(parent, ScenarioDeclaration):
@@ -64,6 +64,6 @@ class BaseAction(py_trees.behaviour.Behaviour):
                 return parent.name
             else:
                 return None
-        
+
         self.blackboard = self.attach_blackboard_client(name=self.name, namespace=get_blackboard_namespace(self.model))
         return self.blackboard

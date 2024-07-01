@@ -58,23 +58,26 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
         create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
 
-    def test_success(self):
+    def test_success_complete_msg(self):
         scenario_content = """
 import osc.ros
-import osc.os
 
 scenario test:
     do parallel:
-        serial:
-            ros_launch('test_scenario_execution_ros', 'test_launch.py', [
-                ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
-                ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
-            ])
-            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
-            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
-            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'geometry_msgs.msg.Twist',
+                value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'geometry_msgs.msg.Twist',
+                expected_value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
             emit end
         time_out: serial:
             wait elapsed(10s)
@@ -83,54 +86,81 @@ scenario test:
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
-    def test_success_not_wait_for_shutdown(self):
+    def test_fail_complete_msg(self):
         scenario_content = """
 import osc.ros
-import osc.os
 
 scenario test:
     do parallel:
-        serial:
-            ros_launch('test_scenario_execution_ros', 'test_launch.py', [
-                    ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
-                    ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
-                ],
-                wait_for_shutdown: false)
-            wait elapsed(4s)
-            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
-            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
-            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
-            wait elapsed(10s)
-            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
-            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
-            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'geometry_msgs.msg.Twist',
+                value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'geometry_msgs.msg.Twist',
+                expected_value: '{\\\"linear\\\": {\\\"z\\\": 9}}')
             emit end
         time_out: serial:
-            wait elapsed(20s)
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+
+    def test_success_member(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'geometry_msgs.msg.Twist',
+                value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'geometry_msgs.msg.Twist',
+                member_name: 'linear',
+                expected_value: '{\\\"y\\\": 1.2}')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
             emit fail
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
-    def test_success_not_wait_for_shutdown_terminate(self):
+
+    def test_fail_member(self):
         scenario_content = """
 import osc.ros
-import osc.os
 
 scenario test:
-    do serial:
-        ros_launch('test_scenario_execution_ros', 'test_launch.py', [ 
-                ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
-                ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """'),
-                ros_argument(key: 'timeout', value: '15')
-            ],
-            wait_for_shutdown: false,
-            shutdown_timeout: 5s)
-        wait elapsed(2s)
-        emit end
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'geometry_msgs.msg.Twist',
+                value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'geometry_msgs.msg.Twist',
+                member_name: 'linear',
+                expected_value: '{\\\"z\\\": 9}}')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
 """
         self.execute(scenario_content)
-        self.assertTrue(os.path.isfile(self.tmp_dir.name + '/test_started'))
-        self.assertFalse(os.path.isfile(self.tmp_dir.name + '/test_success'))
-        self.assertTrue(os.path.isfile(self.tmp_dir.name + '/test_aborted'))
-        self.assertTrue(self.scenario_execution_ros.process_results())
+        self.assertFalse(self.scenario_execution_ros.process_results())

@@ -57,7 +57,8 @@ class InitNav2(BaseAction):
 
     """
 
-    def execute(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):
+    def __init__(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):
+        super().__init__()
         self.initial_pose = initial_pose
         self.base_frame_id = base_frame_id
         self.wait_for_initial_pose = wait_for_initial_pose

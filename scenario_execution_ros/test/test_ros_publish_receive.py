@@ -53,7 +53,6 @@ scenario test_ros_topic_publish:
                 wait_for_data() with:
                     keep(it.topic_name == '/bla')
                     keep(it.topic_type == 'std_msgs.msg.Bool')
-                    keep(it.clearing_policy == clearing_policy!on_initialise)
                 emit end
         time_out: serial:
             wait elapsed(10s)
@@ -63,5 +62,6 @@ scenario test_ros_topic_publish:
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
         create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())

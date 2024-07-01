@@ -26,12 +26,12 @@ class NavToPose(RosActionCall):
     Class to navigate to a pose
     """
 
-    def execute(self, associated_actor, goal_pose: list, monitor_progress: bool, action_topic: str, namespace_override: str) -> None:  # TODO
+    def __init__(self, associated_actor, goal_pose: list, monitor_progress: bool, action_topic: str, namespace_override: str) -> None:
         self.namespace = associated_actor["namespace"]
         if namespace_override:
             self.namespace = namespace_override
         self.goal_pose = goal_pose
-        super().execute(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateToPose", "")
+        super().__init__(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateToPose", "")
 
     def get_goal_msg(self):
         goal_msg = NavigateToPose.Goal()

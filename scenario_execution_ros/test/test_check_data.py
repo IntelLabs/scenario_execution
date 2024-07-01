@@ -40,6 +40,7 @@ class TestCheckData(unittest.TestCase):
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
         create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
 
     def tearDown(self):
@@ -55,11 +56,11 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name: 'data',
+                member_name: 'data',
                 expected_value: 'True')
             emit end
         time_out: serial:
-            wait elapsed(5s)
+            wait elapsed(3s)
             emit fail
 """
         self.execute(scenario_content)
@@ -81,8 +82,8 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name: 'data',
-                expected_value: true)
+                member_name: 'data',
+                expected_value: True)
             emit end
         time_out: serial:
             wait elapsed(10s)
@@ -91,7 +92,7 @@ scenario test:
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
-    def test_error_empty_variable_name(self):
+    def test_error_empty_member_name(self):
         scenario_content = """
 import osc.ros
 
@@ -107,8 +108,33 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name : '',
-                expected_value: true)
+                expected_value: '{\\\"data\\\": True}')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+
+    def test_error_empty_member_name_comparison_fails(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                expected_value: '{\\\"data\\\": False}')
             emit end
         time_out: serial:
             wait elapsed(10s)
@@ -116,7 +142,7 @@ scenario test:
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
-
+        
     def test_fail_if_bad_comparison(self):
         scenario_content = """
 import osc.ros
@@ -133,7 +159,7 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name: 'data',
+                member_name: 'data',
                 expected_value: 'false',
                 fail_if_bad_comparison: true)
             emit end
@@ -165,11 +191,85 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name: 'data',
+                member_name: 'data',
                 expected_value: false)
             emit end
         time_out: serial:
             wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_wait_for_first_message_false_data_available(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+            wait elapsed(1s)
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                member_name: 'data',
+                expected_value: 'True',
+                wait_for_first_message: false)
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_wait_for_first_message_false_data_not_available(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                member_name: 'data',
+                expected_value: 'true',
+                wait_for_first_message: false)
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_wait_for_first_message_true_data_gets_available(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                member_name: 'data',
+                expected_value: 'true',
+                wait_for_first_message: true)
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
             emit fail
 """
         self.execute(scenario_content)

@@ -42,7 +42,8 @@ class NavThroughPoses(BaseAction):
     Class to navigate through poses
     """
 
-    def execute(self, associated_actor, goal_poses: list, monitor_progress: bool, namespace_override: str):
+    def __init__(self, associated_actor, goal_poses: list, monitor_progress: bool, namespace_override: str):
+        super().__init__()
         self.namespace = associated_actor["namespace"]
         self.monitor_progress = monitor_progress
         self.node = None

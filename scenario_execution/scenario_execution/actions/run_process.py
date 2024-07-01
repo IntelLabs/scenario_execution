@@ -27,7 +27,8 @@ class RunProcess(BaseAction):
     Class to execute an process.
     """
 
-    def execute(self, command=None, wait_for_shutdown=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
+    def __init__(self, command=None, wait_for_shutdown=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
+        super().__init__()
         self.command = command.split(" ") if isinstance(command, str) else command
         self.wait_for_shutdown = wait_for_shutdown
         self.shutdown_timeout = shutdown_timeout

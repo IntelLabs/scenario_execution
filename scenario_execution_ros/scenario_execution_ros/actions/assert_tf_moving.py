@@ -27,7 +27,8 @@ import math
 
 class AssertTfMoving(BaseAction):
 
-    def execute(self, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, fail_on_finish: bool, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
+    def __init__(self, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, fail_on_finish: bool, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
+        super().__init__()
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.timeout = timeout

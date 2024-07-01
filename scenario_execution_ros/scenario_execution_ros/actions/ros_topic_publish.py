@@ -32,7 +32,9 @@ class RosTopicPublish(BaseAction):
     class for publish a message on a ROS topic
     """
 
-    def execute(self, topic_type: str, topic_name: str, qos_profile: str, value: str):
+    def __init__(self, topic_type: str, topic_name: str, qos_profile: tuple, value: str
+                 ):
+        super().__init__()
         self.qos_profile = get_qos_preset_profile(qos_profile)
 
         # Parse message

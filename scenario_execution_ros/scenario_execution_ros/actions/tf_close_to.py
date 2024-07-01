@@ -35,7 +35,7 @@ class TfCloseTo(BaseAction):
     class for distance condition in ROS Gazebo simulation
     """
 
-    def execute(
+    def __init__(
         self,
         associated_actor: dict,
         namespace_override: str,
@@ -44,6 +44,8 @@ class TfCloseTo(BaseAction):
         sim: bool,
         robot_frame_id: str,
     ):
+        super().__init__()
+
         if not reference_point:
             raise TypeError(f'reference_point not initialized.')
         if not threshold:

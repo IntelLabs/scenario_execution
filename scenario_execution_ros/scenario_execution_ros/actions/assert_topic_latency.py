@@ -26,7 +26,8 @@ from scenario_execution.actions.base_action import BaseAction
 
 class AssertTopicLatency(BaseAction):
 
-    def execute(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, fail_on_finish: bool, rolling_average_count: int, wait_for_first_message: bool):
+    def __init__(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, fail_on_finish: bool, rolling_average_count: int, wait_for_first_message: bool):
+        super().__init__()
         self.topic_name = topic_name
         self.topic_type = topic_type
         self.latency = latency

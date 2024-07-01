@@ -39,7 +39,8 @@ class RosServiceCall(BaseAction):
     ros service call behavior
     """
 
-    def execute(self, service_name: str, service_type: str, data: str):
+    def __init__(self, service_name: str, service_type: str, data: str):
+        super().__init__()
         self.node = None
         self.client = None
         self.future = None

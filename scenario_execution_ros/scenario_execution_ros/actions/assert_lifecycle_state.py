@@ -24,7 +24,8 @@ from scenario_execution.actions.base_action import BaseAction
 
 class AssertLifecycleState(BaseAction):
 
-    def execute(self, node_name: str, state_sequence: list, allow_inital_state_skip: bool, fail_on_finish: bool):
+    def __init__(self, node_name: str, state_sequence: list, allow_inital_state_skip: bool, fail_on_finish: bool):
+        super().__init__()
         self.node_name = node_name
         self.state_sequence = state_sequence
         self.allow_inital_state_skip = allow_inital_state_skip

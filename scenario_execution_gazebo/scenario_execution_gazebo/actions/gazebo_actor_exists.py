@@ -37,8 +37,8 @@ class GazeboActorExists(RunProcess):
 
     """
 
-    def execute(self, entity_name: str, world_name: str):
-        super().execute()
+    def __init__(self, entity_name: str, world_name: str):
+        super().__init__()
         self.entity_name = entity_name
         self.node = None
         self.set_command(["ign", "topic", "-t", "/world/" +

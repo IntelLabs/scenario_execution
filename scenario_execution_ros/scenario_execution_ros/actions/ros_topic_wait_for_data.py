@@ -15,12 +15,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import importlib
-from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_clearing_policy
-from .py_trees_ros_common import SubscriberWaitForData
+from scenario_execution_ros.actions.conversions import get_qos_preset_profile
 from scenario_execution.actions.base_action import BaseAction
+import rclpy
+import py_trees
 
-
-class RosTopicWaitForData(SubscriberWaitForData):
+class RosTopicWaitForData(BaseAction):
     """
     Class to check if the message on ROS topic equals to the target message
 
@@ -28,19 +28,52 @@ class RosTopicWaitForData(SubscriberWaitForData):
         topic_name[str]: name of the topic to connect to
         topic_type[str]: class of the message type (e.g. std_msgs.msg.String)
         qos_profile[str]: qos profile for the subscriber
-        clearing_policy[str]: when to clear the data
     """
 
-    def execute(self, topic_name: str, topic_type: str, qos_profile: str, clearing_policy: str):
+    def __init__(self, topic_name: str, topic_type: str, qos_profile):
+        super().__init__()
         datatype_in_list = topic_type.split(".")
-        topic_type = getattr(
+        self.topic_type = getattr(
             importlib.import_module(".".join(datatype_in_list[0:-1])),
             datatype_in_list[-1]
         )
-        pass
-        # super().__init__(
-        #     name=name,
-        #     topic_name=topic_name,
-        #     topic_type=topic_type,
-        #     qos_profile=get_qos_preset_profile(qos_profile),
-        #     clearing_policy=get_clearing_policy(clearing_policy))
+        self.qos_profile = get_qos_preset_profile(qos_profile)
+        self.topic_name = topic_name
+        self.subscriber = None
+        self.node = None
+        self.found = None
+
+    def setup(self, **kwargs):
+        """
+        Setup the subscriber
+        """
+        try:
+            self.node: rclpy.Node = kwargs['node']
+        except KeyError as e:
+            error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
+                self.name, self.__class__.__name__)
+            raise KeyError(error_message) from e
+
+        self.subscriber = self.node.create_subscription(
+            msg_type=self.topic_type,
+            topic=self.topic_name,
+            callback=self._callback,
+            qos_profile=self.qos_profile,
+            callback_group=rclpy.callback_groups.ReentrantCallbackGroup()
+        )
+        self.feedback_message = f"Waiting for data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
+
+    def execute(self, topic_name, topic_type, qos_profile):
+        self.found = False
+        
+    def update(self) -> py_trees.common.Status:
+        if self.found is True:
+            return py_trees.common.Status.SUCCESS
+        else:
+            return py_trees.common.Status.RUNNING
+
+    def _callback(self, msg):
+        if self.found is None: # do not check until action gets executed
+            return
+        self.found = True
+        self.feedback_message = f"Received data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init

@@ -56,9 +56,9 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         return response
 
     def test_success(self):
-        scenarios = self.parser.process_file(os.path.join(
+        tree = self.parser.process_file(os.path.join(
             self.scenario_dir, 'scenarios', 'test', 'test_ros_service_call.osc'), False)
-        self.scenario_execution_ros.scenarios = scenarios
+        self.scenario_execution_ros.tree = tree
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
         self.assertTrue(self.request_received)

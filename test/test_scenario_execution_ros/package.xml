@@ -10,6 +10,7 @@
   
   <exec_depend>scenario_execution_ros</exec_depend>
   <exec_depend>scenario_execution_os</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
   
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

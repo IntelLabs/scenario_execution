@@ -215,7 +215,8 @@ actor derived inherits base:
 actor derived inherits UNKNOWN:
     y: string = "derived"
 """
-        model = self.parse(scenario_content)
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
     def test_actor_inheritance_invalid_2(self):
         scenario_content = """

@@ -229,19 +229,3 @@ actor electric_vehicle inherits vehicle(is_electric == true)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
-
-    def test_reference_more_than_one_sublevel(self):
-        scenario_content = """
-        
-struct inner_struct:
-    second: bool = false
-
-struct test_struct:
-    test_param: inner_struct
-
-scenario test_scenario:
-    bla: bool = test_struct.test_param.second
-
-"""
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
