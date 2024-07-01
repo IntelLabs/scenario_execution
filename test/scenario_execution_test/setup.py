@@ -19,7 +19,7 @@ from glob import glob
 import os
 from setuptools import find_namespace_packages, setup
 
-PACKAGE_NAME = 'test_scenario_execution'
+PACKAGE_NAME = 'scenario_execution_test'
 
 setup(
     name=PACKAGE_NAME,
@@ -40,7 +40,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'scenario_execution.actions': [
-            'test_actor.set_value = test_scenario_execution.actions.actor_set_value:ActorSetValue',
-            'store_action = test_scenario_execution.actions.store_action:StoreAction',
+            'test_actor.set_value = scenario_execution_test.actions.actor_set_value:ActorSetValue',
+            'store_action = scenario_execution_test.actions.store_action:StoreAction',
         ]}
 )
