@@ -18,21 +18,11 @@ import py_trees
 import rclpy
 import importlib
 import operator
-from enum import Enum
 from ast import literal_eval
 from rosidl_runtime_py.set_message import set_message_fields
 from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_comparison_operator
 import builtins
-
 from scenario_execution.actions.base_action import BaseAction
-
-
-class RosTopicCheckDataState(Enum):
-    IDLE = 1
-    WAITING_DATA = 2
-    CHECK_FAILED = 3
-    CHECK_SUCCEEDED = 4
-    FAILURE = 5
 
 
 class RosTopicCheckData(BaseAction):

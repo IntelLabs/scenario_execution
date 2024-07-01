@@ -16,7 +16,6 @@
 
 import py_trees
 from scenario_execution.actions.base_action import BaseAction
-from scenario_execution.model.types import ModelElement, ScenarioDeclaration
 
 
 class TestActorSetValue(BaseAction):
@@ -28,15 +27,7 @@ class TestActorSetValue(BaseAction):
 
     def set_variable(self, model_instance, variable_name, value):
         blackboard = self.get_blackboard_client()
-
-        def get_fully_qualified_model_name(node: ModelElement):
-            name = node.name
-            parent = node.get_parent()
-            while not isinstance(parent, ScenarioDeclaration):
-                name = parent.name + "/" + name
-                parent = parent.get_parent()
-            return name
-        model_blackboard_name = get_fully_qualified_model_name(model_instance)
+        model_blackboard_name = model_instance.get_fully_qualified_var_name(include_scenario=False)
         model_blackboard_name += "/" + variable_name
         blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.WRITE)
         current = getattr(blackboard, model_blackboard_name)

@@ -950,6 +950,16 @@ class ParameterDeclaration(Parameter):
         else:
             return visitor.visit_children(self)
 
+    def get_fully_qualified_var_name(self, include_scenario):
+        name = self.name
+        parent = self.get_parent()
+        while parent and not isinstance(parent, ScenarioDeclaration):
+            name = parent.name + "/" + name
+            parent = parent.get_parent()
+        if include_scenario and parent and parent.name:
+            name = parent.name + "/" + name
+        return name
+
 
 class ParameterReference(ModelElement):
 
@@ -2145,19 +2155,10 @@ class IdentifierReference(ModelElement):
             return self.ref.get_type_string()
 
     def get_resolved_value(self, blackboard=None):
-
-        def get_fully_qualified_var_name(node: ParameterDeclaration):
-            name = node.name
-            parent = node.get_parent()
-            while parent and not isinstance(parent, ScenarioDeclaration):
-                name = parent.name + "/" + name
-                parent = parent.get_parent()
-            return name
-
         if isinstance(self.ref, list):
             ref = self.ref[0]
             if any(isinstance(x, VariableDeclaration) for x in self.ref):
-                fqn = get_fully_qualified_var_name(ref)
+                fqn = ref.get_fully_qualified_var_name(include_scenario=False)
                 if blackboard is None:
                     raise ValueError("Variable Reference found, but no blackboard client available.")
                 for sub_elem in self.ref[1:]:

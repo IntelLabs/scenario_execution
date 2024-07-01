@@ -57,7 +57,7 @@ class ModelResolver(ModelBaseVisitor):
 
     def visit_identifier_reference(self, node: IdentifierReference):
         reference = None
-        if '.' in node.ref:  # first level of members can also be referenced (e.g. methods)
+        if '.' in node.ref:  # subsequent levels of members can also be referenced (e.g. methods)
             reference = []
             splitted = node.ref.split('.')
             current = node.resolve(splitted[0])
@@ -171,13 +171,6 @@ class ModelResolver(ModelBaseVisitor):
     def visit_parameter_declaration(self, node: ParameterDeclaration):
         self.visit_children(node)
         self.check_parameter_type(node)
-        # if isinstance(node.get_parent(), ScenarioDeclaration):
-        #     type_def = node.get_type()[0]
-        #     if isinstance(type_def, StructuredDeclaration):
-        #         for child in type_def.find_children_of_type(VariableDeclaration):
-        #             key = node.get_parent().name + '/' + node.name + '/' + child.name
-        #             self.blackboard.register_key(key=key, access=py_trees.common.Access.WRITE)
-        #             setattr(self.blackboard, key, node.get_type()[0])
 
     def visit_actor_inherits(self, node: ActorInherits):
         resolved = node.resolve(node.actor)

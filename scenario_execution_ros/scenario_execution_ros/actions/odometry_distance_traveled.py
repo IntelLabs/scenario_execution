@@ -28,7 +28,8 @@ class OdometryDistanceTraveled(BaseAction):
     Class to wait for a certain covered distance, based on odometry
     """
 
-    def execute(self, associated_actor, distance: float, namespace_override: str):
+    def __init__(self, associated_actor, distance: float, namespace_override: str):
+        super().__init__()
         self.namespace = associated_actor["namespace"]
         self.distance_expected = distance
         self.distance_traveled = 0.0

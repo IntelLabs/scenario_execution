@@ -31,7 +31,7 @@ class RosTopicWaitForData(BaseAction):
         qos_profile[str]: qos profile for the subscriber
     """
 
-    def __init__(self, topic_name: str, topic_type: str, qos_profile):
+    def __init__(self, topic_name: str, topic_type: str, qos_profile: tuple):
         super().__init__()
         datatype_in_list = topic_type.split(".")
         self.topic_type = getattr(

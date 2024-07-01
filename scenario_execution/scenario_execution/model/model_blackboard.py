@@ -49,28 +49,9 @@ class ModelToBlackboard(object):
 
         def visit_parameter_declaration(self, node: ParameterDeclaration):
             super().visit_parameter_declaration(node)
-            self.store_in_blackboard(node)
-
-        def get_fully_qualified_var_name(self, node: ParameterDeclaration):
-            name = node.name
-            parent = node.get_parent()
-            while parent and not isinstance(parent, ScenarioDeclaration):
-                name = parent.name + "/" + name
-                parent = parent.get_parent()
-            if parent and parent.name:
-                name = parent.name + "/" + name
-            return name
-
-        def store_in_blackboard(self, node):
-
             parameter_type = node.get_type()[0]
             if isinstance(parameter_type, StructuredDeclaration):
-                prefix = self.get_fully_qualified_var_name(node)
-                # for child in parameter_type.get_children():
-                #     blackboard_var_name = prefix + "/" + child.name
-
-                #     self.blackboard.register_key(blackboard_var_name, access=py_trees.common.Access.WRITE)
-                #     setattr(self.blackboard, blackboard_var_name, child.get_resolved_value())
+                prefix = node.get_fully_qualified_var_name(include_scenario=True)
                 for variable_dec in parameter_type.find_children_of_type(VariableDeclaration):
                     blackboard_var_name = prefix + "/" + variable_dec.name
 
