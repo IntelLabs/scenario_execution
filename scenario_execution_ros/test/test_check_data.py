@@ -66,7 +66,7 @@ scenario test:
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-    def test_sucess_field(self):
+    def test_success_member(self):
         scenario_content = """
 import osc.ros
 
@@ -91,6 +91,59 @@ scenario test:
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_fail_unknown_member(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                member_name: 'UNKNOWN',
+                expected_value: 'True')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        self.assertRaises(ValueError, create_py_tree, model, self.tree, self.parser.logger, False)
+
+    def test_fail_member_value_differ(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                member_name: 'data',
+                expected_value: 'False')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_error_empty_member_name(self):
         scenario_content = """
@@ -159,7 +212,7 @@ scenario test:
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
                 member_name: 'data',
-                expected_value: 'false',
+                expected_value: 'False',
                 fail_if_bad_comparison: true)
             emit end
         time_out: serial:
@@ -191,7 +244,7 @@ scenario test:
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
                 member_name: 'data',
-                expected_value: false)
+                expected_value: 'False')
             emit end
         time_out: serial:
             wait elapsed(10s)
