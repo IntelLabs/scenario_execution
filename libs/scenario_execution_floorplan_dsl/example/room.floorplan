@@ -1,0 +1,21 @@
+Floor plan: room
+
+    Space my_room:
+        shape: Polygon points:[
+            (-7.0 m, 6.0 m),
+            (7.0 m, 6.0 m),
+            (7.0 m, -3.0 m),
+            (4.0 m, -6.0 m),
+            (-4.0 m, -6.0 m),
+            (-7.0 m, -3.0 m)
+        ]
+        location:
+            from: world
+            to: this
+            pose:
+                translation: x:3.0 m, y:4.0 m
+                rotation: 0.0 deg
+
+    Default values:
+        Wall thickness: 0.3 m
+        Wall height: 2.5 m 
