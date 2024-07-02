@@ -94,7 +94,7 @@ jobs:
           export ROS_DOMAIN_ID=2
           colcon test --packages-select \
           scenario_execution_ros \
-          test_scenario_execution_ros \
+          scenario_execution_ros_test \
           --event-handlers console_direct+ \
           --return-code-on-test-failure \
           --pytest-args \
