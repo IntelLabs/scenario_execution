@@ -111,7 +111,6 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
 
     def tearDown(self):
         self.running = False
-        self.node.destroy_node()
         rclpy.try_shutdown()
 
 # REQUIRED PARAMETERS
