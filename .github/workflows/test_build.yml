@@ -342,6 +342,7 @@ jobs:
   test-scenario-execution-gazebo:
     needs: [build]
     runs-on: intellabs-01
+    timeout-minutes: 30
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
       credentials:
