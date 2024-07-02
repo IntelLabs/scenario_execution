@@ -213,7 +213,7 @@ Compare received topic messages using the given ``comparison_operator``, against
 - ``comparison_operator: comparison_operator``: The comparison operator to apply (default: ``comparison_operator!eq``)
 - ``fail_if_no_data: bool``: return failure if there is no data yet (default: ``false``)
 - ``fail_if_bad_comparison: bool``: return failure if comparison failed (default: ``true``)
-- ``wait_for_first_message: bool``: tart checking with the first received message after action execution. If false, the check is executed on the last received message. (default: ``true``)
+- ``wait_for_first_message: bool``: start checking with the first received message after action execution. If false, the check is executed on the last received message. (default: ``true``)
 
 ``differential_drive_robot.init_nav2()``
 """"""""""""""""""""""""""""""""""""""""
