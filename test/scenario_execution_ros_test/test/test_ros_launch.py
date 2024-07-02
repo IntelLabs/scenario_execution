@@ -68,7 +68,7 @@ import osc.os
 scenario test:
     do parallel:
         serial:
-            ros_launch('test_scenario_execution_ros', 'test_launch.py', [
+            ros_launch('scenario_execution_ros_test', 'test_launch.py', [
                 ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
                 ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
             ])
@@ -91,7 +91,7 @@ import osc.os
 scenario test:
     do parallel:
         serial:
-            ros_launch('test_scenario_execution_ros', 'test_launch.py', [
+            ros_launch('scenario_execution_ros_test', 'test_launch.py', [
                     ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
                     ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
                 ],
@@ -119,7 +119,7 @@ import osc.os
 
 scenario test:
     do serial:
-        ros_launch('test_scenario_execution_ros', 'test_launch.py', [ 
+        ros_launch('scenario_execution_ros_test', 'test_launch.py', [ 
                 ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
                 ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """'),
                 ros_argument(key: 'timeout', value: '15')
