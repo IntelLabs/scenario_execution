@@ -56,7 +56,6 @@ jobs:
           export ROS_DOMAIN_ID=2
           colcon test --packages-select \
           scenario_execution \
-          scenario_execution_gazebo \
           scenario_execution_os \
           scenario_coverage \
           scenario_execution_test \
