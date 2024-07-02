@@ -15,8 +15,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
+import py_trees
 import threading
-from ament_index_python.packages import get_package_share_directory
 import rclpy
 from rclpy.lifecycle import LifecycleNode
 from scenario_execution_ros import ROSScenarioExecution
@@ -36,7 +36,6 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.running = True
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
-        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
         self.node = LifecycleNode('test_lifecycle_node')
         self.dynamic_node = LifecycleNode('test_lifecycle_dynamic_node')
         self.executor = rclpy.executors.MultiThreadedExecutor()
@@ -44,6 +43,14 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.executor.add_node(self.dynamic_node)
         self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
         self.executor_thread.start()
+        self.tree = py_trees.composites.Sequence()
+
+    def execute(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.run()
 
     def tearDown(self):
         self.running = False
@@ -89,11 +96,7 @@ scenario test_assert_lifecycle_state:
                 state_sequence: [lifecycle_state!inactive])
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_2(self):
@@ -111,11 +114,7 @@ scenario test_assert_lifecycle_state:
             wait elapsed(8s)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_case_3(self):
@@ -133,11 +132,7 @@ scenario test_assert_lifecycle_state:
             wait elapsed(8s)
             emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_4(self):
@@ -152,11 +147,7 @@ scenario test_assert_lifecycle_state:
                 fail_on_finish: false)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_5(self):
@@ -171,11 +162,7 @@ scenario test_assert_lifecycle_state:
                 fail_on_finish: false)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_case_6(self):
@@ -194,11 +181,7 @@ scenario test_assert_lifecycle_state:
             wait elapsed(8s)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_case_7(self):
@@ -217,11 +200,7 @@ scenario test_assert_lifecycle_state:
             wait elapsed(8s)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_8(self):
@@ -240,13 +219,9 @@ scenario test_assert_lifecycle_state:
             wait elapsed(20s)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
         thread_change_state = threading.Thread(target=change_node_state)
         thread_change_state.start()
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
 

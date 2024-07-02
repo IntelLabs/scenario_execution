@@ -25,7 +25,7 @@ class RosSetNodeParameter(RosServiceCall):
     class for setting a node parameter
     """
 
-    def __init__(self, name, node_name: str, parameter_name: str, parameter_value: str):
+    def __init__(self, node_name: str, parameter_name: str, parameter_value: str):
         service_name = node_name + '/set_parameters'
         if not service_name.startswith('/'):
             service_name = '/' + service_name
@@ -61,8 +61,7 @@ class RosSetNodeParameter(RosServiceCall):
                     parameter_type = ParameterType.PARAMETER_STRING_ARRAY
                     parameter_assign_name = 'string_array_value'
 
-        super().__init__(name,
-                         service_name=service_name,
+        super().__init__(service_name=service_name,
                          service_type='rcl_interfaces.srv.SetParameters',
                          data='{ "parameters": [{ "name": "' + parameter_name + '", "value": { "type": ' + str(parameter_type) + ', "' + parameter_assign_name + '": ' + parameter_value + '}}]}')
 

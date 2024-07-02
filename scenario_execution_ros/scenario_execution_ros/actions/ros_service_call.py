@@ -21,6 +21,7 @@ from rclpy.node import Node
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rosidl_runtime_py.set_message import set_message_fields
 import py_trees  # pylint: disable=import-error
+from scenario_execution.actions.base_action import BaseAction
 
 
 class ServiceCallActionState(Enum):
@@ -33,13 +34,13 @@ class ServiceCallActionState(Enum):
     ERROR = 4
 
 
-class RosServiceCall(py_trees.behaviour.Behaviour):
+class RosServiceCall(BaseAction):
     """
     ros service call behavior
     """
 
-    def __init__(self, name, service_name: str, service_type: str, data: str):
-        super().__init__(name)
+    def __init__(self, service_name: str, service_type: str, data: str):
+        super().__init__()
         self.node = None
         self.client = None
         self.future = None

@@ -24,8 +24,8 @@ import importlib
 import inspect
 
 
-def resolve_internal_model(model, logger, log_tree):
-    osc2scenario_resolver = ModelResolver(logger)
+def resolve_internal_model(model, tree, logger, log_tree):
+    osc2scenario_resolver = ModelResolver(logger, tree)
     try:
         osc2scenario_resolver.visit(model)
     except OSC2ParsingError as e:
@@ -39,9 +39,10 @@ def resolve_internal_model(model, logger, log_tree):
 
 class ModelResolver(ModelBaseVisitor):
 
-    def __init__(self, logger) -> None:
+    def __init__(self, logger, tree) -> None:
         super().__init__()
         self.logger = logger
+        self.blackboard = tree.attach_blackboard_client(name="ModelResolver")
 
     def visit_physical_literal(self, node: PhysicalLiteral):
         unit = node.resolve(node.unit)
@@ -55,17 +56,32 @@ class ModelResolver(ModelBaseVisitor):
                 msg=f'SIUnitSpecifier of physical unit "{node.unit.name}" not defined.', context=node.get_ctx())
 
     def visit_identifier_reference(self, node: IdentifierReference):
-        if '.' in node.ref:  # first level of members can also be referenced (e.g. methods)
-            comp, member = node.ref.rsplit('.', 1)
-            resolved = node.resolve(comp)
-            if resolved:
-                resolved = resolved.get_named_child(member)
+        reference = None
+        if '.' in node.ref:  # subsequent levels of members can also be referenced (e.g. methods)
+            reference = []
+            splitted = node.ref.split('.')
+            current = node.resolve(splitted[0])
+
+            if not current:
+                raise OSC2ParsingError(
+                    msg=f'Identifier "{node.ref}": Could not resolved {splitted[0]}.', context=node.get_ctx())
+            reference.append(current)
+            for elem in splitted[1:]:
+                if isinstance(current, ParameterDeclaration):
+                    param_type = current.get_type()[0]
+                    current = param_type.get_named_child(elem)
+                else:
+                    current = current.get_named_child(elem)
+                if not current:
+                    raise OSC2ParsingError(
+                        msg=f'Identifier "{node.ref}": Could not resolved {elem}.', context=node.get_ctx())
+                reference.append(current)
         else:
-            resolved = node.resolve(node.ref)
-        if resolved is None:
+            reference = node.resolve(node.ref)
+        if reference is None:
             raise OSC2ParsingError(
                 msg=f'Identifier "{node.ref}" not defined.', context=node.get_ctx())
-        node.ref = resolved
+        node.ref = reference
 
     def visit_type(self, node: Type):
         type_string = node.type_def

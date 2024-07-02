@@ -16,6 +16,7 @@
 
 import unittest
 import tempfile
+import py_trees
 from scenario_execution import ScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
@@ -24,18 +25,25 @@ from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
 
-class TestCheckData(unittest.TestCase):
+class TestCheckFileNotExists(unittest.TestCase):
     # pylint: disable=missing-function-docstring,missing-class-docstring
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ScenarioExecution(debug=False, log_model=False, live_tree=False,
                                                     scenario_file="test.osc", output_dir=None)
+        self.tree = py_trees.composites.Sequence()
         self.tmp_file = tempfile.NamedTemporaryFile()
-        print(self.tmp_file.name)
+
+    def parse(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, log_tree=False)
+        self.scenario_execution.tree = self.tree
+        self.scenario_execution.run()
 
     def test_success(self):
-        scenario_content = """
+        self.parse("""
 import osc.os
 
 scenario test:
@@ -46,17 +54,11 @@ scenario test:
         time_out: serial:
             wait elapsed(1s)
             emit fail
-"""
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
+""")
         self.assertTrue(self.scenario_execution.process_results())
 
     def test_fail(self):
-        scenario_content = """
+        self.parse("""
 import osc.os
 
 scenario test:
@@ -67,11 +69,5 @@ scenario test:
         time_out: serial:
             wait elapsed(1s)
             emit fail
-"""
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
+""")
         self.assertFalse(self.scenario_execution.process_results())

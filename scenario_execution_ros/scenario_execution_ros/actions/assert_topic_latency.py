@@ -21,12 +21,13 @@ from rclpy.node import Node
 import importlib
 import time
 from scenario_execution_ros.actions.conversions import get_comparison_operator, get_qos_preset_profile
+from scenario_execution.actions.base_action import BaseAction
 
 
-class AssertTopicLatency(py_trees.behaviour.Behaviour):
+class AssertTopicLatency(BaseAction):
 
-    def __init__(self, name, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, fail_on_finish: bool, rolling_average_count: int, wait_for_first_message: bool):
-        super().__init__(name)
+    def __init__(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, fail_on_finish: bool, rolling_average_count: int, wait_for_first_message: bool):
+        super().__init__()
         self.topic_name = topic_name
         self.topic_type = topic_type
         self.latency = latency
@@ -55,7 +56,7 @@ class AssertTopicLatency(py_trees.behaviour.Behaviour):
 
         success = self.check_topic()
         if not success and self.wait_for_first_message:
-            raise ValueError("Invalid topic or type speficied.")
+            raise ValueError("Invalid topic or type specified.")
         elif not success and not self.wait_for_first_message:
             raise ValueError("Topic type must be specified. Please provide a valid topic type.")
 

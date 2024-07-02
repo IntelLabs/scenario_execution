@@ -75,9 +75,8 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.received_msgs.append((current_time, msg))
 
     def test_success(self):
-        scenarios = self.parser.process_file(os.path.join(
+        self.scenario_execution_ros.tree = self.parser.process_file(os.path.join(
             self.scenario_dir, 'scenarios', 'test', 'test_ros_service_call_blocking.osc'), False)
-        self.scenario_execution_ros.scenarios = scenarios
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())
 

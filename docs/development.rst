@@ -94,3 +94,4 @@ Implement an Action
    - Make use of ``self.feedback_message``
    - Make use of ``kwargs['logger']``, available in ``setup()``
    - If you want to draw markers for RViz, use ``kwargs['marker_handler']``, available in ``setup()`` (with ROS backend)
+- Use arguments from ``__init__()`` for longer running initializations in ``setup()`` and the arguments from ``execute()`` to set values just before executing the action.

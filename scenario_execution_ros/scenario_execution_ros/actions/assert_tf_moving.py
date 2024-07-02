@@ -20,14 +20,15 @@ from rclpy.node import Node
 import time
 import tf2_ros
 from scenario_execution_ros.actions.nav2_common import NamespacedTransformListener
+from scenario_execution.actions.base_action import BaseAction
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 import math
 
 
-class AssertTfMoving(py_trees.behaviour.Behaviour):
+class AssertTfMoving(BaseAction):
 
-    def __init__(self, name, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, fail_on_finish: bool, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
-        super().__init__(name)
+    def __init__(self, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, fail_on_finish: bool, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
+        super().__init__()
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.timeout = timeout

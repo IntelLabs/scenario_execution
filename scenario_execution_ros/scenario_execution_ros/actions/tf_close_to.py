@@ -27,16 +27,16 @@ from tf2_ros.buffer import Buffer
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 
 from scenario_execution_ros.actions.nav2_common import NamespacedTransformListener
+from scenario_execution.actions.base_action import BaseAction
 
 
-class TfCloseTo(py_trees.behaviour.Behaviour):
+class TfCloseTo(BaseAction):
     """
     class for distance condition in ROS Gazebo simulation
     """
 
     def __init__(
         self,
-        name,
         associated_actor: dict,
         namespace_override: str,
         reference_point,
@@ -44,7 +44,7 @@ class TfCloseTo(py_trees.behaviour.Behaviour):
         sim: bool,
         robot_frame_id: str,
     ):
-        super().__init__(name)
+        super().__init__()
 
         if not reference_point:
             raise TypeError(f'reference_point not initialized.')

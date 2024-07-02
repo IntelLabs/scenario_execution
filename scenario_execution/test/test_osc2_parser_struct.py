@@ -18,7 +18,7 @@
 Test struct parsing
 """
 import unittest
-
+import py_trees
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
@@ -29,6 +29,11 @@ class TestOSC2Parser(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
+        self.tree = py_trees.composites.Sequence()
+
+    def parse(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
 
     def test_all_struct_def(self):
         scenario_content = """
@@ -67,9 +72,7 @@ scenario test:
     struct2f: struct1a with:
         keep(it.struct_param == base_struct(base_param1: 'override'))
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         struct1a = model._ModelElement__children[4].get_resolved_value()
         struct1b = model._ModelElement__children[5].get_resolved_value()
         struct1c = model._ModelElement__children[6].get_resolved_value()
@@ -116,9 +119,7 @@ scenario test:
     struct5: l2_struct with:
         keep(it.l1.base == base_struct('override'))
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         struct1 = model._ModelElement__children[3]._ModelElement__children[0].get_resolved_value()
         struct2 = model._ModelElement__children[3]._ModelElement__children[1].get_resolved_value()
         struct3 = model._ModelElement__children[3]._ModelElement__children[2].get_resolved_value()
@@ -145,9 +146,7 @@ scenario test:
     struct4: l2_struct with:
         keep(it.l1.base.param1 == 'override')
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         struct1 = model._ModelElement__children[3]._ModelElement__children[0].get_resolved_value()
         self.assertEqual({'l1': {'base': {'param1': 'override'}}}, struct1)
 
@@ -167,4 +166,4 @@ scenario test:
         keep(it.l1.UNKNOWN.param1 == 'override')
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")

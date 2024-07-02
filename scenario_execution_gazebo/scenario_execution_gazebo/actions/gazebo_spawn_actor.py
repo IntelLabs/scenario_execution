@@ -45,13 +45,13 @@ class GazeboSpawnActor(RunProcess):
 
     """
 
-    def __init__(self, name, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str, **kwargs):
+    def __init__(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str, **kwargs):
         """
         init
         """
-        super().__init__(name, "")
+        super().__init__("")
         self.entity_name = associated_actor["name"]
-        self.model = model
+        self.entity_model = model
         self.spawn_pose = spawn_pose
         self.world_name = world_name
         self.xacro_arguments = xacro_arguments
@@ -77,23 +77,23 @@ class GazeboSpawnActor(RunProcess):
         self.logger = get_logger(self.name)
         self.utils = SpawnUtils(logger=self.logger)
 
-        if self.model.startswith('topic://'):
+        if self.entity_model.startswith('topic://'):
             transient_local_qos = QoSProfile(
                 durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,
                 reliability=QoSReliabilityPolicy.RELIABLE,
                 history=QoSHistoryPolicy.KEEP_LAST,
                 depth=1)
-            topic = self.model.replace('topic://', '', 1)
+            topic = self.entity_model.replace('topic://', '', 1)
             self.current_state = SpawnActionState.WAITING_FOR_TOPIC
             self.feedback_message = f"Waiting for model on topic {topic}"  # pylint: disable= attribute-defined-outside-init
             self.model_sub = self.node.create_subscription(
                 String, topic, self.topic_callback, transient_local_qos)
         else:
             self.sdf = self.utils.parse_model_file(
-                self.model, self.entity_name, self.xacro_arguments)
+                self.entity_model, self.entity_name, self.xacro_arguments)
 
             if not self.sdf:
-                raise ValueError(f'Invalid model specified ({self.model})')
+                raise ValueError(f'Invalid model specified ({self.entity_model})')
             self.current_state = SpawnActionState.MODEL_AVAILABLE
 
     def update(self) -> py_trees.common.Status:

@@ -29,14 +29,11 @@ class GazeboRelativeSpawnActor(GazeboSpawnActor):
 
     """
 
-    def __init__(self, name, associated_actor,
+    def __init__(self, associated_actor,
                  frame_id: str, parent_frame_id: str,
                  distance: float, world_name: str, xacro_arguments: list,
-                 model: str, **kwargs):
-        """
-        init
-        """
-        super().__init__(name, associated_actor, [], world_name, xacro_arguments, model)
+                 model: str):
+        super().__init__(associated_actor, [], world_name, xacro_arguments, model)
 
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id

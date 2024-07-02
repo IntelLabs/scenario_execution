@@ -86,15 +86,12 @@ class ROSScenarioExecution(ScenarioExecution):
         return py_trees_ros.trees.BehaviourTree(tree)
 
     def run(self) -> bool:
-        if len(self.scenarios) != 1:
-            self.logger.error(f"Only one scenario per file is supported.")
-            return
 
         executor = rclpy.executors.MultiThreadedExecutor()
         executor.add_node(self.node)
 
         try:
-            self.setup(self.scenarios[0], node=self.node, marker_handler=self.marker_handler)
+            self.setup(self.tree, node=self.node, marker_handler=self.marker_handler)
         except Exception as e:  # pylint: disable=broad-except
             self.on_scenario_shutdown(False, "Setup failed", f"{e}")
             return

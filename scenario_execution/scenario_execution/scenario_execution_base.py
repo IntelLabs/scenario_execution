@@ -133,13 +133,7 @@ class ScenarioExecution(object):
         self.shutdown_requested = False
         self.current_scenario = scenario
         self.current_scenario_start = datetime.now()
-        self.blackboard = scenario.attach_blackboard_client(
-            name="MainBlackboardClient",
-            namespace=scenario.name
-        )
-
-        self.blackboard.register_key("end", access=py_trees.common.Access.READ)
-        self.blackboard.register_key("fail", access=py_trees.common.Access.READ)
+        self.blackboard = scenario.attach_blackboard_client(name="MainBlackboardClient", namespace=scenario.name)
 
         # Initialize end and fail events
         self.blackboard.register_key("end", access=py_trees.common.Access.WRITE)
@@ -207,7 +201,7 @@ class ScenarioExecution(object):
                                            processing_time=datetime.now() - start))
             return False
         try:
-            self.scenarios = parser.process_file(self.scenario_file, self.log_model, self.debug)
+            self.tree = parser.process_file(self.scenario_file, self.log_model, self.debug)
         except Exception as e:  # pylint: disable=broad-except
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
@@ -215,29 +209,12 @@ class ScenarioExecution(object):
                                            failure_output=str(e),
                                            processing_time=datetime.now() - start))
             return False
-        if len(self.scenarios) == 0:
-            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
-                                           result=False,
-                                           failure_message="parsing failed",
-                                           failure_output="no scenario defined",
-                                           processing_time=datetime.now() - start))
-            return False
-        if len(self.scenarios) != 1:
-            self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
-                                           result=False,
-                                           failure_message="parsing failed",
-                                           failure_output=f"more than one ({len(self.scenarios)}) scenario defined",
-                                           processing_time=datetime.now() - start))
-            return False
 
         return True
 
     def run(self):
-        if len(self.scenarios) != 1:
-            self.logger.error(f"Only one scenario per file is supported.")
-            return
         try:
-            self.setup(self.scenarios[0])
+            self.setup(self.tree)
         except Exception as e:  # pylint: disable=broad-except
             self.on_scenario_shutdown(False, "Setup failed", f"{e}")
             return

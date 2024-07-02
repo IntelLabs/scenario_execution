@@ -35,12 +35,12 @@ class GazeboWaitForSim(RunProcess):
     Class to wait for the simulation to become active
     """
 
-    def __init__(self, name, world_name: str, timeout: int, **kwargs):
+    def __init__(self, world_name: str, timeout: int, **kwargs):
         self.node = None
         self.world_name = world_name
         command = ["ign", "topic", "-t", "/world/" +
                    world_name + "/clock", "-e", "--json-output", "-n", "1"]
-        super().__init__(name, command)
+        super().__init__(command)
         self.current_state = WaitForSimulationActionState.IDLE
         self.start_time = time.time()
         self.timeout_sec = timeout

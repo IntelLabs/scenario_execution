@@ -33,9 +33,9 @@ def generate_launch_description():
 
         Node(
             # condition=IfCondition(scenario_status),
-            package='test_scenario_execution_ros',
-            executable='test_scenario_execution_ros',
-            name='test_scenario_execution_ros',
+            package='scenario_execution_ros_test',
+            executable='scenario_execution_ros_test',
+            name='scenario_execution_ros_test',
             parameters=[{
                 'test_param': test_param,
                 'test_path': test_path,

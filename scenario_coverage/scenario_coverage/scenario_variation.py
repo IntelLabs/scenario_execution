@@ -22,7 +22,7 @@ import argparse
 from copy import deepcopy
 
 import yaml
-
+import py_trees
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_resolver import resolve_internal_model
 from scenario_execution.model.types import RelationExpression, ListExpression, FieldAccessExpression, Expression, print_tree, serialize, to_string
@@ -130,7 +130,8 @@ class ScenarioVariation(object):
             if self.debug:
                 print_tree(model[0], self.logger)
             try:
-                resolve_internal_model(model[0], self.logger, False)
+                tree = py_trees.composites.Sequence()
+                resolve_internal_model(model[0], tree, self.logger, False)
             except ValueError as e:
                 raise ValueError(f"Resulting model is not resolvable: {e}") from e
 

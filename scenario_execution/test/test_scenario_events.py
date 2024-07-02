@@ -18,6 +18,7 @@
 Test predefined events
 """
 import unittest
+import py_trees
 from scenario_execution.scenario_execution_base import ScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
@@ -31,6 +32,14 @@ class TestOSC2Parser(unittest.TestCase):
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ScenarioExecution(debug=True, log_model=True, live_tree=True, scenario_file='test.osc', output_dir="")
+        self.tree = py_trees.composites.Sequence()
+
+    def execute(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution.tree = self.tree
+        self.scenario_execution.run()
 
     def test_failure(self):
         scenario_content = """
@@ -38,11 +47,7 @@ scenario test:
     do serial:
         emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution.process_results())
 
     def test_success(self):
@@ -51,11 +56,7 @@ scenario test:
     do serial:
         emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution.process_results())
 
     def test_wait_for_event(self):
@@ -75,9 +76,5 @@ scenario test:
             wait @test
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution.process_results())
