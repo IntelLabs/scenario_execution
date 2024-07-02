@@ -249,3 +249,11 @@ struct bounding_box:
 # ###########
 
 actor osc_actor
+
+
+# ###########
+# # Additional types
+# ###########
+struct key_value:
+    key: string
+    value: string = ''

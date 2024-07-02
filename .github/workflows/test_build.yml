@@ -370,8 +370,8 @@ jobs:
         uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
         with:
-          name: test-example-simulation-result
-          path: test_example_simulation/test.xml
+          name: test-scenario-execution-gazebo
+          path: test_scenario_execution_gazebo/test.xml
   tests:
     needs: 
     - test-scenario-execution
@@ -413,3 +413,4 @@ jobs:
             downloaded-artifacts/test-example-simulation-result/test.xml
             downloaded-artifacts/test-example-multirobot-result/test.xml
             downloaded-artifacts/test-example-external-method-result/test.xml
+            downloaded-artifacts/test-scenario-execution-gazebo/test.xml

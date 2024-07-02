@@ -260,10 +260,10 @@ class ModelToPyTree(object):
                 f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected execute() arguments: {expected_args}")
             try:
                 if init_args is not None and init_args != ['self']:
-                    final_args = node.get_resolved_value()
+                    final_args = node.get_resolved_value(self.blackboard)
 
                     if node.actor:
-                        final_args["associated_actor"] = node.actor.get_resolved_value()
+                        final_args["associated_actor"] = node.actor.get_resolved_value(self.blackboard)
                         final_args["associated_actor"]["name"] = node.actor.name
 
                     instance = behavior_cls(**final_args)

@@ -95,3 +95,7 @@ Implement an Action
    - Make use of ``kwargs['logger']``, available in ``setup()``
    - If you want to draw markers for RViz, use ``kwargs['marker_handler']``, available in ``setup()`` (with ROS backend)
 - Use arguments from ``__init__()`` for longer running initializations in ``setup()`` and the arguments from ``execute()`` to set values just before executing the action.
+- ``setup()`` provides several arguments that might be useful:
+  - ``input_dir``: Directory containing the scenario file
+  - ``output_dir``: If given on commandline, contains the directory to save output to
+  - ``node``: (``scenario_execution_ros`` only): ROS node to utilize (e.g. create subscribers)
