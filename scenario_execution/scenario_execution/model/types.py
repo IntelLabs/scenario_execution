@@ -432,11 +432,11 @@ class StructuredDeclaration(Declaration):
             elif isinstance(child, NamedArgument):
                 named = True
                 params[child.name] = child.get_resolved_value(blackboard)
-            elif isinstance(child, KeepConstraintDeclaration):  # for behaviorinvocation only?
+            elif isinstance(child, KeepConstraintDeclaration):
                 tmp = child.get_resolved_value(blackboard)
                 merge_nested_dicts(params, tmp, key_must_exist=False)
-
-            # set from variables
+            elif isinstance(child, MethodDeclaration):
+                params[child.name] = child.get_resolved_value(blackboard)
 
         return params
 
@@ -1734,13 +1734,12 @@ class FunctionApplicationExpression(Expression):
             if key:
                 params[key] = child.get_resolved_value(blackboard)
 
-        if isinstance(ref.ref, MethodDeclaration):
-            body = ref.ref.find_first_child_of_type(MethodBody)
+        if isinstance(ref.ref, list) and isinstance(ref.ref[-1], MethodDeclaration):
+            body = ref.ref[-1].find_first_child_of_type(MethodBody)
             try:
                 params = body.external_name(**params)
             except Exception as e:
-                raise OSC2ParsingError(
-                    msg=f'Error while calling external method: {e}', context=self.get_ctx()) from e
+                raise ValueError(f'Error while calling external method: {e}') from e
 
         return params
 
@@ -2169,6 +2168,9 @@ class IdentifierReference(ModelElement):
             else:
                 val = ref.get_resolved_value(blackboard)
                 for sub_elem in self.ref[1:]:
+                    if sub_elem.name not in val:
+                        if sub_elem != self.ref[-1]:
+                            raise OSC2ParsingError(msg=f'Reference to {sub_elem.name} not found', context=self.get_ctx())
                     val = val[sub_elem.name]
                 return val
         else:

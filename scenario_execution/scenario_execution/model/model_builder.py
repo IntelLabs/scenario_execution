@@ -1876,7 +1876,7 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
         argument_type = ctx.typeDeclarator().getText()
         default_value = None
         if ctx.defaultValue():
-            default_value = ctx.defaultValue().getText()
+            default_value = ctx.defaultValue().getText().strip('"')
 
         node = Argument(argument_name, argument_type, default_value)
         node.set_ctx(ctx, self.current_file)
