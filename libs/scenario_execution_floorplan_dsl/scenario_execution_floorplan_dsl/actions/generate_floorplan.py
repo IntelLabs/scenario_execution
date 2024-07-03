@@ -27,8 +27,7 @@ import tempfile
 class GenerateFloorplanStatus(Enum):
     IDLE = 1
     DOCKER_RUNNING = 2
-    DONE = 4
-    FAILURE = 5
+    DONE = 3
 
 
 class GenerateFloorplan(BaseAction):
