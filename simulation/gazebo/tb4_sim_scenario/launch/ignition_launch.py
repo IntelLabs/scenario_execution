@@ -52,7 +52,7 @@ def generate_launch_description():
                               description='use_sim_time'),
 
         DeclareLaunchArgument('world', default_value=os.path.join(pkg_tb4_sim_scenario, 'worlds', 'maze.sdf'),
-                              description='Ignition World'),
+                              description='Simulation World File'),
 
         DeclareLaunchArgument('headless', default_value='False',
                               description='Whether to execute simulation gui'),
