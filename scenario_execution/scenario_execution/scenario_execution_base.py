@@ -152,7 +152,8 @@ class ScenarioExecution(object):
                 py_trees.visitors.DisplaySnapshotVisitor(
                     display_blackboard=True
                 ))
-        self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, input_dir=os.path.dirname(self.scenario_file), output_dir=self.output_dir, **kwargs)
+        self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger,
+                                  input_dir=os.path.dirname(self.scenario_file), output_dir=self.output_dir, **kwargs)
 
     def setup_behaviour_tree(self, tree):
         """

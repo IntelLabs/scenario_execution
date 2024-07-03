@@ -27,6 +27,7 @@ from launch.actions import SetEnvironmentVariable
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
+
 def generate_launch_description():
 
     # Directories
@@ -45,17 +46,16 @@ def generate_launch_description():
     pkg_irobot_create_ignition_plugins = get_package_share_directory(
         'irobot_create_ignition_plugins')
 
-
-    ARGUMENTS = [
+    arguments = [
         DeclareLaunchArgument('use_sim_time', default_value='true',
-                            choices=['true', 'false'],
-                            description='use_sim_time'),
+                              choices=['true', 'false'],
+                              description='use_sim_time'),
 
         DeclareLaunchArgument('world', default_value=os.path.join(pkg_tb4_sim_scenario, 'worlds', 'maze.sdf'),
-                            description='Ignition World'),
+                              description='Ignition World'),
 
         DeclareLaunchArgument('headless', default_value='False',
-                            description='Whether to execute simulation gui'),
+                              description='Whether to execute simulation gui'),
     ]
 
     # Set ignition resource path
@@ -113,7 +113,7 @@ def generate_launch_description():
                         ])
 
     # Create launch description and add actions
-    ld = LaunchDescription(ARGUMENTS)
+    ld = LaunchDescription(arguments)
     ld.add_action(ign_resource_path)
     ld.add_action(ign_gui_plugin_path)
     ld.add_action(ignition_gazebo)

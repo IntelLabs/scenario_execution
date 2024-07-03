@@ -23,6 +23,7 @@ from scenario_execution.actions.base_action import BaseAction
 import docker
 import tempfile
 
+
 class GenerateFloorplanStatus(Enum):
     IDLE = 1
     DOCKER_RUNNING = 2
@@ -42,9 +43,9 @@ class GenerateFloorplan(BaseAction):
 
     def setup(self, **kwargs):
         self.tmp_dir = tempfile.TemporaryDirectory()
-        #self.output_dir = self.tmp_dir.name        
+        #self.output_dir = self.tmp_dir.name
         self.output_dir = tempfile.mkdtemp()
-        
+
         if "input_dir" not in kwargs:
             raise ValueError("input_dir not defined.")
         input_dir = kwargs["input_dir"]
@@ -54,7 +55,7 @@ class GenerateFloorplan(BaseAction):
         filterred_images = self.client.images.list(filters={'reference': image_name})
         if len(filterred_images) == 0:
             raise ValueError(f"Required docker image '{image_name}' does not exist.")
-        
+
         # check files
         if not os.path.isabs(self.file_path):
             self.file_path = os.path.join(input_dir, self.file_path)
@@ -63,25 +64,26 @@ class GenerateFloorplan(BaseAction):
         self.floorplan_name = os.path.splitext(os.path.basename(self.file_path))[0]
 
     # def execute(self, associated_actor, file_path: str, sdf_template: str):
-        
+
     def update(self) -> py_trees.common.Status:
         if (self.current_state == GenerateFloorplanStatus.IDLE):
-            model_dir = os.path.dirname(os.path.abspath(self.file_path))                
+            model_dir = os.path.dirname(os.path.abspath(self.file_path))
             try:
                 self.container = self.client.containers.run("floorplan:latest",
-                    command="blender --background --python exsce_floorplan/exsce_floorplan.py --python-use-system-env -- ../models/" + os.path.basename(self.file_path),
-                    detach=True,
-                    remove=True,
-                    user=os.getuid(),
-                    group_add=[os.getgid()],
-                    volumes={
-                        model_dir: {
-                            "bind": "/usr/src/app/models",
-                            "mode": "ro"},
-                        self.output_dir: {
-                            "bind": "/usr/src/app/output",
-                            "mode": "rw"},
-                    })
+                                                            command="blender --background --python exsce_floorplan/exsce_floorplan.py --python-use-system-env -- ../models/" +
+                                                            os.path.basename(self.file_path),
+                                                            detach=True,
+                                                            remove=True,
+                                                            user=os.getuid(),
+                                                            group_add=[os.getgid()],
+                                                            volumes={
+                                                                model_dir: {
+                                                                    "bind": "/usr/src/app/models",
+                                                                    "mode": "ro"},
+                                                                self.output_dir: {
+                                                                    "bind": "/usr/src/app/output",
+                                                                    "mode": "rw"},
+                                                            })
             except docker.errors.APIError as e:
                 self.feedback_message = f"Generating meshes failed: {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE
@@ -105,11 +107,10 @@ class GenerateFloorplan(BaseAction):
                 else:
                     self.logger.error(f"Did not find required files: mesh: {mesh_file}, map: {map_file}")
                     return py_trees.common.Status.FAILURE
-                generated_floorplan_map_path
             return py_trees.common.Status.RUNNING
-        
+
         return py_trees.common.Status.FAILURE
-        
+
     # def on_executed(self):
     #     """
     #     Hook when process gets executed

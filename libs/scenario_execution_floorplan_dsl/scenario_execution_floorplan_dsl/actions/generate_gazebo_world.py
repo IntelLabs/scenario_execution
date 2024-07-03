@@ -21,6 +21,7 @@ from scenario_execution.actions.base_action import BaseAction
 from shutil import which
 import tempfile
 
+
 class GenerateGazeboWorld(BaseAction):
 
     def __init__(self, associated_actor, sdf_template: str, arguments: list):
@@ -34,7 +35,7 @@ class GenerateGazeboWorld(BaseAction):
         if "input_dir" not in kwargs:
             raise ValueError("input_dir not defined.")
         input_dir = kwargs["input_dir"]
-        
+
         if not os.path.isabs(self.sdf_template):
             self.sdf_template = os.path.join(input_dir, self.sdf_template)
         if not os.path.isfile(self.sdf_template):
@@ -44,12 +45,11 @@ class GenerateGazeboWorld(BaseAction):
     def execute(self, associated_actor, sdf_template: str, arguments: list):
         self.arguments_string = ""
         for elem in arguments:
-            self.arguments_string += f'{elem["key"]}:={elem["value"]}' 
-        
+            self.arguments_string += f'{elem["key"]}:={elem["value"]}'
+
     def update(self) -> py_trees.common.Status:
         world_sdf = self.spawn_utils.xacro_to_urdf(self.sdf_template, self.arguments_string)
         with open(self.tmp_file.name, 'w') as f:
             f.write(world_sdf.replace("\\", ""))
         self.set_associated_actor_variable("generated_gazebo_world_path", self.tmp_file.name)
         return py_trees.common.Status.SUCCESS
-        

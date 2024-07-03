@@ -36,12 +36,12 @@ class RosLaunch(RunProcess):
 
     def __init__(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):
         super().__init__(None, wait_for_shutdown, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
-        
+
     def execute(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):
         self.arguments = arguments
         self.package_name = package_name
         self.launch_file = launch_file
-        
+
         self.command = ["ros2", "launch", self.package_name, self.launch_file]
         for arg in self.arguments:
             if not arg["key"] or not arg["value"]:
