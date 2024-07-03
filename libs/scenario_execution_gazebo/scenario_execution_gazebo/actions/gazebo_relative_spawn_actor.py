@@ -42,10 +42,10 @@ class GazeboRelativeSpawnActor(GazeboSpawnActor):
                 frame_id: str, parent_frame_id: str,
                 distance: float, world_name: str, xacro_arguments: list,
                 model: str):
+        super().execute(associated_actor, None, world_name, xacro_arguments, model)
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.distance = distance
-        super().execute(associated_actor, None, world_name, xacro_arguments, model)
 
     def setup(self, **kwargs):
         super().setup(**kwargs)
