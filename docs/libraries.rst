@@ -63,7 +63,7 @@ Spawn an actor within simulation.
 
     - ``file://<path-to-model>``: Local path to model file
     - ``model://<path-to-model>``: Path relative to available model search paths
-    - ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`simulation/gazebo/scenario_execution_gazebo_test/scenarios/test_spawn_exists_delete.osc`)
+    - ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`test/scenario_execution_gazebo_test/scenarios/test_spawn_exists_delete.osc`)
     - ``https:://fuel``: Model from `fuel.gazebosim.org <https://app.gazebosim.org/>`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
 
     If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
