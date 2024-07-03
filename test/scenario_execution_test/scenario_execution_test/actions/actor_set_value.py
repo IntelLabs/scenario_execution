@@ -34,5 +34,5 @@ class ActorSetValue(BaseAction):
         if self.i < 3:
             return py_trees.common.Status.RUNNING
         else:
-            self.set_variable(self.model.actor, "test", self.value)
+            self.set_associated_actor_variable("test", self.value)
             return py_trees.common.Status.SUCCESS
