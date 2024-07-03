@@ -67,3 +67,13 @@ class BaseAction(py_trees.behaviour.Behaviour):
 
         self.blackboard = self.attach_blackboard_client(name=self.name, namespace=get_blackboard_namespace(self.model))
         return self.blackboard
+
+    def set_associated_actor_variable(self, variable_name, value):
+        if not self.model.actor:
+            raise ValueError("Mddel does not have 'actor'.")
+        blackboard = self.get_blackboard_client()
+        model_blackboard_name = self.model.actor.get_fully_qualified_var_name(include_scenario=False)
+        model_blackboard_name += "/" + variable_name
+        blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.WRITE)
+        self.logger.debug(f"Set variable '{model_blackboard_name}' to '{value}'")
+        setattr(blackboard, model_blackboard_name, value)
