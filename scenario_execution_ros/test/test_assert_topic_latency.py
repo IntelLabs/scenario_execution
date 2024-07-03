@@ -38,7 +38,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.scenario_execution_ros = ROSScenarioExecution()
         self.received_msgs = []
         self.node = rclpy.create_node('test_node')
-        self.publisher = self.node.create_publisher(String, "/twist", 10)
+        self.publisher = self.node.create_publisher(String, "/bla", 10)
         self.publish_timer = self.node.create_timer(1, self.publish_messages)
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
