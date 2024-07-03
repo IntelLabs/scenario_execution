@@ -66,7 +66,7 @@ class GenerateFloorplan(BaseAction):
     # def execute(self, associated_actor, file_path: str, sdf_template: str):
 
     def update(self) -> py_trees.common.Status:
-        if (self.current_state == GenerateFloorplanStatus.IDLE):
+        if self.current_state == GenerateFloorplanStatus.IDLE:
             model_dir = os.path.dirname(os.path.abspath(self.file_path))
             try:
                 self.container = self.client.containers.run("floorplan:latest",
@@ -90,7 +90,7 @@ class GenerateFloorplan(BaseAction):
             self.current_state = GenerateFloorplanStatus.DOCKER_RUNNING
             self.feedback_message = f"Generating meshes..."  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.RUNNING
-        elif (self.current_state == GenerateFloorplanStatus.DOCKER_RUNNING):
+        elif self.current_state == GenerateFloorplanStatus.DOCKER_RUNNING:
             self.container.reload()
             if self.container:
                 res = self.container.status
