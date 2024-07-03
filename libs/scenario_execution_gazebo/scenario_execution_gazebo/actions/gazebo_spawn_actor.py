@@ -62,7 +62,7 @@ class GazeboSpawnActor(RunProcess):
         self.spawn_pose = spawn_pose
         self.world_name = world_name
         self.xacro_arguments = xacro_arguments
-        
+
     def setup(self, **kwargs):
         """
         Setup ROS2 node and model

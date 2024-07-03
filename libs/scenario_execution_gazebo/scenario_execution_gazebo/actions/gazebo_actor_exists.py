@@ -45,7 +45,7 @@ class GazeboActorExists(RunProcess):
         self.entity_name = entity_name
         self.set_command(["ign", "topic", "-t", "/world/" +
                           world_name + "/pose/info", "-e", "--json-output"])
-        
+
     def on_executed(self):
         """
         Hook when process gets executed

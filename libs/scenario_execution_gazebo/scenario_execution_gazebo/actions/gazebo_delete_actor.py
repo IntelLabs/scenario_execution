@@ -46,8 +46,7 @@ class GazeboDeleteActor(RunProcess):
                           "--reqtype", "ignition.msgs.Entity",
                           "--reptype", "ignition.msgs.Boolean",
                           "--timeout", "1000", "--req", "name: \"" + entity_name + "\" type: MODEL"])
-        
-        
+
     def on_executed(self):
         """
         Hook when process gets executed

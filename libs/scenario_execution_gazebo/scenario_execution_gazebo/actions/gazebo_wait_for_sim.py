@@ -41,11 +41,11 @@ class GazeboWaitForSim(RunProcess):
 
     def execute(self, world_name: str, timeout: int):
         self.set_command(["ign", "topic", "-t", "/world/" +
-                   world_name + "/clock", "-e", "--json-output", "-n", "1"]
+                          world_name + "/clock", "-e", "--json-output", "-n", "1"])
         self.world_name = world_name
         self.timeout_sec = timeout
         self.start_time = time.time()
-        
+
     def on_executed(self):
         """
         Hook when process gets executed
