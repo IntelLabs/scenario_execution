@@ -17,7 +17,7 @@
 import os
 import rclpy
 from rclpy.node import Node
-
+from rclpy.parameter import Parameter
 import sys
 
 
@@ -28,9 +28,15 @@ class TestNode(Node):
         self.declare_parameter('test_path', rclpy.Parameter.Type.STRING)
         self.declare_parameter('test_param', rclpy.Parameter.Type.STRING)
         self.declare_parameter('timeout', rclpy.Parameter.Type.INTEGER)
-        self.test_path = self.get_parameter_or('test_path', '.').value
-        self.test_param = self.get_parameter_or('test_param', '').value
-        self.timeout = self.get_parameter_or('timeout', 5).value
+        self.test_path = self.get_parameter_or('test_path', '.')
+        if isinstance(self.test_path, Parameter):
+            self.test_path = self.test_path.value
+        self.test_param = self.get_parameter_or('test_param', '')
+        if isinstance(self.test_param, Parameter):
+            self.test_param = self.test_param.value
+        self.timeout = self.get_parameter_or('timeout', 5)
+        if isinstance(self.timeout, Parameter):
+            self.timeout = self.timeout.value
         self.get_logger().info(f"Writing to '{self.test_path}'... (timeout: {self.timeout})")
         if not os.path.exists(self.test_path):
             os.makedirs(self.test_path)
@@ -47,9 +53,8 @@ def main(args=None):
     rclpy.init(args=args)
 
     result = True
+    node = TestNode()
     try:
-        node = TestNode()
-
         rclpy.spin(node)
     except SystemExit:
         pass

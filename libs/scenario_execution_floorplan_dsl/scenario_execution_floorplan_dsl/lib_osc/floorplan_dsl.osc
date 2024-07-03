@@ -1,0 +1,14 @@
+import osc.standard.base
+
+actor floorplan_generator:
+    result: string
+    var generated_floorplan_mesh_path: string
+    var generated_floorplan_map_path: string
+    var generated_gazebo_world_path: string
+
+action floorplan_generator.generate_floorplan:
+    file_path: string
+
+action floorplan_generator.generate_gazebo_world:
+    sdf_template: string
+    arguments: list of key_value

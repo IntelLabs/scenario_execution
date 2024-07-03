@@ -21,33 +21,21 @@ import signal
 
 
 class RosLaunchActionState(Enum):
-    """
-    States for executing a ros bag recording
-    """
     WAITING_FOR_TOPICS = 1
     RECORDING = 2
     FAILURE = 5
 
 
 class RosLaunch(RunProcess):
-    """
-    Class to execute ros bag recording
-    """
 
     def __init__(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):
         super().__init__(None, wait_for_shutdown, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
-        self.package_name = package_name
-        self.launch_file = launch_file
-        self.arguments = arguments
-        self.wait_for_shutdown = wait_for_shutdown
-        self.command = None
 
-    def setup(self, **kwargs):
-        self.command = ["ros2", "launch", self.package_name, self.launch_file]
-
-        for arg in self.arguments:
+    def execute(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):  # pylint: disable=arguments-differ
+        super().execute(None, wait_for_shutdown, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
+        self.command = ["ros2", "launch", package_name, launch_file]
+        for arg in arguments:
             if not arg["key"] or not arg["value"]:
-                raise ValueError(f'Invalid ros argument key:{arg["key"]}, value:{arg["value"]}')
+                raise ValueError(f'Invalid argument key:{arg["key"]}, value:{arg["value"]}')
             self.command.append(f'{arg["key"]}:={arg["value"]}')
-
         self.logger.info(f'Command: {" ".join(self.command)}')

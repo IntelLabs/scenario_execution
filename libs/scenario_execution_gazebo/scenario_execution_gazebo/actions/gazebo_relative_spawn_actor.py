@@ -33,14 +33,19 @@ class GazeboRelativeSpawnActor(GazeboSpawnActor):
                  frame_id: str, parent_frame_id: str,
                  distance: float, world_name: str, xacro_arguments: list,
                  model: str):
-        super().__init__(associated_actor, [], world_name, xacro_arguments, model)
-
-        self.frame_id = frame_id
-        self.parent_frame_id = parent_frame_id
-        self.distance = distance
+        super().__init__(associated_actor, None, world_name, xacro_arguments, model)
         self._pose = '{}'
         self.tf_buffer = Buffer()
         self.tf_listener = None
+
+    def execute(self, associated_actor,  # pylint: disable=arguments-differ
+                frame_id: str, parent_frame_id: str,
+                distance: float, world_name: str, xacro_arguments: list,
+                model: str):
+        super().execute(associated_actor, None, world_name, xacro_arguments, model)
+        self.frame_id = frame_id
+        self.parent_frame_id = parent_frame_id
+        self.distance = distance
 
     def setup(self, **kwargs):
         super().setup(**kwargs)

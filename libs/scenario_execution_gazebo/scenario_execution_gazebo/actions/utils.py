@@ -57,9 +57,7 @@ class SpawnUtils(object):
                 model_file = model_file.replace('file://', '', 1)
                 return self.read_model_file(model_file)
             elif model_file.lower().endswith('.xacro'):
-                return self._xacro_to_urdf(
-                    self.get_packaged_model_file_path(model_file),
-                    xacro_arguments, entity_name)
+                return self.xacro_to_urdf(self.get_packaged_model_file_path(model_file), xacro_arguments)
             elif model_file.lower().endswith(('.sdf', '.urdf')):
                 return self._parse_xml(
                     self.get_packaged_model_file_path(model_file),
@@ -134,9 +132,9 @@ class SpawnUtils(object):
                 f'scenario_execution_amr_plugin:spawn: Model file not existing: {model_file_path}.')
         return model_file_path
 
-    def _xacro_to_urdf(self, path_to_xacro, xacro_arguments, entity_name: str) -> str:
+    def xacro_to_urdf(self, path_to_xacro, xacro_arguments) -> str:
         """
-        function to covert the xacro file to urdf file
+        function to convert a xacro file
 
         Args:
             path_to_xacro [str]: path to xacro file
@@ -147,9 +145,9 @@ class SpawnUtils(object):
         """
         if self.logger is not None:
             self.logger.info(
-                f'[{entity_name}] Parsing xacro: {path_to_xacro}, args: {xacro_arguments}')
+                f'Parsing xacro: {path_to_xacro}, args: {xacro_arguments}')
         else:
-            print(f'[{entity_name}] Parsing xacro: {path_to_xacro}, args: {xacro_arguments}')
+            print(f'Parsing xacro: {path_to_xacro}, args: {xacro_arguments}')
 
         arg_list = xacro_arguments.split(',')
         try:
@@ -158,15 +156,15 @@ class SpawnUtils(object):
                 stdout, stderr = process.communicate()
                 if stderr:
                     if self.logger is not None:
-                        self.logger.warn(f'Parsing xacro {entity_name} has stderr: {stderr}')
+                        self.logger.warning(f'Parsing xacro has stderr: {stderr}')
                     else:
-                        print(f'Parsing xacro {entity_name} has stderr: {stderr}')
+                        print(f'Parsing xacro has stderr: {stderr}')
         except subprocess.CalledProcessError as e:
             stdout = None
             if self.logger is not None:
-                self.logger.error(f'Parsing xacro {entity_name} failed: {e.output}')
+                self.logger.error(f'Parsing xacro failed: {e.output}')
             else:
-                print(f'Parsing xacro {entity_name} failed: {e.output}')
+                print(f'Parsing xacro failed: {e.output}')
         return stdout.replace("\"", "\\\"").replace("\n", "")
 
     def read_model_file(self, model_file):

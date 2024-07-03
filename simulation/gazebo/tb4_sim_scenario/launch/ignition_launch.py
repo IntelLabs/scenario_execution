@@ -28,19 +28,6 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
 
-ARGUMENTS = [
-    DeclareLaunchArgument('use_sim_time', default_value='true',
-                          choices=['true', 'false'],
-                          description='use_sim_time'),
-
-    DeclareLaunchArgument('world', default_value='maze',
-                          description='Ignition World'),
-
-    DeclareLaunchArgument('headless', default_value='False',
-                          description='Whether to execute simulation gui'),
-]
-
-
 def generate_launch_description():
 
     # Directories
@@ -58,6 +45,18 @@ def generate_launch_description():
         'irobot_create_ignition_bringup')
     pkg_irobot_create_ignition_plugins = get_package_share_directory(
         'irobot_create_ignition_plugins')
+
+    arguments = [
+        DeclareLaunchArgument('use_sim_time', default_value='true',
+                              choices=['true', 'false'],
+                              description='use_sim_time'),
+
+        DeclareLaunchArgument('world', default_value=os.path.join(pkg_tb4_sim_scenario, 'worlds', 'maze.sdf'),
+                              description='Simulation World File'),
+
+        DeclareLaunchArgument('headless', default_value='False',
+                              description='Whether to execute simulation gui'),
+    ]
 
     # Set ignition resource path
     ign_resource_path = SetEnvironmentVariable(
@@ -83,8 +82,7 @@ def generate_launch_description():
                      os.environ.get('LD_LIBRARY_PATH', default='')])}
     # Ignition gazebo
     ignition_gazebo = ExecuteProcess(
-        cmd=['ruby', '/usr/bin/ign', 'gazebo', [PathJoinSubstitution(
-            [pkg_tb4_sim_scenario, 'worlds', LaunchConfiguration('world')]), '.sdf'], '-v', '4', '-r', '-s', '--force-version', '6'],
+        cmd=['ruby', '/usr/bin/ign', 'gazebo', LaunchConfiguration('world'), '-v', '4', '-r', '-s', '--force-version', '6'],
         output='screen',
         additional_env=env,
         on_exit=Shutdown(),
@@ -115,7 +113,7 @@ def generate_launch_description():
                         ])
 
     # Create launch description and add actions
-    ld = LaunchDescription(ARGUMENTS)
+    ld = LaunchDescription(arguments)
     ld.add_action(ign_resource_path)
     ld.add_action(ign_gui_plugin_path)
     ld.add_action(ignition_gazebo)
