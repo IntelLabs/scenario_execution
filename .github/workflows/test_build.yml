@@ -56,9 +56,9 @@ jobs:
           export ROS_DOMAIN_ID=2
           colcon test --packages-select \
           scenario_execution \
-          scenario_execution_gazebo \
           scenario_execution_os \
           scenario_coverage \
+          scenario_execution_test \
           --event-handlers console_direct+ \
           --return-code-on-test-failure \
           --pytest-args \
@@ -93,6 +93,7 @@ jobs:
           export ROS_DOMAIN_ID=2
           colcon test --packages-select \
           scenario_execution_ros \
+          scenario_execution_ros_test \
           --event-handlers console_direct+ \
           --return-code-on-test-failure \
           --pytest-args \
@@ -340,6 +341,7 @@ jobs:
   test-scenario-execution-gazebo:
     needs: [build]
     runs-on: intellabs-01
+    timeout-minutes: 30
     container:
       image: ghcr.io/intellabs/scenario-execution:humble
       credentials:
@@ -367,8 +369,8 @@ jobs:
         uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
         with:
-          name: test-example-simulation-result
-          path: test_example_simulation/test.xml
+          name: test-scenario-execution-gazebo
+          path: test_scenario_execution_gazebo/test.xml
   tests:
     needs: 
     - test-scenario-execution
@@ -389,18 +391,24 @@ jobs:
         uses: actions/download-artifact@7a1cd3216ca9260cd8022db641d960b1db4d1be4 #v4.0
         with:
           path: downloaded-artifacts
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@f355d34d53ad4e7f506f699478db2dd71da9de5f #v2.15.1
+        uses: EnricoMi/publish-unit-test-result-action@30eadd5010312f995f0d3b3cff7fe2984f69409e #v2.16.1
         with:
           check_name: Test Results
-          check_run: false
           action_fail: true
           comment_mode: always
           files: |
             downloaded-artifacts/test-scenario-execution/scenario_execution/TEST.xml
-            downloaded-artifacts/test-scenario-execution-ros/scenario_execution_ros/TEST.xml
             downloaded-artifacts/test-scenario-execution/scenario_coverage/TEST.xml
             downloaded-artifacts/test-scenario-execution/libs/scenario_execution_os/TEST.xml
+            downloaded-artifacts/test-scenario-execution/test/scenario_execution_test/TEST.xml
+            downloaded-artifacts/test-scenario-execution-ros/scenario_execution_ros/TEST.xml
+            downloaded-artifacts/test-scenario-execution-ros/test/scenario_execution_ros_test/TEST.xml
             downloaded-artifacts/test-example-scenario-result/test.xml
             downloaded-artifacts/test-example-library-result/test.xml
             downloaded-artifacts/test-example-variation-result/test.xml
@@ -408,3 +416,4 @@ jobs:
             downloaded-artifacts/test-example-simulation-result/test.xml
             downloaded-artifacts/test-example-multirobot-result/test.xml
             downloaded-artifacts/test-example-external-method-result/test.xml
+            downloaded-artifacts/test-scenario-execution-gazebo/test.xml

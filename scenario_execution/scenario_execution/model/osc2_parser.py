@@ -23,9 +23,11 @@ from scenario_execution.osc2_parsing.OpenSCENARIO2Parser import OpenSCENARIO2Par
 from scenario_execution.osc2_parsing.OpenSCENARIO2Lexer import OpenSCENARIO2Lexer
 from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.model.model_builder import ModelBuilder
-from scenario_execution.model.types import print_tree
+from scenario_execution.model.types import print_tree, ScenarioDeclaration
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.model.model_resolver import resolve_internal_model
+from scenario_execution.model.model_blackboard import create_py_tree_blackboard
+import py_trees
 
 
 class OpenScenario2Parser(object):
@@ -38,13 +40,22 @@ class OpenScenario2Parser(object):
     def process_file(self, file, log_model: bool = False, debug: bool = False):
         """ Convenience method to execute the parsing and print out tree """
 
-        parsed_tree = self.parse_file(file, log_model)
+        parsed_model = self.parse_file(file, log_model)
 
-        model = self.create_internal_model(parsed_tree, file, log_model, debug)
+        tree = py_trees.composites.Sequence()
+        model = self.create_internal_model(parsed_model, tree, file, log_model, debug)
 
-        scenarios = create_py_tree(model, self.logger, log_model)
+        if len(model.find_children_of_type(ScenarioDeclaration)) == 0:
+            raise ValueError("No scenario defined.")
 
-        return scenarios
+        if len(model.find_children_of_type(ScenarioDeclaration)) != 1:
+            raise ValueError("More than one scenario defined.")
+
+        create_py_tree_blackboard(model, tree, self.logger, debug)
+
+        create_py_tree(model, tree, self.logger, log_model)
+
+        return tree
 
     def load_internal_model(self, tree, file_name: str, log_model: bool = False, debug: bool = False):
         model_builder = ModelBuilder(self.logger, self.parse_file, file_name, log_model)
@@ -62,9 +73,9 @@ class OpenScenario2Parser(object):
             print_tree(model, self.logger)
         return model
 
-    def create_internal_model(self, tree, file_name: str, log_model: bool = False, debug: bool = False):
-        model = self.load_internal_model(tree, file_name, log_model, debug)
-        resolve_internal_model(model, self.logger, log_model)
+    def create_internal_model(self, parsed_model, tree, file_name: str, log_model: bool = False, debug: bool = False):
+        model = self.load_internal_model(parsed_model, file_name, log_model, debug)
+        resolve_internal_model(model, tree, self.logger, log_model)
         return model
 
     def parse_file(self, file: str, log_model: bool = False, error_prefix=""):

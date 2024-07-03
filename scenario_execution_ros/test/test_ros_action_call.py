@@ -17,6 +17,7 @@
 import os
 import unittest
 import rclpy
+import py_trees
 from rclpy.action import ActionServer, CancelResponse, GoalResponse
 from rclpy.action.server import GoalEvent
 from rclpy.callback_groups import ReentrantCallbackGroup
@@ -63,6 +64,14 @@ class TestScenarioExectionSuccess(unittest.TestCase):
             callback_group=ReentrantCallbackGroup(),
             goal_callback=self.goal_callback,
             cancel_callback=self.cancel_callback)
+        self.tree = py_trees.composites.Sequence()
+
+    def execute(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.run()
 
     def goal_callback(self, goal_request):
         return self.goal_callback_reponse
@@ -111,11 +120,7 @@ scenario test:
             wait elapsed(10s)
             emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_goal_not_accepted(self):
@@ -133,11 +138,7 @@ scenario test:
             emit fail
 """
         self.goal_callback_reponse = GoalResponse.REJECT
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_action_aborted(self):
@@ -155,11 +156,7 @@ scenario test:
             emit fail
 """
         self.goal_response = GoalEvent.ABORT
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_action_canceled(self):
@@ -177,11 +174,7 @@ scenario test:
             emit fail
 """
         self.goal_response = GoalEvent.CANCELED
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_invalid_type(self):
@@ -198,9 +191,5 @@ scenario test:
             wait elapsed(10s)
             emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())

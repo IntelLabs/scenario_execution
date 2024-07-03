@@ -37,11 +37,11 @@ class GazeboDeleteActor(RunProcess):
 
     """
 
-    def __init__(self, name, associated_actor, entity_name: str, world_name: str):
+    def __init__(self, associated_actor, entity_name: str, world_name: str):
         """
         init
         """
-        super().__init__(name)
+        super().__init__()
         self.entity_name = entity_name
         self.node = None
         self.set_command(["ign", "service", "-s", "/world/" + world_name + "/remove",

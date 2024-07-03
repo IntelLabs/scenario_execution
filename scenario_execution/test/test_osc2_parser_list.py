@@ -18,7 +18,7 @@
 Test list parsing
 """
 import unittest
-
+import py_trees
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
@@ -32,6 +32,11 @@ class TestOSC2Parser(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
+        self.tree = py_trees.composites.Sequence()
+
+    def parse(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
 
     def test_invalid_listof(self):
         scenario_content = """
@@ -40,15 +45,13 @@ struct listoffoo
 global test: listoffoo
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
     def test_string_list(self):
         scenario_content = """
 global test: list of string = ["foo", "bar"]
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         test_list = model._ModelElement__children[0].get_resolved_value()
         self.assertEqual(["foo", "bar"], test_list)
 
@@ -63,7 +66,7 @@ global test: list of string = [ ]
 global test: list of string = ["foo", 3]
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
     def test_struct_list(self):
         scenario_content = """
@@ -71,9 +74,7 @@ struct test_struct:
     member: string
 global test: list of test_struct = [test_struct('val1'), test_struct('val2')]
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         test_list = model._ModelElement__children[1].get_resolved_value()
         self.assertEqual([{'member': 'val1'}, {'member': 'val2'}], test_list)
 
@@ -86,7 +87,7 @@ struct second_struct:
 global test: list of test_struct = [test_struct('val1'), second_struct('invalid')]
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
     def test_assign_struct_list(self):
         scenario_content = """
@@ -96,9 +97,7 @@ struct test_struct:
 global test1: list of test_struct = [test_struct('val1'), test_struct('val2')]
 global test2: list of test_struct = test1
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         test1 = model._ModelElement__children[1].get_resolved_value()
         test2 = model._ModelElement__children[2].get_resolved_value()
         self.assertEqual([{'member': 'val1'}, {'member': 'val2'}], test1)
@@ -109,9 +108,7 @@ global test2: list of test_struct = test1
 global test1: list of float = [2.1, 4.3]
 global test2: list of float = test1
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         test1 = model._ModelElement__children[0].get_resolved_value()
         test2 = model._ModelElement__children[1].get_resolved_value()
         self.assertEqual([2.1, 4.3], test1)
@@ -123,4 +120,4 @@ global test1: list of float = [2.1, 4.3]
 global test2: list of string = test1
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, "test.osc")
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")

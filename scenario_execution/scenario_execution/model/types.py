@@ -17,6 +17,7 @@
 from typing import List
 from scenario_execution.model.error import OSC2ParsingError
 import sys
+import py_trees
 
 
 def print_tree(elem, logger, whitespace=""):
@@ -323,7 +324,7 @@ class Declaration(ModelElement):
     def get_base_type(self):
         return None
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         return None
 
     def get_type_string(self):
@@ -341,22 +342,22 @@ class Parameter(Declaration):
                 return child
         return None
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         param_type, is_list = self.get_type()
         vals = {}
         params = {}
         if self.get_value_child():
-            vals = self.get_value_child().get_resolved_value()
+            vals = self.get_value_child().get_resolved_value(blackboard)
 
         if isinstance(param_type, StructuredDeclaration) and not is_list:
-            params = param_type.get_resolved_value()
+            params = param_type.get_resolved_value(blackboard)
             merge_nested_dicts(params, vals)
         else:
             params = vals
 
         for child in self.get_children():
             if isinstance(child, KeepConstraintDeclaration):  # for variable only?
-                tmp = child.get_resolved_value()
+                tmp = child.get_resolved_value(blackboard)
                 merge_nested_dicts(params, tmp)
         return params
 
@@ -387,29 +388,30 @@ class StructuredDeclaration(Declaration):
                 names.append(child.name)
         return list(set(names))
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         params = {}
 
         # set values defined in base type
         if self.get_base_type():
-            params = self.get_base_type().get_resolved_value()
+            params = self.get_base_type().get_resolved_value(blackboard)
 
         named = False
         pos = 0
         param_keys = list(params.keys())
         for child in self.get_children():
             if isinstance(child, ParameterDeclaration):
+                # set from parameter
                 param_type, _ = child.get_type()
 
                 # set values defined in type itself
                 if isinstance(param_type, ModelElement):
-                    params[child.name] = param_type.get_resolved_value()
+                    params[child.name] = param_type.get_resolved_value(blackboard)
 
                 # set values from parameter value
                 val = child.get_value_child()
                 if val:
                     if isinstance(val, KeepConstraintDeclaration):
-                        tmp = val.get_resolved_value()
+                        tmp = val.get_resolved_value(blackboard)
                         for key, val in tmp.items():
                             if key not in params:
                                 raise OSC2ParsingError(
@@ -417,7 +419,7 @@ class StructuredDeclaration(Declaration):
                             else:
                                 params[key] = val
                     else:
-                        params[child.name] = val.get_resolved_value()
+                        params[child.name] = val.get_resolved_value(blackboard)
                 else:
                     if child.name not in params:
                         params[child.name] = None
@@ -425,14 +427,16 @@ class StructuredDeclaration(Declaration):
                 if named:
                     raise OSC2ParsingError(
                         msg=f'Positional argument after named argument not allowed.', context=child.get_ctx())
-                params[param_keys[pos]] = child.get_resolved_value()
+                params[param_keys[pos]] = child.get_resolved_value(blackboard)
                 pos += 1
             elif isinstance(child, NamedArgument):
                 named = True
-                params[child.name] = child.get_resolved_value()
-            elif isinstance(child, KeepConstraintDeclaration):  # for behaviorinvocation only?
-                tmp = child.get_resolved_value()
+                params[child.name] = child.get_resolved_value(blackboard)
+            elif isinstance(child, KeepConstraintDeclaration):
+                tmp = child.get_resolved_value(blackboard)
                 merge_nested_dicts(params, tmp, key_must_exist=False)
+            elif isinstance(child, MethodDeclaration):
+                params[child.name] = child.get_resolved_value(blackboard)
 
         return params
 
@@ -467,7 +471,7 @@ class PhysicalTypeDeclaration(Declaration):
         else:
             return visitor.visit_children(self)
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         return None
 
     def get_type_string(self):
@@ -562,7 +566,7 @@ class EnumDeclaration(Declaration):
         else:
             return visitor.visit_children(self)
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         return None
 
 
@@ -612,7 +616,7 @@ class EnumValueReference(ModelElement):
     def get_type_string(self):
         return self.enum_name.name
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         return (self.enum_member_name.member_name, self.enum_member_name.numeric_value)
 
 
@@ -946,6 +950,16 @@ class ParameterDeclaration(Parameter):
         else:
             return visitor.visit_children(self)
 
+    def get_fully_qualified_var_name(self, include_scenario):
+        name = self.name
+        parent = self.get_parent()
+        while parent and not isinstance(parent, ScenarioDeclaration):
+            name = parent.name + "/" + name
+            parent = parent.get_parent()
+        if include_scenario and parent and parent.name:
+            name = parent.name + "/" + name
+        return name
+
 
 class ParameterReference(ModelElement):
 
@@ -1073,7 +1087,7 @@ class MethodDeclaration(Declaration):
         else:
             return visitor.visit_children(self)
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         params = {}
         for child in self.get_children():
             if isinstance(child, Argument):
@@ -1189,11 +1203,11 @@ class NamedArgument(ModelElement):
         else:
             return visitor.visit_children(self)
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         if self.get_child_count() != 1:
             raise OSC2ParsingError(
                 msg=f'Could not get value of positional argument because the expected child count is not 1, but {self.get_child_count()}.', context=self.get_ctx())
-        return self.get_child(0).get_resolved_value()
+        return self.get_child(0).get_resolved_value(blackboard)
 
 
 class PositionalArgument(ModelElement):
@@ -1215,17 +1229,17 @@ class PositionalArgument(ModelElement):
         else:
             return visitor.visit_children(self)
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         if self.get_child_count() != 1:
             raise OSC2ParsingError(
                 msg=f'Could not get value of positional argument because the expected child count is not 1, but {self.get_child_count()}.', context=self.get_ctx())
-        return self.get_child(0).get_resolved_value()
+        return self.get_child(0).get_resolved_value(blackboard)
 
 
 class VariableDeclaration(Parameter):
 
     def __init__(self, field_name, field_type, default_value):
-        super().__init__()
+        super().__init__(field_name)
         self.field_name = field_name  # unused?
         self.field_type = field_type
         self.default_value = default_value
@@ -1266,14 +1280,14 @@ class KeepConstraintDeclaration(Declaration):
         else:
             return visitor.visit_children(self)
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         result = None
         if self.get_child_count() == 1 and isinstance(self.get_child(0), RelationExpression) and self.get_child(0).get_child_count() == 2:
             if self.get_child(0).operator != "==":
                 raise OSC2ParsingError(
                     msg=f'Only relation "==" is currently supported in "keep".', context=self.get_ctx())
             field_exp = self.get_child(0).get_child_with_expected_type(0, FieldAccessExpression)
-            value = self.get_child(0).get_child(1).get_resolved_value()
+            value = self.get_child(0).get_child(1).get_resolved_value(blackboard)
 
             if not field_exp.field_name.startswith('it.'):
                 raise OSC2ParsingError(
@@ -1700,9 +1714,9 @@ class FunctionApplicationExpression(Expression):
         else:
             return visitor.visit_children(self)
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         ref = self.find_first_child_of_type(IdentifierReference)
-        params = ref.get_resolved_value()
+        params = ref.get_resolved_value(blackboard)
         named = False
         pos = 0
         param_keys = list(params.keys())
@@ -1718,15 +1732,14 @@ class FunctionApplicationExpression(Expression):
                 named = True
                 key = child.name
             if key:
-                params[key] = child.get_resolved_value()
+                params[key] = child.get_resolved_value(blackboard)
 
-        if isinstance(ref.ref, MethodDeclaration):
-            body = ref.ref.find_first_child_of_type(MethodBody)
+        if isinstance(ref.ref, list) and isinstance(ref.ref[-1], MethodDeclaration):
+            body = ref.ref[-1].find_first_child_of_type(MethodBody)
             try:
                 params = body.external_name(**params)
             except Exception as e:
-                raise OSC2ParsingError(
-                    msg=f'Error while calling external method: {e}', context=self.get_ctx()) from e
+                raise ValueError(f'Error while calling external method: {e}') from e
 
         return params
 
@@ -1891,10 +1904,10 @@ class ListExpression(Expression):
         type_string = child.get_type_string()
         return "listof" + type_string
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         value = []
         for child in self.get_children():
-            value.append(child.get_resolved_value())
+            value.append(child.get_resolved_value(blackboard))
         return value
 
 
@@ -1945,9 +1958,9 @@ class PhysicalLiteral(ModelElement):
     def get_type_string(self):
         return self.unit.get_type_string()
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         si_unit_specifier = self.unit.find_first_child_of_type(SIUnitSpecifier)
-        return self.get_value_child().get_resolved_value() * si_unit_specifier.factor
+        return self.get_value_child().get_resolved_value(blackboard) * si_unit_specifier.factor
 
 
 class IntegerLiteral(ModelElement):
@@ -1974,7 +1987,7 @@ class IntegerLiteral(ModelElement):
     def get_type_string(self):
         return 'int'
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         return int(self.value)
 
 
@@ -2001,7 +2014,7 @@ class FloatLiteral(ModelElement):
     def get_type_string(self):
         return 'float'
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         return float(self.value)
 
 
@@ -2028,7 +2041,7 @@ class BoolLiteral(ModelElement):
     def get_type_string(self):
         return 'bool'
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         return self.value == "true"
 
 
@@ -2041,7 +2054,7 @@ class StringLiteral(ModelElement):
     def get_value_child(self):
         return self.value
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         return self.value.strip("\'").strip("\"")
 
     def enter_node(self, listener):
@@ -2083,7 +2096,7 @@ class Type(ModelElement):
         else:
             return visitor.visit_children(self)
 
-    def get_resolved_value(self):
+    def get_resolved_value(self, blackboard=None):
         return None
 
 
@@ -2129,10 +2142,36 @@ class IdentifierReference(ModelElement):
             return visitor.visit_children(self)
 
     def get_type(self):
-        return self.ref.get_type()
+        if isinstance(self.ref, list):
+            return self.ref[-1].get_type()
+        else:
+            return self.ref.get_type()
 
     def get_type_string(self):
-        return self.ref.get_type_string()
+        if isinstance(self.ref, list):
+            return self.ref[-1].get_type_string()
+        else:
+            return self.ref.get_type_string()
 
-    def get_resolved_value(self):
-        return self.ref.get_resolved_value()
+    def get_resolved_value(self, blackboard=None):
+        if isinstance(self.ref, list):
+            ref = self.ref[0]
+            if any(isinstance(x, VariableDeclaration) for x in self.ref):
+                fqn = ref.get_fully_qualified_var_name(include_scenario=False)
+                if blackboard is None:
+                    raise ValueError("Variable Reference found, but no blackboard client available.")
+                for sub_elem in self.ref[1:]:
+                    fqn += "/" + sub_elem.name
+
+                blackboard.register_key(fqn, access=py_trees.common.Access.READ)
+                return getattr(blackboard, fqn)
+            else:
+                val = ref.get_resolved_value(blackboard)
+                for sub_elem in self.ref[1:]:
+                    if sub_elem.name not in val:
+                        if sub_elem != self.ref[-1]:
+                            raise OSC2ParsingError(msg=f'Reference to {sub_elem.name} not found', context=self.get_ctx())
+                    val = val[sub_elem.name]
+                return val
+        else:
+            return self.ref.get_resolved_value(blackboard)

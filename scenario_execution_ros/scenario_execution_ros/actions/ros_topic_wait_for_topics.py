@@ -16,15 +16,16 @@
 
 import py_trees
 from rclpy.node import Node
+from scenario_execution.actions.base_action import BaseAction
 
 
-class RosTopicWaitForTopics(py_trees.behaviour.Behaviour):
+class RosTopicWaitForTopics(BaseAction):
     """
     Class to check if ROS topic are available
     """
 
-    def __init__(self, name, topics: list):
-        super().__init__(name)
+    def __init__(self, topics: list):
+        super().__init__()
         if not isinstance(topics, list):
             raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
         else:

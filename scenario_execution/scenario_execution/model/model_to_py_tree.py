@@ -14,6 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import copy
 import py_trees
 from py_trees.common import Access, Status
 from pkg_resources import iter_entry_points
@@ -23,17 +24,16 @@ import inspect
 from scenario_execution.model.types import EventReference, FunctionApplicationExpression, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
+from scenario_execution.actions.base_action import BaseAction
 
 
-def create_py_tree(model, logger, log_tree):
+def create_py_tree(model, tree, logger, log_tree):
     model_to_py_tree = ModelToPyTree(logger)
-    behavior_trees = None
     try:
-        behavior_trees = model_to_py_tree.build(model, log_tree)
+        model_to_py_tree.build(model, tree, log_tree)
     except OSC2ParsingError as e:
         raise ValueError(
             f'Error while creating py-tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}') from e
-    return behavior_trees
 
 
 class TopicEquals(py_trees.behaviour.Behaviour):
@@ -107,34 +107,29 @@ class ModelToPyTree(object):
     def __init__(self, logger):
         self.logger = logger
 
-    def build(self, tree, log_tree):
-        behavior_builder = self.BehaviorInit(self.logger)
-        behavior_builder.visit(tree)
+    def build(self, model, tree, log_tree):
 
-        behavior_trees = behavior_builder.get_behavior_trees()
+        self.blackboard = tree.attach_blackboard_client(name="ModelToPyTree")
+        behavior_builder = self.BehaviorInit(self.logger, tree)
+        behavior_builder.visit(model)
 
-        if behavior_trees and log_tree:
-            for t in behavior_trees:
-                print(py_trees.display.ascii_tree(t))
-
-        return behavior_trees
+        if log_tree:
+            print(py_trees.display.ascii_tree(tree))
 
     class BehaviorInit(ModelBaseVisitor):
-        def __init__(self, logger) -> None:
+        def __init__(self, logger, tree) -> None:
             super().__init__()
             self.logger = logger
-            self.behavior_trees = []
-            self.__cur_behavior = None
-
-        def get_behavior_trees(self):
-            return self.behavior_trees
+            self.__cur_behavior = tree
 
         def visit_scenario_declaration(self, node: ScenarioDeclaration):
             scenario_name = node.qualified_behavior_name
 
-            behavior_tree = py_trees.composites.Sequence(name=scenario_name)
-            self.__cur_behavior = behavior_tree
-            self.behavior_trees.append(behavior_tree)
+            self.__cur_behavior.name = scenario_name
+
+            self.blackboard = self.__cur_behavior.attach_blackboard_client(
+                name="ModelToPyTree",
+                namespace=scenario_name)
 
             super().visit_scenario_declaration(node)
 
@@ -167,17 +162,41 @@ class ModelToPyTree(object):
 
         def visit_emit_directive(self, node: EmitDirective):
             if node.event_name in ['start', 'end', 'fail']:
+                scenario_elem = node
+                while scenario_elem is not None and not isinstance(scenario_elem, ScenarioDeclaration):
+                    scenario_elem = scenario_elem.get_parent()
                 self.__cur_behavior.add_child(TopicPublish(
-                    name=f"emit {node.event_name}", key=f"/{self.behavior_trees[-1].name}/{node.event_name}", msg=True))
+                    name=f"emit {node.event_name}", key=f"/{scenario_elem.name}/{node.event_name}", msg=True))
             else:
                 qualified_name = node.event.get_qualified_name()
                 self.__cur_behavior.add_child(TopicPublish(
                     name=f"emit {node.event_name}", key=qualified_name, msg=True))
 
+        def compare_method_arguments(self, method, expected_args, behavior_name, node):
+            method_args = inspect.getfullargspec(method).args
+
+            if "self" not in method_args:
+                raise OSC2ParsingError(
+                    msg=f'Plugin {behavior_name} {method.__name__} method is missing argument "self".', context=node.get_ctx())
+
+            missing_args = []
+            unknown_args = copy.copy(expected_args)
+            for element in method_args:
+                if element not in expected_args:
+                    missing_args.append(element)
+                else:
+                    unknown_args.remove(element)
+            error_string = ""
+            if missing_args:
+                error_string += "missing: " + ", ".join(missing_args)
+            if unknown_args:
+                if error_string:
+                    error_string += ", "
+                error_string += "unknown: " + ", ".join(unknown_args)
+            return method_args, error_string
+
         def visit_behavior_invocation(self, node: BehaviorInvocation):
             behavior_name = node.behavior.name
-
-            final_args = node.get_resolved_value()
 
             available_plugins = []
             for entry_point in iter_entry_points(group='scenario_execution.actions', name=None):
@@ -201,38 +220,56 @@ class ModelToPyTree(object):
                 )
             behavior_cls = available_plugins[0].load()
 
-            if not issubclass(behavior_cls, py_trees.behaviour.Behaviour):
+            if not issubclass(behavior_cls, BaseAction):
                 raise OSC2ParsingError(
-                    msg=f"Found plugin for '{behavior_name}', but it's not derived from py_trees.behaviour.Behaviour.",
+                    msg=f"Found plugin for '{behavior_name}', but it's not derived from BaseAction.",
                     context=node.get_ctx()
                 )
 
-            plugin_args = inspect.getfullargspec(behavior_cls.__init__).args
-            plugin_args.remove("self")
-
-            final_args["name"] = node.name
-
+            expected_args = node.get_parameter_names()
+            expected_args.append("self")
             if node.actor:
-                final_args["associated_actor"] = node.actor.get_resolved_value()
-                final_args["associated_actor"]["name"] = node.actor.name
+                expected_args.append("associated_actor")
 
-            missing_args = []
-            for element in plugin_args:
-                if element not in final_args:
-                    missing_args.append(element)
-            if missing_args:
-                raise OSC2ParsingError(
-                    msg=f'Plugin {behavior_name} requires arguments that are not defined in osc. Missing: {missing_args}', context=node.get_ctx()
-                )
-            log_name = None
-            if final_args["name"]:
-                log_name = final_args["name"]
-            else:
-                log_name = type(node).__name__
+            # check plugin constructor
+            init_method = getattr(behavior_cls, "__init__", None)
+            init_args = None
+            if init_method is not None:
+                # if __init__() is defined, check parameters. Allowed:
+                # - __init__(self)
+                # - __init__(self, <all-osc-defined-args)
+                init_args, error_string = self.compare_method_arguments(init_method, expected_args, behavior_name, node)
+                if init_args != ["self"] and set(init_args) != set(expected_args):
+                    raise OSC2ParsingError(
+                        msg=f'Plugin {behavior_name}: __init__() either only has "self" argument or all arguments defined in osc{error_string}.', context=node.get_ctx()
+                    )
+
+            execute_method = getattr(behavior_cls, "execute", None)
+            if execute_method is not None:
+                _, error_string = self.compare_method_arguments(execute_method, expected_args, behavior_name, node)
+                if error_string:
+                    raise OSC2ParsingError(
+                        msg=f'Plugin {behavior_name}: execute() arguments differ from osc-definition: {error_string}.', context=node.get_ctx()
+                    )
+
+            # initialize plugin instance
+            action_name = node.name
+            if not action_name:
+                action_name = behavior_name
             self.logger.debug(
-                f"Instantiate action '{log_name}', plugin '{behavior_name}' with:\nArguments: {final_args}")
+                f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected execute() arguments: {expected_args}")
             try:
-                instance = behavior_cls(**final_args)
+                if init_args is not None and init_args != ['self']:
+                    final_args = node.get_resolved_value()
+
+                    if node.actor:
+                        final_args["associated_actor"] = node.actor.get_resolved_value()
+                        final_args["associated_actor"]["name"] = node.actor.name
+
+                    instance = behavior_cls(**final_args)
+                else:
+                    instance = behavior_cls()
+                instance._set_name_and_model(action_name, node)  # pylint: disable=protected-access
             except Exception as e:
                 raise OSC2ParsingError(msg=f'Error while initializing plugin {behavior_name}: {e}', context=node.get_ctx()) from e
             self.__cur_behavior.add_child(instance)

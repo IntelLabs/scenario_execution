@@ -19,7 +19,7 @@ from glob import glob
 import os
 from setuptools import find_namespace_packages, setup
 
-PACKAGE_NAME = 'test_scenario_execution_ros'
+PACKAGE_NAME = 'scenario_execution_ros_test'
 
 setup(
     name=PACKAGE_NAME,
@@ -40,6 +40,6 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'test_scenario_execution_ros = test_scenario_execution_ros.workload_node:main',
+            'scenario_execution_ros_test = scenario_execution_ros_test.workload_node:main',
         ]}
 )

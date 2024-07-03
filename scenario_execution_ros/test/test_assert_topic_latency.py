@@ -16,8 +16,7 @@
 
 import unittest
 import threading
-
-from ament_index_python.packages import get_package_share_directory
+import py_trees
 
 import rclpy
 from std_msgs.msg import String
@@ -37,7 +36,6 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.running = True
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
-        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
         self.received_msgs = []
         self.node = rclpy.create_node('test_node')
         self.publisher = self.node.create_publisher(String, "/bla", 10)
@@ -46,6 +44,15 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.executor.add_node(self.node)
         self.executor_thread = threading.Thread(target=self.executor.spin, daemon=True)
         self.executor_thread.start()
+        self.tree = py_trees.composites.Sequence()
+
+    def execute(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.live_tree = True
+        self.scenario_execution_ros.run()
 
     def publish_messages(self):
         msg = String()
@@ -108,11 +115,7 @@ scenario test_assert_topic_latency:
                 latency: 0.5s)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_2(self):
@@ -128,11 +131,7 @@ scenario test_assert_topic_latency:
                 topic_type: 'std_msgs.msg.ring')
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_3(self):
@@ -148,11 +147,7 @@ scenario test_assert_topic_latency:
                 topic_type: 'std_msgs.msg.Bool')
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_4(self):
@@ -168,11 +163,7 @@ scenario test_assert_topic_latency:
                 topic_type: 'std_msgs.msg.String')
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test__case_5(self):
@@ -190,11 +181,7 @@ scenario test_assert_topic_latency:
             wait elapsed(8s)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_case_6(self):
@@ -212,11 +199,7 @@ scenario test_assert_topic_latency:
             wait elapsed(8s)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_case_7(self):
@@ -232,11 +215,7 @@ scenario test_assert_topic_latency:
                 comparison_operator: comparison_operator!ge)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_8(self):
@@ -252,11 +231,7 @@ scenario test_assert_topic_latency:
                 fail_on_finish: false)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_case_9(self):
@@ -272,11 +247,7 @@ scenario test_assert_topic_latency:
                 rolling_average_count: 5)
             emit end
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_10(self):
@@ -292,12 +263,7 @@ scenario test_assert_topic_latency:
                 wait_for_first_message: false)
             emit end
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_11(self):
@@ -314,12 +280,7 @@ scenario test_assert_topic_latency:
                 topic_type: 'std_msgs.msg.Bool')
             emit end
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_12(self):
@@ -336,12 +297,7 @@ scenario test_assert_topic_latency:
                 topic_type: 'std_msgs.msg.String')
             emit end
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_case_13(self):
@@ -362,11 +318,7 @@ scenario test_assert_topic_latency:
             emit end
 
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_case_14(self):
@@ -384,9 +336,5 @@ scenario test_assert_topic_latency:
             emit end
 
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
