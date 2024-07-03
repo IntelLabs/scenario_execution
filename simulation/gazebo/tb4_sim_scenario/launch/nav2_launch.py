@@ -24,6 +24,7 @@ from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
+
 def generate_launch_description():
 
     # Directories
@@ -31,35 +32,34 @@ def generate_launch_description():
     pkg_tb4_nav = get_package_share_directory('turtlebot4_navigation')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
 
-
     arguments = [
 
         DeclareLaunchArgument('namespace', default_value='',
-                            description='Robot namespace'),
+                              description='Robot namespace'),
         # Ignition setup
         DeclareLaunchArgument('world', default_value='warehouse',
-                            description='Ignition World'),
+                              description='Ignition World'),
 
         DeclareLaunchArgument('model', default_value='standard',
-                            choices=['standard', 'lite'],
-                            description='Turtlebot4 Model'),
+                              choices=['standard', 'lite'],
+                              description='Turtlebot4 Model'),
 
         DeclareLaunchArgument('nav2', default_value='True',
-                            description='Set "False" to skip nav2 startup.'),
+                              description='Set "False" to skip nav2 startup.'),
 
         DeclareLaunchArgument('headless', default_value='True',
-                            description='Start Igniton GUI or not'),
+                              description='Start Igniton GUI or not'),
 
         DeclareLaunchArgument('map_yaml', default_value=os.path.join(pkg_tb4_nav, 'maps', 'maze.yaml'),
-                            description='map yaml file'),
+                              description='map yaml file'),
     ]
 
     # Inital robot pose in the world
     for pose_element in ['x', 'y', 'z', 'yaw']:
         arguments.append(DeclareLaunchArgument(pose_element,
-                                            default_value='0.0',
-                                            description=f'{pose_element} component of the robot pose.'))
-        
+                                               default_value='0.0',
+                                               description=f'{pose_element} component of the robot pose.'))
+
     # Launch args
     map_yaml = LaunchConfiguration('map_yaml')
     nav2 = LaunchConfiguration('nav2')

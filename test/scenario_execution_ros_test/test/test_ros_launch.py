@@ -69,8 +69,8 @@ scenario test:
     do parallel:
         serial:
             ros_launch('scenario_execution_ros_test', 'test_launch.py', [
-                ros_argument(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
-                ros_argument(key: 'test_path', value: '""" + self.tmp_dir.name + """')
+                key_value(key: 'test_param', value: '""" + self.tmp_dir.name + """'),
+                key_value(key: 'test_path', value: '""" + self.tmp_dir.name + """')
             ])
             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')

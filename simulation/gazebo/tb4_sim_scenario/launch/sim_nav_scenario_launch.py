@@ -42,7 +42,7 @@ def generate_launch_description():
         description='Wether to execute scenario execution')
     world_name = LaunchConfiguration('world_name')
     arg_world_name = DeclareLaunchArgument('world_name', default_value='default',
-                                      description='Name of Simulation World')
+                                           description='Name of Simulation World')
 
     faulty_scan = LaunchConfiguration('faulty_scan')
     arg_faulty_scan = DeclareLaunchArgument(
