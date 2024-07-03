@@ -8,7 +8,7 @@ scenario test_spawn_and_exists:
         test_obstacle.spawn(
             spawn_pose: pose_3d(position: position_3d(x: -3m, y: 0m, z: 1m)),
             world_name: 'maze',
-            model: 'test_scenario_execution_gazebo://models/box.sdf')
+            model: 'scenario_execution_gazebo_test://models/box.sdf')
         test_case: serial:
             wait elapsed(5s)
             test: actor_exists(

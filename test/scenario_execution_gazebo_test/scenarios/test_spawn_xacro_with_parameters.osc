@@ -9,7 +9,7 @@ scenario test_spawn_xacro_with_parameters:
             spawn_pose: pose_3d(position: position_3d(x: -3m, z: 2m)),
             world_name: 'maze',
             xacro_arguments: 'box_width_length:=1 1,box_height:=4',
-            model: 'test_scenario_execution_gazebo://models/box.sdf.xacro')
+            model: 'scenario_execution_gazebo_test://models/box.sdf.xacro')
         test_case: serial:
             test: actor_exists(
                 entity_name: 'test_obstacle',

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>test_scenario_execution_gazebo</name>
+  <name>scenario_execution_gazebo_test</name>
   <version>1.1.0</version>
   <description>Tests for Scenario Execution library for Gazebo</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
