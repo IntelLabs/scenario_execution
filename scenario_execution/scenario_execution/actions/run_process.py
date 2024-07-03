@@ -18,19 +18,21 @@ import py_trees  # pylint: disable=import-error
 import subprocess  # nosec B404
 from threading import Thread
 from collections import deque
+import signal
+from scenario_execution.actions.base_action import BaseAction
 
 
-class RunProcess(py_trees.behaviour.Behaviour):
+class RunProcess(BaseAction):
     """
-    Class to execute an process. It finishes when the process finishes
-
-    Args:
-        command[str]: command to execute
+    Class to execute an process.
     """
 
-    def __init__(self, name, command=None):
-        super().__init__(name)
+    def __init__(self, command=None, wait_for_shutdown=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
+        super().__init__()
         self.command = command.split(" ") if isinstance(command, str) else command
+        self.wait_for_shutdown = wait_for_shutdown
+        self.shutdown_timeout = shutdown_timeout
+        self.shutdown_signal = shutdown_signal[1]
         self.executed = False
         self.process = None
         self.log_stdout_thread = None
@@ -78,6 +80,7 @@ class RunProcess(py_trees.behaviour.Behaviour):
             self.log_stderr_thread.start()
 
         if self.process is None:
+            self.process = None
             return py_trees.common.Status.FAILURE
 
         ret = self.process.poll()
@@ -106,7 +109,10 @@ class RunProcess(py_trees.behaviour.Behaviour):
         return:
             py_trees.common.Status
         """
-        return py_trees.common.Status.RUNNING
+        if self.wait_for_shutdown:
+            return py_trees.common.Status.RUNNING
+        else:
+            return py_trees.common.Status.SUCCESS
 
     def on_process_finished(self, ret):
         """
@@ -133,3 +139,19 @@ class RunProcess(py_trees.behaviour.Behaviour):
 
     def get_command(self):
         return self.command
+
+    def shutdown(self):
+        if self.process is None:
+            return
+
+        ret = self.process.poll()
+        if ret is None:
+            # kill running process
+            self.logger.info(f'Sending {signal.Signals(self.shutdown_signal).name} to process...')
+            self.process.send_signal(self.shutdown_signal)
+            self.process.wait(self.shutdown_timeout)
+            if self.process.poll() is None:
+                self.logger.info('Sending SIGKILL to process...')
+                self.process.send_signal(signal.SIGKILL)
+                self.process.wait()
+            self.logger.info('Process finished.')

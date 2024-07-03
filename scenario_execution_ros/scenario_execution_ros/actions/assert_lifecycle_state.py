@@ -19,12 +19,13 @@ from rclpy.node import Node
 from lifecycle_msgs.srv import GetState
 from lifecycle_msgs.msg import TransitionEvent
 from scenario_execution_ros.actions.conversions import get_qos_preset_profile
+from scenario_execution.actions.base_action import BaseAction
 
 
-class AssertLifecycleState(py_trees.behaviour.Behaviour):
+class AssertLifecycleState(BaseAction):
 
-    def __init__(self, name, node_name: str, state_sequence: list, allow_inital_state_skip: bool, fail_on_finish: bool):
-        super().__init__(name)
+    def __init__(self, node_name: str, state_sequence: list, allow_inital_state_skip: bool, fail_on_finish: bool):
+        super().__init__()
         self.node_name = node_name
         self.state_sequence = state_sequence
         self.allow_inital_state_skip = allow_inital_state_skip

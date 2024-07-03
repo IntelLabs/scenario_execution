@@ -1,15 +1,8 @@
 import osc.robotics
 
-# Policy rules for behaviours to dictate when data should be cleared/reset.
-#    on_initialise     Clear when entering the py_trees.behaviour.Behaviour.initialise method.
-#    on_success        Clear when returning py_trees.common.Status.SUCCESS
-#    never             Never clear the data
-
-enum clearing_policy: [
-    on_initialise, 
-    on_success, 
-    never
-]
+struct ros_argument:
+    key: string
+    value: string = ''
 
 enum comparison_operator: [
     lt,
@@ -67,19 +60,19 @@ action assert_topic_latency:
     comparison_operator: comparison_operator = comparison_operator!le # the comparison is done using the python operator module
     fail_on_finish: bool = true # if false, the action should success if comparison is true
     rolling_average_count: int = 1 # the check is done aganist the rolling average over x elements
-    wait_for_first_message: bool = true # start measuring with the first recieved message
+    wait_for_first_message: bool = true # start measuring with the first received message
     topic_type: string # class of message type, only required when wait_for_first_message is set to false (e.g. std_msgs.msg.String)
 
 action check_data:
     topic_name: string                                # name of the topic to connect to
     topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
     qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
-    variable_name: string                             # name of the variable to check
+    member_name: string = ""                          # name of the member to check, if empty the whole message is checked
     expected_value: string                            # expected value of the variable
     comparison_operator: comparison_operator = comparison_operator!eq     # one from the python `operator module`_
-    fail_if_no_data: bool = false                     # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if there is no data yet
-    fail_if_bad_comparison: bool = false               # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
-    clearing_policy: clearing_policy = clearing_policy!on_initialise     # when to clear the data
+    fail_if_no_data: bool = false                     # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if there is no data on action execution
+    fail_if_bad_comparison: bool = false              # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
+    wait_for_first_message: bool = true               # start checking with the first received message after action execution. If false, the check is executed on the last received message
 
 action differential_drive_robot.init_nav2:
     initial_pose: pose_3d
@@ -122,6 +115,14 @@ action record_bag:
     hidden_topics: bool = false  # whether to record hidden topics
     storage: string = ''         # storage type to use (empty string: use default)
 
+action ros_launch:
+    # Execute a ros launch file
+    package_name: string            # package that contains the launch file
+    launch_file: string             # launch file name
+    arguments: list of ros_argument # ros arguments (get forwarded as key:=value pairs)
+    wait_for_shutdown: bool = true   # if true, the action waits until the execution has finished
+    shutdown_timeout: time = 10s # (only used if wait_for_shutdown is false) time to wait between SIGINT and SIGKILL getting sent, if process is still running on scenario shutdown
+
 action service_call:
     service_name: string                              # name of the service to connect to
     service_type: string                              # class of the message type (e.g. std_srvs.msg.Empty)
@@ -142,7 +143,6 @@ action wait_for_data:
     topic_name: string                                # name of the topic to connect to
     topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
     qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
-    clearing_policy: clearing_policy = clearing_policy!on_initialise     # when to clear the data
 
 action wait_for_topics:
     # wait for topics to get available

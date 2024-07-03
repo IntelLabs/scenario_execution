@@ -172,6 +172,7 @@ class ScenarioBatchExecution(object):
                     print(f"### XML file has no 'testsuite' element. {test_file}")
 
             if not parsed_successfully:
+                total_errors += 1
                 missing_test_elem = ET.Element('testcase')
                 missing_test_elem.set("classname", "tests.scenario")
                 missing_test_elem.set("name", "no_test_result")

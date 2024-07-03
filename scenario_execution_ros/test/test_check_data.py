@@ -15,9 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-
-from ament_index_python.packages import get_package_share_directory
-
+import py_trees
 import rclpy
 
 from scenario_execution_ros import ROSScenarioExecution
@@ -35,8 +33,15 @@ class TestCheckData(unittest.TestCase):
         rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
+        self.tree = py_trees.composites.Sequence()
 
-        self.scenario_dir = get_package_share_directory('scenario_execution_ros')
+    def execute(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.live_tree = True
+        self.scenario_execution_ros.run()
 
     def tearDown(self):
         rclpy.try_shutdown()
@@ -51,22 +56,17 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name: 'data',
+                member_name: 'data',
                 expected_value: 'True')
             emit end
         time_out: serial:
-            wait elapsed(5s)
+            wait elapsed(3s)
             emit fail
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-    def test_sucess_field(self):
+    def test_success_member(self):
         scenario_content = """
 import osc.ros
 
@@ -82,22 +82,17 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name: 'data',
-                expected_value: true)
+                member_name: 'data',
+                expected_value: 'True')
             emit end
         time_out: serial:
             wait elapsed(10s)
             emit fail
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
-    def test_error_empty_variable_name(self):
+    def test_fail_unknown_member(self):
         scenario_content = """
 import osc.ros
 
@@ -113,19 +108,91 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name : '',
-                expected_value: true)
+                member_name: 'UNKNOWN',
+                expected_value: 'True')
             emit end
         time_out: serial:
             wait elapsed(10s)
             emit fail
 """
-
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        self.assertRaises(ValueError, create_py_tree, model, self.tree, self.parser.logger, False)
+
+    def test_fail_member_value_differ(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                member_name: 'data',
+                expected_value: 'False')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_error_empty_member_name(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                expected_value: '{\\\"data\\\": True}')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_error_empty_member_name_comparison_fails(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                expected_value: '{\\\"data\\\": False}')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_fail_if_bad_comparison(self):
@@ -144,20 +211,15 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name: 'data',
-                expected_value: 'false',
+                member_name: 'data',
+                expected_value: 'False',
                 fail_if_bad_comparison: true)
             emit end
         time_out: serial:
             wait elapsed(10s)
             emit end
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_wait_for_comparison_to_succeed(self):
@@ -181,17 +243,194 @@ scenario test:
             check_data(
                 topic_name: '/bla',
                 topic_type: 'std_msgs.msg.Bool',
-                variable_name: 'data',
-                expected_value: false)
+                member_name: 'data',
+                expected_value: 'False')
             emit end
         time_out: serial:
             wait elapsed(10s)
             emit fail
 """
-
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution_ros.scenarios = scenarios
-        self.scenario_execution_ros.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_wait_for_first_message_false_data_available(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+            wait elapsed(1s)
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                member_name: 'data',
+                expected_value: 'True',
+                wait_for_first_message: false)
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_wait_for_first_message_false_data_not_available(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                member_name: 'data',
+                expected_value: 'True',
+                wait_for_first_message: false)
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_wait_for_first_message_true_data_gets_available(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                member_name: 'data',
+                expected_value: 'True',
+                wait_for_first_message: true)
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_ne_operator_success(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                comparison_operator: comparison_operator!ne,
+                member_name: 'data',
+                expected_value: 'False')
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_ne_operator_fail(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                comparison_operator: comparison_operator!ne,
+                member_name: 'data',
+                expected_value: 'True')
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_ge_operator_success(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Int32',
+                value: '{\\\"data\\\": 3}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Int32',
+                comparison_operator: comparison_operator!ge,
+                member_name: 'data',
+                expected_value: '2')
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_ge_operator_fail(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Int32',
+                value: '{\\\"data\\\": 3}')
+        serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Int32',
+                comparison_operator: comparison_operator!ge,
+                member_name: 'data',
+                expected_value: '4')
+            emit end
+        time_out: serial:
+            wait elapsed(3s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())

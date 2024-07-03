@@ -15,28 +15,33 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import unittest
-import rclpy
+import py_trees
 from scenario_execution import ScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
+from datetime import datetime
 
 
 class TestScenarioExecutionSuccess(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self) -> None:
-        rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ScenarioExecution(debug=False,
                                                     log_model=False,
                                                     live_tree=False,
                                                     scenario_file='test',
                                                     output_dir='')
+        self.tree = py_trees.composites.Sequence()
 
-    def tearDown(self):
-        rclpy.try_shutdown()
+    def execute(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution.tree = self.tree
+        self.scenario_execution.run()
 
     def test_failure(self):
         scenario_content = """
@@ -53,11 +58,7 @@ scenario test_run_process:
             wait elapsed(10s)
             time_out_shutdown: emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
+        self.execute(scenario_content)
         self.assertFalse(self.scenario_execution.process_results())
 
     def test_success(self):
@@ -75,11 +76,7 @@ scenario test_run_process:
             wait elapsed(10s)
             time_out_shutdown: emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution.process_results())
 
     def test_multi_element_command(self):
@@ -96,9 +93,43 @@ scenario test_run_process:
             wait elapsed(10s)
             time_out_shutdown: emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-        scenarios = create_py_tree(model, self.parser.logger, False)
-        self.scenario_execution.scenarios = scenarios
-        self.scenario_execution.run()
+        self.execute(scenario_content)
         self.assertTrue(self.scenario_execution.process_results())
+
+    def test_wait_for_shutdown_false(self):
+        scenario_content = """
+import osc.standard.base
+import osc.helpers
+
+scenario test_run_process:
+    do parallel:
+        serial:
+            run_process('sleep 15', wait_for_shutdown: false)
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            time_out_shutdown: emit fail
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution.tree = self.tree
+
+        start = datetime.now()
+        self.scenario_execution.run()
+        end = datetime.now()
+        duration = (end-start).total_seconds()
+        self.assertLessEqual(duration, 10.)
+        self.assertTrue(self.scenario_execution.process_results())
+
+    def test_signal_parsing(self):
+        scenario_content = """
+import osc.standard.base
+import osc.helpers
+
+scenario test_run_process:
+    do run_process('sleep 15', wait_for_shutdown: false, shutdown_signal: signal!sigint)
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree(model, self.tree, self.parser.logger, False)

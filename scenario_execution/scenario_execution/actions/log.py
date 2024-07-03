@@ -16,21 +16,13 @@
 
 import py_trees
 from py_trees.common import Status
+from scenario_execution.actions.base_action import BaseAction
 
 
-class Log(py_trees.behaviour.Behaviour):
+class Log(BaseAction):
     """
     Class for logging
-
-    Args:
-        msg [str]: message to log
     """
-
-    def __init__(self, name, msg: str):
-        super().__init__(name)
-        self.msg = msg
-        self.published = False
-        self.logger = None
 
     def setup(self, **kwargs) -> None:
         """
@@ -40,6 +32,10 @@ class Log(py_trees.behaviour.Behaviour):
             kwargs: arguments passed from py_trees.behaviour.Behaviour
         """
         self.logger = kwargs['logger']
+
+    def execute(self, msg: str):
+        self.msg = msg
+        self.published = False
 
     def update(self) -> py_trees.common.Status:
         """

@@ -18,7 +18,7 @@
 Test actor parsing
 """
 import unittest
-
+import py_trees
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
@@ -29,14 +29,18 @@ class TestOSC2Parser(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
+        self.tree = py_trees.composites.Sequence()
+
+    def parse(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
 
     def test_actor(self):
         scenario_content = """
 actor base:
     param1: string = "value1"
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        model = self.parse(scenario_content)
         self.assertEqual(model._ModelElement__children[0].actor, "base")
         self.assertEqual(model._ModelElement__children[0]._ModelElement__children[0].get_resolved_value(), "value1")
 
@@ -47,8 +51,7 @@ actor base:
 actor derived inherits base:
     param2: string = "value2"
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
+        model = self.parse(scenario_content)
         self.assertEqual(model._ModelElement__children[0]._ModelElement__children[0].get_resolved_value(), "value1")
         self.assertEqual(model._ModelElement__children[1]._ModelElement__children[1].get_resolved_value(), "value2")
 
@@ -60,8 +63,6 @@ actor derived inherits base:
     param1: string = "OVERRIDE"
     param2: string = "value2"
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, "test.osc", False)
-
+        model = self.parse(scenario_content)
         params = model._ModelElement__children[1].get_resolved_value()
         self.assertEqual({'param1': 'OVERRIDE', 'param2': 'value2'}, params)

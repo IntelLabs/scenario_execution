@@ -20,15 +20,16 @@ from rclpy.logging import get_logger
 from nav_msgs.msg import Odometry
 from py_trees.common import Status
 import py_trees
+from scenario_execution.actions.base_action import BaseAction
 
 
-class OdometryDistanceTraveled(py_trees.behaviour.Behaviour):
+class OdometryDistanceTraveled(BaseAction):
     """
     Class to wait for a certain covered distance, based on odometry
     """
 
-    def __init__(self, name, associated_actor, distance: float, namespace_override: str):
-        super().__init__(name)
+    def __init__(self, associated_actor, distance: float, namespace_override: str):
+        super().__init__()
         self.namespace = associated_actor["namespace"]
         self.distance_expected = distance
         self.distance_traveled = 0.0

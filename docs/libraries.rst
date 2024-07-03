@@ -10,8 +10,76 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
 
 Additional features can be implemented by defining your own library.
 
-``osc.helpers``
----------------
+
+Gazebo
+------
+
+The library contains actions to interact with the `Gazebo Simulation <https://gazebosim.org/>`_. Import it with ``import osc.gazebo``. It's provided by the package :repo_link:`scenario_execution_gazebo`.
+
+Actions
+^^^^^^^
+
+``actor_exists()``
+""""""""""""""""""
+
+Waits for an actor to exist within simulation.
+
+- ``entity_name``: Entity name within simulation
+- ``world_name: string``: Gazebo world name (default: ``default``)
+
+``osc_object.delete()``
+"""""""""""""""""""""""
+
+Delete an object from the simulation.
+
+- ``entity_name``: Entity name within simulation
+- ``world_name: string``: Gazebo world name (default: ``default``)
+
+``osc_object.relative_spawn()``
+"""""""""""""""""""""""""""""""
+
+Spawn an actor relative to a given ``frame_id`` within simulation (at a specified ``distance`` in front of ``frame_id``).
+
+- ``frame_id``: The frame Id to spawn the actor relative to. (default: ``base_link``)
+- ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
+- ``distance``: distance value relative to the frame_id at which to spawn the new actor (default: 1.0)
+- ``world_name: string``: Gazebo world name (default: ``default``)
+- ``model: string``: Model definition
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
+
+``osc_object.spawn()``
+""""""""""""""""""""""
+
+Spawn an actor within simulation.
+
+- ``spawn_pose: pose_3d``: Pose of the spawned actor.
+- ``world_name: string``: Gazebo world name (default: ``default``)
+- ``model: string``: Model definition
+- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
+
+.. note::
+
+    The model definition can be specified in different formats:
+
+    - ``file://<path-to-model>``: Local path to model file
+    - ``model://<path-to-model>``: Path relative to available model search paths
+    - ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`test/scenario_execution_gazebo_test/scenarios/test_spawn_exists_delete.osc`)
+    - ``https:://fuel``: Model from `fuel.gazebosim.org <https://app.gazebosim.org/>`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
+
+    If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
+
+``wait_for_sim()``
+""""""""""""""""""
+Wait for simulation to become active (checks for simulation clock).
+
+- ``world_name: string``: Gazebo world name (default: ``default``)
+- ``timeout: time``:  time to wait for the simulation. return failure afterwards. (default: ``60s``)
+
+
+Helpers
+-------
+
+The library contains basic helper methods. Import it with ``import osc.helpers``.
 
 Actions
 ^^^^^^^
@@ -28,21 +96,54 @@ For debugging purposes, log a string using the available log mechanism.
 
 Run a process. Reports `running` while the process has not finished.
 
+If ``wait_for_shutdown`` is ``false`` and the process is still running on scenario shutdown, ``shutdown_signal`` is sent. If the process does not shutdown within shutdown_timeout, ``signal.sigkill`` is sent.
+
 - ``command: string``: Command to execute
+- ``wait_for_shutdown: bool``:  Wait for the process to be finished. If false, the action immediately finishes (default: ``true``)
+- ``shutdown_signal: signal``: (Only used if ``wait_for_shutdown`` is ``false``) Signal that is sent if a process is still running on scenario shutdown (default: ``signal!sigterm``)
+- ``shutdown_timeout: time``: (Only used if ``wait_for_shutdown`` is ``false``) time to wait between ``shutdown_signal`` and SIGKILL getting sent, if process is still running on scenario shutdown (default: ``10s``)
+
+OS
+--
+
+The library contains actions to interact with the operating system. Import it with ``import osc.os``. It is provided by the package :repo_link:`libs/scenario_execution_os`.
+
+Actions
+^^^^^^^
+
+``check_file_exists()``
+"""""""""""""""""""""""
+
+Report success if a file exists.
+
+- ``file_name: string``: File to check
 
 
-``osc.robotics``
-----------------
+``check_file_not_exists()``
+"""""""""""""""""""""""""""
+
+Report success if a file does not exist.
+
+- ``file_name: string``: File to check
+
+
+Robotics
+--------
+
+The library contains elements reusable in different robotic contexts. Import it with ``import osc.robotics``. It is provided by the package :repo_link:`scenario_execution`.
 
 Actors
 ^^^^^^
 
 ``robot``
-""""""""""""""""""""""""""""
+"""""""""
 A general robot actor.
 
-``osc.ros``
------------
+
+ROS
+---
+
+The library contains actions to interact with ROS nodes. Import it with ``import osc.ros``. It is provided by the package :repo_link:`scenario_execution_ros`.
 
 Actors
 ^^^^^^
@@ -102,19 +203,17 @@ Check the latency of the specified topic (in system time). If the check with `co
 
 ``check_data()``
 """"""""""""""""
-Wait for a topic message, compare a message field against a specific value.
-
-In the background, this action uses `check_data() <https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.CheckData>`__ from `py_trees_ros <https://github.com/splintered-reality/py_trees_ros>`__.
+Compare received topic messages using the given ``comparison_operator``, against the specified value. Either the whole message gets compared or a member defined by ``member_name``.
 
 - ``topic_name: string``: Name of the topic to connect to
 - ``topic_type: string``: Class of the message type (e.g. ``std_msgs.msg.String``)
 - ``qos_profile: qos_preset_profiles``: QoS Preset Profile for the subscriber (default: ``qos_preset_profiles!system_default``)
-- ``variable_name: string``: Name of the variable to check
-- ``expected_value: string``: Expected value of the variable
+- ``member_name: string``: Name of the type member to check. If empty, the whole type is checked (default: ``""``)
+- ``expected_value: string``: Expected value
 - ``comparison_operator: comparison_operator``: The comparison operator to apply (default: ``comparison_operator!eq``)
 - ``fail_if_no_data: bool``: return failure if there is no data yet (default: ``false``)
 - ``fail_if_bad_comparison: bool``: return failure if comparison failed (default: ``true``)
-- ``clearing_policy: clearing_policy``: When to clear the data (default: ``clearing_policy!on_initialise``)
+- ``wait_for_first_message: bool``: start checking with the first received message after action execution. If false, the check is executed on the last received message. (default: ``true``)
 
 ``differential_drive_robot.init_nav2()``
 """"""""""""""""""""""""""""""""""""""""
@@ -181,6 +280,17 @@ Record a ROS bag, stored in directory ``output_dir`` defined by command-line par
 - ``hidden_topics: bool``: Whether to record hidden topics (default: ``false``)
 - ``storage: string``: Storage type to use (empty string: use ROS bag record default)
 
+``ros_launch()``
+""""""""""""""""
+
+Execute a ROS launch file.
+
+- ``package_name: string``: Package that contains the launch file
+- ``launch_file: string``: Launch file name
+- ``arguments: list of ros_argument``: ROS arguments (get forwarded as key:=value pairs)
+- ``wait_for_shutdown: bool``: If true, the action waits until the execution is finished (default: ``true``)
+- ``shutdown_timeout: time``: (Only used ``if wait_for_shutdown`` is ``false``) Time to wait between ``SIGINT`` and ``SIGKILL`` getting sent, if process is still running on scenario shutdown (default: ``10s``)
+
 ``service_call()``
 """"""""""""""""""
 
@@ -228,65 +338,3 @@ In the background, this action uses `wait_for_data() <https://py-trees-ros.readt
 Wait for topics to get available (i.e. publisher gets available).
 
 - ``topics: list of string``: List of topics to wait for
-
-``osc.gazebo``
---------------
-
-Actions
-^^^^^^^
-
-``actor_exists()``
-""""""""""""""""""
-
-Waits for an actor to exist within simulation.
-
-- ``entity_name``: Entity name within simulation
-- ``world_name: string``: Gazebo world name (default: ``default``)
-
-``osc_object.delete()``
-"""""""""""""""""""""""
-
-Delete an object from the simulation.
-
-- ``entity_name``: Entity name within simulation
-- ``world_name: string``: Gazebo world name (default: ``default``)
-
-``osc_object.relative_spawn()``
-"""""""""""""""""""""""""""""""
-
-Spawn an actor relative to a given ``frame_id`` within simulation (at a specified ``distance`` in front of ``frame_id``).
-
-- ``frame_id``: The frame Id to spawn the actor relative to. (default: ``base_link``)
-- ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
-- ``distance``: distance value relative to the frame_id at which to spawn the new actor (default: 1.0)
-- ``world_name: string``: Gazebo world name (default: ``default``)
-- ``model: string``: Model definition
-- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
-
-``osc_object.spawn()``
-""""""""""""""""""""""
-
-Spawn an actor within simulation.
-
-- ``spawn_pose: pose_3d``: Pose of the spawned actor.
-- ``world_name: string``: Gazebo world name (default: ``default``)
-- ``model: string``: Model definition
-- ``xacro_arguments: string``: (optional) Comma-separated list of argument key:=value pairs
-
-.. note::
-
-    The model definition can be specified in different formats:
-
-    - ``file://<path-to-model>``: Local path to model file
-    - ``model://<path-to-model>``: Path relative to available model search paths
-    - ``<package-name>://<path-to-model>``: Path relative to an available package (e.g. :repo_link:`simulation/gazebo/test_scenario_execution_gazebo/scenarios/test_spawn_exists_delete.osc`)
-    - ``https:://fuel``: Model from `fuel.gazebosim.org <https://app.gazebosim.org/>`__ (e.g. ``https://fuel.gazebosim.org/1.0/OpenRobotics/models/Beer``)
-
-    If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
-
-``wait_for_sim()``
-""""""""""""""""""
-Wait for simulation to become active (checks for simulation clock).
-
-- ``world_name: string``: Gazebo world name (default: ``default``)
-- ``timeout: time``:  time to wait for the simulation. return failure afterwards. (default: ``60s``)

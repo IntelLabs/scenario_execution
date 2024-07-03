@@ -38,8 +38,8 @@ class RosBagRecord(RunProcess):
     Class to execute ros bag recording
     """
 
-    def __init__(self, name, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
-        super().__init__(name)
+    def __init__(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
+        super().__init__()
         if not isinstance(topics, list):
             raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
         else:
