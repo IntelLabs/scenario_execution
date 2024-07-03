@@ -19,14 +19,15 @@ from rclpy.node import Node
 from rclpy.logging import get_logger
 from pymoveit2 import MoveIt2State
 from scenario_execution_moveit.moveit_common import Gripper
+from scenario_execution.actions.base_action import BaseAction
 import py_trees
 import ast
 
 
-class MoveGripper(py_trees.behaviour.Behaviour):
+class MoveGripper(BaseAction):
 
-    def __init__(self, name: str, associated_actor, gripper: str):
-        super().__init__(name)
+    def __init__(self, associated_actor, gripper: str):
+        super().__init__()
         self.namespace = associated_actor["namespace"]
         self.joint_names = associated_actor["joint_names"]
         self.base_link_name = associated_actor["base_link_name"]

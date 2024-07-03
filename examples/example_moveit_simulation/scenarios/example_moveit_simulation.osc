@@ -20,19 +20,13 @@ scenario example_moveit:
                             orientation: orientation_3d(yaw: 0.0rad)),
                         model: 'example_moveit_simulation://models/box.sdf',world_name: 'empty')
         serial:
-            wx200.move_to_joint_pose() with:
-                keep(it.joint_pose == '[0.0, 0.122173, 0.296706, 1.0472, 0.0]')
-            wx200.move_gripper() with:
-                keep(it.gripper == 'open')
-            wx200.move_to_joint_pose() with:
-                keep(it.joint_pose == '[0.0, 0.296706, 0.296706, 1.22173, 0.0]')
-            wx200.move_gripper() with:
-                keep(it.gripper == 'close')
+            wx200.move_to_joint_pose(joint_pose: '[0.0, 0.122173, 0.296706, 1.0472, 0.0]')
+            wx200.move_gripper(gripper:'open')
+            wx200.move_to_joint_pose(joint_pose: '[0.0, 0.296706, 0.296706, 1.22173, 0.0]')
+            wx200.move_gripper(gripper: 'close')
             wx200.move_to_pose(pose_3d(position: position_3d(x: 0.1m, y: 0.0m, z: 0.4m)))
-            wx200.move_to_joint_pose() with:
-                keep(it.joint_pose == '[0.5235, 0.0, 0.0, 0.0, 0.0]')
-            wx200.move_gripper() with:
-                keep(it.gripper == 'open')
+            wx200.move_to_joint_pose(joint_pose: '[0.5235, 0.0, 0.0, 0.0, 0.0]')
+            wx200.move_gripper(gripper: 'open')
             wx200.move_to_pose(pose_3d(position: position_3d(x: 0.1m, y: 0.0m, z: 0.4m)))
             wait elapsed(3s)
             emit end
