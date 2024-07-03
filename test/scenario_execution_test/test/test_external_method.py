@@ -47,7 +47,7 @@ class TestCheckData(unittest.TestCase):
     def test_success(self):
         scenario_content = """
 struct lib:
-    def test(n: int, text: string) -> int is external scenario_execution_test.external_methods.external_test.test()
+    def test(n: int, text: string) -> int is external scenario_execution_test.external_methods.external_methods.test()
     
 action store_action:
     file_path: string
@@ -65,7 +65,7 @@ scenario test:
     def test_success_named_parameter(self):
         scenario_content = """
 struct lib:
-    def test(n: int, text: string) -> int is external scenario_execution_test.external_methods.external_test.test()
+    def test(n: int, text: string) -> int is external scenario_execution_test.external_methods.external_methods.test()
     
 action store_action:
     file_path: string
@@ -83,7 +83,7 @@ scenario test:
     def test_fail_wrong_named_parameter(self):
         scenario_content = """
 struct lib:
-    def test(n: int, text: string) -> int is external scenario_execution_test.external_methods.external_test.test()
+    def test(n: int, text: string) -> int is external scenario_execution_test.external_methods.external_methods.test()
     
 action store_action:
     file_path: string
@@ -101,7 +101,7 @@ scenario test:
     def test_success_use_default_value(self):
         scenario_content = """
 struct lib:
-    def test(n: int = 10, text: string = "foo") -> int is external scenario_execution_test.external_methods.external_test.test()
+    def test(n: int = 10, text: string = "foo") -> int is external scenario_execution_test.external_methods.external_methods.test()
     
 action store_action:
     file_path: string
@@ -119,7 +119,7 @@ scenario test:
     def test_fail_method_exception(self):
         scenario_content = """
 struct lib:
-    def test(n: int, text: string) -> int is external scenario_execution_test.external_methods.external_test.test()
+    def test(n: int, text: string) -> int is external scenario_execution_test.external_methods.external_methods.test()
     
 action store_action:
     file_path: string
@@ -141,7 +141,7 @@ struct test_struct:
     mem2: string = "bar"
     
 struct lib:
-    def test_dict(val: test_struct) -> int is external scenario_execution_test.external_methods.external_test.test_dict()
+    def test_dict(val: test_struct) -> int is external scenario_execution_test.external_methods.external_methods.test_dict()
     
 action store_action:
     file_path: string
