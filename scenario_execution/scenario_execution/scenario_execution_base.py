@@ -217,7 +217,7 @@ class ScenarioExecution(object):
         try:
             self.setup(self.tree)
         except Exception as e:  # pylint: disable=broad-except
-            self.on_scenario_shutdown(False, "Setup failed:", f"{e}")
+            self.on_scenario_shutdown(False, "Setup failed", f"{e}")
             return
 
         while not self.shutdown_requested:

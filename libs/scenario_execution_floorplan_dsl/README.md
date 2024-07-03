@@ -8,7 +8,7 @@ It provides the following scenario execution library:
 
 ## Build
 
-```
+``` bash
 # build docker image of floorplan dsl
 git clone https://github.com/secorolab/FloorPlan-DSL
 cd FloorPlan-DSL
@@ -23,7 +23,7 @@ source install/setup.bash
 
 ## Test
 
-```
+``` bash
 # run example scenario
 ros2 run scenario_execution_ros scenario_execution_ros libs/scenario_execution_floorplan_dsl/example/example.osc -t
 ```

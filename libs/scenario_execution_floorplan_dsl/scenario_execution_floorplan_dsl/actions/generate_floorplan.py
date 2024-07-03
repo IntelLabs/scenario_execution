@@ -43,8 +43,8 @@ class GenerateFloorplan(BaseAction):
 
     def setup(self, **kwargs):
         self.tmp_dir = tempfile.TemporaryDirectory()
-        #self.output_dir = self.tmp_dir.name
-        self.output_dir = tempfile.mkdtemp()
+        self.output_dir = self.tmp_dir.name
+        # self.output_dir = tempfile.mkdtemp() # for testing: does not remove directory afterwards
 
         if "input_dir" not in kwargs:
             raise ValueError("input_dir not defined.")
@@ -62,8 +62,6 @@ class GenerateFloorplan(BaseAction):
         if not os.path.isfile(self.file_path):
             raise ValueError(f"Floorplan file {self.file_path} not found.")
         self.floorplan_name = os.path.splitext(os.path.basename(self.file_path))[0]
-
-    # def execute(self, associated_actor, file_path: str, sdf_template: str):
 
     def update(self) -> py_trees.common.Status:
         if self.current_state == GenerateFloorplanStatus.IDLE:
@@ -110,88 +108,3 @@ class GenerateFloorplan(BaseAction):
             return py_trees.common.Status.RUNNING
 
         return py_trees.common.Status.FAILURE
-
-    # def on_executed(self):
-    #     """
-    #     Hook when process gets executed
-    #     """
-    #     self.feedback_message = f"Executed spawning, waiting for response..."  # pylint: disable= attribute-defined-outside-init
-
-    # def shutdown(self):
-    #     """
-    #     Cleanup on shutdown
-    #     """
-    #     if self.current_state in [SpawnActionState.WAITING_FOR_TOPIC, SpawnActionState.MODEL_AVAILABLE]:
-    #         return
-
-    #     self.logger.info(f"Deleting entity '{self.entity_name}' from simulation.")
-    #     subprocess.run(["ign", "service", "-s", "/world/" + self.world_name + "/remove",  # pylint: disable=subprocess-run-check
-    #                     "--reqtype", "ignition.msgs.Entity",
-    #                     "--reptype", "ignition.msgs.Boolean",
-    #                     "--timeout", "1000", "--req", "name: \"" + self.entity_name + "\" type: MODEL"])
-
-    # def on_process_finished(self, ret):
-    #     """
-    #     check result of process
-
-    #     return:
-    #         py_trees.common.Status
-    #     """
-    #     if self.current_state == SpawnActionState.WAITING_FOR_RESPONSE:
-    #         if ret == 0:
-    #             while True:
-    #                 try:
-    #                     line = self.output.popleft()
-    #                     line = line.lower()
-    #                     if 'error' in line or 'timed out' in line:
-    #                         self.logger.warn(line)
-    #                         self.feedback_message = f"Found error output while executing '{self.command}'"  # pylint: disable= attribute-defined-outside-init
-    #                         self.current_state = SpawnActionState.FAILURE
-    #                         return py_trees.common.Status.FAILURE
-    #                 except IndexError:
-    #                     break
-    #             self.current_state = SpawnActionState.DONE
-    #             return py_trees.common.Status.SUCCESS
-    #         else:
-    #             self.current_state = SpawnActionState.FAILURE
-    #             return py_trees.common.Status.FAILURE
-    #     else:
-    #         return py_trees.common.Status.INVALID
-
-    # def get_spawn_pose(self):
-    #     # euler2quat() requires "zyx" convention,
-    #     # while in YAML, we define as pitch-roll-yaw (xyz), since it's more intuitive.
-    #     try:
-    #         quaternion = euler2quat(self.spawn_pose["orientation"]["yaw"],
-    #                                 self.spawn_pose["orientation"]["roll"],
-    #                                 self.spawn_pose["orientation"]["pitch"])
-    #         pose = '{ position: {' \
-    #             f' x: {self.spawn_pose["position"]["x"]} y: {self.spawn_pose["position"]["y"]} z: {self.spawn_pose["position"]["z"]}' \
-    #             ' } orientation: {' \
-    #             f' w: {quaternion[0]} x: {quaternion[1]} y: {quaternion[2]} z: {quaternion[3]}' \
-    #             ' } }'
-    #     except KeyError as e:
-    #         raise ValueError("Could not get values") from e
-    #     return pose
-
-    # def set_command(self, command):
-    #     """
-    #     Set execution command
-    #     """
-    #     pose = self.get_spawn_pose()
-
-    #     super().set_command(["ign", "service", "-s", "/world/" + self.world_name + "/create",
-    #                          "--reqtype", "ignition.msgs.EntityFactory",
-    #                          "--reptype", "ignition.msgs.Boolean",
-    #                          "--timeout", "30000", "--req", "pose: " + pose + " name: \"" + self.entity_name + "\" allow_renaming: false sdf: \"" + command + "\""])
-
-    # def topic_callback(self, msg):
-    #     '''
-    #     Callback to receive model description from topic
-    #     '''
-
-    #     self.feedback_message = f"Model received from topic."  # pylint: disable= attribute-defined-outside-init
-    #     self.logger.info("Received robot_description.")
-    #     self.node.destroy_subscription(self.model_sub)
-    #     self.set_command(msg.data.replace("\"", "\\\"").replace("\n", ""))
-    #     self.current_state = SpawnActionState.MODEL_AVAILABLE
