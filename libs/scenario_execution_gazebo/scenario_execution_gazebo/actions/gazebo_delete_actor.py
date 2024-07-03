@@ -41,7 +41,7 @@ class GazeboDeleteActor(RunProcess):
         super().__init__()
         self.current_state = DeleteActionState.IDLE
 
-    def execute(self, associated_actor, entity_name: str, world_name: str):
+    def execute(self, associated_actor, entity_name: str, world_name: str):  # pylint: disable=arguments-differ
         self.set_command(["ign", "service", "-s", "/world/" + world_name + "/remove",
                           "--reqtype", "ignition.msgs.Entity",
                           "--reptype", "ignition.msgs.Boolean",

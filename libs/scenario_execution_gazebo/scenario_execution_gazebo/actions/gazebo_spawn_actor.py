@@ -94,7 +94,7 @@ class GazeboSpawnActor(RunProcess):
                 raise ValueError(f'Invalid model specified ({self.entity_model})')
             self.current_state = SpawnActionState.MODEL_AVAILABLE
 
-    def execute(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):
+    def execute(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):  # pylint: disable=arguments-differ
         if self.entity_model != model or set(self.xacro_arguments) != set(xacro_arguments):
             raise ValueError("Runtime change of model not supported.")
         self.spawn_pose = spawn_pose

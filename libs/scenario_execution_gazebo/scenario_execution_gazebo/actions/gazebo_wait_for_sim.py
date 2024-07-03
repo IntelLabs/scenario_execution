@@ -39,7 +39,7 @@ class GazeboWaitForSim(RunProcess):
         super().__init__()
         self.current_state = WaitForSimulationActionState.IDLE
 
-    def execute(self, world_name: str, timeout: int):
+    def execute(self, world_name: str, timeout: int):  # pylint: disable=arguments-differ
         self.set_command(["ign", "topic", "-t", "/world/" +
                           world_name + "/clock", "-e", "--json-output", "-n", "1"])
         self.world_name = world_name
