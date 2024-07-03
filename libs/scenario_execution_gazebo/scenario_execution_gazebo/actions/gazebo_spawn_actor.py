@@ -49,12 +49,7 @@ class GazeboSpawnActor(RunProcess):
         """
         init
         """
-        super().__init__("")
-        self.entity_name = associated_actor["name"]
-        self.entity_model = model
-        self.spawn_pose = spawn_pose
-        self.world_name = world_name
-        self.xacro_arguments = xacro_arguments
+        super().__init__()
         self.current_state = SpawnActionState.WAITING_FOR_TOPIC
         self.node = None
         self.logger = None

@@ -39,7 +39,6 @@ class GazeboDeleteActor(RunProcess):
 
     def __init__(self, associated_actor, entity_name: str, world_name: str):
         super().__init__()
-        self.node = None
         self.current_state = DeleteActionState.IDLE
 
     def execute(self, associated_actor, entity_name: str, world_name: str):
