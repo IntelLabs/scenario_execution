@@ -19,7 +19,7 @@ from glob import glob
 import os
 from setuptools import find_namespace_packages, setup
 
-PACKAGE_NAME = 'test_scenario_execution_gazebo'
+PACKAGE_NAME = 'scenario_execution_gazebo_test'
 
 setup(
     name=PACKAGE_NAME,

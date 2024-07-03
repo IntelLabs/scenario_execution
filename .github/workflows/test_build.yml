@@ -364,7 +364,7 @@ jobs:
           export ROS_DOMAIN_ID=2
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
           # shellcheck disable=SC1083
-          scenario_batch_execution -i simulation/gazebo/test_scenario_execution_gazebo/scenarios/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+          scenario_batch_execution -i test/scenario_execution_gazebo_test/scenarios/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
       - name: Upload result
         uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
