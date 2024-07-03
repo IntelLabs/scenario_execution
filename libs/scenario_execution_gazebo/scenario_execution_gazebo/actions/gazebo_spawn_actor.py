@@ -45,7 +45,7 @@ class GazeboSpawnActor(RunProcess):
 
     """
 
-    def __init__(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str, **kwargs):
+    def __init__(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):
         """
         init
         """
@@ -62,6 +62,12 @@ class GazeboSpawnActor(RunProcess):
         self.sdf = None
         self.utils = None
 
+    def execute(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):
+        self.entity_model = model
+        self.spawn_pose = spawn_pose
+        self.world_name = world_name
+        self.xacro_arguments = xacro_arguments
+        
     def setup(self, **kwargs):
         """
         Setup ROS2 node and model
