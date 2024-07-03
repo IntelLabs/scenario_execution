@@ -18,8 +18,7 @@ scenario example_simulation:
                         spawn_pose: pose_3d(
                             position: position_3d(x: 2.0m, y: -2.0m, z: 0.1m),
                             orientation: orientation_3d(yaw: 0.0rad)),
-                        model: 'example_simulation://models/box.sdf',
-                        world_name: 'maze')
+                        model: 'example_simulation://models/box.sdf')
             emit end
         time_out: serial:
             wait elapsed(120s)

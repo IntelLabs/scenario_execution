@@ -5,11 +5,13 @@ on:
     paths:
     - 'deb_requirements.txt'
     - 'requirements.txt'
+    - '.github/workflows/Dockerfile'
   pull_request:
     branches: [main]
     paths:
     - 'deb_requirements.txt'
     - 'requirements.txt'
+    - '.github/workflows/Dockerfile'
   workflow_dispatch:
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}

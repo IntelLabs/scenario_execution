@@ -25,14 +25,6 @@ class ActorSetValue(BaseAction):
         self.value = None
         return super().setup(**kwargs)
 
-    def set_variable(self, model_instance, variable_name, value):
-        blackboard = self.get_blackboard_client()
-        model_blackboard_name = model_instance.get_fully_qualified_var_name(include_scenario=False)
-        model_blackboard_name += "/" + variable_name
-        blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.WRITE)
-        self.logger.debug(f"Set variable '{model_blackboard_name}' to '{value}'")
-        setattr(blackboard, model_blackboard_name, value)
-
     def execute(self, associated_actor, value):
         self.associated_actor = associated_actor
         self.value = value
@@ -42,5 +34,5 @@ class ActorSetValue(BaseAction):
         if self.i < 3:
             return py_trees.common.Status.RUNNING
         else:
-            self.set_variable(self.model.actor, "test", self.value)
+            self.set_associated_actor_variable("test", self.value)
             return py_trees.common.Status.SUCCESS

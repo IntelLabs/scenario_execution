@@ -45,17 +45,15 @@ class GazeboSpawnActor(RunProcess):
 
     """
 
-    def __init__(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str, **kwargs):
+    def __init__(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):
         """
         init
         """
-        super().__init__("")
+        super().__init__()
+        self.current_state = SpawnActionState.WAITING_FOR_TOPIC
         self.entity_name = associated_actor["name"]
         self.entity_model = model
-        self.spawn_pose = spawn_pose
-        self.world_name = world_name
         self.xacro_arguments = xacro_arguments
-        self.current_state = SpawnActionState.WAITING_FOR_TOPIC
         self.node = None
         self.logger = None
         self.model_sub = None
@@ -95,6 +93,12 @@ class GazeboSpawnActor(RunProcess):
             if not self.sdf:
                 raise ValueError(f'Invalid model specified ({self.entity_model})')
             self.current_state = SpawnActionState.MODEL_AVAILABLE
+
+    def execute(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):  # pylint: disable=arguments-differ
+        if self.entity_model != model or set(self.xacro_arguments) != set(xacro_arguments):
+            raise ValueError("Runtime change of model not supported.")
+        self.spawn_pose = spawn_pose
+        self.world_name = world_name
 
     def update(self) -> py_trees.common.Status:
         """

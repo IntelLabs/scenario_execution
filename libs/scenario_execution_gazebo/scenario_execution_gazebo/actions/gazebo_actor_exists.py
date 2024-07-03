@@ -39,11 +39,12 @@ class GazeboActorExists(RunProcess):
 
     def __init__(self, entity_name: str, world_name: str):
         super().__init__()
+        self.current_state = ActorExistsActionState.IDLE
+
+    def execute(self, entity_name: str, world_name: str):  # pylint: disable=arguments-differ
         self.entity_name = entity_name
-        self.node = None
         self.set_command(["ign", "topic", "-t", "/world/" +
                           world_name + "/pose/info", "-e", "--json-output"])
-        self.current_state = ActorExistsActionState.IDLE
 
     def on_executed(self):
         """

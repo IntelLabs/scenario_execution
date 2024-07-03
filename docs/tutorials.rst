@@ -298,8 +298,7 @@ done.
                 spawn_pose: pose_3d(
                     position: position_3d(x: 2.0m, y: -2.0m, z: 0.1m),
                     orientation: orientation_3d(yaw: 0.0rad)),
-                model: 'example_simulation://models/box.sdf',
-                world_name: 'maze')
+                model: 'example_simulation://models/box.sdf')
 
 First, we wrap the navigation part in the first branch of a parallel
 statement. This is necessary, as the condition if the robot reached the
@@ -374,7 +373,7 @@ Control Scenarios with Rviz
 ---------------------------
 In this example, let's learn how to control multiple scenarios directly from ``RVIZ`` control panel.
 
-We'll use :repo_link:`examples/example_scenario_control/` as the base package to launch scenes turtlebot4 inside the ``maze`` simulation environment.
+We'll use :repo_link:`examples/example_scenario_control/` as the base package to launch scenes turtlebot4 inside the simulation environment.
 
 You can add your custom scenario files to the scenario folder inside the package. However, for this tutorial, we'll use the existing scenarios present there. Let's run an example.
 

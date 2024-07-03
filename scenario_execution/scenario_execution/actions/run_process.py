@@ -39,6 +39,12 @@ class RunProcess(BaseAction):
         self.log_stderr_thread = None
         self.output = deque()
 
+    def execute(self, command=None, wait_for_shutdown=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
+        self.command = command.split(" ") if isinstance(command, str) else command
+        self.wait_for_shutdown = wait_for_shutdown
+        self.shutdown_timeout = shutdown_timeout
+        self.shutdown_signal = shutdown_signal[1]
+
     def update(self) -> py_trees.common.Status:
         """
         Start/monitor process

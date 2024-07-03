@@ -38,17 +38,14 @@ class GazeboDeleteActor(RunProcess):
     """
 
     def __init__(self, associated_actor, entity_name: str, world_name: str):
-        """
-        init
-        """
         super().__init__()
-        self.entity_name = entity_name
-        self.node = None
+        self.current_state = DeleteActionState.IDLE
+
+    def execute(self, associated_actor, entity_name: str, world_name: str):  # pylint: disable=arguments-differ
         self.set_command(["ign", "service", "-s", "/world/" + world_name + "/remove",
                           "--reqtype", "ignition.msgs.Entity",
                           "--reptype", "ignition.msgs.Boolean",
-                          "--timeout", "1000", "--req", "name: \"" + self.entity_name + "\" type: MODEL"])
-        self.current_state = DeleteActionState.IDLE
+                          "--timeout", "1000", "--req", "name: \"" + entity_name + "\" type: MODEL"])
 
     def on_executed(self):
         """

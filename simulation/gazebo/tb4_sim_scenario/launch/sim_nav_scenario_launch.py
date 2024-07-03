@@ -40,9 +40,9 @@ def generate_launch_description():
     arg_scenario_execution = DeclareLaunchArgument(
         'scenario_execution', default_value='True',
         description='Wether to execute scenario execution')
-    world = LaunchConfiguration('world')
-    arg_world = DeclareLaunchArgument('world', default_value='maze',
-                                      description='Ignition World')
+    world_name = LaunchConfiguration('world_name')
+    arg_world_name = DeclareLaunchArgument('world_name', default_value='default',
+                                           description='Name of Simulation World')
 
     faulty_scan = LaunchConfiguration('faulty_scan')
     arg_faulty_scan = DeclareLaunchArgument(
@@ -69,7 +69,7 @@ def generate_launch_description():
     groundtruth_publisher = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(gazebo_tf_publisher_dir, 'launch', 'gazebo_tf_publisher_launch.py')),
         launch_arguments=[
-            ('ign_pose_topic', ['/world/', world, '/dynamic_pose/info']),
+            ('ign_pose_topic', ['/world/', world_name, '/dynamic_pose/info']),
         ]
     )
 
@@ -77,7 +77,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(message_modification_dir, 'launch', 'scan_modification_launch.py')),
         condition=IfCondition(faulty_scan),
         launch_arguments=[
-            ('ign_pose_topic', ['/world/', world, '/dynamic_pose/info']),
+            ('ign_pose_topic', ['/world/', world_name, '/dynamic_pose/info']),
         ]
     )
 
@@ -96,7 +96,7 @@ def generate_launch_description():
     ld = LaunchDescription([
         arg_scenario,
         arg_scenario_execution,
-        arg_world,
+        arg_world_name,
         arg_faulty_scan,
         SetLaunchConfiguration(
             name='sim_scan_topic',
