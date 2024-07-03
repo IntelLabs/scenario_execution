@@ -19,6 +19,7 @@ def test(n: int, text: str):
         raise ValueError("External Function Error!")
     return text
 
+
 def test_dict(val: dict):
-    print(f"AAAAAAA {val}")
+    print(f"External method: {val}")
     return str(val)

@@ -98,7 +98,6 @@ scenario test:
         self.scenario_execution.tree = self.tree
         self.assertRaises(ValueError, self.scenario_execution.run)
 
-
     def test_success_use_default_value(self):
         scenario_content = """
 struct lib:
@@ -117,7 +116,6 @@ scenario test:
             result = f.read()
         self.assertEqual(result, "foo")
 
-
     def test_fail_method_exception(self):
         scenario_content = """
 struct lib:
@@ -135,7 +133,6 @@ scenario test:
         create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution.tree = self.tree
         self.assertRaises(ValueError, self.scenario_execution.run)
-
 
     def test_success_struct(self):
         scenario_content = """

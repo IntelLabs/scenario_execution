@@ -67,7 +67,6 @@ scenario test_scenario:
         test_var = model._ModelElement__children[1]._ModelElement__children[1]
         self.assertEqual("foo", test_var.get_resolved_value())
 
-
     def test_var_usage_struct_type_member_of_member(self):
         scenario_content = """
 struct inner_struct:
