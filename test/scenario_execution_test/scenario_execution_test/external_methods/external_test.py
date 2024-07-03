@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 def test(n: int, text: str):
-    if n is 99:
+    if n == 99:
         raise ValueError("External Function Error!")
     return text
 
