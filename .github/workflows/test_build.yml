@@ -400,7 +400,6 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@30eadd5010312f995f0d3b3cff7fe2984f69409e #v2.16.1
         with:
           check_name: Test Results
-          check_run: false
           action_fail: true
           comment_mode: always
           files: |
