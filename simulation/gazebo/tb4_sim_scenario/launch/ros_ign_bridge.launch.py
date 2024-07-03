@@ -36,7 +36,7 @@ ARGUMENTS = [
                           description='Ignition model name'),
     DeclareLaunchArgument('namespace', default_value='',
                           description='Robot namespace'),
-    DeclareLaunchArgument('world', default_value='warehouse',
+    DeclareLaunchArgument('world_name', default_value='default',
                           description='World name'),
     DeclareLaunchArgument('scan_topic', default_value='scan',
                           description='Name of the scan topic'),
@@ -51,7 +51,7 @@ def generate_launch_description():
     robot_name = LaunchConfiguration('robot_name')
     dock_name = LaunchConfiguration('dock_name')
     namespace = LaunchConfiguration('namespace')
-    world = LaunchConfiguration('world')
+    world_name = LaunchConfiguration('world_name')
     scan_topic = LaunchConfiguration('scan_topic')
 
     leds = [
@@ -76,7 +76,7 @@ def generate_launch_description():
             ('robot_name', robot_name),
             ('dock_name', dock_name),
             ('namespace', namespace),
-            ('world', world)
+            ('world', world_name)
         ]
     )
 
@@ -90,13 +90,13 @@ def generate_launch_description():
             'use_sim_time': use_sim_time
         }],
         arguments=[
-            ['/world/', world,
+            ['/world/', world_name,
              '/model/', robot_name,
              '/link/rplidar_link/sensor/rplidar/scan' +
              '@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan']
         ],
         remappings=[
-            (['/world/', world,
+            (['/world/', world_name,
               '/model/', robot_name,
               '/link/rplidar_link/sensor/rplidar/scan'],
              scan_topic)
@@ -169,41 +169,41 @@ def generate_launch_description():
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}],
         arguments=[
-            ['/world/', world,
+            ['/world/', world_name,
              '/model/', robot_name,
              '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/image' +
              '@sensor_msgs/msg/Image' +
              '[ignition.msgs.Image'],
-            ['/world/', world,
+            ['/world/', world_name,
              '/model/', robot_name,
              '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/depth_image' +
              '@sensor_msgs/msg/Image' +
              '[ignition.msgs.Image'],
-            ['/world/', world,
+            ['/world/', world_name,
              '/model/', robot_name,
              '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/points' +
              '@sensor_msgs/msg/PointCloud2' +
              '[ignition.msgs.PointCloudPacked'],
-            ['/world/', world,
+            ['/world/', world_name,
              '/model/', robot_name,
              '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/camera_info' +
              '@sensor_msgs/msg/CameraInfo' +
              '[ignition.msgs.CameraInfo'],
         ],
         remappings=[
-            (['/world/', world,
+            (['/world/', world_name,
               '/model/', robot_name,
               '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/image'],
              'oakd/rgb/preview/image_raw'),
-            (['/world/', world,
+            (['/world/', world_name,
               '/model/', robot_name,
               '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/depth_image'],
              'oakd/rgb/preview/depth'),
-            (['/world/', world,
+            (['/world/', world_name,
               '/model/', robot_name,
               '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/points'],
              'oakd/rgb/preview/depth/points'),
-            (['/world/', world,
+            (['/world/', world_name,
               '/model/', robot_name,
               '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/camera_info'],
              'oakd/rgb/preview/camera_info')

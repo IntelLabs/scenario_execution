@@ -152,7 +152,7 @@ class ScenarioExecution(object):
                 py_trees.visitors.DisplaySnapshotVisitor(
                     display_blackboard=True
                 ))
-        self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, output_dir=self.output_dir, **kwargs)
+        self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger, input_dir=os.path.dirname(self.scenario_file), output_dir=self.output_dir, **kwargs)
 
     def setup_behaviour_tree(self, tree):
         """
@@ -216,7 +216,7 @@ class ScenarioExecution(object):
         try:
             self.setup(self.tree)
         except Exception as e:  # pylint: disable=broad-except
-            self.on_scenario_shutdown(False, "Setup failed", f"{e}")
+            self.on_scenario_shutdown(False, "Setup failed:", f"{e}")
             return
 
         while not self.shutdown_requested:
