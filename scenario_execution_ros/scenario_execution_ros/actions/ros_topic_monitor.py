@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import importlib
 from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_ros_message_type
 from scenario_execution.actions.base_action import BaseAction
 from scenario_execution.model.types import VariableReference

@@ -273,12 +273,12 @@ Wait for specific output in ROS log (i.e. `/rosout` topic). If any of the entrie
 ``monitor_topic()``
 """""""""""""""""""
 
-Subscribe to a topic an store the last message within a variable.
+Subscribe to a topic and store the last message within a variable.
 
 - ``target_variable: string``: variable to store the received value
 - ``topic_name: string``: name of the topic to monitor
-- ``topic_type: string``: class of the message type (e.g. std_msgs.msg.String)
-- ``qos_profile: qos_preset_profiles``: qos profile for the subscriber (default: ``qos_preset_profiles!system_default``)
+- ``topic_type: string``: class of the message type (e.g. ``std_msgs.msg.String``)
+- ``qos_profile: qos_preset_profiles``: QoS profile for the subscriber (default: ``qos_preset_profiles!system_default``)
 
 ``record_bag()``
 """"""""""""""""

@@ -2136,10 +2136,9 @@ class Identifier(ModelElement):
         else:
             return visitor.visit_children(self)
 
-# For user acces to variables
-
 
 class VariableReference(object):
+    # To access variables from within action implementations
 
     def __init__(self, blackboard, ref) -> None:
         self.blackboard = blackboard

@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import importlib
 from ast import literal_eval
 
 from rosidl_runtime_py.set_message import set_message_fields

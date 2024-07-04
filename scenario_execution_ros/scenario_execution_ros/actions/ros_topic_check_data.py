@@ -16,7 +16,6 @@
 
 import py_trees
 import rclpy
-import importlib
 import operator
 from ast import literal_eval
 from rosidl_runtime_py.set_message import set_message_fields
