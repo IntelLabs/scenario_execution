@@ -270,16 +270,6 @@ Wait for specific output in ROS log (i.e. `/rosout` topic). If any of the entrie
 - ``module_name: string``: if specified, a matching message must also match the module name (default: empty)
 - ``values: list of string``: list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
 
-``monitor_topic()``
-"""""""""""""""""""
-
-Subscribe to a topic and store the last message within a variable.
-
-- ``target_variable: string``: variable to store the received value
-- ``topic_name: string``: name of the topic to monitor
-- ``topic_type: string``: class of the message type (e.g. ``std_msgs.msg.String``)
-- ``qos_profile: qos_preset_profiles``: QoS profile for the subscriber (default: ``qos_preset_profiles!system_default``)
-
 ``record_bag()``
 """"""""""""""""
 
@@ -318,6 +308,16 @@ Set a parameter of a node.
 - ``node_name: string``: Name of the node
 - ``parameter_name: string``: Name of the parameter
 - ``parameter_value: string``: Value of the parameter
+
+``topic_monitor()``
+"""""""""""""""""""
+
+Subscribe to a topic and store the last message within a variable.
+
+- ``topic_name: string``: name of the topic to monitor
+- ``topic_type: string``: class of the message type (e.g. ``std_msgs.msg.String``)
+- ``target_variable: variable``: variable to store the received value (e.g. a ``var`` within an actor instance)
+- ``qos_profile: qos_preset_profiles``: QoS profile for the subscriber (default: ``qos_preset_profiles!system_default``)
 
 ``topic_publish()``
 """""""""""""""""""

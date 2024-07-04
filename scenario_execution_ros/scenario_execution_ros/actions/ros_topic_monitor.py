@@ -23,7 +23,7 @@ import py_trees
 
 class RosTopicMonitor(BaseAction):
 
-    def __init__(self, target_variable: object, topic_name: str, topic_type: str, qos_profile: tuple):
+    def __init__(self, topic_name: str, topic_type: str, target_variable: object, qos_profile: tuple):
         super().__init__(resolve_variable_reference_arguments_in_execute=False)
         self.target_variable = None
         self.topic_type = topic_type
@@ -50,9 +50,9 @@ class RosTopicMonitor(BaseAction):
             qos_profile=get_qos_preset_profile(self.qos_profile),
             callback_group=rclpy.callback_groups.ReentrantCallbackGroup()
         )
-        self.feedback_message = f"Waiting for data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
+        self.feedback_message = f"Monitoring data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
 
-    def execute(self, target_variable, topic_name, topic_type, qos_profile):
+    def execute(self, topic_name, topic_type, target_variable, qos_profile):
         if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:
             raise ValueError("Updating topic parameters not supported.")
         if not isinstance(target_variable, VariableReference):

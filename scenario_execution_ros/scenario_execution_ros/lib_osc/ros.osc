@@ -104,12 +104,6 @@ action log_check:
     module_name: string = '' # If specified, a matching message must also match the module name
     values: list of string # string to check for. If found, action succeeds
 
-action monitor_topic:
-    target_variable: string # name of the variable
-    topic_name: string # name of the topic to connect to
-    topic_type: string # class of the message type (e.g. std_msgs.msg.String)
-    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
-
 action record_bag:
     # Record a dataset, stored in output_dir defined by command-line parameter (default: '.')
     topics: list of topics       # Topics to records, if empty all topics are recorded
@@ -134,6 +128,13 @@ action set_node_parameter:
     node_name: string                                 # name of the node
     parameter_name: string                            # name of the parameter
     parameter_value: string                           # new value of the parameter
+
+action topic_monitor:
+    #subscribe to a topic and store the last message within a variable.
+    topic_name: string # name of the topic to connect to
+    topic_type: string # class of the message type (e.g. std_msgs.msg.String)
+    target_variable: string # name of the variable (e.g. a 'var' within an actor instance)
+    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
 
 action topic_publish:
     topic_name: string                                # name of the topic to connect to
