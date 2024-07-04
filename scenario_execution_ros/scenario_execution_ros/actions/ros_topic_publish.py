@@ -62,7 +62,7 @@ class RosTopicPublish(BaseAction):
     def execute(self, topic_type: str, topic_name: str, value: str, qos_profile: tuple):
         if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:
             raise ValueError("Updating topic parameters not supported.")
-        
+
         if isinstance(value, str):
             parsed_value = literal_eval("".join(value.split('\\')))
             if not isinstance(parsed_value, dict):
@@ -72,7 +72,7 @@ class RosTopicPublish(BaseAction):
             set_message_fields(self.msg_to_pub, value)
         else:
             self.msg_to_pub = value
-        
+
     def update(self) -> py_trees.common.Status:
         """
         Publish the msg to topic

@@ -46,7 +46,7 @@ class RosTopicMonitor(BaseAction):
 
         # if not self.check_associated_actor_variable_exists(self.target_variable):
         #     raise ValueError(f"Variable '{self.target_variable}' does not exists.")
-        
+
         self.subscriber = self.node.create_subscription(
             msg_type=get_ros_message_type(self.topic_type),
             topic=self.topic_name,

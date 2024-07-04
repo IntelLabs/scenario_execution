@@ -42,7 +42,7 @@ class RosTopicCheckData(BaseAction):
                  wait_for_first_message: bool):
         super().__init__()
         self.topic_name = topic_name
-        
+
         self.topic_type = get_ros_message_type(topic_type)
         self.qos_profile = get_qos_preset_profile(qos_profile)
         self.member_name = member_name

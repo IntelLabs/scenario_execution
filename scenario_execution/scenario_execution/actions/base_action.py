@@ -42,7 +42,7 @@ class BaseAction(py_trees.behaviour.Behaviour):
     def initialise(self):
         execute_method = getattr(self, "execute", None)
         if execute_method is not None and callable(execute_method):
-            
+
             if self.resolve_variable_reference_arguments_in_execute:
                 final_args = self.model.get_resolved_value(self.get_blackboard_client())
             else:

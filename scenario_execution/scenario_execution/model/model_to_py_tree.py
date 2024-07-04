@@ -226,7 +226,7 @@ class ModelToPyTree(object):
                     context=node.get_ctx()
                 )
 
-            expected_args= ["self"]
+            expected_args = ["self"]
             if node.actor:
                 expected_args.append("associated_actor")
             expected_args += node.get_parameter_names()
