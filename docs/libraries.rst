@@ -175,7 +175,7 @@ Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/n
 ``assert_tf_moving()``
 """"""""""""""""""""""
 
-Checks that a tf `frame_id` keeps moving in respect to a `parent_frame_id`. If there is no movement within `timeout` the action ends, depending on `fail_on_finish`, either with success or failure. Speeds below `threshold_translation` and `threshold_rotation` are discarded. By default the action waits for the first transform to get available before starting the timeout timer. This can be changed by setting `wait_for_first_transform` to `false`. If the tf topics are not available on `/tf` and `/tf_static` you can specify a namespace by setting `tf_topic_namespace`.
+Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. If there is no movement within ``timeout`` the action ends, depending on ``fail_on_finish``, either with success or failure. Speeds below ``threshold_translation`` and ``threshold_rotation`` are discarded. By default the action waits for the first transform to get available before starting the timeout timer. This can be changed by setting ``wait_for_first_transform`` to ``false``. If the tf topics are not available on ``/tf`` and ``/tf_static`` you can specify a namespace by setting ``tf_topic_namespace``.
 
 - ``frame_id``: The frame Id to check for movement.
 - ``parent_frame_id``: The parent frame ID against which movement is evaluated. (default: ``map``)
@@ -190,7 +190,7 @@ Checks that a tf `frame_id` keeps moving in respect to a `parent_frame_id`. If t
 ``assert_topic_latency()``
 """"""""""""""""""""""""""
 
-Check the latency of the specified topic (in system time). If the check with `comparison_operator` gets true, the action ends, depending on `fail_on_finish`, either with success or failure.
+Check the latency of the specified topic (in system time). If the check with ``comparison_operator`` gets true, the action ends, depending on ``fail_on_finish``, either with success or failure.
 
 - ``topic_name: string``:  Topic name to wait for message
 - ``latency: time``: The time to compare.
@@ -231,7 +231,7 @@ Initialize nav2.
 
 Use nav2 to navigate through poses.
 
-- ``goal_pose: string``: Goal poses to navigate to (format: ``x1,y1,yaw1;x2,y2,yaw2;...``)
+- ``goal_poses: list of pose_3d``: Goal poses to navigate through
 - ``namespace_override: string``: If set, it's used as namespace (instead of the associated actor's namespace)
 - ``monitor_progress: bool``: If yes, the action returns after the goal is reached or on failure. If no, the action returns after request. (default: ``true``)
 
@@ -265,7 +265,7 @@ Wait until a TF frame is close to a defined reference point.
 
 ``log_check()``
 """""""""""""""
-Wait for specific output in ROS log (i.e. `/rosout` topic). If any of the entries within ``values`` the action succeeds.
+Wait for specific output in ROS log (i.e. ``/rosout`` topic). If any of the entries within ``values`` the action succeeds.
 
 - ``module_name: string``: if specified, a matching message must also match the module name (default: empty)
 - ``values: list of string``: list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
@@ -332,9 +332,7 @@ Publish a message on a topic.
 ``wait_for_data()``
 """""""""""""""""""
 
-Wait for a specific data on a ROS topic.
-
-In the background, this action uses `wait_for_data() <https://py-trees-ros.readthedocs.io/en/devel/modules.html#py_trees_ros.subscribers.WaitForData>`__ from `py_trees_ros <https://github.com/splintered-reality/py_trees_ros>`__.
+Wait for any message on a ROS topic.
 
 - ``topic_name: string``: Name of the topic to connect to
 - ``topic_type: string``: Class of the message type (e.g. ``std_msgs.msg.String``)
