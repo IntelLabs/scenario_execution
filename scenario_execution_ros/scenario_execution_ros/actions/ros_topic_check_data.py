@@ -16,11 +16,10 @@
 
 import py_trees
 import rclpy
-import importlib
 import operator
 from ast import literal_eval
 from rosidl_runtime_py.set_message import set_message_fields
-from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_comparison_operator
+from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_comparison_operator, get_ros_message_type
 import builtins
 from scenario_execution.actions.base_action import BaseAction
 
@@ -41,11 +40,9 @@ class RosTopicCheckData(BaseAction):
                  fail_if_bad_comparison: bool,
                  wait_for_first_message: bool):
         super().__init__()
-        datatype_in_list = topic_type.split(".")
         self.topic_name = topic_name
-        self.topic_type = getattr(
-            importlib.import_module(".".join(datatype_in_list[0:-1])),
-            datatype_in_list[-1])
+
+        self.topic_type = get_ros_message_type(topic_type)
         self.qos_profile = get_qos_preset_profile(qos_profile)
         self.member_name = member_name
 

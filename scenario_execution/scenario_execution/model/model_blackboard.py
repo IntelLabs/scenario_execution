@@ -51,8 +51,8 @@ class ModelToBlackboard(object):
             super().visit_parameter_declaration(node)
             parameter_type = node.get_type()[0]
             if isinstance(parameter_type, StructuredDeclaration):
-                prefix = node.get_fully_qualified_var_name(include_scenario=True)
                 for variable_dec in parameter_type.find_children_of_type(VariableDeclaration):
+                    prefix = node.get_fully_qualified_var_name(include_scenario=True)
                     blackboard_var_name = prefix + "/" + variable_dec.name
 
                     self.blackboard.register_key(blackboard_var_name, access=py_trees.common.Access.WRITE)

@@ -99,3 +99,6 @@ Implement an Action
   - ``input_dir``: Directory containing the scenario file
   - ``output_dir``: If given on command-line, contains the directory to save output to
   - ``node``: (``scenario_execution_ros`` only): ROS node to utilize (e.g. create subscribers)
+- If your action makes use of variables, set ``resolve_variable_reference_arguments_in_execute`` in ``BaseAction.__init()`` to  ``False``.
+  The ``execute()`` method arguments will then contain resolved values as before, except for variable arguments which are accessible
+  as ``VariableReference`` (with methods ``set_value()`` and ``get_value()``).

@@ -179,13 +179,13 @@ class ModelToPyTree(object):
                 raise OSC2ParsingError(
                     msg=f'Plugin {behavior_name} {method.__name__} method is missing argument "self".', context=node.get_ctx())
 
-            missing_args = []
-            unknown_args = copy.copy(expected_args)
+            unknown_args = []
+            missing_args = copy.copy(expected_args)
             for element in method_args:
                 if element not in expected_args:
-                    missing_args.append(element)
+                    unknown_args.append(element)
                 else:
-                    unknown_args.remove(element)
+                    missing_args.remove(element)
             error_string = ""
             if missing_args:
                 error_string += "missing: " + ", ".join(missing_args)
@@ -226,10 +226,10 @@ class ModelToPyTree(object):
                     context=node.get_ctx()
                 )
 
-            expected_args = node.get_parameter_names()
-            expected_args.append("self")
+            expected_args = ["self"]
             if node.actor:
                 expected_args.append("associated_actor")
+            expected_args += node.get_parameter_names()
 
             # check plugin constructor
             init_method = getattr(behavior_cls, "__init__", None)
@@ -237,13 +237,16 @@ class ModelToPyTree(object):
             if init_method is not None:
                 # if __init__() is defined, check parameters. Allowed:
                 # - __init__(self)
-                # - __init__(self, <all-osc-defined-args)
+                # - __init__(self, resolve_variable_reference_arguments_in_execute)
+                # - __init__(self, <all-osc-defined-args>)
                 init_args, error_string = self.compare_method_arguments(init_method, expected_args, behavior_name, node)
-                if init_args != ["self"] and set(init_args) != set(expected_args):
+                if init_args != ["self"] and \
+                        init_args != ["self", "resolve_variable_reference_arguments_in_execute"] and \
+                        set(init_args) != set(expected_args):
                     raise OSC2ParsingError(
-                        msg=f'Plugin {behavior_name}: __init__() either only has "self" argument or all arguments defined in osc{error_string}.', context=node.get_ctx()
+                        msg=f'Plugin {behavior_name}: __init__() either only has "self" argument or all arguments defined in osc. {error_string}\n'
+                            f'expected definition with all arguments: {expected_args}', context=node.get_ctx()
                     )
-
             execute_method = getattr(behavior_cls, "execute", None)
             if execute_method is not None:
                 _, error_string = self.compare_method_arguments(execute_method, expected_args, behavior_name, node)
@@ -259,7 +262,7 @@ class ModelToPyTree(object):
             self.logger.debug(
                 f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected execute() arguments: {expected_args}")
             try:
-                if init_args is not None and init_args != ['self']:
+                if init_args is not None and init_args != ['self'] and init_args != ['self', 'resolve_variable_reference_arguments_in_execute']:
                     final_args = node.get_resolved_value(self.blackboard)
 
                     if node.actor:
