@@ -90,11 +90,11 @@ class ROSScenarioExecution(ScenarioExecution):
         executor = rclpy.executors.MultiThreadedExecutor()
         executor.add_node(self.node)
 
-        # try:
-        self.setup(self.tree, node=self.node, marker_handler=self.marker_handler)
-        # except Exception as e:  # pylint: disable=broad-except
-        #     self.on_scenario_shutdown(False, "Setup failed", f"{e}")
-        #     return
+        try:
+            self.setup(self.tree, node=self.node, marker_handler=self.marker_handler)
+        except Exception as e:  # pylint: disable=broad-except
+            self.on_scenario_shutdown(False, "Setup failed", f"{e}")
+            return
 
         self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
         while rclpy.ok():
