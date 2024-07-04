@@ -137,9 +137,10 @@ action topic_monitor:
     qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
 
 action topic_publish:
+    # publish a message on a topic
     topic_name: string                                # name of the topic to connect to
     topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
-    value: string                                     # value of the published topic
+    value: string                                     # value to publish (can either be a string that gets parsed, a struct or a message object stored within a variable, e.g. stored by topic_monitor())
     qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
 
 action wait_for_data:

@@ -326,8 +326,8 @@ Publish a message on a topic.
 
 - ``topic_name: string``: Name of the topic to publish to
 - ``topic_type: string``: Class of the message type (e.g. ``std_msgs.msg.String``)
+- ``value: string``: Value to publish (can either be a string that gets parsed, a struct or a message object stored within a variable)
 - ``qos_profile: qos_preset_profiles``: QoS Preset Profile for the subscriber (default: ``qos_preset_profiles!system_default``)
-- ``value: string``: Value to publish
 
 ``wait_for_data()``
 """""""""""""""""""
@@ -339,7 +339,6 @@ In the background, this action uses `wait_for_data() <https://py-trees-ros.readt
 - ``topic_name: string``: Name of the topic to connect to
 - ``topic_type: string``: Class of the message type (e.g. ``std_msgs.msg.String``)
 - ``qos_profile: qos_preset_profiles``: QoS Preset Profile for the subscriber (default: ``qos_preset_profiles!system_default``)
-- ``clearing_policy: clearing_policy``: When to clear the data (default: ``clearing_policy!on_initialise``)
 
 
 ``wait_for_topics()``
