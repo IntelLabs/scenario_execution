@@ -179,13 +179,15 @@ class ModelToPyTree(object):
                 raise OSC2ParsingError(
                     msg=f'Plugin {behavior_name} {method.__name__} method is missing argument "self".', context=node.get_ctx())
 
-            missing_args = []
-            unknown_args = copy.copy(expected_args)
+            if "resolve_variable_reference_arguments" in method_args:
+                method_args.remove("resolve_variable_reference_arguments")
+            unknown_args = []
+            missing_args = copy.copy(expected_args)
             for element in method_args:
                 if element not in expected_args:
-                    missing_args.append(element)
+                    unknown_args.append(element)
                 else:
-                    unknown_args.remove(element)
+                    missing_args.remove(element)
             error_string = ""
             if missing_args:
                 error_string += "missing: " + ", ".join(missing_args)
@@ -237,7 +239,9 @@ class ModelToPyTree(object):
             if init_method is not None:
                 # if __init__() is defined, check parameters. Allowed:
                 # - __init__(self)
-                # - __init__(self, <all-osc-defined-args)
+                # - __init__(self, )
+                # - __init__(self, <all-osc-defined-args>)
+                # - __init__(self, <all-osc-defined-args>, resolve_variable_reference_arguments)
                 init_args, error_string = self.compare_method_arguments(init_method, expected_args, behavior_name, node)
                 if init_args != ["self"] and set(init_args) != set(expected_args):
                     raise OSC2ParsingError(

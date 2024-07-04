@@ -23,7 +23,7 @@ from rclpy.node import Node
 import py_trees
 from py_trees.common import Status
 
-from scenario_execution_ros.actions.conversions import get_qos_preset_profile
+from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_ros_message_type
 from scenario_execution.actions.base_action import BaseAction
 
 
@@ -32,24 +32,11 @@ class RosTopicPublish(BaseAction):
     class for publish a message on a ROS topic
     """
 
-    def __init__(self, topic_type: str, topic_name: str, qos_profile: tuple, value: str):
+    def __init__(self, topic_type: str, topic_name: str, value: str, qos_profile: tuple):
         super().__init__()
-        self.qos_profile = get_qos_preset_profile(qos_profile)
-
-        # Parse message
-        datatype_in_list = topic_type.split(".")
-        self.topic_type = getattr(
-            importlib.import_module(".".join(datatype_in_list[0:-1])),
-            datatype_in_list[-1]
-        )
+        self.qos_profile = qos_profile
+        self.topic_type = topic_type
         self.topic_name = topic_name
-        self.msg_to_pub = self.topic_type()
-        parsed_value = literal_eval("".join(value.split('\\')))
-        if not isinstance(parsed_value, dict):
-            raise TypeError(f'Parsed value needs type "dict", got {type(parsed_value)}.')
-        set_message_fields(self.msg_to_pub, parsed_value)
-
-        # Initialize publisher and ROS node
         self.publisher = None
         self.node = None
 
@@ -64,15 +51,28 @@ class RosTopicPublish(BaseAction):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
-        try:
-            self.publisher = self.node.create_publisher(
-                msg_type=self.topic_type,
-                topic=self.topic_name,
-                qos_profile=self.qos_profile
-            )
-        except TypeError as e:
-            raise TypeError(f"{self.name}") from e
+        topic_type = get_ros_message_type(self.topic_type)
+        self.msg_to_pub = topic_type()
+        self.publisher = self.node.create_publisher(
+            msg_type=topic_type,
+            topic=self.topic_name,
+            qos_profile=get_qos_preset_profile(self.qos_profile)
+        )
 
+    def execute(self, topic_type: str, topic_name: str, value: str, qos_profile: tuple):
+        if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:
+            raise ValueError("Updating topic parameters not supported.")
+        
+        if isinstance(value, str):
+            parsed_value = literal_eval("".join(value.split('\\')))
+            if not isinstance(parsed_value, dict):
+                raise TypeError(f'Parsed value needs type "dict", got {type(parsed_value)}.')
+            set_message_fields(self.msg_to_pub, parsed_value)
+        elif isinstance(value, dict):
+            set_message_fields(self.msg_to_pub, value)
+        else:
+            self.msg_to_pub = value
+        
     def update(self) -> py_trees.common.Status:
         """
         Publish the msg to topic

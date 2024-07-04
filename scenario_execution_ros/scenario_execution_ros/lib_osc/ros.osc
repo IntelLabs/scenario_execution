@@ -111,6 +111,12 @@ action record_bag:
     hidden_topics: bool = false  # whether to record hidden topics
     storage: string = ''         # storage type to use (empty string: use default)
 
+action robot.monitor_topic:
+    target_variable: string # name of the variable
+    topic_name: string # name of the topic to connect to
+    topic_type: string # class of the message type (e.g. std_msgs.msg.String)
+    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
+
 action ros_launch:
     # Execute a ros launch file
     package_name: string            # package that contains the launch file
@@ -132,8 +138,8 @@ action set_node_parameter:
 action topic_publish:
     topic_name: string                                # name of the topic to connect to
     topic_type: string                                # class of the message type (e.g. std_msgs.msg.String)
-    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
     value: string                                     # value of the published topic
+    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
 
 action wait_for_data:
     topic_name: string                                # name of the topic to connect to

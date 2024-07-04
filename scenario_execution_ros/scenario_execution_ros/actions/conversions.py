@@ -17,8 +17,18 @@
 """ common conversions """
 
 import operator
+import importlib
 from rclpy.qos import QoSPresetProfiles
 
+def get_ros_message_type(message_type_string):
+    if not message_type_string:
+        raise ValueError("Empty message type.")
+    
+    datatype_in_list = message_type_string.split(".")
+    try:
+        return getattr(importlib.import_module(".".join(datatype_in_list[0:-1])),datatype_in_list[-1])
+    except ModuleNotFoundError as e:
+        raise ValueError(f"Could not find message type {message_type_string}: {e}") from e
 
 def get_qos_preset_profile(qos_profile):
     """

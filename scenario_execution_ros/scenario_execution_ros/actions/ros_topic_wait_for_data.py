@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import importlib
-from scenario_execution_ros.actions.conversions import get_qos_preset_profile
+from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_ros_message_type
 from scenario_execution.actions.base_action import BaseAction
 import rclpy
 import py_trees
@@ -33,12 +33,8 @@ class RosTopicWaitForData(BaseAction):
 
     def __init__(self, topic_name: str, topic_type: str, qos_profile: tuple):
         super().__init__()
-        datatype_in_list = topic_type.split(".")
-        self.topic_type = getattr(
-            importlib.import_module(".".join(datatype_in_list[0:-1])),
-            datatype_in_list[-1]
-        )
-        self.qos_profile = get_qos_preset_profile(qos_profile)
+        self.topic_type = topic_type
+        self.qos_profile = qos_profile
         self.topic_name = topic_name
         self.subscriber = None
         self.node = None
@@ -56,15 +52,17 @@ class RosTopicWaitForData(BaseAction):
             raise KeyError(error_message) from e
 
         self.subscriber = self.node.create_subscription(
-            msg_type=self.topic_type,
+            msg_type=get_ros_message_type(self.topic_type),
             topic=self.topic_name,
             callback=self._callback,
-            qos_profile=self.qos_profile,
+            qos_profile=get_qos_preset_profile(self.qos_profile),
             callback_group=rclpy.callback_groups.ReentrantCallbackGroup()
         )
         self.feedback_message = f"Waiting for data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
 
     def execute(self, topic_name, topic_type, qos_profile):
+        if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:
+            raise ValueError("Updating topic parameters not supported.")
         self.found = False
 
     def update(self) -> py_trees.common.Status:
