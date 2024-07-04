@@ -32,5 +32,5 @@ class StoreAction(BaseAction):
 
     def update(self) -> py_trees.common.Status:
         with open(self.file_path, 'w') as f:
-            f.write(self.value)
+            f.write(str(self.value))
         return py_trees.common.Status.SUCCESS

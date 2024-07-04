@@ -104,18 +104,18 @@ action log_check:
     module_name: string = '' # If specified, a matching message must also match the module name
     values: list of string # string to check for. If found, action succeeds
 
+action monitor_topic:
+    target_variable: string # name of the variable
+    topic_name: string # name of the topic to connect to
+    topic_type: string # class of the message type (e.g. std_msgs.msg.String)
+    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
+
 action record_bag:
     # Record a dataset, stored in output_dir defined by command-line parameter (default: '.')
     topics: list of topics       # Topics to records, if empty all topics are recorded
     timestamp_suffix: bool = true# Add a timestamp suffix to output directory name
     hidden_topics: bool = false  # whether to record hidden topics
     storage: string = ''         # storage type to use (empty string: use default)
-
-action robot.monitor_topic:
-    target_variable: string # name of the variable
-    topic_name: string # name of the topic to connect to
-    topic_type: string # class of the message type (e.g. std_msgs.msg.String)
-    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
 
 action ros_launch:
     # Execute a ros launch file

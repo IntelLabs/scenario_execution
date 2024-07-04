@@ -23,9 +23,9 @@ class BaseAction(py_trees.behaviour.Behaviour):
     # subclasses might implement __init__() with the same arguments as defined in osc
     # CAUTION: __init__() only gets the initial parameter values. In case variables get modified during scenario execution,
     #          the latest values are available in execute() only.
-    def __init__(self, resolve_variable_reference_arguments=True):
+    def __init__(self, resolve_variable_reference_arguments_in_execute=True):
         self.blackboard = None
-        self.resolve_variable_reference_arguments = resolve_variable_reference_arguments
+        self.resolve_variable_reference_arguments_in_execute = resolve_variable_reference_arguments_in_execute
         super().__init__(self.__class__.__name__)
 
     # Subclasses might implement execute() with the same arguments as defined in osc.
@@ -43,7 +43,7 @@ class BaseAction(py_trees.behaviour.Behaviour):
         execute_method = getattr(self, "execute", None)
         if execute_method is not None and callable(execute_method):
             
-            if self.resolve_variable_reference_arguments:
+            if self.resolve_variable_reference_arguments_in_execute:
                 final_args = self.model.get_resolved_value(self.get_blackboard_client())
             else:
                 final_args = self.model.get_resolved_value_with_variable_references(self.get_blackboard_client())
@@ -75,24 +75,10 @@ class BaseAction(py_trees.behaviour.Behaviour):
 
     def set_associated_actor_variable(self, variable_name, value):
         if not self.model.actor:
-            raise ValueError("Mddel does not have 'actor'.")
+            raise ValueError("Model does not have 'actor'.")
         blackboard = self.get_blackboard_client()
         model_blackboard_name = self.model.actor.get_fully_qualified_var_name(include_scenario=False)
         model_blackboard_name += "/" + variable_name
         blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.WRITE)
         self.logger.debug(f"Set variable '{model_blackboard_name}' to '{value}'")
         setattr(blackboard, model_blackboard_name, value)
-
-    def check_associated_actor_variable_exists(self, variable_name):
-        if not self.model.actor:
-            raise ValueError("Mddel does not have 'actor'.")
-        blackboard = self.get_blackboard_client()
-        model_blackboard_name = self.model.actor.get_fully_qualified_var_name(include_scenario=False)
-        model_blackboard_name += "/" + variable_name
-        blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.READ)
-        try:
-            getattr(blackboard, model_blackboard_name)
-            return True
-        except KeyError:
-            return False
-        
