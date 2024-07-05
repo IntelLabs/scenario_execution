@@ -94,6 +94,7 @@ class AssertLifecycleState(BaseAction):
         elif self.current_state == AssertLifecycleStateState.CHECKING_STATE:
             while not self.received_state_transition_queue.empty():
                 state = self.received_state_transition_queue.get()
+                self.feedback_message = f"State '{state}' reached..."  # pylint: disable= attribute-defined-outside-init
                 if not self.state_sequence:
                     self.feedback_message = f"Unexpected state '{state}' reached..."  # pylint: disable= attribute-defined-outside-init
                     if self.fail_on_unexpected:
@@ -153,6 +154,8 @@ class AssertLifecycleState(BaseAction):
             self.logger.error(f"Exception in getting inital state: str({e})")
 
     def lifecycle_callback(self, msg):
+        if self.current_state == AssertLifecycleStateState.IDLE:
+            return
         if self.current_state == AssertLifecycleStateState.WAITING_FOR_INITIAL_STATE:
             self.current_state = AssertLifecycleStateState.CHECKING_STATE
         self.add_to_queue(msg.goal_state.label)
