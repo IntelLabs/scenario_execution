@@ -367,7 +367,7 @@ Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/n
    * - ``allow_initial_skip``
      - ``bool``
      - ``false``
-     - If true, allows skipping of states within the ``state_sequence`` without reporting failure. 
+     - If true, allows skipping of states at the beginning of ``state_sequence`` without reporting failure. 
    * - ``fail_on_unexpected``
      - ``bool``
      - ``true``

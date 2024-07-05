@@ -76,10 +76,10 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     # Case 3: Test keeps running and ends with scenario or timeout if specified lifecycle node is not found.
     # Case 4: Test fails if the specified state are not in the default list.
 
-# 3. : False
+# 3. allow_initial_skip: False
     # Case 5: Test succeeds if state of the node doesn't match the specified state.
 
-# 4. allow_inital_state_true: True
+# 4. allow_initial_skip: True
     # Case 6: Test keeps running and ends with scenario or timeout if start state maches any specified state in the list.
     # Case 7: Test fails if state of the node doesn't match any specified state in the list.
     # Case 8: Test keeps running and ends with scenario or timeout if the node transition through the specified states in the correct order.
@@ -144,7 +144,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
                 state_sequence: ['inact'],
-                : false)
+                allow_initial_skip: false)
             emit end
 """
         self.execute(scenario_content)
@@ -159,7 +159,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
                 state_sequence: [lifecycle_state!inactive],
-                : false)
+                allow_initial_skip: false)
             emit end
 """
         self.execute(scenario_content)

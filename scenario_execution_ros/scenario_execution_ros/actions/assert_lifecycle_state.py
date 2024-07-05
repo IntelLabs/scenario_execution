@@ -92,6 +92,8 @@ class AssertLifecycleState(BaseAction):
         elif self.current_state == AssertLifecycleStateState.WAITING_FOR_INITIAL_STATE:
             return py_trees.common.Status.RUNNING
         elif self.current_state == AssertLifecycleStateState.CHECKING_STATE:
+            if self.received_state_transition_queue:
+                self.feedback_message = f"State '{list(self.received_state_transition_queue.queue)}', expected {self.state_sequence}..."  # pylint: disable= attribute-defined-outside-init
             while not self.received_state_transition_queue.empty():
                 state = self.received_state_transition_queue.get()
                 if not self.state_sequence:
