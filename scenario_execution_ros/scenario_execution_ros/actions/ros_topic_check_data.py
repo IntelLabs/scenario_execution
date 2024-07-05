@@ -146,4 +146,4 @@ class RosTopicCheckData(BaseAction):
                 else:
                     set_message_fields(self.expected_value, parsed_value)
         except TypeError as e:
-            raise ValueError(f"Could not parse '{expected_value_string}'. {error_string}{e}")
+            raise ValueError(f"Could not parse '{expected_value_string}'. {error_string}") from e
