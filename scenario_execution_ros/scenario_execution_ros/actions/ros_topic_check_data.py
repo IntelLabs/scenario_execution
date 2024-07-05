@@ -41,32 +41,17 @@ class RosTopicCheckData(BaseAction):
                  wait_for_first_message: bool):
         super().__init__()
         self.topic_name = topic_name
-
-        self.topic_type = get_ros_message_type(topic_type)
-        self.qos_profile = get_qos_preset_profile(qos_profile)
+        self.topic_type = topic_type
+        self.qos_profile = qos_profile
         self.member_name = member_name
-
-        if not isinstance(expected_value, str):
-            raise ValueError("Only string allowed as expected_value.")
-        parsed_value = literal_eval("".join(expected_value.split('\\')))
-        if self.member_name == "":
-            self.expected_value = self.topic_type()
-            set_message_fields(self.expected_value, parsed_value)
-        else:
-            msg = self.topic_type()
-            self.expected_value = getattr(msg, self.member_name)
-            if type(self.expected_value).__name__ in dir(builtins):
-                self.expected_value = parsed_value
-            else:
-                set_message_fields(self.expected_value, parsed_value)
-
+        self.set_expected_value(expected_value)
         self.comparison_operator = get_comparison_operator(comparison_operator)
         self.fail_if_no_data = fail_if_no_data
         self.fail_if_bad_comparison = fail_if_bad_comparison
         self.wait_for_first_message = wait_for_first_message
         self.last_msg = None
         self.found = None
-
+        
     def setup(self, **kwargs):
         """
         Setup the subscriber
@@ -79,10 +64,10 @@ class RosTopicCheckData(BaseAction):
             raise KeyError(error_message) from e
 
         self.subscriber = self.node.create_subscription(
-            msg_type=self.topic_type,
+            msg_type=get_ros_message_type(self.topic_type),
             topic=self.topic_name,
             callback=self._callback,
-            qos_profile=self.qos_profile,
+            qos_profile=get_qos_preset_profile(self.qos_profile),
             callback_group=rclpy.callback_groups.ReentrantCallbackGroup()
         )
         self.feedback_message = f"Waiting for data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
@@ -97,6 +82,14 @@ class RosTopicCheckData(BaseAction):
                 fail_if_no_data: bool,
                 fail_if_bad_comparison: bool,
                 wait_for_first_message: bool):
+        if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:
+            raise ValueError("Updating topic parameters not supported.")
+        self.member_name = member_name
+        self.set_expected_value(expected_value)
+        self.comparison_operator = get_comparison_operator(comparison_operator)
+        self.fail_if_no_data = fail_if_no_data
+        self.fail_if_bad_comparison = fail_if_bad_comparison
+        self.wait_for_first_message = wait_for_first_message
         if wait_for_first_message:
             self.found = False
         else:
@@ -121,8 +114,6 @@ class RosTopicCheckData(BaseAction):
         else:
             self.feedback_message = f"Received message does not contain expected value."
 
-        # self.feedback_message = f"Received data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
-
     def check_data(self, msg):
         if msg is None:
             return
@@ -136,3 +127,23 @@ class RosTopicCheckData(BaseAction):
             except AttributeError:
                 self.feedback_message = "Member name not found {self.member_name}]"
         self.found = self.comparison_operator(value, self.expected_value)
+
+    def set_expected_value(self, expected_value_string):
+        if not isinstance(expected_value_string, str):
+            raise ValueError("Only string allowed as expected_value.")
+        error_string = ""
+        try:
+            parsed_value = literal_eval("".join(expected_value_string.split('\\')))
+            if self.member_name == "":
+                self.expected_value = self.topic_type()
+                set_message_fields(self.expected_value, parsed_value)
+            else:
+                msg = get_ros_message_type(self.topic_type)()
+                self.expected_value = getattr(msg, self.member_name)
+                error_string = f"Member {self.member_name} is expected to be of type {type(self.expected_value).__name__}. "
+                if type(self.expected_value).__name__ in dir(builtins):
+                    self.expected_value = parsed_value
+                else:
+                    set_message_fields(self.expected_value, parsed_value)
+        except TypeError as e:                
+            raise ValueError(f"Could not parse '{expected_value_string}'. {error_string}{e}")

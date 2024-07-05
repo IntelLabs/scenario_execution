@@ -64,8 +64,8 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     # state_sequence: list of state_sequence ['unconfigured', 'inactive', 'active', 'finalized'].
 
 # DEFAULT VALUES
-    # allow_inital_state_skip: False
-    # fail_on_finish: True
+    # allow_state_skip: False
+    # fail_on_unexpected: True
 
 # TESTS PERFORMED
 
@@ -76,7 +76,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     # Case 3: Test keeps running and ends with scenario or timeout if specified lifecycle node is not found.
     # Case 4: Test fails if the specified state are not in the default list.
 
-# 3. fail_on_finish: False
+# 3. : False
     # Case 5: Test succeeds if state of the node doesn't match the specified state.
 
 # 4. allow_inital_state_true: True
@@ -144,7 +144,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
                 state_sequence: ['inact'],
-                fail_on_finish: false)
+                : false)
             emit end
 """
         self.execute(scenario_content)
@@ -159,7 +159,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
                 state_sequence: [lifecycle_state!inactive],
-                fail_on_finish: false)
+                : false)
             emit end
 """
         self.execute(scenario_content)
@@ -175,7 +175,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
                 state_sequence: [lifecycle_state!inactive, lifecycle_state!unconfigured, lifecycle_state!active],
-                allow_inital_state_skip: true )
+                allow_state_skip: true )
             emit fail
         time_out: serial:
             wait elapsed(8s)
@@ -194,7 +194,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
                 state_sequence: [lifecycle_state!inactive, lifecycle_state!active],
-                allow_inital_state_skip: true )
+                allow_state_skip: true )
             emit fail
         time_out: serial:
             wait elapsed(8s)
@@ -213,7 +213,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_dynamic_node',
                 state_sequence: [lifecycle_state!unconfigured, lifecycle_state!inactive, lifecycle_state!active],
-                allow_inital_state_skip: true )
+                allow_state_skip: true )
             emit fail
         time_out: serial:
             wait elapsed(20s)

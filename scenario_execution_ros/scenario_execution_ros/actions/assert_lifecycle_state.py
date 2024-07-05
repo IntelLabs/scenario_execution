@@ -24,12 +24,13 @@ from scenario_execution.actions.base_action import BaseAction
 
 class AssertLifecycleState(BaseAction):
 
-    def __init__(self, node_name: str, state_sequence: list, allow_inital_state_skip: bool, fail_on_finish: bool):
+    def __init__(self, node_name: str, state_sequence: list, allow_state_skip: bool, fail_on_unexpected: bool, keep_running: bool):
         super().__init__()
         self.node_name = node_name
         self.state_sequence = state_sequence
-        self.allow_inital_state_skip = allow_inital_state_skip
-        self.fail_on_finish = fail_on_finish
+        self.allow_state_skip = allow_state_skip
+        self.fail_on_unexpected = fail_on_unexpected
+        self.keep_running = keep_running
         self.node = None
         self.subscription = None
         self.current_index = 0  # Start with the first expected state
@@ -74,10 +75,12 @@ class AssertLifecycleState(BaseAction):
                 return py_trees.common.Status.RUNNING
             elif self.current_state == self.expected_state:
                 self.feedback_message = f"{self.node_name}: Currently in state {self.current_state}."  # pylint: disable= attribute-defined-outside-init
+                if not  self.keep_running and self.current_index == len(self.state_sequence):
+                    return py_trees.common.Status.SUCCESS
                 return py_trees.common.Status.RUNNING
             else:
                 self.feedback_message = f'{self.node_name}: Unexpected state transition. Expected {self.expected_state} or valid intermediate, but got {self.current_state}.'  # pylint: disable= attribute-defined-outside-init
-                return py_trees.common.Status.FAILURE if self.fail_on_finish else py_trees.common.Status.SUCCESS
+                return py_trees.common.Status.FAILURE if self.fail_on_unexpected else py_trees.common.Status.SUCCESS
         else:
             self.feedback_message = f"{self.node_name}: Waiting for current state..."  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.RUNNING
@@ -102,7 +105,7 @@ class AssertLifecycleState(BaseAction):
             response = future.result()
             if response:
                 self.current_state = response.current_state.label
-                if self.allow_inital_state_skip and self.current_state in self.state_sequence:
+                if self.allow_state_skip and self.current_state in self.state_sequence:
                     self.current_index = self.state_sequence.index(self.current_state)
                 if self.current_index < len(self.state_sequence):
                     self.expected_state = self.state_sequence[self.current_index]
