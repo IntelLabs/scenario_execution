@@ -37,7 +37,7 @@ action assert_lifecycle_state:
     # Checks for the state of a lifecycle-managed node.
     node_name: string                    # Name of lifecycle-managed node
     state_sequence: list of lifecycle_state # list of allowed lifecycle states to follow
-    allow_state_skip: bool = false       # if true, allows skipping of states within the state_sequence without reporting failure
+    allow_initial_skip: bool = false     # if true, allows skipping of states within the state_sequence without reporting failure
     fail_on_unexpected: bool = true      # if true and an unexpected transition or final state occurs, the action fails. Otherwise it succeed.
     keep_running: bool = true            # if true, the action keeps running while the last state in the state_sequence remains
 

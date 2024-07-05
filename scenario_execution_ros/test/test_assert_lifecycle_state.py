@@ -64,7 +64,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     # state_sequence: list of state_sequence ['unconfigured', 'inactive', 'active', 'finalized'].
 
 # DEFAULT VALUES
-    # allow_state_skip: False
+    # allow_initial_skip: False
     # fail_on_unexpected: True
 
 # TESTS PERFORMED
@@ -175,7 +175,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
                 state_sequence: [lifecycle_state!inactive, lifecycle_state!unconfigured, lifecycle_state!active],
-                allow_state_skip: true )
+                allow_initial_skip: true )
             emit fail
         time_out: serial:
             wait elapsed(8s)
@@ -194,7 +194,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
                 state_sequence: [lifecycle_state!inactive, lifecycle_state!active],
-                allow_state_skip: true )
+                allow_initial_skip: true )
             emit fail
         time_out: serial:
             wait elapsed(8s)
@@ -213,7 +213,7 @@ scenario test_assert_lifecycle_state:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_dynamic_node',
                 state_sequence: [lifecycle_state!unconfigured, lifecycle_state!inactive, lifecycle_state!active],
-                allow_state_skip: true )
+                allow_initial_skip: true )
             emit fail
         time_out: serial:
             wait elapsed(20s)

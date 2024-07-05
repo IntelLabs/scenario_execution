@@ -364,7 +364,7 @@ Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/n
      - ``list of lifecycle_state``
      - 
      - List of states that a node is expected to transition through. The last entry is the state that a node is expected to remain in. Allowed ``['unconfigured', 'inactive', 'active', 'finalized]`` (e.g. ``[lifecycle_state!inactive, lifecycle_state!active]``)
-   * - ``allow_state_skip``
+   * - ``allow_initial_skip``
      - ``bool``
      - ``false``
      - If true, allows skipping of states within the ``state_sequence`` without reporting failure. 
