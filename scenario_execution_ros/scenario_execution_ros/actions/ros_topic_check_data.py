@@ -51,7 +51,7 @@ class RosTopicCheckData(BaseAction):
         self.wait_for_first_message = wait_for_first_message
         self.last_msg = None
         self.found = None
-        
+
     def setup(self, **kwargs):
         """
         Setup the subscriber
@@ -145,5 +145,5 @@ class RosTopicCheckData(BaseAction):
                     self.expected_value = parsed_value
                 else:
                     set_message_fields(self.expected_value, parsed_value)
-        except TypeError as e:                
+        except TypeError as e:
             raise ValueError(f"Could not parse '{expected_value_string}'. {error_string}{e}")

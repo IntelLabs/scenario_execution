@@ -75,7 +75,7 @@ class AssertLifecycleState(BaseAction):
                 return py_trees.common.Status.RUNNING
             elif self.current_state == self.expected_state:
                 self.feedback_message = f"{self.node_name}: Currently in state {self.current_state}."  # pylint: disable= attribute-defined-outside-init
-                if not  self.keep_running and self.current_index == len(self.state_sequence):
+                if not self.keep_running and self.current_index == len(self.state_sequence):
                     return py_trees.common.Status.SUCCESS
                 return py_trees.common.Status.RUNNING
             else:
