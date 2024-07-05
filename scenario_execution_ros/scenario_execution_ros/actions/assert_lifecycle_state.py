@@ -81,7 +81,7 @@ class AssertLifecycleState(BaseAction):
         self.fail_on_unexpected = fail_on_unexpected
         self.keep_running = keep_running
 
-    def update(self) -> py_trees.common.Status:
+    def update(self) -> py_trees.common.Status:  # pylint: disable= too-many-return-statements
         if self.current_state == AssertLifecycleStateState.IDLE:
             if self.client.service_is_ready():
                 self.get_initial_state()
