@@ -158,8 +158,9 @@ scenario test_assert_lifecycle_state:
         do serial:
             assert_lifecycle_state(
                 node_name: 'test_lifecycle_node',
-                state_sequence: [lifecycle_state!inactive],
-                allow_initial_skip: false)
+                state_sequence: [lifecycle_state!unconfigured],
+                allow_initial_skip: false,
+                keep_running: false)
             emit end
 """
         self.execute(scenario_content)

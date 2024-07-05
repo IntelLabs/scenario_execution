@@ -103,7 +103,7 @@ class ROSScenarioExecution(ScenarioExecution):
                     executor.spin_once(timeout_sec=0.1)
                 except KeyboardInterrupt:
                     self.on_scenario_shutdown(False, "Aborted")
-                    
+
                 if self.shutdown_task is not None and self.shutdown_task.done():
                     break
         except Exception as e:  # pylint: disable=broad-except
