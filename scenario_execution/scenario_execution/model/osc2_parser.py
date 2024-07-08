@@ -42,7 +42,7 @@ class OpenScenario2Parser(object):
 
         parsed_model = self.parse_file(file, log_model)
 
-        tree = py_trees.composites.Sequence()
+        tree = py_trees.composites.Sequence(name="", memory=True)
         model = self.create_internal_model(parsed_model, tree, file, log_model, debug)
 
         if len(model.find_children_of_type(ScenarioDeclaration)) == 0:

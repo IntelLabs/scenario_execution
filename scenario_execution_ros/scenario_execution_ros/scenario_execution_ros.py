@@ -100,7 +100,7 @@ class ROSScenarioExecution(ScenarioExecution):
             self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
             while rclpy.ok():
                 try:
-                    executor.spin_once(timeout_sec=0.1)
+                    executor.spin_once(timeout_sec=self.tick_tock_period)
                 except KeyboardInterrupt:
                     self.on_scenario_shutdown(False, "Aborted")
 

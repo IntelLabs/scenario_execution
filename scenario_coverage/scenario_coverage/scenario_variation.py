@@ -130,7 +130,7 @@ class ScenarioVariation(object):
             if self.debug:
                 print_tree(model[0], self.logger)
             try:
-                tree = py_trees.composites.Sequence()
+                tree = py_trees.composites.Sequence(name="", memory=True)
                 resolve_internal_model(model[0], tree, self.logger, False)
             except ValueError as e:
                 raise ValueError(f"Resulting model is not resolvable: {e}") from e

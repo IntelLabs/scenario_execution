@@ -31,7 +31,7 @@ class Log(BaseAction):
         Args:
             kwargs: arguments passed from py_trees.behaviour.Behaviour
         """
-        self.logger = kwargs['logger']
+        #self.logger = kwargs['logger']
 
     def execute(self, msg: str):
         self.msg = msg
@@ -46,8 +46,9 @@ class Log(BaseAction):
         """
         if not self.published:
             self.published = True
-            if not self.msg:
-                raise ValueError("log(): Empty message.")
-            self.logger.info(f"{self.msg}")
+            # if not self.msg:
+            #     raise ValueError("log(): Empty message.")
+            # self.logger.info(f"{self.msg}")
+            print(self.msg)
 
         return Status.SUCCESS
