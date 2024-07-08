@@ -203,7 +203,10 @@ class ModelToPyTree(object):
                         msg=f'Unknown modifier "{node.behavior.name}". Available modifiers {available_modifiers}.', context=node.get_ctx())
                 if node.behavior.name == "repeat":
                     if isinstance(self.__cur_behavior, py_trees.composites.Composite):
-                        instance = py_trees.decorators.Timeout(name="Repeat", child=py_trees.behaviours.Success(name="Have a Beer!"))#, num_success=3)
+                        parent = self.__cur_behavior.parent
+                        parent.children.remove(self.__cur_behavior)
+                        instance = py_trees.decorators.Timeout(name="Repeat", child=self.__cur_behavior)#, num_success=3)
+                        parent.add_child(instance)
                     else:
                         raise OSC2ParsingError(msg=f'Modifier "{node.behavior.name}" currently only supported for composite node (i.e. one_of, parallel, serial).', context=node.get_ctx())
                 else:
