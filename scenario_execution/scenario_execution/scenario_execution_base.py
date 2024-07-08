@@ -68,6 +68,7 @@ class ScenarioExecution(object):
                  scenario_file: str,
                  output_dir: str,
                  dry_run=False,
+                 render_dot=False,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_tock_period: float = 0.1) -> None:
 
@@ -85,6 +86,7 @@ class ScenarioExecution(object):
         self.scenario_file = scenario_file
         self.output_dir = output_dir
         self.dry_run = dry_run
+        self.render_dot = render_dot
         if self.output_dir and not self.dry_run:
             if not os.path.isdir(self.output_dir):
                 try:
@@ -213,7 +215,9 @@ class ScenarioExecution(object):
                                            failure_output=str(e),
                                            processing_time=datetime.now() - start))
             return False
-
+        if self.render_dot:
+            self.logger.info(f"Writing py-trees dot files to {self.tree.name.lower()}.[dot|svg|png] ...")
+            py_trees.display.render_dot_tree(self.tree, target_directory=self.output_dir)
         return True
 
     def run(self):
@@ -335,6 +339,7 @@ class ScenarioExecution(object):
                             help='For debugging: Show current state of py tree')
         parser.add_argument('-o', '--output-dir', type=str, help='Directory for output (e.g. test results)')
         parser.add_argument('-n', '--dry-run', action='store_true', help='Parse and resolve scenario, but do not execute')
+        parser.add_argument('--dot', action='store_true', help='Render dot trees of resulting py-tree')
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
         args, _ = parser.parse_known_args(args)
         return args
@@ -351,7 +356,8 @@ def main():
                                                live_tree=args.live_tree,
                                                scenario_file=args.scenario,
                                                output_dir=args.output_dir,
-                                               dry_run=args.dry_run)
+                                               dry_run=args.dry_run,
+                                               render_dot=args.dot)
     except ValueError as e:
         print(f"Error while initializing: {e}")
         sys.exit(1)
