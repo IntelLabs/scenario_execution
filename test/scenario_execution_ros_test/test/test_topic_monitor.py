@@ -47,7 +47,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
         self.tmp_file = tempfile.NamedTemporaryFile()
-        self.tree = py_trees.composites.Sequence()
+        self.tree = py_trees.composites.Sequence(name="", memory=True)
 
     def tearDown(self):
         self.node.destroy_node()

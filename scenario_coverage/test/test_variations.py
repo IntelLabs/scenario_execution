@@ -30,7 +30,7 @@ class TestOSC2Parser(unittest.TestCase):
     # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
     def setUp(self) -> None:
         self.tmpdir = tempfile.TemporaryDirectory()
-        self.tree = py_trees.composites.Sequence()
+        self.tree = py_trees.composites.Sequence(name="", memory=True)
 
     def run_coverage(self, scenario_content):
         fp = tempfile.NamedTemporaryFile(suffix='.osc', mode='w', delete=False)
