@@ -840,10 +840,13 @@ class ActionInherits(Inheritance):
             return visitor.visit_children(self)
 
 
-class ModifierDeclaration(Declaration):
+class ModifierDeclaration(StructuredDeclaration):
 
     def __init__(self, actor_name, modifier_name):
-        super().__init__()
+        qualified_name = modifier_name
+        if actor_name:
+            qualified_name = actor_name + "." + qualified_name
+        super().__init__(qualified_name)
         self.actor = actor_name
         self.modifier = modifier_name
 

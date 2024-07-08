@@ -217,7 +217,7 @@ class ModelResolver(ModelBaseVisitor):
                 current = current.get_base_type()
         else:
             resolved = node.resolve(node.behavior)
-
+            
         if not resolved:
             raise OSC2ParsingError(
                 msg=f'BehaviorInvocation uses unknown behavior "{qualified_behavior_name}".', context=node.get_ctx())
