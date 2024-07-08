@@ -29,7 +29,7 @@ class TestOSC2Parser(unittest.TestCase):
 
     def setUp(self) -> None:
         self.parser = OpenScenario2Parser(Logger('test', False))
-        self.tree = py_trees.composites.Sequence()
+        self.tree = py_trees.composites.Sequence(name="", memory=True)
 
     def test_keep_override(self):
         scenario_content = """

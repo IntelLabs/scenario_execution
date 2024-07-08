@@ -33,7 +33,7 @@ class TestCheckData(unittest.TestCase):
         rclpy.init()
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
-        self.tree = py_trees.composites.Sequence()
+        self.tree = py_trees.composites.Sequence(name="", memory=True)
 
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))

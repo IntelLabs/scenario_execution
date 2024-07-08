@@ -64,7 +64,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
             callback_group=ReentrantCallbackGroup(),
             goal_callback=self.goal_callback,
             cancel_callback=self.cancel_callback)
-        self.tree = py_trees.composites.Sequence()
+        self.tree = py_trees.composites.Sequence(name="", memory=True)
 
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
