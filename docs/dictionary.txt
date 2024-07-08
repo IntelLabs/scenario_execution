@@ -28,3 +28,6 @@ amcl
 RViz
 junit
 runtime
+dot
+png
+svg
