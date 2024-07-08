@@ -135,12 +135,15 @@ class ModelToPyTree(object):
 
         def visit_do_member(self, node: DoMember):
             composition_operator = node.composition_operator
+            name = node.name
+            if not name:
+                name = node.__class__.__name__
             if composition_operator == "serial":
-                behavior = py_trees.composites.Sequence(name=node.name)
+                behavior = py_trees.composites.Sequence(name=name, memory=True)
             elif composition_operator == "parallel":
-                behavior = py_trees.composites.Parallel(name=node.name, policy=py_trees.common.ParallelPolicy.SuccessOnAll())
+                behavior = py_trees.composites.Parallel(name=name, policy=py_trees.common.ParallelPolicy.SuccessOnAll())
             elif composition_operator == "one_of":
-                behavior = py_trees.composites.Parallel(name=node.name, policy=py_trees.common.ParallelPolicy.SuccessOnOne())
+                behavior = py_trees.composites.Parallel(name=name, policy=py_trees.common.ParallelPolicy.SuccessOnOne())
             else:
                 raise NotImplementedError(f"scenario operator {composition_operator} not yet supported.")
 
