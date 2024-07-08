@@ -318,3 +318,4 @@ class ModelToPyTree(object):
                 qualified_name = node.get_qualified_name()
                 client = self.__cur_behavior.attach_blackboard_client()
                 client.register_key(qualified_name, access=Access.WRITE)
+                setattr(client, qualified_name, None)

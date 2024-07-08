@@ -41,7 +41,11 @@ spelling_ignore_contributor_names = False
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'sphinx_rtd_theme'
-# html_static_path = ['.']
+html_static_path = ['.']
+
+html_css_files = [
+    'custom.css',
+]
 
 # https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
 github_user, github_repo = os.environ["GITHUB_REPOSITORY"].split("/", maxsplit=1)
