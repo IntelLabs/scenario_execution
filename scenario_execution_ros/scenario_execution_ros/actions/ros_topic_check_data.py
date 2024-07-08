@@ -134,11 +134,11 @@ class RosTopicCheckData(BaseAction):
         error_string = ""
         try:
             parsed_value = literal_eval("".join(expected_value_string.split('\\')))
+            msg = get_ros_message_type(self.topic_type)()
             if self.member_name == "":
-                self.expected_value = self.topic_type()
+                self.expected_value = msg
                 set_message_fields(self.expected_value, parsed_value)
             else:
-                msg = get_ros_message_type(self.topic_type)()
                 self.expected_value = getattr(msg, self.member_name)
                 error_string = f"Member {self.member_name} is expected to be of type {type(self.expected_value).__name__}. "
                 if type(self.expected_value).__name__ in dir(builtins):
