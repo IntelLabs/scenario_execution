@@ -18,7 +18,7 @@ Runtime Parameters
    * - ``-d`` ``--debug``
      - (For debugging) print internal debugging output
    * - ``--dot``
-     - Render dot trees of resulting py-tree
+     - Write [dot|png|svg] of resulting py-tree. Write files to current directory if no ``output-dir`` is given.
    * - ``-l`` ``--log-model``
      - (For debugging) Produce tree output of parsed scenario
    * - ``-n`` ``--dry-run``
