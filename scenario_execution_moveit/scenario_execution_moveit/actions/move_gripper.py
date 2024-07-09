@@ -50,7 +50,7 @@ class MoveGripper(BaseAction):
         # timeout
         self.service_start_time = None
         self.execution_start_time = None
-        self.timeout_duration = 10  # Timeout duration in seconds
+        self.timeout_duration = 30  # Timeout duration in seconds
 
     def setup(self, **kwargs):
         try:
