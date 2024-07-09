@@ -142,6 +142,7 @@ class MoveToPose(BaseAction):
                 else:
                     error_info = self.log_moveit_error(self.last_error_code)
                     self.logger.info(f"{error_info}. Retrying...")
+                    self.execute = False
                     if self.retry_start_time is None:
                         self.retry_start_time = time.time()
                     if self.check_timeout(self.retry_start_time):
