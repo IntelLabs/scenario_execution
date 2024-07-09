@@ -14,15 +14,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-
 import os
 import unittest
 import rclpy
 import py_trees
+import tempfile
 import threading
 from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree
+from scenario_execution.model.model_blackboard import create_py_tree_blackboard
+
 from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
@@ -34,98 +36,57 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def setUp(self):
         rclpy.init()
-
-        self.received_msgs = []
-        self.node = rclpy.create_node('test_node_logging')
+        self.request_received = None
+        self.node = rclpy.create_node('test_node_action')
 
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
         self.executor_thread = threading.Thread(target=self.executor.spin)
         self.executor_thread.start()
 
-        self.callback_group = rclpy.callback_groups.ReentrantCallbackGroup()
-        self.srv = self.node.create_timer(1, self.callback)
-
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
+        self.tmp_file = tempfile.NamedTemporaryFile()
         self.tree = py_trees.composites.Sequence(name="", memory=True)
-
-    def execute(self, scenario_content):
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
-        self.scenario_execution_ros.tree = self.tree
-        self.scenario_execution_ros.run()
 
     def tearDown(self):
         self.node.destroy_node()
         rclpy.try_shutdown()
         self.executor_thread.join()
 
-    def callback(self):
-        self.node.get_logger().info("ERROR")
+    def execute(self, scenario_content):
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
+        create_py_tree_blackboard(model, self.tree, self.parser.logger, False)
+        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.scenario_execution_ros.tree = self.tree
+        self.scenario_execution_ros.run()
 
     def test_success(self):
         scenario_content = """
 import osc.ros
 
-scenario test_success:
+action store_action:
+    file_path: string
+    value: string
+
+actor test_actor:
+    var test: string = "one"
+
+scenario test_scenario:
+    foo: test_actor
+
     do parallel:
         serial:
-            log_check(values: ['ERROR'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
-"""
-        self.scenario_execution_ros.live_tree = True
-        self.execute(scenario_content)
-        self.assertTrue(self.scenario_execution_ros.process_results())
-
-    def test_timeout(self):
-        scenario_content = """
-import osc.ros
-
-scenario test_timeout:
-    do parallel:
+            wait elapsed(1s)
+            topic_publish("/bla", "std_msgs.msg.String", '{\\\"data\\\": \\\"TEST\\\"}')
         serial:
-            log_check(values: ['UNKNOWN'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
-"""
-        self.execute(scenario_content)
-        self.assertFalse(self.scenario_execution_ros.process_results())
-
-    def test_module_success(self):
-        scenario_content = """
-import osc.ros
-
-scenario test_module_success:
-    do parallel:
-        serial:
-            log_check(module_name: 'test_node_logging', values: ['ERROR'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+            topic_monitor("/bla", "std_msgs.msg.String", foo.test)
+            wait elapsed(2s)
+            store_action('""" + self.tmp_file.name + """', foo.test)
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
-
-    def test_module_timeout(self):
-        scenario_content = """
-import osc.ros
-
-scenario test_module_timeout:
-    do parallel:
-        serial:
-            log_check(module_name: 'UNKNOWN', values: ['ERROR'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
-"""
-        self.execute(scenario_content)
-        self.assertFalse(self.scenario_execution_ros.process_results())
+        with open(self.tmp_file.name) as f:
+            result = f.read()
+        self.assertEqual(result, "std_msgs.msg.String(data='TEST')")

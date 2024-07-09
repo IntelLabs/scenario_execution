@@ -1504,6 +1504,22 @@ class BehaviorInvocation(StructuredDeclaration):
     def get_type(self):
         return self.behavior, False
 
+    def get_resolved_value_with_variable_references(self, blackboard):
+        params = self.get_resolved_value(blackboard)
+
+        pos = 0
+        param_keys = list(params.keys())
+        for child in self.get_children():
+            if isinstance(child, PositionalArgument):
+                if isinstance(child.get_child(0), IdentifierReference):
+                    params[param_keys[pos]] = child.get_child(0).get_blackboard_reference(blackboard)
+                pos += 1
+            elif isinstance(child, NamedArgument):
+                if isinstance(child.get_child(0), IdentifierReference):
+                    params[child.name] = child.get_child(0).get_blackboard_reference(blackboard)
+
+        return params
+
 
 class ModifierInvocation(ModelElement):
 
@@ -2121,6 +2137,24 @@ class Identifier(ModelElement):
             return visitor.visit_children(self)
 
 
+class VariableReference(object):
+    # To access variables from within action implementations
+
+    def __init__(self, blackboard, ref) -> None:
+        self.blackboard = blackboard
+        self.ref = ref
+        self.blackboard.register_key(ref, access=py_trees.common.Access.WRITE)
+
+    def __str__(self):
+        return f"VariableReference({self.ref})"
+
+    def set_value(self, val):
+        setattr(self.blackboard, self.ref, val)
+
+    def get_value(self):
+        return getattr(self.blackboard, self.ref)
+
+
 class IdentifierReference(ModelElement):
 
     def __init__(self, ref):
@@ -2153,18 +2187,23 @@ class IdentifierReference(ModelElement):
         else:
             return self.ref.get_type_string()
 
+    def get_blackboard_reference(self, blackboard):
+        if not isinstance(self.ref, list) or len(self.ref) == 0:
+            raise ValueError("Variable Reference only supported if reference is list with at least one element")
+        fqn = self.ref[0].get_fully_qualified_var_name(include_scenario=False)
+        if blackboard is None:
+            raise ValueError("Variable Reference found, but no blackboard client available.")
+        for sub_elem in self.ref[1:]:
+            fqn += "/" + sub_elem.name
+        blackboard.register_key(fqn, access=py_trees.common.Access.WRITE)
+        return VariableReference(blackboard, fqn)
+
     def get_resolved_value(self, blackboard=None):
         if isinstance(self.ref, list):
             ref = self.ref[0]
             if any(isinstance(x, VariableDeclaration) for x in self.ref):
-                fqn = ref.get_fully_qualified_var_name(include_scenario=False)
-                if blackboard is None:
-                    raise ValueError("Variable Reference found, but no blackboard client available.")
-                for sub_elem in self.ref[1:]:
-                    fqn += "/" + sub_elem.name
-
-                blackboard.register_key(fqn, access=py_trees.common.Access.READ)
-                return getattr(blackboard, fqn)
+                var_ref = self.get_blackboard_reference(blackboard)
+                return var_ref.get_value()
             else:
                 val = ref.get_resolved_value(blackboard)
                 for sub_elem in self.ref[1:]:

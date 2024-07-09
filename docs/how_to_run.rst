@@ -2,6 +2,33 @@
 How to run
 ==========
 
+.. _runtime_parameters:
+
+Runtime Parameters
+------------------
+
+.. list-table:: 
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Description
+   * - ``-h`` ``--help``
+     - show help message
+   * - ``-d`` ``--debug``
+     - (For debugging) print internal debugging output
+   * - ``--dot``
+     - Write dot files of resulting py-tree (``<scenario-name>.[dot|png|svg]``). Writes files into current directory if no ``output-dir`` is given.
+   * - ``-l`` ``--log-model``
+     - (For debugging) Produce tree output of parsed scenario
+   * - ``-n`` ``--dry-run``
+     - Parse and resolve scenario, but do not execute
+   * - ``-o OUTPUT_DIR`` ``--output-dir OUTPUT_DIR``
+     - Directory for output (e.g. test results)
+   * - ``-t`` ``--live-tree``
+     - (For debugging) Show current state of py tree
+
+
 Run locally with ROS2
 ---------------------
 
@@ -24,12 +51,13 @@ To run an osc-file with ROS2:
 
    ros2 run scenario_execution_ros scenario_execution_ros $(PATH_TO_SCENARIO_FILE)
 
-Use the ``-t`` flag to see the printed tree and use the ``-d`` flag to see debug
-information of py_trees and the parser:
+To log the current state of the behavior tree during execution, add the ``-t`` flag as an argument and run it again:
 
 .. code-block:: bash
 
-   ros2 run scenario_execution_ros scenario_execution_ros $(PATH_TO_SCENARIO_FILE) -t -d
+   ros2 run scenario_execution_ros scenario_execution_ros $(PATH_TO_SCENARIO_FILE) -t
+
+Additional parameters are describe in section :ref:`runtime_parameters`.
 
 Run as standalone Python package without ROS2
 ---------------------------------------------
@@ -40,13 +68,13 @@ After installing :repo_link:`scenario_execution` using pip (see :ref:`install_wi
 
    scenario_execution $(PATH_TO_SCENARIO_FILE)
 
-
-Use the ``-t`` flag to see the printed tree and use the ``-d`` flag to see debug
-information of py_trees and the parser:
+To log the current state of the behavior tree during execution, add the ``-t`` flag as an argument and run it again:
 
 .. code-block:: bash
 
-   scenario_execution $(PATH_TO_SCENARIO_FILE) -t -d
+   scenario_execution $(PATH_TO_SCENARIO_FILE) -t
+
+Additional parameters are describe in section :ref:`runtime_parameters`.
 
 
 

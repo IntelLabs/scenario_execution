@@ -32,8 +32,7 @@ class TestCheckData(unittest.TestCase):
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution = ScenarioExecution(debug=False, log_model=False, live_tree=False,
                                                     scenario_file="test.osc", output_dir=None)
-        self.tmp_file = tempfile.NamedTemporaryFile()
-        self.tree = py_trees.composites.Sequence()
+        self.tree = py_trees.composites.Sequence(name="", memory=True)
         self.tmp_file = tempfile.NamedTemporaryFile()
 
     def execute(self, scenario_content):

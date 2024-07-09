@@ -166,5 +166,10 @@ action wait_for_data:
     qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
 
 action wait_for_topics:
+<<<<<<< HEAD
+    # wait for topics to get available
+    topics: list of topics
+=======
     # Wait for topics to get available (i.e. publisher gets available).
     topics: list of topics               # list of topics to wait for
+>>>>>>> main

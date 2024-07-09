@@ -42,6 +42,7 @@ class ROSScenarioExecution(ScenarioExecution):
         scenario = args.scenario
         output_dir = args.output_dir
         self.dry_run = args.dry_run
+        self.render_dot = args.dot
 
         # override commandline by ros parameters
         self.node.declare_parameter('debug', False)
@@ -50,6 +51,7 @@ class ROSScenarioExecution(ScenarioExecution):
         self.node.declare_parameter('output_dir', "")
         self.node.declare_parameter('scenario', "")
         self.node.declare_parameter('dry_run', False)
+        self.node.declare_parameter('dot', False)
 
         if self.node.get_parameter('debug').value:
             debug = self.node.get_parameter('debug').value
@@ -63,7 +65,9 @@ class ROSScenarioExecution(ScenarioExecution):
             output_dir = self.node.get_parameter('output_dir').value
         if self.node.get_parameter('dry_run').value:
             self.dry_run = self.node.get_parameter('dry_run').value
-        super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario_file=scenario, output_dir=output_dir)
+        if self.node.get_parameter('dot').value:
+            self.render_dot = self.node.get_parameter('dot').value
+        super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario_file=scenario, output_dir=output_dir, dry_run=self.dry_run, render_dot=self.render_dot)
 
     def _get_logger(self, debug):
         """
@@ -96,16 +100,20 @@ class ROSScenarioExecution(ScenarioExecution):
             self.on_scenario_shutdown(False, "Setup failed", f"{e}")
             return
 
-        self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
-        while rclpy.ok():
-            try:
-                executor.spin_once(timeout_sec=0.1)
-            except KeyboardInterrupt:
-                self.on_scenario_shutdown(False, "Aborted")
+        try:
+            self.behaviour_tree.tick_tock(period_ms=1000. * self.tick_tock_period)
+            while rclpy.ok():
+                try:
+                    executor.spin_once(timeout_sec=self.tick_tock_period)
+                except KeyboardInterrupt:
+                    self.on_scenario_shutdown(False, "Aborted")
 
-            if self.shutdown_task is not None and self.shutdown_task.done():
-                rclpy.shutdown()
-                break
+                if self.shutdown_task is not None and self.shutdown_task.done():
+                    break
+        except Exception as e:  # pylint: disable=broad-except
+            self.on_scenario_shutdown(False, "Run failed", f"{e}")
+        finally:
+            rclpy.shutdown()
 
     def shutdown(self):
         self.logger.info("Shutting down...")

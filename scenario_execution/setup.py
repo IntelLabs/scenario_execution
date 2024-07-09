@@ -45,7 +45,7 @@ setup(
         'pexpect==4.9.0',
         'defusedxml==0.7.1',
         'pyyaml==6.0.1',
-        'py-trees==2.1.6'
+        'py-trees==2.2.3'
     ],
     zip_safe=True,
     include_package_data=True,

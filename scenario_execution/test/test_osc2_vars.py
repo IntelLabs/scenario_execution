@@ -38,7 +38,7 @@ class TestOSC2Parser(unittest.TestCase):
                                                     live_tree=False,
                                                     scenario_file='test',
                                                     output_dir='')
-        self.tree = py_trees.composites.Sequence()
+        self.tree = py_trees.composites.Sequence(name="", memory=True)
 
     def parse(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
