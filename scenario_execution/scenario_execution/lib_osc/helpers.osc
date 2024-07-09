@@ -23,3 +23,24 @@ action run_process:
 struct random:
     def seed(seed_value: int = 0) is external scenario_execution.external_methods.random.seed()
     def get_float(min_val: float, max_val: float) -> float is external scenario_execution.external_methods.random.get_float()
+
+
+
+#########################
+# Common modifiers
+#########################
+
+modifier inverter
+    # modifier to invert the action is result. A failing action reports success, a succeeding action reports failure.
+
+modifier repeat:
+    # modifier to repeat a subtree. If any of the included children report failure, the repetition stops and failure is reported.
+    count: int = -1                      # repeat this many times (-1 to repeat indefinitely)
+
+modifier retry:
+    # modifier to retry a subtree until it succeeds
+    count: int                           # maximum number of permitted failures
+
+modifier timeout:
+    # modifier to set a timeout for a subtree
+    duration: time                       # maximum number of permitted failures

@@ -70,7 +70,8 @@ class ScenarioExecution(object):
                  dry_run=False,
                  render_dot=False,
                  setup_timeout=py_trees.common.Duration.INFINITE,
-                 tick_tock_period: float = 0.1) -> None:
+                 tick_tock_period: float = 0.1,
+                 logger=None) -> None:
 
         def signal_handler(sig, frame):
             self.on_scenario_shutdown(False, "Aborted")
@@ -97,8 +98,10 @@ class ScenarioExecution(object):
                 raise ValueError(f"Output directory '{self.output_dir}' not writable.")
             if os.path.exists(os.path.join(self.output_dir, 'test.xml')):
                 os.remove(os.path.join(self.output_dir, 'test.xml'))
-
-        self.logger = self._get_logger(debug)
+        if not logger:
+            self.logger = Logger('scenario_execution', debug)
+        else:
+            self.logger = logger
 
         if self.debug:
             py_trees.logging.level = py_trees.logging.Level.DEBUG
@@ -110,16 +113,6 @@ class ScenarioExecution(object):
         self.last_snapshot_visitor = None
         self.shutdown_requested = False
         self.results = []
-
-    def _get_logger(self, debug):
-        """
-        Create a logger
-        This method could be overriden by child classes and defined according to the middleware.
-
-        return:
-            A logger which has three logging levels: info, warning, error
-        """
-        return Logger('scenario_execution', debug)
 
     def setup(self, scenario: py_trees.behaviour.Behaviour, **kwargs) -> bool:
         """

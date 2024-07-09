@@ -528,11 +528,12 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
         self.__node_stack.append(self.__cur_node)
         actor_name = None
         if ctx.actorName():
-            actor_name = ctx.actorName().getText()
+            raise OSC2ParsingError(msg="Modifier refering actor currently not supported", context=ctx)
+            # actor_name = ctx.actorName().getText()
 
-        modifier_name = ctx.modifierName().getText()
+        name = ctx.modifierName().getText()
 
-        node = ModifierDeclaration(actor_name, modifier_name)
+        node = ModifierDeclaration(actor_name, name)
         node.set_ctx(ctx, self.current_file)
 
         self.__cur_node.set_children(node)
@@ -1068,7 +1069,7 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
     # Enter a parse tree produced by OpenSCENARIO2Parser#modifierInvocation.
     def enterModifierInvocation(self, ctx: OpenSCENARIO2Parser.ModifierInvocationContext):
         self.__node_stack.append(self.__cur_node)
-        modifier_name = ctx.modifierName().getText()
+        modifier = ctx.modifierName().getText()
 
         actor = None
         if ctx.actorExpression():
@@ -1077,7 +1078,7 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
         if ctx.behaviorExpression():
             actor = ctx.behaviorExpression().getText()
 
-        node = ModifierInvocation(actor, modifier_name)
+        node = ModifierInvocation(actor, modifier)
         node.set_ctx(ctx, self.current_file)
 
         self.__cur_node.set_children(node)

@@ -21,7 +21,7 @@ from pkg_resources import iter_entry_points
 
 import inspect
 
-from scenario_execution.model.types import ActionDeclaration, EventReference, FunctionApplicationExpression, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration
+from scenario_execution.model.types import ActionDeclaration, EventReference, FunctionApplicationExpression, ModifierInvocation, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.actions.base_action import BaseAction
@@ -198,22 +198,37 @@ class ModelToPyTree(object):
                 error_string += "unknown: " + ", ".join(unknown_args)
             return method_args, error_string
 
+        def create_decorator(self, node: ModifierDeclaration, resolved_values):
+            available_modifiers = ["repeat", "inverter", "timeout", "retry"]
+            if node.name not in available_modifiers:
+                raise OSC2ParsingError(
+                    msg=f'Unknown modifier "{node.name}". Available modifiers {available_modifiers}.', context=node.get_ctx())
+            parent = self.__cur_behavior.parent
+            parent.children.remove(self.__cur_behavior)
+            if node.name == "repeat":
+                instance = py_trees.decorators.Repeat(name="Repeat", child=self.__cur_behavior, num_success=resolved_values["count"])
+            elif node.name == "inverter":
+                instance = py_trees.decorators.Inverter(name="Inverter", child=self.__cur_behavior)
+            elif node.name == "timeout":
+                instance = py_trees.decorators.Timeout(name="Timeout", child=self.__cur_behavior, duration=resolved_values["duration"])
+            elif node.name == "retry":
+                instance = py_trees.decorators.Retry(name="Retry", child=self.__cur_behavior, num_failures=resolved_values["count"])
+            else:
+                raise ValueError('unknown.')
+
+            if isinstance(parent, py_trees.composites.Composite):
+                parent.add_child(instance)
+            elif isinstance(parent, py_trees.decorators.Decorator):
+                parent.children.append(instance)
+                parent.decorated = instance
+
         def visit_behavior_invocation(self, node: BehaviorInvocation):
             if isinstance(node.behavior, ModifierDeclaration):
-                available_modifiers = ["repeat"]
-                if node.behavior.name not in available_modifiers:
-                    raise OSC2ParsingError(
-                        msg=f'Unknown modifier "{node.behavior.name}". Available modifiers {available_modifiers}.', context=node.get_ctx())
-                if node.behavior.name == "repeat":
-                    if isinstance(self.__cur_behavior, py_trees.composites.Composite):
-                        parent = self.__cur_behavior.parent
-                        parent.children.remove(self.__cur_behavior)
-                        instance = py_trees.decorators.Timeout(name="Repeat", child=self.__cur_behavior)#, num_success=3)
-                        parent.add_child(instance)
-                    else:
-                        raise OSC2ParsingError(msg=f'Modifier "{node.behavior.name}" currently only supported for composite node (i.e. one_of, parallel, serial).', context=node.get_ctx())
-                else:
-                    raise OSC2ParsingError(msg=f'Unknown modifier "{node.behavior.name}".', context=node.get_ctx())
+                resolved_values = node.get_resolved_value(self.blackboard)
+                try:
+                    self.create_decorator(node.behavior, resolved_values)
+                except ValueError as e:
+                    raise OSC2ParsingError(msg=f'Modifier "{node.behavior.name}" {e}.', context=node.get_ctx()) from e
             elif isinstance(node.behavior, ActionDeclaration):
                 behavior_name = node.behavior.name
                 available_plugins = []
@@ -294,6 +309,10 @@ class ModelToPyTree(object):
                 except Exception as e:
                     raise OSC2ParsingError(msg=f'Error while initializing plugin {behavior_name}: {e}', context=node.get_ctx()) from e
                 self.__cur_behavior.add_child(instance)
+                previous = self.__cur_behavior
+                self.__cur_behavior = instance
+                super().visit_behavior_invocation(node)
+                self.__cur_behavior = previous
 
         def visit_event_reference(self, node: EventReference):
             event = node.resolve(node.event_path)
@@ -337,3 +356,10 @@ class ModelToPyTree(object):
                 client = self.__cur_behavior.attach_blackboard_client()
                 client.register_key(qualified_name, access=Access.WRITE)
                 setattr(client, qualified_name, None)
+
+        def visit_modifier_invocation(self, node: ModifierInvocation):
+            resolved_values = node.get_resolved_value()
+            try:
+                self.create_decorator(node.modifier, resolved_values)
+            except ValueError as e:
+                raise OSC2ParsingError(msg=f'ModifierDeclaration {e}.', context=node.get_ctx()) from e

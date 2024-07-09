@@ -149,9 +149,9 @@ scenario test:
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
-    def test_modifier(self):
+    def test_actor_modifier(self):
         scenario_content = """
-modifier test
+modifier test_actor.test
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
