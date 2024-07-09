@@ -44,16 +44,13 @@ class TestCheckFileExists(unittest.TestCase):
 
     def test_success(self):
         self.parse("""
+import osc.helpers
 import osc.os
 
 scenario test:
-    do parallel:
-        serial:
-            check_file_exists('""" + self.tmp_file.name + """')
-            emit end
-        time_out: serial:
-            wait elapsed(1s)
-            emit fail
+    timeout(1s)
+    do serial:
+        check_file_exists('""" + self.tmp_file.name + """')
 """)
         self.assertTrue(self.scenario_execution.process_results())
 
@@ -62,12 +59,21 @@ scenario test:
 import osc.os
 
 scenario test:
-    do parallel:
-        serial:
-            check_file_exists('UNKNOWN_FILE')
-            emit end
-        time_out: serial:
-            wait elapsed(1s)
-            emit fail
+    timeout(1s)
+    do serial:
+        check_file_exists('UNKNOWN_FILE')
 """)
         self.assertFalse(self.scenario_execution.process_results())
+
+    def test_fail_inverted(self):
+        self.parse("""
+import osc.helpers
+import osc.os
+
+scenario test:
+    timeout(1s)
+    do serial:
+        check_file_exists('UNKNOWN_FILE') with:
+            inverter()
+""")
+        self.assertTrue(self.scenario_execution.process_results())

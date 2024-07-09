@@ -186,6 +186,7 @@ scenario test_assert_topic_latency:
 
     def test_case_6(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_assert_topic_latency:

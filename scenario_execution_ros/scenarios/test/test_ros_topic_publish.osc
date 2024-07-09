@@ -1,13 +1,11 @@
+import osc.helpers
 import osc.ros
 
 scenario test_ros_topic_publish:
-    do parallel:
-        test: serial:
-            topic_publish() with:
-                keep(it.topic_name == '/bla')
-                keep(it.topic_type == 'std_msgs.msg.Bool')
-                keep(it.value == '{\"data\": True}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        topic_publish() with:
+            keep(it.topic_name == '/bla')
+            keep(it.topic_type == 'std_msgs.msg.Bool')
+            keep(it.value == '{\"data\": True}')
+        emit end

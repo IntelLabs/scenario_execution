@@ -178,17 +178,14 @@ scenario test_assert_tf_moving:
 
     def test_case_3(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 scenario test_assert_tf_moving:
-    do parallel:
-        serial:
-            assert_tf_moving(
-                frame_id: 'robot_move',
-                timeout: 10)
-            emit end
-        time_out: serial:
-            wait elapsed(12s)
-            emit fail
+    timeout(12s)
+    do serial:
+        assert_tf_moving(
+            frame_id: 'robot_move',
+            timeout: 10)
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())

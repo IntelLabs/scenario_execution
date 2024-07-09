@@ -85,6 +85,7 @@ scenario test:
 
     def test_success_not_wait_for_shutdown(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 import osc.os
 
@@ -98,12 +99,15 @@ scenario test:
                 wait_for_shutdown: false)
             wait elapsed(4s)
             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
-            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
-            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
+            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """') with:
+                inverter()
+            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """') with:
+                inverter()
             wait elapsed(10s)
             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_started' + """')
             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_success' + """')
-            check_file_not_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """')
+            check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_aborted' + """') with:
+                inverter()
             emit end
         time_out: serial:
             wait elapsed(20s)

@@ -1,7 +1,8 @@
 import osc.gazebo
+import osc.helpers
 
 scenario test_spawn_xacro_with_parameters:
-        
+    timeout(30s)
     test_obstacle: osc_actor
 
     do parallel:
@@ -12,6 +13,3 @@ scenario test_spawn_xacro_with_parameters:
         test_case: serial:
             actor_exists('test_obstacle')
             success: emit end
-        time_out: serial:
-            wait elapsed(30s)
-            time_out_shutdown: emit fail

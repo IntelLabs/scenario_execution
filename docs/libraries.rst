@@ -333,26 +333,6 @@ Report success if a file exists.
      - File to check
 
 
-``check_file_not_exists()``
-"""""""""""""""""""""""""""
-
-Report success if a file does not exist.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``file_name``
-     - ``string``
-     -
-     - File to check
-
-
 Robotics
 --------
 
