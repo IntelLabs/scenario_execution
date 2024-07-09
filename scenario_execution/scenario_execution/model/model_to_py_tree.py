@@ -30,10 +30,11 @@ from scenario_execution.actions.base_action import BaseAction
 def create_py_tree(model, tree, logger, log_tree):
     model_to_py_tree = ModelToPyTree(logger)
     try:
-        model_to_py_tree.build(model, tree, log_tree)
+        final_tree = model_to_py_tree.build(model, tree, log_tree)
     except OSC2ParsingError as e:
         raise ValueError(
             f'Error while creating py-tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}') from e
+    return final_tree
 
 
 class TopicEquals(py_trees.behaviour.Behaviour):
@@ -115,11 +116,15 @@ class ModelToPyTree(object):
 
         if log_tree:
             print(py_trees.display.ascii_tree(tree))
+        return behavior_builder.tree
 
     class BehaviorInit(ModelBaseVisitor):
         def __init__(self, logger, tree) -> None:
             super().__init__()
             self.logger = logger
+            if not isinstance(tree, py_trees.composites.Sequence):
+                raise ValueError("ModelToPyTree requires a py-tree sequence as input")
+            self.tree = tree
             self.__cur_behavior = tree
 
         def visit_scenario_declaration(self, node: ScenarioDeclaration):
@@ -133,11 +138,42 @@ class ModelToPyTree(object):
 
             super().visit_scenario_declaration(node)
 
+            # if not node.get_parent() or \
+            #     not isinstance(node.get_parent(), DoDirective) or \
+            #     not node.get_parent().get_parent() or \
+            #     not isinstance(node.get_parent().get_parent(), ScenarioDeclaration):
+            #     raise NotImplementedError(f"Do member only supported within scenario.")
+
+            # behavior = None
+            # if composition_operator == "serial":
+            #     # sequence already exists, reuse it
+            #     #behavior = py_trees.composites.Sequence(name=name, memory=True)
+            #     pass
+            # elif composition_operator == "parallel":
+
+            #     parent = self.__cur_behavior.parent
+            #     parent.children.remove(self.__cur_behavior)
+            #     behavior = py_trees.composites.Parallel(name=name, policy=py_trees.common.ParallelPolicy.SuccessOnAll())
+            #     parent.add_child(behavior)
+            # elif composition_operator == "one_of":
+            #     behavior = py_trees.composites.Parallel(name=name, policy=py_trees.common.ParallelPolicy.SuccessOnOne())
+            # else:
+            #     raise NotImplementedError(f"scenario operator {composition_operator} not yet supported.")
+
+            # if behavior:
+            #     parent = self.__cur_behavior
+            #     self.__cur_behavior.add_child(behavior)
+            #     self.__cur_behavior = behavior
+            #     self.visit_children(node)
+            #     self.__cur_behavior = parent
+            # else:
+            #     self.visit_children(node)
+
         def visit_do_member(self, node: DoMember):
             composition_operator = node.composition_operator
             name = node.name
             if not name:
-                name = node.__class__.__name__
+                name = composition_operator
             if composition_operator == "serial":
                 behavior = py_trees.composites.Sequence(name=name, memory=True)
             elif composition_operator == "parallel":
@@ -224,6 +260,7 @@ class ModelToPyTree(object):
                 parent.decorated = instance
             elif not parent:
                 self.__cur_behavior.parent = instance
+                self.tree = instance
             else:
                 raise OSC2ParsingError(
                     msg=f'Modifier "{node.name}" found at unsupported location.', context=node.get_ctx())

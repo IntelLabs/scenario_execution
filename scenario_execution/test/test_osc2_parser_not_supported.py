@@ -229,3 +229,15 @@ actor electric_vehicle inherits vehicle(is_electric == true)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
+
+    def test_do_not_in_scenario(self):
+        scenario_content = """
+import osc.helpers
+action test_action:
+    do serial:
+        log("test")
+        
+scenario test
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")

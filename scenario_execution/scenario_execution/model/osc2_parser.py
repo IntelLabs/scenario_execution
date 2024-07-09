@@ -53,9 +53,9 @@ class OpenScenario2Parser(object):
 
         create_py_tree_blackboard(model, tree, self.logger, debug)
 
-        create_py_tree(model, tree, self.logger, log_model)
+        final_tree = create_py_tree(model, tree, self.logger, log_model)
 
-        return tree
+        return final_tree
 
     def load_internal_model(self, tree, file_name: str, log_model: bool = False, debug: bool = False):
         model_builder = ModelBuilder(self.logger, self.parse_file, file_name, log_model)
