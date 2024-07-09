@@ -100,22 +100,20 @@ scenario test_timeout:
 
     def test_module_success(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_module_success:
-    do parallel:
-        serial:
-            log_check(module_name: 'test_node_logging', values: ['ERROR'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        log_check(module_name: 'test_node_logging', values: ['ERROR'])
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_module_timeout(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_module_timeout:

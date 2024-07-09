@@ -56,6 +56,7 @@ scenario test:
 
     def test_fail(self):
         self.parse("""
+import osc.helpers
 import osc.os
 
 scenario test:

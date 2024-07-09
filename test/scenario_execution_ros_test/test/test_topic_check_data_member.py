@@ -63,9 +63,11 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def test_success_complete_msg(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
+    timeout(10s)
     do parallel:
         test: serial:
             wait elapsed(1s)
@@ -79,9 +81,6 @@ scenario test:
                 topic_type: 'geometry_msgs.msg.Twist',
                 expected_value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
             emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
@@ -113,9 +112,11 @@ scenario test:
 
     def test_success_member(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
+    timeout(10s)
     do parallel:
         test: serial:
             wait elapsed(1s)
@@ -130,9 +131,7 @@ scenario test:
                 member_name: 'linear',
                 expected_value: '{\\\"y\\\": 1.2}')
             emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
@@ -143,8 +142,8 @@ import osc.ros
 import osc.helpers
 
 scenario test:
+    timeout(5s)
     do parallel:
-        timeout(5s)
         test: serial:
             wait elapsed(1s)
             topic_publish(
