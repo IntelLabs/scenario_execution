@@ -152,16 +152,16 @@ scenario test_assert_topic_latency:
 
     def test_case_4(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_assert_topic_latency:
-    do parallel:
-        serial:
-            assert_topic_latency(
-                topic_name: '/bla',
-                latency: 0.5s,
-                topic_type: 'std_msgs.msg.String')
-            emit end
+    timeout(3s)
+    do serial:
+        assert_topic_latency(
+            topic_name: '/bla',
+            latency: 0.5s,
+            topic_type: 'std_msgs.msg.String')
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
@@ -186,7 +186,6 @@ scenario test_assert_topic_latency:
 
     def test_case_6(self):
         scenario_content = """
-import osc.helpers
 import osc.ros
 
 scenario test_assert_topic_latency:
