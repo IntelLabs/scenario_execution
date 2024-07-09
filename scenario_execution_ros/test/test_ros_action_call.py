@@ -111,31 +111,24 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_goal_not_accepted(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
 """
         self.goal_callback_reponse = GoalResponse.REJECT
         self.execute(scenario_content)
@@ -143,17 +136,14 @@ scenario test:
 
     def test_action_aborted(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
 """
         self.goal_response = GoalEvent.ABORT
         self.execute(scenario_content)
@@ -161,17 +151,14 @@ scenario test:
 
     def test_action_canceled(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
 """
         self.goal_response = GoalEvent.CANCELED
         self.execute(scenario_content)
@@ -179,17 +166,14 @@ scenario test:
 
     def test_invalid_type(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "UNKNOWN", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "UNKNOWN", data: '{\\"order\\": 3}')
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())

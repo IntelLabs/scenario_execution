@@ -84,16 +84,13 @@ scenario test_success:
 
     def test_timeout(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_timeout:
-    do parallel:
-        serial:
-            log_check(values: ['UNKNOWN'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        log_check(values: ['UNKNOWN'])
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
@@ -117,13 +114,9 @@ import osc.helpers
 import osc.ros
 
 scenario test_module_timeout:
-    do parallel:
-        serial:
-            log_check(module_name: 'UNKNOWN', values: ['ERROR'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        log_check(module_name: 'UNKNOWN', values: ['ERROR'])
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
