@@ -336,3 +336,4 @@ class ModelResolver(ModelBaseVisitor):
             raise OSC2ParsingError(
                 msg=f'ModifierInvocation uses unknown modifier "{node.modifier}".', context=node.get_ctx())
         node.modifier = resolved
+        super().visit_modifier_invocation(node)

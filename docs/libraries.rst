@@ -209,7 +209,7 @@ For debugging purposes, log a string using the available log mechanism.
      - String to log
 
 ``run_process()``
-""""""""""""""""""""""""""
+"""""""""""""""""
 
 Run a process. Reports `running` while the process has not finished.
 
@@ -240,6 +240,70 @@ If ``wait_for_shutdown`` is ``false`` and the process is still running on scenar
      - ``time``
      - ``10s``
      - (Only used if ``wait_for_shutdown`` is ``false``) time to wait between ``shutdown_signal`` and SIGKILL getting sent, if process is still running on scenario shutdown
+
+
+Modifiers
+^^^^^^^^^
+
+``inverter()``
+""""""""""""""
+
+Modifier to invert the action result. A failing action will report ``success``, a succeeding action will report ``failure``.
+
+``repeat()``
+""""""""""""
+Modifier to repeat a sub-tree. If any of the included children report ``failure``, the repetition stops and ``failure`` is reported.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``count``
+     - ``int``
+     - ``-1``
+     - Repeat this many times (-1 to repeat indefinitely)
+
+``retry()``
+"""""""""""
+Modifier to retry a sub-tree until it succeeds.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``count``
+     - ``int``
+     - 
+     - Maximum number of permitted failures
+
+``timeout()``
+"""""""""""""
+Modifier to set a timeout for a sub-tree.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``count``
+     - ``int``
+     - 
+     - Maximum number of permitted failures
+
 
 OS
 --

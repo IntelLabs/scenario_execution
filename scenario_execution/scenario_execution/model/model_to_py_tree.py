@@ -204,7 +204,8 @@ class ModelToPyTree(object):
                 raise OSC2ParsingError(
                     msg=f'Unknown modifier "{node.name}". Available modifiers {available_modifiers}.', context=node.get_ctx())
             parent = self.__cur_behavior.parent
-            parent.children.remove(self.__cur_behavior)
+            if parent:
+                parent.children.remove(self.__cur_behavior)
             if node.name == "repeat":
                 instance = py_trees.decorators.Repeat(name="Repeat", child=self.__cur_behavior, num_success=resolved_values["count"])
             elif node.name == "inverter":
@@ -221,6 +222,11 @@ class ModelToPyTree(object):
             elif isinstance(parent, py_trees.decorators.Decorator):
                 parent.children.append(instance)
                 parent.decorated = instance
+            elif not parent:
+                self.__cur_behavior.parent = instance
+            else:
+                raise OSC2ParsingError(
+                    msg=f'Modifier "{node.name}" found at unsupported location.', context=node.get_ctx())
 
         def visit_behavior_invocation(self, node: BehaviorInvocation):
             if isinstance(node.behavior, ModifierDeclaration):

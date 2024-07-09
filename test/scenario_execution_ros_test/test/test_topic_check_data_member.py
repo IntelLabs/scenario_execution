@@ -140,9 +140,11 @@ scenario test:
     def test_fail_member(self):
         scenario_content = """
 import osc.ros
+import osc.helpers
 
 scenario test:
     do parallel:
+        timeout(5s)
         test: serial:
             wait elapsed(1s)
             topic_publish(
@@ -156,9 +158,6 @@ scenario test:
                 member_name: 'linear',
                 expected_value: '{\\\"z\\\": 9}')
             emit end
-        time_out: serial:
-            wait elapsed(5s)
-            emit fail
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
