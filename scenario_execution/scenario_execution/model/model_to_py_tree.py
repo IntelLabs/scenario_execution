@@ -138,37 +138,6 @@ class ModelToPyTree(object):
 
             super().visit_scenario_declaration(node)
 
-            # if not node.get_parent() or \
-            #     not isinstance(node.get_parent(), DoDirective) or \
-            #     not node.get_parent().get_parent() or \
-            #     not isinstance(node.get_parent().get_parent(), ScenarioDeclaration):
-            #     raise NotImplementedError(f"Do member only supported within scenario.")
-
-            # behavior = None
-            # if composition_operator == "serial":
-            #     # sequence already exists, reuse it
-            #     #behavior = py_trees.composites.Sequence(name=name, memory=True)
-            #     pass
-            # elif composition_operator == "parallel":
-
-            #     parent = self.__cur_behavior.parent
-            #     parent.children.remove(self.__cur_behavior)
-            #     behavior = py_trees.composites.Parallel(name=name, policy=py_trees.common.ParallelPolicy.SuccessOnAll())
-            #     parent.add_child(behavior)
-            # elif composition_operator == "one_of":
-            #     behavior = py_trees.composites.Parallel(name=name, policy=py_trees.common.ParallelPolicy.SuccessOnOne())
-            # else:
-            #     raise NotImplementedError(f"scenario operator {composition_operator} not yet supported.")
-
-            # if behavior:
-            #     parent = self.__cur_behavior
-            #     self.__cur_behavior.add_child(behavior)
-            #     self.__cur_behavior = behavior
-            #     self.visit_children(node)
-            #     self.__cur_behavior = parent
-            # else:
-            #     self.visit_children(node)
-
         def visit_do_member(self, node: DoMember):
             composition_operator = node.composition_operator
             name = node.name

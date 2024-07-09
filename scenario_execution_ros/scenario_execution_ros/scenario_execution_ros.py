@@ -67,7 +67,6 @@ class ROSScenarioExecution(ScenarioExecution):
             self.dry_run = self.node.get_parameter('dry_run').value
         if self.node.get_parameter('dot').value:
             self.render_dot = self.node.get_parameter('dot').value
-
         self.logger = RosLogger('scenario_execution_ros', debug)
         super().__init__(debug=debug,
                          log_model=log_model,
