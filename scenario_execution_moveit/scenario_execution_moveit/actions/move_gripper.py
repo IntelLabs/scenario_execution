@@ -14,12 +14,14 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import time
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 from rclpy.logging import get_logger
 from pymoveit2 import MoveIt2State
 from scenario_execution_moveit.moveit_common import Gripper
 from scenario_execution.actions.base_action import BaseAction
+from moveit_msgs.srv import GetMotionPlan
 import py_trees
 import ast
 
@@ -43,6 +45,12 @@ class MoveGripper(BaseAction):
         self.gripper_interface = None
         self.current_state = None
         self.logger = None
+        self.service_available = False
+        self.state = None
+        # timeout
+        self.service_start_time = None
+        self.execution_start_time = None
+        self.timeout_duration = 10  # Timeout duration in seconds
 
     def setup(self, **kwargs):
         try:
@@ -67,30 +75,61 @@ class MoveGripper(BaseAction):
         if self.gripper not in ['open', 'close']:
             raise ValueError("Invalid gripper state speficied. Allowed values are 'open' or 'close'.")
 
-    def update(self) -> py_trees.common.Status:
+        self.client = self.node.create_client(GetMotionPlan, 'plan_kinematic_path')
+
+    def update(self) -> py_trees.common.Status:     # pylint: disable=R0911
         self.current_state = self.gripper_interface.query_state()
-        if not self.execute:
-            if self.current_state == MoveIt2State.EXECUTING:
-                self.logger.info("Another motion is in progress. Waiting for the current motion to complete...")
-                result = py_trees.common.Status.RUNNING
+        result = py_trees.common.Status.RUNNING
+        self.wait_for_service_plan_kinematic_path()
+        # Handle service availability
+        if not self.service_available:
+            if self.service_start_time is None:
+                self.service_start_time = time.time()
+            if self.check_timeout(self.service_start_time):
+                self.feedback_message = f"Timeout waiting for MoveIt to become active."  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.FAILURE
+            self.feedback_message = "Waiting for MoveIt to become active..."  # pylint: disable= attribute-defined-outside-init
+            return result
+        # Handle executing state
+        if self.current_state == MoveIt2State.EXECUTING:
+            if not self.execute:
+                self.feedback_message = "Another motion is in progress. Waiting for current motion to complete..."   # pylint: disable= attribute-defined-outside-init
+                return result
             else:
+                self.feedback_message = f"Motion gripper {self.gripper} in progress..."  # pylint: disable= attribute-defined-outside-init
+                return result
+        # Handle idle state
+        if self.current_state == MoveIt2State.IDLE:
+            if not self.execute:
+                self.logger.info(f"No motion in progress. Initiating gripper to {self.gripper} state...")
                 if self.gripper == 'open':
                     self.gripper_interface.open()
-                    self.feedback_message = f"Setting gripper to {self.gripper} state."  # pylint: disable= attribute-defined-outside-init
                 else:
                     self.gripper_interface.close()
-                self.logger.info(f"Setting gripper to {self.gripper} state...")
-                self.feedback_message = f"Setting gripper to {self.gripper} state."  # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = f"Moving gripper to {self.gripper} state."  # pylint: disable= attribute-defined-outside-init
                 self.execute = True
-                result = py_trees.common.Status.RUNNING
-        else:
-            if self.current_state == MoveIt2State.IDLE:
-                self.logger.info(f"Gripper state {self.gripper} set successfully.")
-                result = py_trees.common.Status.SUCCESS
-            elif self.current_state == MoveIt2State.EXECUTING:
-                self.logger.info("Motion in progress...")
-                result = py_trees.common.Status.RUNNING
+                return result
             else:
-                self.logger.info("Unknown state encountered while executing motion. Requesting again...")
-                result = py_trees.common.Status.RUNNING
+                self.logger.info(f"Gripper state {self.gripper} set successfully.")
+                self.feedback_message = f"Gripper state {self.gripper} set successfully."  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.SUCCESS
+        if self.execution_start_time is None:
+            self.execution_start_time = time.time()
+        if self.check_timeout(self.execution_start_time):
+            self.feedback_message = f"Timeout waiting for current state."  # pylint: disable= attribute-defined-outside-init
+            return py_trees.common.Status.FAILURE
+        self.feedback_message = "Waiting for a valid current state..."  # pylint: disable= attribute-defined-outside-init
         return result
+
+    def wait_for_service_plan_kinematic_path(self):
+        if self.client.wait_for_service(1.0):
+            self.service_available = True
+        else:
+            self.service_available = False
+
+    def check_timeout(self, start_time):
+        if start_time is None:
+            return False
+        if time.time() - start_time > self.timeout_duration:
+            return True
+        return False

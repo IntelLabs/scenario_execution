@@ -14,14 +14,16 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import time
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 from rclpy.logging import get_logger
 from pymoveit2 import MoveIt2State
 from scenario_execution_moveit.moveit_common import MoveIt2Interface
 from scenario_execution.actions.base_action import BaseAction
+from moveit_msgs.srv import GetMotionPlan
+from moveit_msgs.msg import MoveItErrorCodes
 import py_trees
-from time import sleep
 
 
 class MoveToPose(BaseAction):
@@ -46,6 +48,16 @@ class MoveToPose(BaseAction):
         self.moveit2 = None
         self.current_state = None
         self.logger = None
+        self.service_available = False
+        self.future = None
+        self.state = None
+        self.last_error_code = None
+        # timeout
+        self.service_start_time = None
+        self.execution_start_time = None
+        self.retry_start_time = None
+        self.timeout_duration = 10  # Timeout duration in seconds
+        self.future_called = False
 
     def setup(self, **kwargs):
         try:
@@ -75,37 +87,97 @@ class MoveToPose(BaseAction):
         self.moveit2.cartesian_avoid_collisions = self.cartesian_avoid_collisions
         self.moveit2.cartesian_jump_threshold = self.cartesian_jump_threshold
 
-    def update(self) -> py_trees.common.Status:
+        self.client = self.node.create_client(GetMotionPlan, 'plan_kinematic_path')
+
+    def update(self) -> py_trees.common.Status:     # pylint: disable=R0911
         self.current_state = self.moveit2.query_state()
+        self.last_error_code = self.moveit2.get_last_execution_error_code()
         result = py_trees.common.Status.RUNNING
-        if not self.execute:
-            if self.current_state == MoveIt2State.EXECUTING:
-                self.logger.info("Another motion is in progress. Waiting for current motion to complete...")
-                result = py_trees.common.Status.RUNNING
+        self.wait_for_service_plan_kinematic_path()
+        # Handle service availability
+        if not self.service_available:
+            if self.service_start_time is None:
+                self.service_start_time = time.time()
+            if self.check_timeout(self.service_start_time):
+                self.feedback_message = f"Timeout waiting for MoveIt to become active."  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.FAILURE
+            self.feedback_message = "Waiting for MoveIt to become active..."  # pylint: disable= attribute-defined-outside-init
+            return result
+        # Handle executing state
+        if self.current_state == MoveIt2State.EXECUTING:
+            if not self.execute:
+                self.feedback_message = "Another motion is in progress. Waiting for current motion to complete..."   # pylint: disable= attribute-defined-outside-init
+                return result
             else:
-                self.logger.info("No motion in progress. Initiating move to joint pose...")
-                self.move_to_pose()
-                result = py_trees.common.Status.RUNNING
-                self.execute = True
-        elif self.current_state == MoveIt2State.EXECUTING:
-            future = self.moveit2.get_execution_future()
-            if future:
-                while not future.done():
-                    self.logger.info("Motion to goal pose in progress...")
-                    sleep(1)
-                if str(future.result().status) == '4':
-                    self.logger.info("Motion to goal pose successful.")
-                    result = py_trees.common.Status.SUCCESS
+                if not self.future_called:
+                    future = self.moveit2.get_execution_future()
+                    future.add_done_callback(self.future_done_callback)
+                    self.future_called = True
+                    return result
                 else:
-                    self.logger.info(f"{str(future.result().result.error_code)}")
-                    result = py_trees.common.Status.FAILURE
-            else:
-                self.logger.info("Waiting for response from arm...")
-                result = py_trees.common.Status.RUNNING
-        elif self.current_state == MoveIt2State.IDLE:
-            self.logger.info("pose not reachable or arm is already at the specified goal pose!")
-            result = py_trees.common.Status.FAILURE
+                    self.feedback_message = "Motion to pose in progress..."  # pylint: disable= attribute-defined-outside-init
+                    return result
+        # Handle idle state
+        if self.current_state == MoveIt2State.IDLE:
+            if not self.execute:
+                self.logger.info("No motion in progress. Initiating move to pose...")
+                self.feedback_message = f"Moving to pose."  # pylint: disable= attribute-defined-outside-init
+                self.move_to_pose()
+                self.execute = True
+                self.retry_start_time = None  # Reset execution timeout for new action
+                return result
+            if self.state:
+                if self.state.status == 4:
+                    self.logger.info("Motion to pose successful.")
+                    self.feedback_message = "Motion to pose successful."  # pylint: disable= attribute-defined-outside-init
+                    return py_trees.common.Status.SUCCESS
+                else:
+                    self.logger.info(f"Motion failed with error code: {str(self.state.result.error_code)}")
+                    return py_trees.common.Status.FAILURE
+            if self.last_error_code:
+                if self.last_error_code.val == 1:
+                    self.logger.info("Arm is already at the specified pose.")
+                    self.feedback_message = "Motion to pose successful."  # pylint: disable= attribute-defined-outside-init
+                    return py_trees.common.Status.SUCCESS
+                else:
+                    error_info = self.log_moveit_error(self.last_error_code)
+                    self.logger.info(f"{error_info}. Retrying...")
+                    if self.retry_start_time is None:
+                        self.retry_start_time = time.time()
+                    if self.check_timeout(self.retry_start_time):
+                        self.feedback_message = f"Timeout retrying to move to pose."  # pylint: disable= attribute-defined-outside-init
+                        return py_trees.common.Status.FAILURE
+                    return result
+        if self.execution_start_time is None:
+            self.execution_start_time = time.time()
+        if self.check_timeout(self.execution_start_time):
+            self.feedback_message = f"Timeout waiting for current state."  # pylint: disable= attribute-defined-outside-init
+            return py_trees.common.Status.FAILURE
+        self.feedback_message = "Waiting for a valid current state..."  # pylint: disable= attribute-defined-outside-init
         return result
+
+    def wait_for_service_plan_kinematic_path(self):
+        if self.client.wait_for_service(1.0):
+            self.service_available = True
+        else:
+            self.service_available = False
+
+    def future_done_callback(self, future):
+        if not future.result():
+            return
+        self.state = future.result()
+
+    def check_timeout(self, start_time):
+        if start_time is None:
+            return False
+        if time.time() - start_time > self.timeout_duration:
+            return True
+        return False
+
+    def log_moveit_error(self, error_code):
+        error_code_mapping = {v: k for k, v in MoveItErrorCodes.__dict__.items() if isinstance(v, int)}
+        description = error_code_mapping.get(error_code.val, "UNKNOWN_ERROR_CODE")
+        return description
 
     def move_to_pose(self):
         self.moveit2.move_to_pose(
