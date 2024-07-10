@@ -531,6 +531,9 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
             raise OSC2ParsingError(msg="Modifier refering actor currently not supported", context=ctx)
             # actor_name = ctx.actorName().getText()
 
+        if ctx.qualifiedBehaviorName():
+            raise OSC2ParsingError(msg="Modifier with qualified behavior name  actor currently not supported", context=ctx)
+
         name = ctx.modifierName().getText()
 
         node = ModifierDeclaration(actor_name, name)

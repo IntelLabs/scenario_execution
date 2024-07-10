@@ -842,12 +842,12 @@ class ActionInherits(Inheritance):
 
 class ModifierDeclaration(StructuredDeclaration):
 
-    def __init__(self, actor_name, name):
-        qualified_name = name
-        if actor_name:
-            qualified_name = actor_name + "." + qualified_name
-        super().__init__(qualified_name)
-        self.actor = actor_name
+    def __init__(self, actor, name):
+        if actor:
+            super().__init__(actor + "." + name)
+        else:
+            super().__init__(name)
+        self.actor = actor
         self.modifier = name
 
     def enter_node(self, listener):
