@@ -309,6 +309,12 @@ jobs:
         with:
           name: test-example-multirobot-result
           path: test_example_multirobot/test.xml
+      - name: Upload ros bag
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-multirobot-ros-bag
+          path: test_example_multirobot/rosbag*
   test-example-external-method:
     needs: [build]
     runs-on: intellabs-01
