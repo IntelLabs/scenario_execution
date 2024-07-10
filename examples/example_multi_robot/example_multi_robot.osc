@@ -2,7 +2,7 @@ import osc.helpers
 import osc.ros
 
 scenario nav2_simulation_nav_to_pose:
-    timeout(240s)
+    timeout(120s)
     robot: differential_drive_robot
     do serial:
         ros_launch("tb4_sim_scenario", "ignition_robot_launch.py", [key_value("namespace", "turtlebot2"), key_value("x", "-3.0"), key_value("y", "1.5"), key_value("yaw", "-1.57")], wait_for_shutdown: false)
