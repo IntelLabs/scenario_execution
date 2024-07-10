@@ -48,7 +48,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
         self.scenario_execution_ros.run()
 
@@ -130,7 +130,7 @@ scenario test_assert_lifecycle_state:
                 state_sequence: [lifecycle_state!unconfigured])
             emit end
         time_out: serial:
-            wait elapsed(8s)
+            wait elapsed(3s)
             emit fail
 """
         self.execute(scenario_content)
@@ -180,7 +180,7 @@ scenario test_assert_lifecycle_state:
                 allow_initial_skip: true )
             emit fail
         time_out: serial:
-            wait elapsed(8s)
+            wait elapsed(3s)
             emit end
 """
         self.execute(scenario_content)
@@ -199,7 +199,7 @@ scenario test_assert_lifecycle_state:
                 allow_initial_skip: true )
             emit fail
         time_out: serial:
-            wait elapsed(8s)
+            wait elapsed(3s)
             emit end
 """
         self.execute(scenario_content)
@@ -218,7 +218,7 @@ scenario test_assert_lifecycle_state:
                 allow_initial_skip: true )
             emit fail
         time_out: serial:
-            wait elapsed(20s)
+            wait elapsed(5s)
             emit end
 """
         thread_change_state = threading.Thread(target=change_node_state)
@@ -228,9 +228,9 @@ scenario test_assert_lifecycle_state:
 
 
 def change_node_state():
-    time.sleep(5)
+    time.sleep(2)
     subprocess.run(['ros2', 'lifecycle', 'set', '/test_lifecycle_dynamic_node', 'configure'], stdout=subprocess.PIPE, timeout=5, check=True)
     print("The node has successfully transitioned to the 'inactive' state.")
-    time.sleep(5)
+    time.sleep(2)
     subprocess.run(['ros2', 'lifecycle', 'set', '/test_lifecycle_dynamic_node', 'activate'], stdout=subprocess.PIPE, timeout=5, check=True)
     print("The node has successfully transitioned to the 'active' state.")
