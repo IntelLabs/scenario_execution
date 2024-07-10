@@ -53,8 +53,8 @@ screen. After the ``log`` action is invoked, the ``wait`` directive makes the sc
     .. code-block::
         
         scenario example:
+            timeout(60s)
             do serial:
-                timeout(60s)
                 ...
 
 Use this code to see a launch of this tutorial:
