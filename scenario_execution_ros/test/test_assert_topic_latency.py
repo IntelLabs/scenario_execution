@@ -155,12 +155,14 @@ import osc.helpers
 import osc.ros
 
 scenario test_assert_topic_latency:
-    timeout(3s)
-    do serial:
+    do parallel:
         assert_topic_latency(
             topic_name: '/bla',
             latency: 0.5s,
             topic_type: 'std_msgs.msg.String')
+        serial:
+            wait elapsed(3s)
+            emit end
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())

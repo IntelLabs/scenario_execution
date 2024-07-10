@@ -101,7 +101,6 @@ scenario test_assert_lifecycle_state:
 
     def test_case_2(self):
         scenario_content = """
-import osc.helpers
 import osc.ros
 
 scenario test_assert_lifecycle_state:
@@ -120,18 +119,15 @@ scenario test_assert_lifecycle_state:
 
     def test_case_3(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_assert_lifecycle_state:
-    do parallel:
-        serial:
-            assert_lifecycle_state(
-                node_name: 'test_node',
-                state_sequence: [lifecycle_state!unconfigured])
-            emit end
-        time_out: serial:
-            wait elapsed(3s)
-            emit fail
+    timeout(3s)
+    do serial:
+        assert_lifecycle_state(
+            node_name: 'test_node',
+            state_sequence: [lifecycle_state!unconfigured])
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())

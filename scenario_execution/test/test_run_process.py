@@ -90,6 +90,7 @@ import osc.standard.base
 import osc.helpers
 
 scenario test_run_process:
+    timeout(3s)
     do serial:
         run_process('sleep 15', wait_for_shutdown: false)
 """
@@ -102,7 +103,7 @@ scenario test_run_process:
         self.scenario_execution.run()
         end = datetime.now()
         duration = (end-start).total_seconds()
-        self.assertLessEqual(duration, 10.)
+        self.assertLessEqual(duration, 3.)
         self.assertTrue(self.scenario_execution.process_results())
 
     def test_signal_parsing(self):
