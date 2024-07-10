@@ -27,7 +27,7 @@ from antlr4.InputStream import InputStream
 
 
 class TestOSC2Parser(unittest.TestCase):
-    # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable
+    # pylint: disable=missing-function-docstring, protected-access, no-member, unused-variable, too-many-public-methods
 
     def setUp(self) -> None:
         self.logger = DebugLogger("")

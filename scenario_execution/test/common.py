@@ -14,7 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from scenario_execution.utils.logging import BaseLogger, Logger
+from scenario_execution.utils.logging import BaseLogger
 
 
 class DebugLogger(BaseLogger):

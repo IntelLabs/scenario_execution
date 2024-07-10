@@ -48,7 +48,6 @@ action log:
 scenario test:
     do serial:
         log("foo")
-        emit end
 """
         model = self.parse(scenario_content)
         serialize_data = serialize(model)['CompilationUnit']['_children']
