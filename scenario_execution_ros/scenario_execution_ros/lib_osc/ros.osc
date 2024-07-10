@@ -124,6 +124,7 @@ action record_bag:
     timestamp_suffix: bool = true        # Add a timestamp suffix to output directory name
     hidden_topics: bool = false          # whether to record hidden topics
     storage: string = ''                 # storage type to use (empty string: use default)
+    use_sim_time: bool = false           # use simulation time for message timestamps by subscribing to the /clock topic
 
 action ros_launch:
     # Execute a ros launch file

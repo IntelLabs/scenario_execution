@@ -4,22 +4,24 @@ import osc.ros
 scenario nav2_simulation_nav_to_pose:
     timeout(240s)
     robot: differential_drive_robot
-    do parallel:
+    do serial:
         ros_launch("tb4_sim_scenario", "ignition_robot_launch.py", [key_value("namespace", "turtlebot2"), key_value("x", "-3.0"), key_value("y", "1.5"), key_value("yaw", "-1.57")], wait_for_shutdown: false)
-        test_drive: serial:
-            robot.init_nav2(initial_pose: pose_3d())
-            robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
-            emit end
-        serial:
-            robot.tf_close_to() with:
-                keep(it.reference_point.x == -1.5m)
-                keep(it.reference_point.y == 0.0m)
-                keep(it.threshold == 0.35m)
-                keep(it.robot_frame_id ==  'turtlebot4_base_link_gt')
+        record_bag(topics: ['/sim_ground_truth_pose', '/tf', '/tf_static', '/clock'], use_sim_time: true)
+        parallel:
+            test_drive: serial:
+                robot.init_nav2(initial_pose: pose_3d())
+                robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
+                emit end
             serial:
-                repeat()
-                topic_publish() with:
-                    keep(it.topic_name == '/turtlebot2/cmd_vel')
-                    keep(it.topic_type == 'geometry_msgs.msg.Twist')
-                    keep(it.value == '{\"linear\": {\"x\": 0.3, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}')
-                wait elapsed(0.2s)
+                robot.tf_close_to() with:
+                    keep(it.reference_point.x == -1.5m)
+                    keep(it.reference_point.y == 0.0m)
+                    keep(it.threshold == 0.35m)
+                    keep(it.robot_frame_id ==  'turtlebot4_base_link_gt')
+                serial:
+                    repeat()
+                    topic_publish() with:
+                        keep(it.topic_name == '/turtlebot2/cmd_vel')
+                        keep(it.topic_type == 'geometry_msgs.msg.Twist')
+                        keep(it.value == '{\"linear\": {\"x\": 0.3, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}')
+                    wait elapsed(0.2s)

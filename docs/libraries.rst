@@ -767,8 +767,12 @@ Record a ROS bag, stored in directory ``output_dir`` defined by command-line par
      - Whether to record hidden topics
    * - ``storage``
      - ``string``
-     - 
+     - ``''``
      - Storage type to use (empty string: use ROS bag record default)
+   * - ``use_sim_time``
+     - ``bool``
+     - ``false``
+     - Use simulation time for message timestamps by subscribing to the /clock topic
 
 ``ros_launch()``
 """"""""""""""""
