@@ -1,3 +1,4 @@
+import osc.helpers
 import osc.ros
 
 scenario nav2_simulation_fault_injection:

@@ -48,7 +48,7 @@ screen. After the ``log`` action is invoked, the ``wait`` directive makes the sc
    Scenario execution uses the predefined events ``end`` and ``fail`` to detect success or failure of a scenario. If no ``emit end`` or ``emit fail`` is defined, a success is assumed.
 
 .. note::
-    It is good practice to define a timeout modifier within a scenario or sub-tree or action.
+    It is good practice to define a timeout modifier within a scenario to avoid that failing scenarios run forever.
 
     .. code-block::
         
