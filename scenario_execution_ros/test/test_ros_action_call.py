@@ -108,6 +108,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def test_success(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
