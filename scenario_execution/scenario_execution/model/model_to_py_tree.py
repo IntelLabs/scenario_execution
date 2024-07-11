@@ -228,7 +228,7 @@ class ModelToPyTree(object):
                 parent.children.append(instance)
                 parent.decorated = instance
             elif not parent:
-                instance.name = self.__cur_behavior.name # as name is used for blackboard variables later, use child-name for decorator
+                instance.name = self.__cur_behavior.name  # as name is used for blackboard variables later, use child-name for decorator
                 self.__cur_behavior.parent = instance
                 self.tree = instance
             else:

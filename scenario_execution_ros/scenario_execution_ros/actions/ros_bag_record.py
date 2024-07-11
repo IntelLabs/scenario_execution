@@ -65,8 +65,8 @@ class RosBagRecord(RunProcess):
 
         if timestamp_suffix:
             self.bag_dir += '_' + datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
-        
-        self.topics = topics    
+
+        self.topics = topics
         self.command = ["ros2", "bag", "record"]
         if hidden_topics:
             self.command.append("--include-hidden-topics")
