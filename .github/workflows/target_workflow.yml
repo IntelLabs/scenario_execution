@@ -2,6 +2,7 @@ name: Trigger Target Workflow
 on:
   push:
     branches: [moveit-humble]
+permissions: read-all
 jobs:
   trigger:
     runs-on: ubuntu-latest
