@@ -117,8 +117,9 @@ void ScenarioView::behaviorTreeChanged(
     mScenarioView->clear();
     populateTree(items, msg);
     if (items.size() > 0) {
-      items[0]->setBackground(0, Qt::white);
-      items[0]->setBackground(1, Qt::white);
+      static auto bg = items[0]->background(0);
+      items[0]->setBackground(0, bg);
+      items[0]->setBackground(1, bg);
     }
     mScenarioView->insertTopLevelItems(0, items);
 
@@ -163,13 +164,13 @@ void ScenarioView::behaviorTreeChanged(
       prefix += "/";
       if ((prefix + "end" == QString::fromStdString(it->key)) &&
           ("True" == QString::fromStdString(it->value))) {
-        mScenarioView->topLevelItem(0)->setBackground(0, QColor(180, 255, 180));
-        mScenarioView->topLevelItem(0)->setBackground(1, QColor(180, 255, 180));
+        mScenarioView->topLevelItem(0)->setBackground(0, Qt::green);
+        mScenarioView->topLevelItem(0)->setBackground(1, Qt::green);
       }
       if ((prefix + "fail" == QString::fromStdString(it->key)) &&
           ("True" == QString::fromStdString(it->value))) {
-        mScenarioView->topLevelItem(0)->setBackground(0, QColor(255, 180, 180));
-        mScenarioView->topLevelItem(0)->setBackground(1, QColor(255, 180, 180));
+        mScenarioView->topLevelItem(0)->setBackground(0, Qt::red);
+        mScenarioView->topLevelItem(0)->setBackground(1, Qt::red);
       }
     }
   }
