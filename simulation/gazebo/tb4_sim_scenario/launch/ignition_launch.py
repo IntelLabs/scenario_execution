@@ -48,7 +48,7 @@ def generate_launch_description():
         'irobot_create_ignition_plugins')
 
     headless = LaunchConfiguration('headless')
-    
+
     arguments = [
         DeclareLaunchArgument('use_sim_time', default_value='true',
                               choices=['true', 'false'],

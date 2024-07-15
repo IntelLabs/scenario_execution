@@ -134,7 +134,7 @@ class ScenarioStatus(Node):
                     continue
                 if infos['status'] != self.last_behaviour_infos[behaviour]['status']:
                     self.publish_info(behaviour, infos, current_time, self.states_dict[self.last_behaviour_infos[behaviour]['status']])
-                   
+
         self.last_behaviour_infos = behaviour_infos
 
     def publish_info(self, behaviour, infos, current_time, last_status):
@@ -150,6 +150,7 @@ class ScenarioStatus(Node):
             msg.ros_time = current_time
         self.logger.debug(debug_str)
         self.status_pub.publish(msg)
+
 
 def main(args=None):
     """main function for the node to spin

@@ -85,7 +85,8 @@ int searchBehavior(const QString *child_id,
 
 bool ScenarioView::isNewTree(
     const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr previous,
-    const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr current) const {
+    const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr current)
+    const {
 
   bool isNew = false;
   if (previous != nullptr) {
@@ -94,15 +95,13 @@ bool ScenarioView::isNewTree(
       isNew = true;
     }
     for (size_t i = 0; (i < current->behaviours.size()) && !isNew; i++) {
-      if (
-          (current->behaviours.at(i).own_id.uuid != previous->behaviours.at(i).own_id.uuid) ||
-          (current->behaviours.at(i).name != previous->behaviours.at(i).name)
-      ){
+      if ((current->behaviours.at(i).own_id.uuid !=
+           previous->behaviours.at(i).own_id.uuid) ||
+          (current->behaviours.at(i).name != previous->behaviours.at(i).name)) {
         isNew = true;
       }
     }
-  }
-  else {
+  } else {
     isNew = true;
   }
   return isNew;
@@ -127,14 +126,13 @@ void ScenarioView::behaviorTreeChanged(
     for (auto const &item : items) {
       mScenarioView->expandItem(item);
     }
-  }
-  else {
+  } else {
     QTreeWidgetItemIterator it(mScenarioView);
     while (*it) {
       auto msg_behavior = msg->behaviours.begin();
-      while(msg_behavior < msg->behaviours.end())
-      {
-        if ((*it)->data(2, 0) == ConvertedBehavior::uuidToQString(msg_behavior->own_id.uuid)) {
+      while (msg_behavior < msg->behaviours.end()) {
+        if ((*it)->data(2, 0) ==
+            ConvertedBehavior::uuidToQString(msg_behavior->own_id.uuid)) {
           break;
         }
         msg_behavior++;
@@ -149,7 +147,7 @@ void ScenarioView::behaviorTreeChanged(
       if ((*it)->data(2, 0) == elem.own_id) {
         setIcon(elem.status, *it);
 
-        (*it)->setData(1,0, elem.message);
+        (*it)->setData(1, 0, elem.message);
       }
       ++it;
     }
@@ -157,35 +155,36 @@ void ScenarioView::behaviorTreeChanged(
 
   // set scenario result, if received
   if (mScenarioView->topLevelItem(0)) {
-    
-    for (auto it = msg->blackboard_on_visited_path.begin(); it != msg->blackboard_on_visited_path.end(); it++) {
-        QString prefix = QString("/");
-        prefix += mScenarioView->topLevelItem(0)->data(0,0).toString();
-        prefix += "/";
-        if ((prefix + "end" == QString::fromStdString(it->key)) && 
-            ("True" == QString::fromStdString(it->value))) {
-          mScenarioView->topLevelItem(0)->setBackground(0, QColor(180,255,180));
-          mScenarioView->topLevelItem(0)->setBackground(1, QColor(180,255,180));
-        }
-        if ((prefix + "fail" == QString::fromStdString(it->key)) && 
-            ("True" == QString::fromStdString(it->value))) {
-          mScenarioView->topLevelItem(0)->setBackground(0, QColor(255,180,180));
-          mScenarioView->topLevelItem(0)->setBackground(1, QColor(255,180,180));
-        }
+
+    for (auto it = msg->blackboard_on_visited_path.begin();
+         it != msg->blackboard_on_visited_path.end(); it++) {
+      QString prefix = QString("/");
+      prefix += mScenarioView->topLevelItem(0)->data(0, 0).toString();
+      prefix += "/";
+      if ((prefix + "end" == QString::fromStdString(it->key)) &&
+          ("True" == QString::fromStdString(it->value))) {
+        mScenarioView->topLevelItem(0)->setBackground(0, QColor(180, 255, 180));
+        mScenarioView->topLevelItem(0)->setBackground(1, QColor(180, 255, 180));
+      }
+      if ((prefix + "fail" == QString::fromStdString(it->key)) &&
+          ("True" == QString::fromStdString(it->value))) {
+        mScenarioView->topLevelItem(0)->setBackground(0, QColor(255, 180, 180));
+        mScenarioView->topLevelItem(0)->setBackground(1, QColor(255, 180, 180));
+      }
     }
   }
 }
 
-void ScenarioView::setIcon(int status, QTreeWidgetItem* item) const {
-    if (status == 1) {
-      item->setIcon(0, waitingIcon);
-    } else if (status == 2) {
-      item->setIcon(0, runningIcon);
-    } else if (status == 3) {
-      item->setIcon(0, successIcon);
-    } else if (status == 4) {
-      item->setIcon(0, failedIcon);
-    }
+void ScenarioView::setIcon(int status, QTreeWidgetItem *item) const {
+  if (status == 1) {
+    item->setIcon(0, waitingIcon);
+  } else if (status == 2) {
+    item->setIcon(0, runningIcon);
+  } else if (status == 3) {
+    item->setIcon(0, successIcon);
+  } else if (status == 4) {
+    item->setIcon(0, failedIcon);
+  }
 }
 
 void ScenarioView::populateTree(
