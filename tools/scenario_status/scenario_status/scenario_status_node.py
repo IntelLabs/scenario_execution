@@ -30,16 +30,14 @@ from rosgraph_msgs.msg import Clock
 
 class ScenarioStatus(Node):
 
-    """Simple node to call a service to publish the py-trees-behaviour tree
-    to a topic, then subscribe to that topic and publish changes in behaviour
-    states as strings at the time they are happening."""
+    """Simple node subscribing to the py-trees-behaviour tree snapshot. The output is a 
+    string that describes any behavior state changes and timestamps."""
 
     def __init__(self):
         """initialize node"""
         super().__init__('scenario_status')
 
         self.bt_topic = None
-        self.snapshot_srv_name = None
         self.scenario_status_topic = None
         self.behaviour_infos = None
         self.last_behaviour_infos = None
@@ -49,6 +47,7 @@ class ScenarioStatus(Node):
         self.logger = self.get_logger()
 
         self.states_dict = {
+            0: 'NONE',
             1: 'INVALID',
             2: 'RUNNING',
             3: 'SUCCESS',
@@ -73,9 +72,6 @@ class ScenarioStatus(Node):
             depth=5)
         self.clock_sub = self.create_subscription(Clock, '/clock', self.clock_callback, clock_qos)
         self.status_pub = self.create_publisher(ScenarioStatusMsg, self.scenario_status_topic, 10)
-
-        # self.request_bt_publishing()
-
         self.snapshot_sub = self.create_subscription(
             BehaviourTree,
             self.bt_topic,
@@ -86,46 +82,18 @@ class ScenarioStatus(Node):
     def clock_callback(self, msg):
         self.time = msg
 
-    def request_bt_publishing(self):
-        """Request publishing of the py-trees-behaviour tree via the given
-        topic name vy calling the corresponding service.
-        :returns: -
-
-        """
-        # self.client_node = rclpy.create_node('srv_client_node')
-        snapshot_client = self.create_client(OpenSnapshotStream, self.snapshot_srv_name)
-        while not snapshot_client.wait_for_service(timeout_sec=1.0):
-            self.logger.info(
-                'Service to open bt snapshot not available, waiting again ...')
-
-        req = OpenSnapshotStream.Request(topic_name=self.bt_topic)
-        req.topic_name = self.bt_topic
-        # calling service to publish pytrees behaviour tree snapshot to topic
-        future = snapshot_client.call_async(req)
-        rclpy.spin_until_future_complete(self, future)
-        if future.result() is not None:
-            self.bt_topic = future.result().topic_name
-            self.logger.info(
-                'Triggered publishing of bt snapshot to topic: %s' % self.bt_topic)
-        else:
-            self.logger.error('Exception while calling service: {}'.format(future.exception()))
-
     def params(self):
         """handle ROS parameters and store them as class variables
         :returns: -
 
         """
-        self.declare_parameter('bt_snapshot_topic', '/bt_snapshot',
-                               descriptor=ParameterDescriptor(dynamic_typing=True))
-        self.declare_parameter('snapshot_srv_name', '/scenario_execution/snapshot_streams/open',
+        self.declare_parameter('bt_snapshot_topic', '/scenario_execution/snapshots',
                                descriptor=ParameterDescriptor(dynamic_typing=True))
         self.declare_parameter('scenario_status_topic', '/scenario_status',
                                descriptor=ParameterDescriptor(dynamic_typing=True))
 
         self.bt_topic = self.get_parameter_or(
             'bt_snapshot_topic').get_parameter_value().string_value
-        self.snapshot_srv_name = self.get_parameter_or(
-            'snapshot_srv_name').get_parameter_value().string_value
         self.scenario_status_topic = self.get_parameter_or(
             'scenario_status_topic').get_parameter_value().string_value
 
@@ -156,33 +124,32 @@ class ScenarioStatus(Node):
         current_time = None
         if self.time:
             current_time = self.time.clock
-        self.logger.debug('received bt_snapshot')
-        if self.scenario_bt is not None:
-            self.last_behaviour_infos = self.get_behaviour_infos(
-                self.scenario_bt
-            )
-        self.scenario_bt = msg
-        self.behaviour_infos = self.get_behaviour_infos(self.scenario_bt)
-        # we can only check for changes if we have a previous bt available
-        if self.last_behaviour_infos is not None:
-            for behaviour, infos in self.behaviour_infos.items():
+        behaviour_infos = self.get_behaviour_infos(msg)
+        if self.last_behaviour_infos is None:
+            for behaviour, infos in behaviour_infos.items():
+                self.publish_info(behaviour, infos, current_time, self.states_dict[0])
+        else:
+            for behaviour, infos in behaviour_infos.items():
                 if infos['status'] not in self.states_dict or self.last_behaviour_infos[behaviour]['status'] not in self.states_dict:
                     continue
                 if infos['status'] != self.last_behaviour_infos[behaviour]['status']:
-                    beh_type = self.types_dict[infos['type']]
-                    last_status = self.states_dict[self.last_behaviour_infos[behaviour]['status']]
-                    current_status = self.states_dict[infos['status']]
-                    result_str = f'{behaviour}({beh_type}): {last_status} > {current_status}'
-                    debug_str = 'behaviour %s of type %s changed state from %s to %s, with message %s' % (
-                        behaviour, beh_type, last_status, current_status, infos['message'])
-                    msg = ScenarioStatusMsg()
-                    msg.data = result_str
-                    msg.system_time = self.get_clock().now().to_msg()
-                    if current_time:
-                        msg.ros_time = current_time
-                    self.logger.debug(debug_str)
-                    self.status_pub.publish(msg)
+                    self.publish_info(behaviour, infos, current_time, self.states_dict[self.last_behaviour_infos[behaviour]['status']])
+                   
+        self.last_behaviour_infos = behaviour_infos
 
+    def publish_info(self, behaviour, infos, current_time, last_status):
+        beh_type = self.types_dict[infos['type']]
+        current_status = self.states_dict[infos['status']]
+        result_str = f'{behaviour}({beh_type}): {last_status} > {current_status}'
+        debug_str = 'behaviour %s of type %s changed state from %s to %s, with message %s' % (
+            behaviour, beh_type, last_status, current_status, infos['message'])
+        msg = ScenarioStatusMsg()
+        msg.data = result_str
+        msg.system_time = self.get_clock().now().to_msg()
+        if current_time:
+            msg.ros_time = current_time
+        self.logger.debug(debug_str)
+        self.status_pub.publish(msg)
 
 def main(args=None):
     """main function for the node to spin
@@ -192,7 +159,6 @@ def main(args=None):
     scenario_status = ScenarioStatus()
 
     try:
-        scenario_status.request_bt_publishing()
         rclpy.spin(scenario_status)
     except KeyboardInterrupt:
         pass

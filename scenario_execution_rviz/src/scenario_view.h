@@ -45,7 +45,6 @@
 #include <cstdio>
 #include <iomanip>
 #include <py_trees_ros_interfaces/msg/behaviour_tree.hpp>
-#include <py_trees_ros_interfaces/srv/open_snapshot_stream.hpp>
 #include <rviz_common/panel.hpp>
 #include <rviz_common/view_manager.hpp>
 #include <tf2/utils.h>
@@ -66,7 +65,6 @@ public:
   ScenarioView(QWidget *parent = 0);
 
 protected Q_SLOTS:
-  void requestBtPublishing();
   void handleItemCollapsed(QTreeWidgetItem *collapsedItem);
   void handleItemExpanded(QTreeWidgetItem *expandedItem);
 
@@ -78,17 +76,21 @@ protected:
   void populateTree(
       QList<QTreeWidgetItem *> &items,
       const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr msg);
+      
+  bool isNewTree(
+      const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr previous,
+      const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr current) const;
+  void setIcon(int status, QTreeWidgetItem* item) const;
+
   rclcpp::Subscription<py_trees_ros_interfaces::msg::BehaviourTree>::SharedPtr
       mBehaviorTreeSubscriber;
-  rclcpp::Client<py_trees_ros_interfaces::srv::OpenSnapshotStream>::SharedPtr
-      mOpenSnapshotStreamClient;
-
+  
   rclcpp::Node::SharedPtr _node;
+  py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr mPreviousMsg;
 
   QTreeWidget *mScenarioView;
   TreeModel *mTreeModel;
   bool treeWidgetBuilt = false;
-  QTimer *timer;
   QMap<QString, bool> *collapsedStates;
 
   // icons
@@ -133,7 +135,7 @@ public:
 
   QList<ConvertedBehavior *> mBehaviorList;
 
-  QString uuidToQString(const std::array<unsigned char, 16> &uuid) {
+  static const QString uuidToQString(const std::array<unsigned char, 16> &uuid) {
     QString result;
 
     for (const auto &element : uuid) {
