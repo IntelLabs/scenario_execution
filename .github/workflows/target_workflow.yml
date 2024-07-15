@@ -1,7 +1,7 @@
 name: Trigger Target Workflow
 on:
   push:
-    branches: [moveit-humble]
+    branches: [main]
 permissions: read-all
 jobs:
   trigger:
