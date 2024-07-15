@@ -22,7 +22,6 @@ from rclpy import qos
 from rclpy.node import Node
 from rcl_interfaces.msg import ParameterDescriptor
 
-from py_trees_ros_interfaces.srv import OpenSnapshotStream
 from py_trees_ros_interfaces.msg import BehaviourTree
 from scenario_execution_interfaces.msg import ScenarioStatus as ScenarioStatusMsg  # pylint: disable=no-name-in-module
 from rosgraph_msgs.msg import Clock

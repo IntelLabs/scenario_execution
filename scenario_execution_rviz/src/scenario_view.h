@@ -76,15 +76,16 @@ protected:
   void populateTree(
       QList<QTreeWidgetItem *> &items,
       const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr msg);
-      
+
   bool isNewTree(
       const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr previous,
-      const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr current) const;
-  void setIcon(int status, QTreeWidgetItem* item) const;
+      const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr current)
+      const;
+  void setIcon(int status, QTreeWidgetItem *item) const;
 
   rclcpp::Subscription<py_trees_ros_interfaces::msg::BehaviourTree>::SharedPtr
       mBehaviorTreeSubscriber;
-  
+
   rclcpp::Node::SharedPtr _node;
   py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr mPreviousMsg;
 
@@ -135,7 +136,8 @@ public:
 
   QList<ConvertedBehavior *> mBehaviorList;
 
-  static const QString uuidToQString(const std::array<unsigned char, 16> &uuid) {
+  static const QString
+  uuidToQString(const std::array<unsigned char, 16> &uuid) {
     QString result;
 
     for (const auto &element : uuid) {

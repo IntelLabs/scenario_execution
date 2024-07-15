@@ -17,13 +17,12 @@
 """ Main entry for scenario_execution_ros """
 import sys
 import rclpy  # pylint: disable=import-error
-import py_trees
 import py_trees_ros  # pylint: disable=import-error
+from py_trees_ros_interfaces.srv import OpenSnapshotStream
 import rclpy.parameter
 from scenario_execution import ScenarioExecution
 from .logging_ros import RosLogger
 from .marker_handler import MarkerHandler
-from py_trees_ros_interfaces.srv import OpenSnapshotStream
 
 
 class ROSScenarioExecution(ScenarioExecution):
@@ -99,7 +98,7 @@ class ROSScenarioExecution(ScenarioExecution):
         request.parameters.snapshot_period = sys.float_info.max
         request.parameters.blackboard_data = True
         response = OpenSnapshotStream.Response()
-        self.behaviour_tree._open_snapshot_stream(request, response)
+        self.behaviour_tree._open_snapshot_stream(request, response)  # pylint: disable=protected-access
 
     def run(self) -> bool:
 
