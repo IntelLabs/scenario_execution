@@ -303,6 +303,9 @@ jobs:
           sed -i 's/240s/900s/g' examples/example_multi_robot/example_multi_robot.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_multi_robot/ -o test_example_multirobot -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR} headless:=True
+          ls -l .
+          ls -l test_example_multirobot
+          find -name "rosbag*"
       - name: Upload result
         uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
