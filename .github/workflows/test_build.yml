@@ -317,7 +317,7 @@ jobs:
         if: always()
         with:
           name: test-example-multirobot-ros-bag
-          path: test_example_multirobot/rosbag*
+          path: test_example_multirobot/**/rosbag*
   test-example-external-method:
     needs: [build]
     runs-on: intellabs-01
