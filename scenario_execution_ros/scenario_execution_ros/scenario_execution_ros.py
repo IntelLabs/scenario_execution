@@ -19,7 +19,6 @@ import sys
 import rclpy  # pylint: disable=import-error
 import py_trees_ros  # pylint: disable=import-error
 from py_trees_ros_interfaces.srv import OpenSnapshotStream
-import rclpy.parameter
 from scenario_execution import ScenarioExecution
 from .logging_ros import RosLogger
 from .marker_handler import MarkerHandler
