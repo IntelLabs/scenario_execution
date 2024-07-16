@@ -13,7 +13,7 @@ scenario multi_robot:
             parallel:
                 test_drive: serial:
                     wait elapsed(10s)
-                    robot.init_nav2(initial_pose: pose_3d(orientation: orientation_3d(yaw: 0.0rad)))
+                    robot.init_nav2(initial_pose: pose_3d(orientation: orientation_3d(yaw: 3.14rad)))
                     robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
                     emit end
                 serial:
