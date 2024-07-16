@@ -298,7 +298,6 @@ jobs:
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
           export -n CYCLONEDDS_URI
-          export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
           export ROS_DOMAIN_ID=2
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
           sed -i 's/240s/1800s/g' examples/example_multi_robot/example_multi_robot.osc
