@@ -85,7 +85,7 @@ def generate_launch_description():
                      os.environ.get('LD_LIBRARY_PATH', default='')])}
     # Ignition gazebo
     ignition_gazebo = ExecuteProcess(
-        cmd=['ruby', '/usr/bin/ign', 'gazebo', LaunchConfiguration('world'), '-v', '4', '-r', '-s', '--force-version', '6'],
+        cmd=['sudo', 'nice', '-20', 'ruby', '/usr/bin/ign', 'gazebo', LaunchConfiguration('world'), '-v', '4', '-r', '-s', '--force-version', '6'],
         output='screen',
         additional_env=env,
         on_exit=Shutdown(),
