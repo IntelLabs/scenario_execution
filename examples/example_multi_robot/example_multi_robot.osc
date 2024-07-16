@@ -8,7 +8,8 @@ scenario multi_robot:
         serial:
             robot2.spawn(pose_3d(position_3d(x: -3.0, y: 1.5, z: 0.3), orientation_3d(yaw: -1.57)), model: 'example_multi_robot://models/robot.sdf')
             ros_launch("example_multi_robot", "robot2_launch.py", wait_for_shutdown: false)
-            record_bag(['/tf', '/tf_static', '/scenario_execution/snapshots', '/map'], use_sim_time: true)
+            ros_launch("gazebo_static_camera", "spawn_static_camera_launch.py", [ key_value('x', '-3'), key_value('z', '10'), key_value('pitch', '1.57')], wait_for_shutdown: false)
+            record_bag(['/tf', '/tf_static', '/scenario_execution/snapshots', '/map', '/static_camera/image_raw'], use_sim_time: true)
             parallel:
                 test_drive: serial:
                     robot.init_nav2(initial_pose: pose_3d())

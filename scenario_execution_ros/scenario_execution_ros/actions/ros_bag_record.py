@@ -40,6 +40,7 @@ class RosBagRecord(RunProcess):
 
     def __init__(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str, use_sim_time: bool):
         super().__init__()
+        self.bag_dir = None
         self.current_state = RosBagRecordActionState.WAITING_FOR_TOPICS
         self.command = None
         self.output_dir = None
