@@ -25,6 +25,7 @@ jobs:
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
+          sudo nice -20 true
           colcon build --continue-on-error
           source install/setup.bash
       - name: Cache Build
