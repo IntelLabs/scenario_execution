@@ -73,9 +73,7 @@ def generate_launch_description():
             executable='scenario_status_node',
             name='scenario_status_node',
             parameters=[{
-                'bt_snapshot_topic': '/bt_snapshot',
                 'scenario_status_topic': '/scenario_status',
-                'snapshot_srv_name': '/scenario_execution/snapshot_streams/open',
 
             }],
             output='screen'

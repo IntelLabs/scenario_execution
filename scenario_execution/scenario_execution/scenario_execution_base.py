@@ -152,6 +152,7 @@ class ScenarioExecution(object):
             input_dir = os.path.dirname(self.scenario_file)
         self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger,
                                   input_dir=input_dir, output_dir=self.output_dir, **kwargs)
+        self.post_setup()
 
     def setup_behaviour_tree(self, tree):
         """
@@ -167,6 +168,9 @@ class ScenarioExecution(object):
             py_trees.trees.BehaviourTree
         """
         return py_trees.trees.BehaviourTree(tree)
+
+    def post_setup(self):
+        pass
 
     def parse(self):  # pylint: disable=too-many-return-statements
         """

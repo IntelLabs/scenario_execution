@@ -25,6 +25,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, Shutdown
 from launch.actions import SetEnvironmentVariable
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.conditions import UnlessCondition
 from launch_ros.actions import Node
 
 
@@ -45,6 +46,8 @@ def generate_launch_description():
         'irobot_create_ignition_bringup')
     pkg_irobot_create_ignition_plugins = get_package_share_directory(
         'irobot_create_ignition_plugins')
+
+    headless = LaunchConfiguration('headless')
 
     arguments = [
         DeclareLaunchArgument('use_sim_time', default_value='true',
@@ -93,6 +96,7 @@ def generate_launch_description():
     )
 
     ignition_gazebo_gui = ExecuteProcess(
+        condition=UnlessCondition(headless),
         cmd=['ruby', '/usr/bin/ign', 'gazebo', '-g', '-v', '4', '--gui-config',
              PathJoinSubstitution([pkg_turtlebot4_ignition_bringup, 'gui', 'gui.config']), '--force-version', '6'],
         output='screen',
