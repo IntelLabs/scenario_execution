@@ -1,12 +1,15 @@
 import osc.ros
+import osc.gazebo
 
 scenario multi_robot:
     robot: differential_drive_robot
+    robot2: osc_actor
     do parallel:
         serial:
-            #ros_launch("tb4_sim_scenario", "ignition_robot_launch.py", [key_value("namespace", "turtlebot2"), key_value("x", "-3.0"), key_value("y", "1.5"), key_value("yaw", "-1.57")], wait_for_shutdown: false)
+            robot2.spawn(pose_3d(position_3d(x: -3.0, y: 1.5, z: 0.3), orientation_3d(yaw: -1.57)), model: 'example_multi_robot://models/robot.sdf')
+            ros_launch("example_multi_robot", "robot2_launch.py", wait_for_shutdown: false)
             record_bag(['/tf', '/tf_static', '/clock', '/scenario_execution/snapshots', '/map'])
-            parallel:   
+            parallel:
                 test_drive: serial:
                     robot.init_nav2(initial_pose: pose_3d())
                     robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
@@ -18,164 +21,10 @@ scenario multi_robot:
                         keep(it.threshold == 0.35m)
                         keep(it.robot_frame_id ==  'turtlebot4_base_link_gt')
                     topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')
+                        keep(it.topic_name == '/robot2/cmd_vel')
                         keep(it.topic_type == 'geometry_msgs.msg.Twist')
-                        keep(it.value == '{\"linear\": {\"x\": 0.3, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}')
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-                    wait elapsed(0.2s)
-                    topic_publish() with:
-                        keep(it.topic_name == '/turtlebot2/cmd_vel')     
-                        keep(it.topic_type == 'geometry_msgs.msg.Twist')    
-                        keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
+                        keep(it.value == '{\"linear\": {\"x\": 0.6, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}')
+                    wait elapsed(10s)
         time_out: serial:
             wait elapsed(240s)
             emit fail
