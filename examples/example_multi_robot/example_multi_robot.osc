@@ -12,6 +12,7 @@ scenario multi_robot:
             record_bag(['/tf', '/tf_static', '/scenario_execution/snapshots', '/map', '/static_camera/image_raw', '/local_costmap/costmap', '/initialpose'], use_sim_time: true)
             parallel:
                 test_drive: serial:
+                    wait elapsed(10s)
                     robot.init_nav2(initial_pose: pose_3d(orientation: orientation_3d(yaw: 0.0rad)))
                     robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
                     emit end
