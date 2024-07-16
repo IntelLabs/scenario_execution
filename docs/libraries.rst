@@ -700,7 +700,7 @@ Wait for specific output in ROS log (i.e. ``/rosout`` topic). If any of the entr
 
 Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: '.').
 
-A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree.
+A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree. When replaying the bag-file, this allows to visualize the current state of the scenario in RViz, using the ``scenario_execution_rviz`` plugin.
 
 .. list-table:: 
    :widths: 15 15 5 65
