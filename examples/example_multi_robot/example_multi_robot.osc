@@ -4,12 +4,13 @@ scenario multi_robot:
     robot: differential_drive_robot
     do parallel:
         serial:
-            ros_launch("tb4_sim_scenario", "ignition_robot_launch.py", [key_value("namespace", "turtlebot2"), key_value("x", "-3.0"), key_value("y", "1.5"), key_value("yaw", "-1.57")], wait_for_shutdown: false)
+            #ros_launch("tb4_sim_scenario", "ignition_robot_launch.py", [key_value("namespace", "turtlebot2"), key_value("x", "-3.0"), key_value("y", "1.5"), key_value("yaw", "-1.57")], wait_for_shutdown: false)
             record_bag(['/tf', '/tf_static', '/clock', '/scenario_execution/snapshots', '/map'])
             parallel:   
                 test_drive: serial:
                     robot.init_nav2(initial_pose: pose_3d())
                     robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
+                    emit end
                 serial:
                     robot.tf_close_to() with:
                         keep(it.reference_point.x == -1.5m)
@@ -175,7 +176,6 @@ scenario multi_robot:
                         keep(it.topic_name == '/turtlebot2/cmd_vel')     
                         keep(it.topic_type == 'geometry_msgs.msg.Twist')    
                         keep(it.value == '{\"linear\": {\"x\": 0.30, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}') 
-            emit end
         time_out: serial:
             wait elapsed(240s)
             emit fail
