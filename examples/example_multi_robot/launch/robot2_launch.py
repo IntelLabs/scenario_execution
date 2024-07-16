@@ -26,6 +26,7 @@ ARGUMENTS = [
                           description='name of robot'),
 ]
 
+
 def generate_launch_description():
 
     # Launch configurations
@@ -47,10 +48,10 @@ def generate_launch_description():
              ']ignition.msgs.Twist']
         ],
         remappings=[
-            (['/model/', robot_name, '/cmd_vel'], [robot_name, '/cmd_vel' ])
+            (['/model/', robot_name, '/cmd_vel'], [robot_name, '/cmd_vel'])
         ]
-        )
-        
+    )
+
     # Define LaunchDescription variable
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(cmd_vel_bridge)

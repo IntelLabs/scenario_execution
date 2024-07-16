@@ -17,6 +17,7 @@
 from scenario_execution.actions.run_process import RunProcess
 import signal
 
+
 class RosLaunch(RunProcess):
 
     def __init__(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):

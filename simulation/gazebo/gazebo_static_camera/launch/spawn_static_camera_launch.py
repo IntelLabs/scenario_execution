@@ -17,9 +17,7 @@
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import LaunchConfigurationEquals
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
 
@@ -28,7 +26,7 @@ from launch_ros.actions import Node
 ARGUMENTS = [
     DeclareLaunchArgument('camera_name', default_value='static_camera',
                           description='Camera name'),
-    
+
     DeclareLaunchArgument('world_name', default_value='default',
                           description='World name'),
 ]
@@ -37,9 +35,10 @@ for pose_element in ['x', 'y', 'z', 'roll', 'pitch', 'yaw']:
     ARGUMENTS.append(DeclareLaunchArgument(pose_element, default_value='0.0',
                      description=f'{pose_element} component of the camera pose.'))
 
+
 def generate_launch_description():
     gazebo_static_camera_dir = get_package_share_directory('gazebo_static_camera')
-    
+
     camera_name = LaunchConfiguration('camera_name')
     world_name = LaunchConfiguration('world_name')
 
@@ -49,7 +48,6 @@ def generate_launch_description():
     camera_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        name='camera_bridge',
         output='screen',
         parameters=[{'use_sim_time': True}],
         arguments=[
@@ -63,32 +61,28 @@ def generate_launch_description():
              '/link/link/sensor/camera/camera_info' +
              '@sensor_msgs/msg/CameraInfo' +
              '[ignition.msgs.CameraInfo'],
-            ],
+        ],
         remappings=[
-            (['/world/', world_name,
-              '/model/', camera_name,
-              '/link/link/sensor/camera/image'],
+            (['/world/', world_name, '/model/', camera_name, '/link/link/sensor/camera/image'],
              [camera_name, '/image_raw']),
-            (['/world/', world_name,
-              '/model/', camera_name,
-              '/link/link/sensor/camera/camera_info'],
+            (['/world/', world_name, '/model/', camera_name, '/link/link/sensor/camera/camera_info'],
              [camera_name, '/camera_info'])
-            ]
+        ]
     )
 
     spawn_camera = Node(
-            package='ros_ign_gazebo',
-            executable='create',
-            arguments=['-name', camera_name,
-                       '-x', x,
-                       '-y', y,
-                       '-z', z,
-                       '-R', roll,
-                       '-P', pitch,
-                       '-Y', yaw,
-                       '-file', PathJoinSubstitution([gazebo_static_camera_dir, 'models', 'camera.sdf'])],
-            output='screen'
-        )
+        package='ros_ign_gazebo',
+        executable='create',
+        arguments=['-name', camera_name,
+                   '-x', x,
+                   '-y', y,
+                   '-z', z,
+                   '-R', roll,
+                   '-P', pitch,
+                   '-Y', yaw,
+                   '-file', PathJoinSubstitution([gazebo_static_camera_dir, 'models', 'camera.sdf'])],
+        output='screen'
+    )
 
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(camera_bridge)
