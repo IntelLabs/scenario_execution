@@ -51,12 +51,6 @@ ScenarioView::ScenarioView(QWidget *parent) : rviz_common::Panel(parent) {
           SLOT(handleItemCollapsed(QTreeWidgetItem *)));
   connect(mScenarioView, SIGNAL(itemExpanded(QTreeWidgetItem *)), this,
           SLOT(handleItemExpanded(QTreeWidgetItem *)));
-
-  timer = new QTimer(this);
-  timer->setInterval(1000);
-  connect(timer, SIGNAL(timeout()), this, SLOT(requestBtPublishing()));
-  timer->start();
-  qDebug() << "initialisation done";
 }
 
 void ScenarioView::onInitialize() {
@@ -64,12 +58,8 @@ void ScenarioView::onInitialize() {
 
   mBehaviorTreeSubscriber =
       _node->create_subscription<py_trees_ros_interfaces::msg::BehaviourTree>(
-          "/bt_snapshot_rviz", 10,
+          "/scenario_execution/snapshots", 10,
           std::bind(&ScenarioView::behaviorTreeChanged, this, _1));
-
-  mOpenSnapshotStreamClient =
-      _node->create_client<py_trees_ros_interfaces::srv::OpenSnapshotStream>(
-          "/scenario_execution/snapshot_streams/open");
 }
 
 void ScenarioView::handleItemCollapsed(QTreeWidgetItem *collapsedItem) {
@@ -93,39 +83,109 @@ int searchBehavior(const QString *child_id,
   return childPosition;
 }
 
+bool ScenarioView::isNewTree(
+    const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr previous,
+    const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr current)
+    const {
+
+  bool isNew = false;
+  if (previous != nullptr) {
+    isNew = false;
+    if (previous->behaviours.size() != current->behaviours.size()) {
+      isNew = true;
+    }
+    for (size_t i = 0; (i < current->behaviours.size()) && !isNew; i++) {
+      if ((current->behaviours.at(i).own_id.uuid !=
+           previous->behaviours.at(i).own_id.uuid) ||
+          (current->behaviours.at(i).name != previous->behaviours.at(i).name)) {
+        isNew = true;
+      }
+    }
+  } else {
+    isNew = true;
+  }
+  return isNew;
+}
+
 void ScenarioView::behaviorTreeChanged(
     const py_trees_ros_interfaces::msg::BehaviourTree::SharedPtr msg) {
-  if (treeWidgetBuilt == false || msg->changed == true) {
+  bool isNew = isNewTree(mPreviousMsg, msg);
+  mPreviousMsg = msg;
+
+  if (isNew) {
     QList<QTreeWidgetItem *> items;
     mScenarioView->clear();
     populateTree(items, msg);
+    if (items.size() > 0) {
+      static auto bg = items[0]->background(0);
+      items[0]->setBackground(0, bg);
+      items[0]->setBackground(1, bg);
+    }
     mScenarioView->insertTopLevelItems(0, items);
 
-    // expand everything if its run forthe first time
-    // else only expand already expanded item
-    if (treeWidgetBuilt) {
-      for (auto const &item : items) {
-        if (collapsedStates->value(item->text(2))) {
-          mScenarioView->expandItem(item);
-        }
-      }
-    } else {
-      for (auto const &item : items) {
-        mScenarioView->expandItem(item);
-      }
-    }
-
-    // save the state/new state of the collapsed items in the QMap
-    int qMapcounter = 0;
-    collapsedStates->clear();
+    // expand everything
     for (auto const &item : items) {
-      collapsedStates->insert(item->text(2), item->isExpanded());
-      qMapcounter++;
+      mScenarioView->expandItem(item);
     }
+  } else {
+    QTreeWidgetItemIterator it(mScenarioView);
+    while (*it) {
+      auto msg_behavior = msg->behaviours.begin();
+      while (msg_behavior < msg->behaviours.end()) {
+        if ((*it)->data(2, 0) ==
+            ConvertedBehavior::uuidToQString(msg_behavior->own_id.uuid)) {
+          break;
+        }
+        msg_behavior++;
+      }
 
-    treeWidgetBuilt = true;
+      if (msg_behavior == msg->behaviours.end()) {
+        qDebug() << "Cannot find corresponding behavior";
+        break;
+      }
+
+      ConvertedBehavior elem(*msg_behavior);
+      if ((*it)->data(2, 0) == elem.own_id) {
+        setIcon(elem.status, *it);
+
+        (*it)->setData(1, 0, elem.message);
+      }
+      ++it;
+    }
   }
-  timer->start();
+
+  // set scenario result, if received
+  if (mScenarioView->topLevelItem(0)) {
+
+    for (auto it = msg->blackboard_on_visited_path.begin();
+         it != msg->blackboard_on_visited_path.end(); it++) {
+      QString prefix = QString("/");
+      prefix += mScenarioView->topLevelItem(0)->data(0, 0).toString();
+      prefix += "/";
+      if ((prefix + "end" == QString::fromStdString(it->key)) &&
+          ("True" == QString::fromStdString(it->value))) {
+        mScenarioView->topLevelItem(0)->setBackground(0, Qt::green);
+        mScenarioView->topLevelItem(0)->setBackground(1, Qt::green);
+      }
+      if ((prefix + "fail" == QString::fromStdString(it->key)) &&
+          ("True" == QString::fromStdString(it->value))) {
+        mScenarioView->topLevelItem(0)->setBackground(0, Qt::red);
+        mScenarioView->topLevelItem(0)->setBackground(1, Qt::red);
+      }
+    }
+  }
+}
+
+void ScenarioView::setIcon(int status, QTreeWidgetItem *item) const {
+  if (status == 1) {
+    item->setIcon(0, waitingIcon);
+  } else if (status == 2) {
+    item->setIcon(0, runningIcon);
+  } else if (status == 3) {
+    item->setIcon(0, successIcon);
+  } else if (status == 4) {
+    item->setIcon(0, failedIcon);
+  }
 }
 
 void ScenarioView::populateTree(
@@ -146,15 +206,7 @@ void ScenarioView::populateTree(
 
     items.append(new QTreeWidgetItem(nodeName));
 
-    if (behavior->status == 1) {
-      items.last()->setIcon(0, waitingIcon);
-    } else if (behavior->status == 2) {
-      items.last()->setIcon(0, runningIcon);
-    } else if (behavior->status == 3) {
-      items.last()->setIcon(0, successIcon);
-    } else if (behavior->status == 4) {
-      items.last()->setIcon(0, failedIcon);
-    }
+    setIcon(behavior->status, items.last());
   }
 
   int parentPosition = 0;
@@ -169,21 +221,6 @@ void ScenarioView::populateTree(
 
     ++parentPosition;
   }
-}
-
-void ScenarioView::requestBtPublishing() {
-  if (!mOpenSnapshotStreamClient->wait_for_service(
-          std::chrono::milliseconds(100))) {
-    // RCLCPP_WARN(
-    //     rclcpp::get_logger("rclcpp"),
-    //     "Failed to call service OpenSnapshotStream. Will try to reconnect");
-    treeWidgetBuilt = false;
-    timer->start();
-  }
-  auto request = std::make_shared<
-      py_trees_ros_interfaces::srv::OpenSnapshotStream::Request>();
-  request->topic_name = "/bt_snapshot_rviz";
-  auto result = mOpenSnapshotStreamClient->async_send_request(request);
 }
 
 } // end namespace scenario_execution_rviz

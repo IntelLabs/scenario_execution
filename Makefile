@@ -2,8 +2,7 @@ file_finder = find . -type f $(1) -not \( -path './venv/*' -o -path './build/*' 
 
 PY_FILES = $(call file_finder,-name "*.py")
 CPP_FILES = $(call file_finder,-name "*.cpp")
-H_FILES = $(call file_finder,-name "*.cpp")
-C_FILES = $(call file_finder,-name "*.cpp")
+H_FILES = $(call file_finder,-name "*.h")
 
 LINKCHECKDIR  = build/linkcheck
 
@@ -13,7 +12,6 @@ format:
 	$(PY_FILES) | xargs autopep8 --in-place --max-line-length=140
 	$(CPP_FILES) | xargs clang-format -i
 	$(H_FILES) | xargs clang-format -i
-	$(C_FILES) | xargs clang-format -i
 
 check_format:
 	$(PY_FILES) | xargs autopep8 --diff --max-line-length=140 --exit-code
