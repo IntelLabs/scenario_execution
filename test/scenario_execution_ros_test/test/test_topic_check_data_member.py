@@ -56,16 +56,17 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
-        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
 
     def test_success_complete_msg(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
+    timeout(10s)
     do parallel:
         test: serial:
             wait elapsed(1s)
@@ -79,9 +80,6 @@ scenario test:
                 topic_type: 'geometry_msgs.msg.Twist',
                 expected_value: '{\\\"linear\\\": {\\\"y\\\": 1.2}}')
             emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
@@ -113,9 +111,11 @@ scenario test:
 
     def test_success_member(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
+    timeout(10s)
     do parallel:
         test: serial:
             wait elapsed(1s)
@@ -130,9 +130,7 @@ scenario test:
                 member_name: 'linear',
                 expected_value: '{\\\"y\\\": 1.2}')
             emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
@@ -140,8 +138,10 @@ scenario test:
     def test_fail_member(self):
         scenario_content = """
 import osc.ros
+import osc.helpers
 
 scenario test:
+    timeout(5s)
     do parallel:
         test: serial:
             wait elapsed(1s)
@@ -156,9 +156,6 @@ scenario test:
                 member_name: 'linear',
                 expected_value: '{\\\"z\\\": 9}')
             emit end
-        time_out: serial:
-            wait elapsed(5s)
-            emit fail
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())

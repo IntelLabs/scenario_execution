@@ -149,25 +149,16 @@ scenario test:
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
-    def test_modifier(self):
+    def test_actor_modifier(self):
         scenario_content = """
-modifier test
+modifier test_actor.test
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
 
-    def test_modifier_application(self):
+    def test_qualified_behavior_modifier(self):
         scenario_content = """
-modifier test_modifier:
-    param1: string
-
-action test_action:
-    param2: string
-
-scenario test:
-    do serial:
-        test_action() with:
-            test_modifier(6)
+modifier test of foo
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
@@ -226,6 +217,18 @@ struct vehicle:
     is_electric: bool
 
 actor electric_vehicle inherits vehicle(is_electric == true)
+"""
+        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
+        self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")
+
+    def test_do_not_in_scenario(self):
+        scenario_content = """
+import osc.helpers
+action test_action:
+    do serial:
+        log("test")
+        
+scenario test
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         self.assertRaises(ValueError, self.parser.create_internal_model, parsed_tree, self.tree, "test.osc")

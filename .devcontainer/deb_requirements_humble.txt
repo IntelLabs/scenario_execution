@@ -27,6 +27,7 @@
  ros-humble-navigation2
  ros-humble-nav2-bringup
  ros-humble-nav2-simple-commander
+ ros-humble-py-trees
  ros-humble-py-trees-ros-interfaces
  ros-humble-rcl-interfaces
  ros-humble-rclpy

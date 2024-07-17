@@ -49,9 +49,8 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
-        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
 
     def publish_messages(self):
@@ -152,15 +151,17 @@ scenario test_assert_topic_latency:
 
     def test_case_4(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_assert_topic_latency:
     do parallel:
+        assert_topic_latency(
+            topic_name: '/bla',
+            latency: 0.5s,
+            topic_type: 'std_msgs.msg.String')
         serial:
-            assert_topic_latency(
-                topic_name: '/bla',
-                latency: 0.5s,
-                topic_type: 'std_msgs.msg.String')
+            wait elapsed(3s)
             emit end
 """
         self.execute(scenario_content)
