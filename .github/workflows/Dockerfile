@@ -28,6 +28,6 @@ RUN mkdir -p /rosbag2_to_video/src && \
     cd .. && \
     apt-get update && \
     rosdep install --from-paths src --ignore-src -y && \
-    rm -rf /var/lib/apt/lists/* && \
+    rm -rf "/var/lib/apt/lists/*" && \
     . /opt/ros/${ROS_DISTRO}/setup.bash && \
     colcon build
