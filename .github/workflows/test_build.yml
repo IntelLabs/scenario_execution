@@ -300,7 +300,7 @@ jobs:
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          #sed -i 's/240s/1800s/g' examples/example_multi_robot/example_multi_robot.osc
+          sed -i 's/240s/900s/g' examples/example_multi_robot/example_multi_robot.osc
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_multi_robot/ -o test_example_multirobot -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR} headless:=True live_tree:=True
       - name: Upload result
