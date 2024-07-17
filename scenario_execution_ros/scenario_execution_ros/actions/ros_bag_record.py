@@ -40,6 +40,7 @@ class RosBagRecord(RunProcess):
 
     def __init__(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str, use_sim_time: bool):
         super().__init__()
+        self.bag_dir = None
         self.current_state = RosBagRecordActionState.WAITING_FOR_TOPICS
         self.command = None
         self.output_dir = None
@@ -57,7 +58,7 @@ class RosBagRecord(RunProcess):
                     f"Specified destination dir '{kwargs['output_dir']}' does not exist")
             self.output_dir = kwargs['output_dir']
 
-    def execute(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str, use_sim_time: bool): # pylint: disable=arguments-differ
+    def execute(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str, use_sim_time: bool):  # pylint: disable=arguments-differ
         self.bag_dir = ''
         if self.output_dir:
             self.bag_dir = self.output_dir + '/'
