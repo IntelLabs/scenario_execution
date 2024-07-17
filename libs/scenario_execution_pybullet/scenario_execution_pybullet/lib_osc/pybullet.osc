@@ -1,0 +1,10 @@
+import osc.standard.base
+import osc.robotics
+
+actor pybullet:
+    def tick(duration: time) is external scenario_execution_pybullet.tick()
+
+action simulation.spawn_actor:
+    name: str
+    pose: pose_3d
+    model: str

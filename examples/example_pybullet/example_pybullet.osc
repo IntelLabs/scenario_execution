@@ -1,0 +1,20 @@
+import osc.helpers
+#import osc.pybullet
+
+
+actor simulation_pybullet:
+    def tick(duration: time) is external scenario_execution_pybullet.tick()
+
+actor actor_pybullet
+
+action actor_pybullet.spawn:
+    model: str
+    pose: pose_3d
+
+scenario example_pybullet:
+    timeout(60s)
+    sim: simulation_pybullet("plane.urdf")
+    actor1: actor_pybullet
+    do serial:
+        actor1.spawn("r2d2.urdf", pose_3d(position: position_3d(z: 1.0)))
+
