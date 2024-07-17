@@ -49,8 +49,36 @@ ARGUMENTS = [
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     robot_name = LaunchConfiguration('robot_name')
+    dock_name = LaunchConfiguration('dock_name')
+    namespace = LaunchConfiguration('namespace')
     world_name = LaunchConfiguration('world_name')
     scan_topic = LaunchConfiguration('scan_topic')
+
+    leds = [
+        'power',
+        'motors',
+        'comms',
+        'wifi',
+        'battery',
+        'user1',
+        'user2'
+    ]
+
+    pkg_irobot_create_ignition_bringup = get_package_share_directory(
+        'irobot_create_ignition_bringup')
+
+    create3_ros_gz_bridge_launch = PathJoinSubstitution(
+        [pkg_irobot_create_ignition_bringup, 'launch', 'create3_ros_ignition_bridge.launch.py'])
+
+    create3_bridge = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([create3_ros_gz_bridge_launch]),
+        launch_arguments=[
+            ('robot_name', robot_name),
+            ('dock_name', dock_name),
+            ('namespace', namespace),
+            ('world', world_name)
+        ]
+    )
 
     # lidar bridge
     lidar_bridge = Node(
@@ -74,7 +102,120 @@ def generate_launch_description():
              scan_topic)
         ])
 
+    # Display message bridge
+    hmi_display_msg_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='hmi_display_msg_bridge',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+        arguments=[
+            [namespace, '/hmi/display/raw' +
+             '@std_msgs/msg/String' +
+             ']ignition.msgs.StringMsg'],
+            [namespace, '/hmi/display/selected' +
+             '@std_msgs/msg/Int32' +
+             ']ignition.msgs.Int32']
+        ],
+        remappings=[
+            ([namespace, '/hmi/display/raw'],
+             'hmi/display/_raw'),
+            ([namespace, '/hmi/display/selected'],
+             'hmi/display/_selected')
+        ],
+        condition=LaunchConfigurationEquals('model', 'standard'))
+
+    # Buttons message bridge
+    hmi_buttons_msg_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='hmi_buttons_msg_bridge',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+        arguments=[
+            [namespace, '/hmi/buttons' +
+             '@std_msgs/msg/Int32' +
+             '[ignition.msgs.Int32']
+        ],
+        remappings=[
+            ([namespace, '/hmi/buttons'],
+             'hmi/buttons/_set')
+        ],
+        condition=LaunchConfigurationEquals('model', 'standard'))
+
+    # Buttons message bridge
+    hmi_led_msg_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='hmi_led_msg_bridge',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+        arguments=[
+            [namespace, '/hmi/led/' + led +
+             '@std_msgs/msg/Int32' +
+             ']ignition.msgs.Int32'] for led in leds
+        ],
+        remappings=[
+            ([namespace, '/hmi/led/' + led],
+             'hmi/led/_' + led) for led in leds
+        ],
+        condition=LaunchConfigurationEquals('model', 'standard'))
+
+    # Camera sensor bridge
+    oakd_camera_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        name='camera_bridge',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+        arguments=[
+            ['/world/', world_name,
+             '/model/', robot_name,
+             '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/image' +
+             '@sensor_msgs/msg/Image' +
+             '[ignition.msgs.Image'],
+            ['/world/', world_name,
+             '/model/', robot_name,
+             '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/depth_image' +
+             '@sensor_msgs/msg/Image' +
+             '[ignition.msgs.Image'],
+            ['/world/', world_name,
+             '/model/', robot_name,
+             '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/points' +
+             '@sensor_msgs/msg/PointCloud2' +
+             '[ignition.msgs.PointCloudPacked'],
+            ['/world/', world_name,
+             '/model/', robot_name,
+             '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/camera_info' +
+             '@sensor_msgs/msg/CameraInfo' +
+             '[ignition.msgs.CameraInfo'],
+        ],
+        remappings=[
+            (['/world/', world_name,
+              '/model/', robot_name,
+              '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/image'],
+             'oakd/rgb/preview/image_raw'),
+            (['/world/', world_name,
+              '/model/', robot_name,
+              '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/depth_image'],
+             'oakd/rgb/preview/depth'),
+            (['/world/', world_name,
+              '/model/', robot_name,
+              '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/points'],
+             'oakd/rgb/preview/depth/points'),
+            (['/world/', world_name,
+              '/model/', robot_name,
+              '/link/oakd_rgb_camera_frame/sensor/rgbd_camera/camera_info'],
+             'oakd/rgb/preview/camera_info')
+        ]
+    )
+
     # Define LaunchDescription variable
     ld = LaunchDescription(ARGUMENTS)
+    ld.add_action(create3_bridge)
+    ld.add_action(hmi_display_msg_bridge)
+    ld.add_action(hmi_buttons_msg_bridge)
+    ld.add_action(hmi_led_msg_bridge)
     ld.add_action(lidar_bridge)
+    ld.add_action(oakd_camera_bridge)
     return ld
