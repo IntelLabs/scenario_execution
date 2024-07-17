@@ -1,16 +1,13 @@
+import osc.helpers
 import osc.ros
 
 scenario nav2_simulation_nav_to_pose:
+    timeout(240s)
     robot: differential_drive_robot
-    do parallel:
-        test_drive: serial:
-            robot.init_nav2(pose_3d(osition_3d(x: 0.0m, y: 0.0m)))
-            robot.nav_to_pose() with:
-                keep(it.goal_pose in [
-                    pose_3d(position: position_3d(x: 3.0m, y: -3.0m), orientation: orientation_3d(yaw: 0.0rad)),
-                    pose_3d(position: position_3d(x: 3.0m, y: 3.0m), orientation: orientation_3d(yaw: 0.0rad))
-                ])
-            emit end
-        time_out: serial:
-            wait elapsed(240s)
-            emit fail
+    do serial:
+        robot.init_nav2(pose_3d(osition_3d(x: 0.0m, y: 0.0m)))
+        robot.nav_to_pose() with:
+            keep(it.goal_pose in [
+                pose_3d(position: position_3d(x: 3.0m, y: -3.0m), orientation: orientation_3d(yaw: 0.0rad)),
+                pose_3d(position: position_3d(x: 3.0m, y: 3.0m), orientation: orientation_3d(yaw: 0.0rad))
+            ])

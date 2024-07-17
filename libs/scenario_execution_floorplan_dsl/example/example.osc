@@ -3,22 +3,18 @@ import osc.floorplan_dsl
 import osc.ros
 
 scenario test:
+    timeout(120s)
     floorplan_gen: floorplan_generator
     robot: differential_drive_robot
 
-    do parallel:
-        serial:
-            floorplan_gen.generate_floorplan(file_path: "room.floorplan")        
-            floorplan_gen.generate_gazebo_world("world.sdf.xacro", [key_value("mesh_file", floorplan_gen.generated_floorplan_mesh_path)])
-            ros_launch('tb4_sim_scenario', 'sim_nav_scenario_launch.py', [ 
-                key_value(key: 'scenario_execution', value: 'False'),
-                key_value(key: 'scenario', value: 'NA'),
-                key_value(key: 'world', value: floorplan_gen.generated_gazebo_world_path),
-                key_value(key: 'map_yaml', value: floorplan_gen.generated_floorplan_map_path)],
-                wait_for_shutdown: false)
-            robot.init_nav2(initial_pose: pose_3d(position: position_3d(x: 0.0m, y: 0.0m)))
-            robot.nav_to_pose(pose_3d(position_3d(x: 5.0m, y: 5.0m)))
-            emit end
-        serial:
-            wait elapsed(120s)
-            emit fail
+    do serial:
+        floorplan_gen.generate_floorplan(file_path: "room.floorplan")        
+        floorplan_gen.generate_gazebo_world("world.sdf.xacro", [key_value("mesh_file", floorplan_gen.generated_floorplan_mesh_path)])
+        ros_launch('tb4_sim_scenario', 'sim_nav_scenario_launch.py', [ 
+            key_value(key: 'scenario_execution', value: 'False'),
+            key_value(key: 'scenario', value: 'NA'),
+            key_value(key: 'world', value: floorplan_gen.generated_gazebo_world_path),
+            key_value(key: 'map_yaml', value: floorplan_gen.generated_floorplan_map_path)],
+            wait_for_shutdown: false)
+        robot.init_nav2(initial_pose: pose_3d(position: position_3d(x: 0.0m, y: 0.0m)))
+        robot.nav_to_pose(pose_3d(position_3d(x: 5.0m, y: 5.0m)))

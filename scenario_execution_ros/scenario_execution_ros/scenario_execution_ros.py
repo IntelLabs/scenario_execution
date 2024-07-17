@@ -68,15 +68,15 @@ class ROSScenarioExecution(ScenarioExecution):
             self.dry_run = self.node.get_parameter('dry_run').value
         if self.node.get_parameter('dot').value:
             self.render_dot = self.node.get_parameter('dot').value
-        super().__init__(debug=debug, log_model=log_model, live_tree=live_tree, scenario_file=scenario,
-                         output_dir=output_dir, dry_run=self.dry_run, render_dot=self.render_dot)
-
-    def _get_logger(self, debug):
-        """
-        Get a logger from ROS2 with name "scenario_execution_ros"
-        Overriden parent class method
-        """
-        return RosLogger('scenario_execution_ros', debug)
+        self.logger = RosLogger('scenario_execution_ros', debug)
+        super().__init__(debug=debug,
+                         log_model=log_model,
+                         live_tree=live_tree,
+                         scenario_file=scenario,
+                         output_dir=output_dir,
+                         dry_run=self.dry_run,
+                         render_dot=self.render_dot,
+                         logger=self.logger)
 
     def setup_behaviour_tree(self, tree):
         """

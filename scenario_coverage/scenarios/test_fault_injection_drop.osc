@@ -1,15 +1,12 @@
+import osc.helpers
 import osc.ros
 
 scenario nav2_simulation_fault_injection:
+    timeout(240s)
     robot: differential_drive_robot
-    do parallel:
-        test_drive: serial:
-            robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
-            set_node_parameter(node_name: 'laserscan_modification', parameter_name: 'random_drop_percentage') with:
-                keep(it.parameter_value in ['0.1','0.5', '0.9'])
-            robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
-            robot.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
-            emit end
-        time_out: serial:
-            wait elapsed(240s)
-            emit fail
+    do serial:
+        robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+        set_node_parameter(node_name: 'laserscan_modification', parameter_name: 'random_drop_percentage') with:
+            keep(it.parameter_value in ['0.1','0.5', '0.9'])
+        robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
+        robot.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))

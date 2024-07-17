@@ -53,7 +53,7 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
         self.scenario_execution_ros.run()
 
@@ -153,7 +153,7 @@ scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot',
-            timeout: 10)
+            timeout: 1s)
         emit end
 """
         self.execute(scenario_content)
@@ -167,10 +167,10 @@ scenario test_assert_tf_moving:
         serial:
             assert_tf_moving(
                 frame_id: 'robot_moving',
-                timeout: 10)
+                timeout: 1s)
             emit fail
         time_out: serial:
-            wait elapsed(12s)
+            wait elapsed(2s)
             emit end
 """
         self.execute(scenario_content)
@@ -178,17 +178,14 @@ scenario test_assert_tf_moving:
 
     def test_case_3(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 scenario test_assert_tf_moving:
-    do parallel:
-        serial:
-            assert_tf_moving(
-                frame_id: 'robot_move',
-                timeout: 10)
-            emit end
-        time_out: serial:
-            wait elapsed(12s)
-            emit fail
+    timeout(4s)
+    do serial:
+        assert_tf_moving(
+            frame_id: 'robot_move',
+            timeout: 2s)
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
@@ -201,7 +198,7 @@ scenario test_assert_tf_moving:
         assert_tf_moving(
             frame_id: 'robot_moving',
             threshold_translation: 1.0,
-            timeout: 10)
+            timeout: 2s)
         emit end
 """
         self.execute(scenario_content)
@@ -215,7 +212,7 @@ scenario test_assert_tf_moving:
         assert_tf_moving(
             frame_id: 'robot_rotating',
             threshold_rotation: 5.0,
-            timeout: 10)
+            timeout: 2s)
         emit end
 """
         self.execute(scenario_content)
@@ -228,7 +225,7 @@ scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot',
-            timeout: 10,
+            timeout: 2s,
             fail_on_finish: false)
         emit end
 """
@@ -242,7 +239,7 @@ scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot_leg',
-            timeout: 10,
+            timeout: 2s,
             wait_for_first_transform: false)
         emit end
 """
@@ -256,7 +253,7 @@ scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot',
-            timeout: 10,
+            timeout: 2s,
             wait_for_first_transform: false)
         emit end
 """
@@ -271,11 +268,11 @@ scenario test_assert_tf_moving:
         serial:
             assert_tf_moving(
                 frame_id: 'robot_moving',
-                timeout: 10,
+                timeout: 2s,
                 wait_for_first_transform: false)
             emit fail
         time_out: serial:
-            wait elapsed(12s)
+            wait elapsed(4s)
             emit end
 """
         self.execute(scenario_content)

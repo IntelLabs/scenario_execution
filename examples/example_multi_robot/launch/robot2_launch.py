@@ -20,16 +20,13 @@ from launch.substitutions import LaunchConfiguration
 
 from launch_ros.actions import Node
 
-
 ARGUMENTS = [
     DeclareLaunchArgument('robot_name', default_value='robot2',
                           description='name of robot'),
 ]
 
-
 def generate_launch_description():
 
-    # Launch configurations
     robot_name = LaunchConfiguration('robot_name')
 
     cmd_vel_bridge = Node(
@@ -52,7 +49,6 @@ def generate_launch_description():
         ]
     )
 
-    # Define LaunchDescription variable
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(cmd_vel_bridge)
     return ld
