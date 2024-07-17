@@ -38,18 +38,12 @@ class RosBagRecord(RunProcess):
     Class to execute ros bag recording
     """
 
-    def __init__(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str):
+    def __init__(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str, use_sim_time: bool):
         super().__init__()
-        if not isinstance(topics, list):
-            raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
-        else:
-            self.topics = topics
-        self.timestamp_suffix = timestamp_suffix
-        self.include_hidden_topics = hidden_topics
+        self.bag_dir = None
         self.current_state = RosBagRecordActionState.WAITING_FOR_TOPICS
-        self.bag_dir = ''
-        self.storage = storage
         self.command = None
+        self.output_dir = None
 
     def setup(self, **kwargs):
         """
@@ -62,32 +56,26 @@ class RosBagRecord(RunProcess):
             if not os.path.exists(kwargs['output_dir']):
                 raise ValueError(
                     f"Specified destination dir '{kwargs['output_dir']}' does not exist")
-            self.bag_dir = kwargs['output_dir'] + '/'
+            self.output_dir = kwargs['output_dir']
+
+    def execute(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str, use_sim_time: bool):  # pylint: disable=arguments-differ
+        self.bag_dir = ''
+        if self.output_dir:
+            self.bag_dir = self.output_dir + '/'
         self.bag_dir += "rosbag2"
 
-        if self.timestamp_suffix:
+        if timestamp_suffix:
             self.bag_dir += '_' + datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
 
+        self.topics = topics
         self.command = ["ros2", "bag", "record"]
-        if self.include_hidden_topics:
+        if hidden_topics:
             self.command.append("--include-hidden-topics")
-        if self.storage:
-            self.command.extend(["--storage", self.storage])
-
+        if storage:
+            self.command.extend(["--storage", storage])
+        if use_sim_time:
+            self.command.append("--use-sim-time")
         self.command.extend(["-o", self.bag_dir] + self.topics)
-
-        self.logger.info(f'Command: {" ".join(self.command)}')
-
-    def get_scenario_name(self):
-        """
-        get scenario name from py tree root
-        """
-        parent = self.parent
-        scenario_name = "INVALID"
-        while parent:
-            scenario_name = parent.name
-            parent = parent.parent
-        return scenario_name
 
     def get_logger_stderr(self):
         """
@@ -143,6 +131,18 @@ class RosBagRecord(RunProcess):
         return:
             py_trees.common.Status
         """
+        if self.current_state == RosBagRecordActionState.WAITING_FOR_TOPICS:
+            if ret > 0:
+                line = None
+                while True:
+                    try:
+                        line = self.output.popleft()
+                    except IndexError:
+                        break
+                if line:
+                    self.feedback_message = f"{line}"  # pylint: disable= attribute-defined-outside-init
+                else:
+                    self.feedback_message = f"Error while executing ros2 bag record."  # pylint: disable= attribute-defined-outside-init
         if self.current_state == RosBagRecordActionState.RECORDING:
             self.current_state = RosBagRecordActionState.FAILURE
         return py_trees.common.Status.FAILURE
