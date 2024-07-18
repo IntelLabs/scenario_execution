@@ -1,6 +1,6 @@
 # Use the ROS Humble desktop-full image as the base
 FROM osrf/ros:humble-desktop-full
-    
+
 # Install system dependencies
 # hadolint ignore=DL3008
 RUN --mount=type=bind,source=.,target=/scenario_execution \
@@ -22,9 +22,8 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
 
 # install rosbag2_to_video used within github actions
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
-RUN mkdir -p /rosbag2_to_video/src && \
-    cd /rosbag2_to_video/src && \
-    git clone https://github.com/ivanpauno/rosbag2_to_video.git && \
+WORKDIR /rosbag2_to_video/src
+RUN git clone https://github.com/ivanpauno/rosbag2_to_video.git && \
     cd .. && \
     apt-get update && \
     rosdep install --from-paths src --ignore-src -y && \
