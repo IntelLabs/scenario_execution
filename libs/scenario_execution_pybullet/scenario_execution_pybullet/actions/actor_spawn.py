@@ -14,7 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from rclpy.logging import get_logger
 import py_trees
 from scenario_execution.actions.base_action import BaseAction
 import pybullet as p
