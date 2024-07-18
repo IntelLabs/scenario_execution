@@ -10,7 +10,6 @@
 
   <depend>scenario_execution</depend>
 
-  <exec_depend>rclpy</exec_depend>
   <exec_depend>py_trees</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
