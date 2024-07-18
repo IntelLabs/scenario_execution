@@ -309,6 +309,19 @@ jobs:
         with:
           name: test-example-multirobot-result
           path: test_example_multirobot/test.xml
+      - name: Convert video
+        if: always()
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source /rosbag2_to_video/install/setup.bash
+          ros2 bag to_video  -t /static_camera/image_raw -o test_example_multirobot/example_multi_robot/example-multi-robot.mp4  test_example_multirobot/example_multi_robot/rosbag2_* --fps 5 --codec mp4v
+      - name: Upload video
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-example-multirobot-video
+          path: test_example_multirobot/example_multi_robot/example-multi-robot.mp4
       - name: Upload ros bag
         uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
