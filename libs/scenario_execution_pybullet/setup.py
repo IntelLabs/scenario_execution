@@ -39,7 +39,8 @@ setup(
     entry_points={
         'scenario_execution.actions': [
             'actor_pybullet.spawn = scenario_execution_pybullet.actions.actor_spawn:ActorSpawn',
-            'actor_pybullet.apply_external_force = scenario_execution_pybullet.actions.actor_apply_external_force:ActorApplyExternalForce',
+            'actor_pybullet.set_joint_motor_control = scenario_execution_pybullet.actions.actor_set_joint_motor_control:ActorSetJointMotorControl',
+            'actor_pybullet.distance_traveled = scenario_execution_pybullet.actions.actor_distance_traveled:ActorDistanceTraveled',
             'simulation_pybullet.initialize = scenario_execution_pybullet.actions.sim_initialize:SimInitialize',
             'simulation_pybullet.run = scenario_execution_pybullet.actions.sim_run:SimRun',
         ],

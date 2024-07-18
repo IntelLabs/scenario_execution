@@ -14,5 +14,10 @@ action actor_pybullet.spawn:
     model: string
     pose: pose_3d
 
-action actor_pybullet.apply_external_force:
-    force: position_3d
+action actor_pybullet.set_joint_motor_control:
+    target_velocity: speed
+    force: float
+
+action actor_pybullet.distance_traveled:
+    # Wait until a defined distance was traveled, based on simulation ground truth
+    distance: length                     # traveled distance at which the action succeeds.
