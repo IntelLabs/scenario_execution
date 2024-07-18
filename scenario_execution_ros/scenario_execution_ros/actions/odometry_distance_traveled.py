@@ -36,7 +36,6 @@ class OdometryDistanceTraveled(BaseAction):
         self.previous_x = 0
         self.previous_y = 0
         self.first_run = True
-        self.logger = None
         self.node = None
         self.subscriber = None
         self.callback_group = None
@@ -47,9 +46,6 @@ class OdometryDistanceTraveled(BaseAction):
         """
         Setup subscription and logger
         """
-        self.logger = get_logger('odometry_distance_traveled')
-        self.logger.debug(f"Waiting for traveled distance of {self.distance_expected}")
-
         try:
             self.node = kwargs['node']
         except KeyError as e:

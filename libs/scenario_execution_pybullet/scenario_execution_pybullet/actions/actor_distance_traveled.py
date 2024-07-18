@@ -24,14 +24,10 @@ class ActorDistanceTraveled(BaseAction):
 
     def __init__(self):
         super().__init__()
-        self.logger = None
         self.sim_steps_per_tick = None
         self.distance_traveled = None
         self.distance_expected = None
         self.previous_pos = None
-
-    def setup(self, **kwargs):
-        self.logger = kwargs["logger"]
 
     def execute(self, associated_actor, distance: float):  # pylint: disable=arguments-differ
         self.actor_id = self.get_associated_actor_variable("actor_id")

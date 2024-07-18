@@ -53,9 +53,10 @@ class BaseAction(py_trees.behaviour.Behaviour):
                 final_args["associated_actor"]["name"] = self._model.actor.name
             self.execute(**final_args)
 
-    def _set_name_and_model(self, name, model):
+    def _set_base_properities(self, name, model, logger):
         self.name = name
         self._model = model
+        self.logger = logger
 
     def get_blackboard_client(self):
         if self.blackboard:

@@ -55,7 +55,6 @@ class GazeboSpawnActor(RunProcess):
         self.entity_model = model
         self.xacro_arguments = xacro_arguments
         self.node = None
-        self.logger = None
         self.model_sub = None
         self.sdf = None
         self.utils = None
@@ -72,7 +71,6 @@ class GazeboSpawnActor(RunProcess):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
-        self.logger = get_logger(self.name)
         self.utils = SpawnUtils(logger=self.logger)
 
         if self.entity_model.startswith('topic://'):
