@@ -26,7 +26,7 @@ from scenario_execution.utils.logging import Logger
 from scenario_execution.model.model_file_loader import ModelFileLoader
 from dataclasses import dataclass
 from xml.sax.saxutils import escape  # nosec B406 # escape is only used on an internally generated error string
-
+from timeit import default_timer as timer
 
 @dataclass
 class ScenarioResult:
@@ -70,7 +70,7 @@ class ScenarioExecution(object):
                  dry_run=False,
                  render_dot=False,
                  setup_timeout=py_trees.common.Duration.INFINITE,
-                 tick_tock_period: float = 0.1,
+                 tick_period: float = 0.1,
                  logger=None) -> None:
 
         def signal_handler(sig, frame):
@@ -106,7 +106,7 @@ class ScenarioExecution(object):
         if self.debug:
             py_trees.logging.level = py_trees.logging.Level.DEBUG
         self.setup_timeout = setup_timeout
-        self.tick_tock_period = tick_tock_period
+        self.tick_period = tick_period
         self.scenarios = None
         self.blackboard = None
         self.behaviour_tree = None
@@ -150,8 +150,12 @@ class ScenarioExecution(object):
         input_dir = None
         if self.scenario_file:
             input_dir = os.path.dirname(self.scenario_file)
-        self.behaviour_tree.setup(timeout=self.setup_timeout, logger=self.logger,
-                                  input_dir=input_dir, output_dir=self.output_dir, **kwargs)
+        self.behaviour_tree.setup(timeout=self.setup_timeout,
+                                  logger=self.logger,
+                                  input_dir=input_dir,
+                                  output_dir=self.output_dir,
+                                  tick_period = self.tick_period,
+                                  **kwargs)
         self.post_setup()
 
     def setup_behaviour_tree(self, tree):
@@ -226,8 +230,15 @@ class ScenarioExecution(object):
 
         while not self.shutdown_requested:
             try:
+                start = timer()
                 self.behaviour_tree.tick()
-                time.sleep(self.tick_tock_period)
+                end = timer()
+                tick_time = end - start
+                sleep_time = self.tick_period - tick_time
+                if sleep_time < 0:
+                    self.logger.warning(f"Tick too long: {tick_time} > {self.tick_period}")
+                else:
+                    time.sleep(self.tick_period - tick_time)
                 if self.live_tree:
                     self.logger.debug(py_trees.display.unicode_tree(
                         root=self.behaviour_tree.root, show_status=True))
@@ -337,6 +348,7 @@ class ScenarioExecution(object):
         parser.add_argument('-o', '--output-dir', type=str, help='Directory for output (e.g. test results)')
         parser.add_argument('-n', '--dry-run', action='store_true', help='Parse and resolve scenario, but do not execute')
         parser.add_argument('--dot', action='store_true', help='Render dot trees of resulting py-tree')
+        parser.add_argument('-s', '--step-duration', type=float, help='Duration between the behavior tree step executions', default=0.1)
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
         args, _ = parser.parse_known_args(args)
         return args
@@ -354,7 +366,8 @@ def main():
                                                scenario_file=args.scenario,
                                                output_dir=args.output_dir,
                                                dry_run=args.dry_run,
-                                               render_dot=args.dot)
+                                               render_dot=args.dot,
+                                               tick_period=args.step_duration)
     except ValueError as e:
         print(f"Error while initializing: {e}")
         sys.exit(1)

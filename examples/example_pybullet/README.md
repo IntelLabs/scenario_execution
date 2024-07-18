@@ -15,5 +15,5 @@ source install/setup.bash
 Now, run the following command to launch the scenario:
 
 ```bash
-./install/scenario_execution/lib/scenario_execution/scenario_execution  examples/example_pybullet/example_pybullet.osc
+./install/scenario_execution/lib/scenario_execution/scenario_execution  examples/example_pybullet/example_pybullet.osc -s 0.010416666
 ```

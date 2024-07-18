@@ -38,7 +38,7 @@ class RunProcess(BaseAction):
         self.log_stdout_thread = None
         self.log_stderr_thread = None
         self.output = deque()
-
+        
     def execute(self, command=None, wait_for_shutdown=True, shutdown_timeout=10, shutdown_signal=("", signal.SIGTERM)):
         self.command = command.split(" ") if isinstance(command, str) else command
         self.wait_for_shutdown = wait_for_shutdown

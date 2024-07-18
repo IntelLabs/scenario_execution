@@ -1,29 +1,5 @@
 import osc.helpers
-#import osc.pybullet
-
-# actor simulation:
-#     def tick(duration: time) is undefined
-
-
-# actor simulation_pybullet inherits simulation
-
-actor simulation_pybullet:
-    timestep: time = 10ms
-    #def tick(duration: time) is external self.tick()
-
-action simulation_pybullet.initialize:
-    world: string
-
-action simulation_pybullet.run
-
-actor actor_pybullet
-
-action actor_pybullet.spawn:
-    model: string
-    pose: pose_3d
-
-action actor_pybullet.apply_external_force:
-    force: position_3d
+import osc.pybullet
 
 scenario example_pybullet:
     timeout(60s)
@@ -34,8 +10,9 @@ scenario example_pybullet:
         parallel:
             sim.run()
             serial:
-                actor1.spawn("r2d2.urdf", pose_3d(position: position_3d(z: 1.0)))
+                actor1.spawn("husky/husky.urdf", pose_3d(position: position_3d(z: 1.5)))
                 wait elapsed(1s)
-                actor1.apply_external_force(position_3d(z: 1.0))
-
-
+                serial:
+                    #repeat()
+                    #wait elapsed(1s)
+                    actor1.apply_external_force(position_3d(z: 1.0))
