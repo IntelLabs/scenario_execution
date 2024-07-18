@@ -19,3 +19,16 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
 RUN --mount=type=bind,source=.,target=/scenario_execution \
     pip3 install -r /scenario_execution/requirements.txt && \
     pip3 install -r /scenario_execution/libs/scenario_execution_floorplan_dsl/requirements.txt
+
+# install rosbag2_to_video used within github actions
+SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
+WORKDIR /rosbag2_to_video/src
+RUN git clone https://github.com/ivanpauno/rosbag2_to_video.git
+WORKDIR /rosbag2_to_video/src/rosbag2_to_video
+RUN git checkout 6bb3ada33aa2cb5c2ebd506f8c7ac22c39ec20d9
+WORKDIR /rosbag2_to_video
+RUN apt-get update && \
+    rosdep install --from-paths src --ignore-src -y && \
+    rm -rf "/var/lib/apt/lists/*" && \
+    . /opt/ros/${ROS_DISTRO}/setup.bash && \
+    colcon build
