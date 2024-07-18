@@ -7,7 +7,7 @@ scenario example_pybullet:
     actor1: actor_pybullet
     do serial:
         sim.initialize("plane.urdf")
-        actor1.spawn("husky/husky.urdf", pose_3d(position: position_3d(z: 1.5)))
+        actor1.spawn("husky/husky.urdf", pose_3d(position: position_3d(z: 0.5)))
         parallel:
             sim.run()
             actor1.set_joint_motor_control(5mps, 1)
