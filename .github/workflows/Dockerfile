@@ -23,9 +23,9 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
 # install rosbag2_to_video used within github actions
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 WORKDIR /rosbag2_to_video/src
-RUN git clone https://github.com/ivanpauno/rosbag2_to_video.git && \
-    cd .. && \
-    apt-get update && \
+RUN git clone https://github.com/ivanpauno/rosbag2_to_video.git
+WORKDIR /rosbag2_to_video
+RUN apt-get update && \
     rosdep install --from-paths src --ignore-src -y && \
     rm -rf "/var/lib/apt/lists/*" && \
     . /opt/ros/${ROS_DISTRO}/setup.bash && \
