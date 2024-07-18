@@ -1747,6 +1747,9 @@ class FunctionApplicationExpression(Expression):
                 if named:
                     raise OSC2ParsingError(
                         msg=f'Positional argument after named argument not allowed.', context=child.get_ctx())
+                if len(param_keys) <= pos:
+                    raise OSC2ParsingError(
+                        msg=f'Positional argument at position {pos} not expected.', context=child.get_ctx())
                 key = param_keys[pos]
                 pos += 1
             elif isinstance(child, NamedArgument):

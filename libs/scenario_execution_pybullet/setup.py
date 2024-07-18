@@ -39,6 +39,9 @@ setup(
     entry_points={
         'scenario_execution.actions': [
             'actor_pybullet.spawn = scenario_execution_pybullet.actions.actor_spawn:ActorSpawn',
+            'actor_pybullet.apply_external_force = scenario_execution_pybullet.actions.actor_apply_external_force:ActorApplyExternalForce',
+            'simulation_pybullet.initialize = scenario_execution_pybullet.actions.sim_initialize:SimInitialize',
+            'simulation_pybullet.run = scenario_execution_pybullet.actions.sim_run:SimRun',
         ],
         'scenario_execution.osc_libraries': [
             'pybullet = scenario_execution_pybullet.get_osc_library:get_osc_library',

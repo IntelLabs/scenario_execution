@@ -1,9 +1,9 @@
-# Example Navigation
+# Example PyBullet
 
-To run the Example Navigation 2 Scenario, first build the `tb4_sim_scenario` package:
+To run the example, first build the `scenario_execution_pybullet` package and its dependencies:
 
 ```bash
-colcon build --packages-up-to tb4_sim_scenario
+colcon build --packages-up-to scenario_execution_pybullet
 ```
 
 Source the workspace:
@@ -15,9 +15,5 @@ source install/setup.bash
 Now, run the following command to launch the scenario:
 
 ```bash
-ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_nav2/example_nav2.osc
+./install/scenario_execution/lib/scenario_execution/scenario_execution  examples/example_pybullet/example_pybullet.osc
 ```
-
-A turtlebot is initialsed with nav2 which drives to a point and back.
-
-For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intellabs.github.io/scenario_execution/tutorials.html).
