@@ -24,6 +24,8 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 WORKDIR /rosbag2_to_video/src
 RUN git clone https://github.com/ivanpauno/rosbag2_to_video.git
+WORKDIR /rosbag2_to_video/src/rosbag2_to_video
+RUN git checkout 6bb3ada33aa2cb5c2ebd506f8c7ac22c39ec20d9
 WORKDIR /rosbag2_to_video
 RUN apt-get update && \
     rosdep install --from-paths src --ignore-src -y && \
