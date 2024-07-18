@@ -81,7 +81,7 @@ class BaseAction(py_trees.behaviour.Behaviour):
         model_blackboard_name += "/" + variable_name
         blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.WRITE)
         return model_blackboard_name
-        
+
     def set_associated_actor_variable(self, variable_name, value):
         model_blackboard_name = self.register_access_to_associated_actor_variable(variable_name)
         self.logger.debug(f"Set variable '{model_blackboard_name}' to '{value}'")

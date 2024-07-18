@@ -28,6 +28,7 @@ from dataclasses import dataclass
 from xml.sax.saxutils import escape  # nosec B406 # escape is only used on an internally generated error string
 from timeit import default_timer as timer
 
+
 @dataclass
 class ScenarioResult:
     name: str
@@ -154,7 +155,7 @@ class ScenarioExecution(object):
                                   logger=self.logger,
                                   input_dir=input_dir,
                                   output_dir=self.output_dir,
-                                  tick_period = self.tick_period,
+                                  tick_period=self.tick_period,
                                   **kwargs)
         self.post_setup()
 

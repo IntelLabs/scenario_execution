@@ -25,6 +25,7 @@ ARGUMENTS = [
                           description='name of robot'),
 ]
 
+
 def generate_launch_description():
 
     robot_name = LaunchConfiguration('robot_name')

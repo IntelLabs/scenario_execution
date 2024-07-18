@@ -19,6 +19,7 @@ import py_trees
 from scenario_execution.actions.base_action import BaseAction
 import pybullet as p
 
+
 class ActorSpawn(BaseAction):
 
     def __init__(self):
@@ -31,10 +32,10 @@ class ActorSpawn(BaseAction):
     def setup(self, **kwargs):
         self.logger = kwargs["logger"]
 
-    def execute(self, associated_actor, model: str, pose: dict): # pylint: disable=arguments-differ
+    def execute(self, associated_actor, model: str, pose: dict):  # pylint: disable=arguments-differ
         self.spawn_pose = pose
         self.pos = [pose["position"]["x"], pose["position"]["y"], pose["position"]["z"]]
-        self.orientation = p.getQuaternionFromEuler([pose["orientation"]["roll"],pose["orientation"]["pitch"],pose["orientation"]["yaw"]])
+        self.orientation = p.getQuaternionFromEuler([pose["orientation"]["roll"], pose["orientation"]["pitch"], pose["orientation"]["yaw"]])
         self.model = model
 
     def update(self) -> py_trees.common.Status:
