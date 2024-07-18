@@ -17,9 +17,7 @@
 import py_trees
 from scenario_execution.actions.base_action import BaseAction
 import pybullet as p
-import numpy as np
 from math import sqrt
-from .utils import get_tick_period
 
 
 class ActorDistanceTraveled(BaseAction):
@@ -34,7 +32,6 @@ class ActorDistanceTraveled(BaseAction):
 
     def setup(self, **kwargs):
         self.logger = kwargs["logger"]
-        self.register_access_to_associated_actor_variable("actor_id")
 
     def execute(self, associated_actor, distance: float):  # pylint: disable=arguments-differ
         self.actor_id = self.get_associated_actor_variable("actor_id")

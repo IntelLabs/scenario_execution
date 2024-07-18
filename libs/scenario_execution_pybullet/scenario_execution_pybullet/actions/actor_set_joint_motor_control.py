@@ -17,9 +17,6 @@
 import py_trees
 from scenario_execution.actions.base_action import BaseAction
 import pybullet as p
-import numpy as np
-import math
-from .utils import get_tick_period
 
 
 class ActorSetJointMotorControl(BaseAction):
@@ -32,7 +29,6 @@ class ActorSetJointMotorControl(BaseAction):
 
     def setup(self, **kwargs):
         self.logger = kwargs["logger"]
-        self.register_access_to_associated_actor_variable("actor_id")
 
     def execute(self, associated_actor, target_velocity: float, force: float):  # pylint: disable=arguments-differ
         self.actor_id = self.get_associated_actor_variable("actor_id")
