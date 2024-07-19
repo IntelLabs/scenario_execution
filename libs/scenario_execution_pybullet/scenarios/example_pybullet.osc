@@ -1,0 +1,16 @@
+import osc.helpers
+import osc.pybullet
+
+scenario example_pybullet:
+    timeout(60s)
+    sim: simulation_pybullet
+    actor1: actor_pybullet
+    do serial:
+        sim.initialize("plane.urdf")
+        actor1.spawn("husky/husky.urdf", pose_3d(position: position_3d(z: 0.5)))
+        parallel:
+            sim.run()
+            actor1.set_joint_motor_control(5mps, 1)
+            serial:
+                actor1.distance_traveled(2m)
+                emit end

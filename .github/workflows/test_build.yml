@@ -390,6 +390,36 @@ jobs:
         with:
           name: test-scenario-execution-gazebo
           path: test_scenario_execution_gazebo/test.xml
+  test-scenario-execution-pybullet:
+    needs: [build]
+    runs-on: intellabs-01
+    timeout-minutes: 10
+    container:
+      image: ghcr.io/intellabs/scenario-execution:humble
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
+      - name: Test Scenario Execution PyBullet
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          Xvfb :1 -screen 0 800x600x16 &
+          export DISPLAY=:1.0
+          sed -i 's/p.GUI/p.DIRECT/g' ./install/scenario_execution_pybullet/lib/python3.10/site-packages/scenario_execution_pybullet/actions/sim_initialize.py
+          ros2 run scenario_execution scenario_execution libs/scenario_execution_pybullet/scenarios/example_pybullet.osc -t -s 0.00416666666 -o test_scenario_execution_pybullet
+      - name: Upload result
+        uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
+        if: always()
+        with:
+          name: test-scenario-execution-pybullet
+          path: test_scenario_execution_pybullet/test.xml
   tests:
     needs: 
     - test-scenario-execution
@@ -403,6 +433,7 @@ jobs:
     - test-example-multirobot
     - test-example-external-method
     - test-scenario-execution-gazebo
+    - test-scenario-execution-pybullet
     runs-on: intellabs-01
     if: ${{ always() }}
     steps:
@@ -436,3 +467,5 @@ jobs:
             downloaded-artifacts/test-example-multirobot-result/test.xml
             downloaded-artifacts/test-example-external-method-result/test.xml
             downloaded-artifacts/test-scenario-execution-gazebo/test.xml
+            downloaded-artifacts/test-scenario-execution-pybullet/test.xml
+

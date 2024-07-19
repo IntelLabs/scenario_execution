@@ -18,7 +18,8 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
 # hadolint ignore=DL3042
 RUN --mount=type=bind,source=.,target=/scenario_execution \
     pip3 install -r /scenario_execution/requirements.txt && \
-    pip3 install -r /scenario_execution/libs/scenario_execution_floorplan_dsl/requirements.txt
+    pip3 install -r /scenario_execution/libs/scenario_execution_floorplan_dsl/requirements.txt && \
+    pip3 install -r /scenario_execution/libs/scenario_execution_pybullet/requirements.txt
 
 # install rosbag2_to_video used within github actions
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]

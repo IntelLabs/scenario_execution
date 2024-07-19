@@ -1,0 +1,23 @@
+import osc.standard.base
+import osc.robotics
+
+actor simulation_pybullet
+
+action simulation_pybullet.initialize:
+    world: string
+
+action simulation_pybullet.run
+
+actor actor_pybullet
+
+action actor_pybullet.spawn:
+    model: string
+    pose: pose_3d
+
+action actor_pybullet.set_joint_motor_control:
+    target_velocity: speed
+    force: float
+
+action actor_pybullet.distance_traveled:
+    # Wait until a defined distance was traveled, based on simulation ground truth
+    distance: length                     # traveled distance at which the action succeeds.

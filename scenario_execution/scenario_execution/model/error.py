@@ -36,3 +36,6 @@ class OSC2ParsingError(Exception):
             self.column = context[1]
             self.context = context[2]
             self.filename = context[3]
+
+    def __str__(self) -> str:
+        return self.msg
