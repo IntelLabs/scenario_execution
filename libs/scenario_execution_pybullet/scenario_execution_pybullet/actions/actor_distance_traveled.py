@@ -40,7 +40,7 @@ class ActorDistanceTraveled(BaseAction):
     def update(self) -> py_trees.common.Status:
         pos, _ = p.getBasePositionAndOrientation(self.actor_id)
 
-        if not isintance(pos, list) and len(pos) != 3:
+        if not isinstance(pos, list) and len(pos) != 3:
             self.feedback_message = f"Unexpected position received from simulation: {pos}"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.FAILURE
 
