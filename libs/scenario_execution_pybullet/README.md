@@ -12,17 +12,14 @@ It provides the following scenario execution library:
 To run the example, first build the `scenario_execution_pybullet` package and its dependencies:
 
 ```bash
-colcon build --packages-up-to scenario_execution_pybullet
-```
-
-Source the workspace:
-
-```bash
-source install/setup.bash
+python -m venv my_venv
+source my_venv/bin/activate
+pip install -r libs/scenario_execution_pybullet/requirements.txt
+pip install -e libs/scenario_execution_pybullet libs/scenario_execution
 ```
 
 Now, run the following command to launch the scenario:
 
 ```bash
-./install/scenario_execution/lib/scenario_execution/scenario_execution libs/scenario_execution_pybullet/scenario_execution_pybullet/scenarios/example_pybullet.osc -s 0.00416666666 -t
+./my_venv/lib/scenario_execution/scenario_execution libs/scenario_execution_pybullet/scenario_execution_pybullet/scenarios/example_pybullet.osc -s 0.00416666666 -t
 ```
