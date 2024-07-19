@@ -24,6 +24,8 @@ class BaseAction(py_trees.behaviour.Behaviour):
     # CAUTION: __init__() only gets the initial parameter values. In case variables get modified during scenario execution,
     #          the latest values are available in execute() only.
     def __init__(self, resolve_variable_reference_arguments_in_execute=True):
+        self._model = None
+        self.logger = None
         self.blackboard = None
         self.resolve_variable_reference_arguments_in_execute = resolve_variable_reference_arguments_in_execute
         super().__init__(self.__class__.__name__)
