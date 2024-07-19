@@ -23,12 +23,8 @@ class ActorSetJointMotorControl(BaseAction):
 
     def __init__(self):
         super().__init__()
-        self.logger = None
         self.target_velocity = None
         self.force = None
-
-    def setup(self, **kwargs):
-        self.logger = kwargs["logger"]
 
     def execute(self, associated_actor, target_velocity: float, force: float):  # pylint: disable=arguments-differ
         self.actor_id = self.get_associated_actor_variable("actor_id")

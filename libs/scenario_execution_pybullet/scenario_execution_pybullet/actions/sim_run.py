@@ -27,8 +27,6 @@ class SimRun(BaseAction):
         self.sim_steps_per_tick = 0
 
     def setup(self, **kwargs):
-        self.logger = kwargs["logger"]
-
         try:
             tick_period: float = kwargs['tick_period']
         except KeyError as e:

@@ -24,11 +24,7 @@ class SimInitialize(BaseAction):
 
     def __init__(self):
         super().__init__()
-        self.logger = None
         self.world = None
-
-    def setup(self, **kwargs):
-        self.logger = kwargs["logger"]
 
     def execute(self, associated_actor, world: str):  # pylint: disable=arguments-differ
         self.world = world

@@ -23,13 +23,9 @@ class ActorSpawn(BaseAction):
 
     def __init__(self):
         super().__init__()
-        self.logger = None
         self.spawn_pose = None
         self.model = None
         self.actor_id = None
-
-    def setup(self, **kwargs):
-        self.logger = kwargs["logger"]
 
     def execute(self, associated_actor, model: str, pose: dict):  # pylint: disable=arguments-differ
         self.spawn_pose = pose
