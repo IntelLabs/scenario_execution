@@ -16,7 +16,6 @@
 
 from math import sqrt
 import rclpy
-from rclpy.logging import get_logger
 from nav_msgs.msg import Odometry
 from py_trees.common import Status
 import py_trees

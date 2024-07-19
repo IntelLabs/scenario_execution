@@ -21,7 +21,6 @@ from transforms3d.taitbryan import euler2quat
 from std_msgs.msg import String
 
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
-from rclpy.logging import get_logger
 from rclpy.node import Node
 import py_trees
 from scenario_execution.actions.run_process import RunProcess
