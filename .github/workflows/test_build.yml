@@ -412,15 +412,14 @@ jobs:
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
-          # shellcheck disable=SC1083
           sed -i 's/p.GUI/p.DIRECT/g' ./install/scenario_execution_pybullet/lib/python3.10/site-packages/scenario_execution_pybullet/actions/sim_initialize.py
-          ros2 run scenario_execution scenario_execution libs/scenario_execution_pybullet/scenarios/example_pybullet.osc -t
+          ros2 run scenario_execution scenario_execution libs/scenario_execution_pybullet/scenarios/example_pybullet.osc -t -s 0.00416666666 -o test_scenario_execution_pybullet
       - name: Upload result
         uses: actions/upload-artifact@ef09cdac3e2d3e60d8ccadda691f4f1cec5035cb
         if: always()
         with:
-          name: test-scenario-execution-gazebo
-          path: test_scenario_execution_gazebo/test.xml
+          name: test-scenario-execution-pybullet
+          path: test_scenario_execution_pybullet/test.xml
   tests:
     needs: 
     - test-scenario-execution
@@ -468,4 +467,5 @@ jobs:
             downloaded-artifacts/test-example-multirobot-result/test.xml
             downloaded-artifacts/test-example-external-method-result/test.xml
             downloaded-artifacts/test-scenario-execution-gazebo/test.xml
+            downloaded-artifacts/test-scenario-execution-pybullet/test.xml
 
