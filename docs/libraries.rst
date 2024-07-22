@@ -696,26 +696,26 @@ Wait until a TF frame is close to a defined reference point.
      - Type
      - Default
      - Description
-   * - ``namespace_override``
-     - ``string``
-     - 
-     - if set, it's used as namespace (instead of the associated actor's namespace)
-   * - ``reference_point``
-     - ``position_3d``
-     -
-     - Reference point to measure to distance to (z is not considered)
    * - ``threshold``
      - ``length``
      - 
      - Distance at which the action succeeds.
-   * - ``sim``
-     - ``bool``
-     - ``false``
-     - In simulation, we need to look up the transform map --> base_link at a different time as the scenario execution node is not allowed to use the sim time
+   * - ``reference_point``
+     - ``position_3d``
+     -
+     - Reference point to measure to distance to (z is not considered)
    * - ``robot_frame_id``
      - ``string``
      - ``base_link``
      - Defines the TF frame id of the robot
+   * - ``sim``
+     - ``bool``
+     - ``false``
+     - In simulation, we need to look up the transform map --> base_link at a different time as the scenario execution node is not allowed to use the sim time
+   * - ``namespace_override``
+     - ``string``
+     - ``''``
+     - if set, it's used as namespace (instead of the associated actor's namespace)
 
 ``log_check()``
 """""""""""""""
