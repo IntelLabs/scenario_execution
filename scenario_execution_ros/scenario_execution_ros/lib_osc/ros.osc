@@ -107,11 +107,11 @@ action differential_drive_robot.odometry_distance_traveled:
 
 action differential_drive_robot.tf_close_to:
     # Wait until a TF frame is close to a defined reference point
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
-    reference_point: position_3d         # z is not considered
     threshold: length                    # distance at which the action succeeds
-    sim: bool = false                    # in simulation, we need to look up the transform map --> base_link at a different time as the scenario execution node is not allowed to use the sim time
+    reference_point: position_3d         # z is not considered
     robot_frame_id: string = 'base_link' # defines the TF frame id of the robot 
+    sim: bool = false                    # in simulation, we need to look up the transform map --> base_link at a different time as the scenario execution node is not allowed to use the sim time
+    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
 
 action log_check:
     # Check the ROS log for specific output

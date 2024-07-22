@@ -17,7 +17,5 @@ scenario multi_robot:
                 robot.nav_to_pose(goal_pose: pose_3d(position: position_3d(x: -4.0m), orientation: orientation_3d(yaw: 3.14rad)))
                 emit end
             serial:
-                topic_publish() with:
-                    keep(it.topic_name == '/robot2/cmd_vel')
-                    keep(it.topic_type == 'geometry_msgs.msg.Twist')
-                    keep(it.value == '{\"linear\": {\"x\": 0.6, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}')
+                robot.tf_close_to(threshold: 0.35m, reference_point: position_3d(-1.5m, 0.0m), robot_frame_id: 'turtlebot4_base_link_gt')
+                topic_publish('/robot2/cmd_vel', 'geometry_msgs.msg.Twist', '{\"linear\": {\"x\": 0.6, \"y\": 0.0, \"z\": 0.0}, \"angular\": {\"x\": 0.0, \"y\": 0.0, \"z\": 0.0}}')
