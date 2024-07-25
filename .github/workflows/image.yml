@@ -1,13 +1,13 @@
 name: test-image
 on:
   push:
-    branches: [main]
+    branches: [main, humble, jazzy]
     paths:
     - 'deb_requirements.txt'
     - 'requirements.txt'
     - '.github/workflows/Dockerfile'
   pull_request:
-    branches: [main]
+    branches: [main, humble, jazzy]
     paths:
     - 'deb_requirements.txt'
     - 'requirements.txt'
@@ -33,12 +33,16 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 #v3.0.0
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> "$GITHUB_OUTPUT"
+      id: extract_branch
     - name: Build and push Docker image
       uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 #v5.0.0
       with:
         context: .
         file: .github/workflows/Dockerfile
         push: true
-        tags: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+        tags: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref || steps.extract_branch.outputs.branch }}
         build-args: |
           ROS_DISTRO=${{ github.ref == 'refs/heads/main' && 'humble' || github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}
