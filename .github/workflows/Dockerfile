@@ -1,5 +1,6 @@
-# Use the ROS Humble desktop-full image as the base
-FROM osrf/ros:humble-desktop-full
+ARG ROS_DISTRO=humble
+# Use the ROS desktop-full image as the base
+FROM osrf/ros:${ROS_DISTRO}-desktop-full
 
 # Install system dependencies
 # hadolint ignore=DL3008

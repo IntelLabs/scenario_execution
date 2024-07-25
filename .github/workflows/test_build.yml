@@ -12,7 +12,7 @@ jobs:
     #TODO model dependency to image-workflow. Workaround: retrigger run after image-workflow finished.
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -24,7 +24,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           colcon build --continue-on-error
           source install/setup.bash
       - name: Cache Build
@@ -37,7 +37,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -50,7 +50,7 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
@@ -74,7 +74,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -87,7 +87,7 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
@@ -109,7 +109,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -122,7 +122,7 @@ jobs:
       - name: Test Scenario Files
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           find . -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation|scenario_coverage|fail*|install|build" | while read -r file; do 
             echo "$file"; 
@@ -132,7 +132,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -145,7 +145,7 @@ jobs:
       - name: Test Example Scenario
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           #shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
@@ -159,7 +159,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -172,7 +172,7 @@ jobs:
       - name: Test Example Library
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_library/scenarios -o test_example_library -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
@@ -186,7 +186,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -199,7 +199,7 @@ jobs:
       - name: Test Example Variation
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
           # shellcheck disable=SC1083
@@ -214,7 +214,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -227,7 +227,7 @@ jobs:
       - name: Test Example Nav2
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -247,7 +247,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -260,7 +260,7 @@ jobs:
       - name: Test Example Simulation
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -280,7 +280,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -293,7 +293,7 @@ jobs:
       - name: Test Example Multirobot
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -313,7 +313,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source /rosbag2_to_video/install/setup.bash
           ros2 bag to_video  -t /static_camera/image_raw -o test_example_multirobot/example_multi_robot/example-multi-robot.mp4  test_example_multirobot/example_multi_robot/rosbag2_* --fps 5 --codec mp4v
       - name: Upload video
@@ -332,7 +332,7 @@ jobs:
     needs: [build]
     runs-on: intellabs-01
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -345,7 +345,7 @@ jobs:
       - name: Test Example External Method
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
@@ -362,7 +362,7 @@ jobs:
     runs-on: intellabs-01
     timeout-minutes: 30
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -375,7 +375,7 @@ jobs:
       - name: Test Scenario Execution Gazebo
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -395,7 +395,7 @@ jobs:
     runs-on: intellabs-01
     timeout-minutes: 10
     container:
-      image: ghcr.io/intellabs/scenario-execution:humble
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -408,7 +408,7 @@ jobs:
       - name: Test Scenario Execution PyBullet
         shell: bash
         run: |
-          source /opt/ros/humble/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -468,4 +468,3 @@ jobs:
             downloaded-artifacts/test-example-external-method-result/test.xml
             downloaded-artifacts/test-scenario-execution-gazebo/test.xml
             downloaded-artifacts/test-scenario-execution-pybullet/test.xml
-
