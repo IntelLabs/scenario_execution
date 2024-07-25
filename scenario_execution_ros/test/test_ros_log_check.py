@@ -29,7 +29,7 @@ from antlr4.InputStream import InputStream
 os.environ["PYTHONUNBUFFERED"] = '1'
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestRosLogCheck(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self):
