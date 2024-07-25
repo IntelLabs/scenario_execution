@@ -39,4 +39,4 @@ jobs:
         context: .
         file: .github/workflows/Dockerfile
         push: true
-        tags: ghcr.io/intellabs/scenario-execution:humble
+        tags: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
