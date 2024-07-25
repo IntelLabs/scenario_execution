@@ -28,7 +28,7 @@ import subprocess  # nosec B404
 import time
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestAssertLifecycle(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self) -> None:

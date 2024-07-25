@@ -12,4 +12,3 @@ scenario test_ros_set_node_parameter:
             keep(it.node_name == '/test_node')
             keep(it.parameter_name == 'testBoolParam')
             keep(it.parameter_value == 'True')
-        wait elapsed(3s)

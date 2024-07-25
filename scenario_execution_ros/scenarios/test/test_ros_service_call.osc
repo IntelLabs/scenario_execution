@@ -8,5 +8,4 @@ scenario test_ros_service_call:
             keep(it.service_name == '/bla')
             keep(it.service_type == 'std_srvs.srv.SetBool')
             keep(it.data == '{\"data\": True}')
-        wait elapsed(2s)
-        emit_arrival: emit end
+        emit end

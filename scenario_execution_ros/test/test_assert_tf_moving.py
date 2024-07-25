@@ -31,7 +31,7 @@ import math
 import tf2_ros
 
 
-class TestScenarioExecutionSuccess(unittest.TestCase):
+class TestAssertTfMoving(unittest.TestCase):
 
     def setUp(self) -> None:
         rclpy.init()
@@ -39,10 +39,11 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
         self.node = rclpy.create_node('test_node')
-        self.tf_broadcaster = tf2_ros.StaticTransformBroadcaster(self.node)
-        self.timer = self.node.create_timer(0.1, self.publish_tf)
-        self.timer = self.node.create_timer(0.1, self.publish_static_tf)
-        self.timer = self.node.create_timer(0.1, self.publish_rotate_tf)
+        self.static_tf_broadcaster = tf2_ros.StaticTransformBroadcaster(self.node)
+        self.tf_broadcaster = tf2_ros.TransformBroadcaster(self.node)
+        self.timer_tf = self.node.create_timer(0.1, self.publish_tf)
+        self.timer_static_tf = self.node.create_timer(0.1, self.publish_static_tf)
+        self.timer_rotate_tf = self.node.create_timer(0.1, self.publish_rotate_tf)
         self.time = 0.0
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
@@ -58,6 +59,7 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
         self.scenario_execution_ros.run()
 
     def publish_static_tf(self):
+        self.node.destroy_timer(self.timer_static_tf)
         static_transform_stamped = TransformStamped()
         static_transform_stamped.header.stamp = self.node.get_clock().now().to_msg()
         static_transform_stamped.header.frame_id = 'map'
@@ -69,7 +71,7 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
         static_transform_stamped.transform.rotation.y = 0.0
         static_transform_stamped.transform.rotation.z = 0.0
         static_transform_stamped.transform.rotation.w = 1.0
-        self.tf_broadcaster.sendTransform(static_transform_stamped)
+        self.static_tf_broadcaster.sendTransform(static_transform_stamped)
 
     def publish_tf(self):
         self.time += 0.1
@@ -167,10 +169,10 @@ scenario test_assert_tf_moving:
         serial:
             assert_tf_moving(
                 frame_id: 'robot_moving',
-                timeout: 1s)
+                timeout: 2s)
             emit fail
         time_out: serial:
-            wait elapsed(2s)
+            wait elapsed(4s)
             emit end
 """
         self.execute(scenario_content)

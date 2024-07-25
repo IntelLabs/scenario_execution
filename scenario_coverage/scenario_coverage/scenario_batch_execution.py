@@ -31,6 +31,7 @@ import logging
 class ScenarioBatchExecution(object):
 
     def __init__(self, args) -> None:
+        self.ignore_process_return_value = args.ignore_process_return_value
         if not os.path.isdir(args.output_dir):
             try:
                 os.mkdir(args.output_dir)
@@ -139,7 +140,10 @@ class ScenarioBatchExecution(object):
             file_handler.flush()
             file_handler.close()
         xml_ret = self.combine_test_xml()
-        return xml_ret and ret
+        if self.ignore_process_return_value:
+            return xml_ret
+        else:
+            return xml_ret and ret
 
     def combine_test_xml(self):
         print(f"### Writing combined tests to '{self.output_dir}/test.xml'.....")
@@ -198,6 +202,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--scenario-dir', type=str, help='Directory containing the scenarios')
     parser.add_argument('-o', '--output-dir', type=str, help='Directory containing the output', default='out')
+    parser.add_argument('-r', '--ignore-process-return-value', action='store_true',
+                        help='Should a non-zero return value of the executed process result in a failure?')
     parser.add_argument('launch_command', nargs='+')
     args = parser.parse_args(sys.argv[1:])
 

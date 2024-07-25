@@ -32,7 +32,7 @@ from scenario_execution.actions.base_action import BaseAction
 
 class TfCloseTo(BaseAction):
     """
-    class for distance condition in ROS Gazebo simulation
+    class for distance condition
     """
 
     def __init__(
@@ -121,20 +121,20 @@ class TfCloseTo(BaseAction):
         """
         robot_pose, success = self.get_robot_pose_from_tf()
         if not success:
-            self.feedback_message = f"the pose of {self.namespace} could not be retrieved from tf"  # pylint: disable= attribute-defined-outside-init
+            self.feedback_message = f"the pose of {self.robot_frame_id} could not be retrieved from tf"  # pylint: disable= attribute-defined-outside-init
             return Status.RUNNING
         dist = self.euclidean_dist(robot_pose.pose.position)
         marker = self.marker_handler.get_marker(self.marker_id)
         self.success = dist <= self.threshold
         if self.success:
-            self.feedback_message = f"{self.namespace} reached point."  # pylint: disable= attribute-defined-outside-init
+            self.feedback_message = f"{self.robot_frame_id} reached point."  # pylint: disable= attribute-defined-outside-init
             marker.color.r = 0.0
             marker.color.g = 1.0
             marker.color.b = 0.0
             self.marker_handler.update_marker(self.marker_id, marker)
             return Status.SUCCESS
         else:
-            self.feedback_message = f"{self.namespace} has not reached point (distance={dist-self.threshold:.2f})"  # pylint: disable= attribute-defined-outside-init
+            self.feedback_message = f"{self.robot_frame_id} has not reached point (distance={dist-self.threshold:.2f})"  # pylint: disable= attribute-defined-outside-init
             marker.color.r = 1.0
             marker.color.g = 1.0
             marker.color.b = 0.0
