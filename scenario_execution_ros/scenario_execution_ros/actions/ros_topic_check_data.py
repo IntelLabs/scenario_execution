@@ -117,6 +117,7 @@ class RosTopicCheckData(BaseAction):
             self.feedback_message = f"Received message does not contain expected value."
 
     def check_data(self, msg):
+        print("check_data")
         if msg is None:
             return
 
@@ -128,6 +129,7 @@ class RosTopicCheckData(BaseAction):
                 value = check_attr(msg)
             except AttributeError:
                 self.feedback_message = "Member name not found {self.member_name}]"
+        print(f"check_data {value}, {self.expected_value}")
         self.found = self.comparison_operator(value, self.expected_value)
 
     def set_expected_value(self, expected_value_string):
