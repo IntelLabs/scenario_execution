@@ -29,7 +29,6 @@ def generate_launch_description():
 
     # Directories
     pkg_tb4_sim_scenario = get_package_share_directory('tb4_sim_scenario')
-    pkg_tb4_nav = get_package_share_directory('turtlebot4_navigation')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
 
     arguments = [
@@ -50,7 +49,7 @@ def generate_launch_description():
         DeclareLaunchArgument('headless', default_value='True',
                               description='Start Igniton GUI or not'),
 
-        DeclareLaunchArgument('map_yaml', default_value=os.path.join(pkg_tb4_nav, 'maps', 'maze.yaml'),
+        DeclareLaunchArgument('map_yaml', default_value=os.path.join(pkg_tb4_sim_scenario, 'maps', 'maze.yaml'),
                               description='map yaml file'),
     ]
 
@@ -68,7 +67,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([PathJoinSubstitution([pkg_nav2_bringup, 'launch', 'bringup_launch.py'])]),
         condition=IfCondition(nav2),
         launch_arguments={
-            'map': PathJoinSubstitution([pkg_tb4_nav, 'maps', map_yaml]),
+            'map': map_yaml,
             'use_sim_time': 'True',
             'use_composition': 'False',
             'params_file': PathJoinSubstitution([pkg_tb4_sim_scenario, 'params', 'nav2_params.yaml']),

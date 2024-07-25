@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.5)
 project(scenario_execution_rviz)
 
 set(CXX_STANDARD_REQUIRED ON)

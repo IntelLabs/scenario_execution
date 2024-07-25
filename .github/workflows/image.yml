@@ -5,12 +5,16 @@ on:
     paths:
     - 'deb_requirements.txt'
     - 'requirements.txt'
+    - 'libs/scenario_execution_floorplan_dsl/deb_requirements.txt'
+    - 'libs/scenario_execution_pybullet/requirements.txt'
     - '.github/workflows/Dockerfile'
   pull_request:
     branches: [main]
     paths:
     - 'deb_requirements.txt'
     - 'requirements.txt'
+    - 'libs/scenario_execution_floorplan_dsl/deb_requirements.txt'
+    - 'libs/scenario_execution_pybullet/requirements.txt'
     - '.github/workflows/Dockerfile'
   workflow_dispatch:
 concurrency: 
@@ -22,6 +26,11 @@ jobs:
     runs-on: intellabs-01
     permissions:
       packages: write
+    strategy:
+      matrix:
+        include:
+        - ros_distro: humble
+        - ros_distro: jazzy
     steps:
     - name: Checkout code
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
@@ -39,4 +48,6 @@ jobs:
         context: .
         file: .github/workflows/Dockerfile
         push: true
-        tags: ghcr.io/intellabs/scenario-execution:humble
+        tags: ghcr.io/intellabs/scenario-execution:${{ matrix.ros_distro }}
+        build-args: |
+          ROS_DISTRO=${{ matrix.ros_distro }}

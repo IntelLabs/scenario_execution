@@ -28,7 +28,7 @@ from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestAssertTopicLatency(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self) -> None:

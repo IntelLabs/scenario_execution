@@ -28,7 +28,7 @@ from std_srvs.srv import SetBool
 os.environ["PYTHONUNBUFFERED"] = '1'
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestRosServiceCall(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self):

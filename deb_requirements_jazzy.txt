@@ -1,0 +1,11 @@
+ros-jazzy-nav2-minimal-tb4-sim
+ros-jazzy-py-trees
+ros-jazzy-py-trees-ros-interfaces
+python3-autopep8
+clang-format
+pylint
+python3-antlr4
+python3-pexpect
+python3-transforms3d
+python3-defusedxml
+cppzmq-dev

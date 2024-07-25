@@ -15,20 +15,20 @@
 //  SPDX-License-Identifier: Apache-2.0
 
 #include <geometry_msgs/msg/transform_stamped.hpp>
-#include <gz/msgs/pose_v.pb.h>
-#include <gz/transport/Node.hh>
+#include <ignition/msgs/pose_v.pb.h>
+#include <ignition/transport/Node.hh>
 #include <rclcpp/rclcpp.hpp>
 #include <tf2_msgs/msg/tf_message.hpp>
 
 class GazeboTFPublisher : public rclcpp::Node {
-  std::shared_ptr<gz::transport::Node> mIgnNode;
+  std::shared_ptr<ignition::transport::Node> mIgnNode;
   rclcpp::Publisher<tf2_msgs::msg::TFMessage>::SharedPtr mPublisher;
   std::string gz_pose_topic;
   std::string base_frame_id;
   std::vector<unsigned int> robot_frame_ids;
   std::string previous_frame_id;
 
-  void IgnCB(const gz::msgs::Pose_V &poses);
+  void IgnCB(const ignition::msgs::Pose_V &poses);
 
 public:
   GazeboTFPublisher();
@@ -36,7 +36,7 @@ public:
 
 GazeboTFPublisher::GazeboTFPublisher() : Node("gazebo_tf_publisher") {
   mPublisher = this->create_publisher<tf2_msgs::msg::TFMessage>("tf", 10);
-  mIgnNode = std::make_shared<gz::transport::Node>();
+  mIgnNode = std::make_shared<ignition::transport::Node>();
   declare_parameter("gz_pose_topic", "/world/name/dynamic_pose/info");
   gz_pose_topic = get_parameter("gz_pose_topic").as_string();
   declare_parameter("base_frame_id", "base_link");
@@ -44,13 +44,13 @@ GazeboTFPublisher::GazeboTFPublisher() : Node("gazebo_tf_publisher") {
   mIgnNode->Subscribe(gz_pose_topic, &GazeboTFPublisher::IgnCB, this);
 }
 
-void GazeboTFPublisher::IgnCB(const gz::msgs::Pose_V &poses) {
+void GazeboTFPublisher::IgnCB(const ignition::msgs::Pose_V &poses) {
   auto tf_msg = std::make_shared<tf2_msgs::msg::TFMessage>();
   auto ros2_clock = get_clock()->now();
   for (int i = 0; i < poses.pose_size(); i++) {
     if (poses.pose(i).name() == base_frame_id) {
       // each robot_frame_id is expected to have corresponding
-      // base_link_id -1 in gz pose topic.
+      // base_link_id -1 in ignition pose topic.
       unsigned int robot_frame_id = poses.pose(i).id() - 1;
       if (std::find(robot_frame_ids.begin(), robot_frame_ids.end(),
                     robot_frame_id) == robot_frame_ids.end()) {
@@ -68,9 +68,9 @@ void GazeboTFPublisher::IgnCB(const gz::msgs::Pose_V &poses) {
       if (poses.pose(i).id() == robot_frame_id) {
         geometry_msgs::msg::TransformStamped tf_frame;
         tf_frame.header.stamp = ros2_clock;
-        const gz::msgs::Pose *pp = &poses.pose(i);
-        const gz::msgs::Vector3d *previous_pv = &pp->position();
-        const gz::msgs::Quaternion *previous_pq = &pp->orientation();
+        const ignition::msgs::Pose *pp = &poses.pose(i);
+        const ignition::msgs::Vector3d *previous_pv = &pp->position();
+        const ignition::msgs::Quaternion *previous_pq = &pp->orientation();
         tf_frame.header.frame_id = "map";
         tf_frame.child_frame_id =
             pp->name() + "_" + base_frame_id +

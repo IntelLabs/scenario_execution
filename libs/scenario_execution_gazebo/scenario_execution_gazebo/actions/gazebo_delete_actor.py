@@ -19,6 +19,7 @@ import py_trees
 from enum import Enum
 
 from scenario_execution.actions.run_process import RunProcess
+from .utils import SpawnUtils
 
 
 class DeleteActionState(Enum):
@@ -33,18 +34,19 @@ class DeleteActionState(Enum):
 
 class GazeboDeleteActor(RunProcess):
     """
-    Class to delete an entity in Ignition
+    Class to delete an entity in Gazebo
 
     """
 
     def __init__(self, associated_actor, entity_name: str, world_name: str):
         super().__init__()
         self.current_state = DeleteActionState.IDLE
+        self.gazebo_command, self.gazebo_msg_prefix = SpawnUtils.get_env()
 
     def execute(self, associated_actor, entity_name: str, world_name: str):  # pylint: disable=arguments-differ
-        self.set_command(["ign", "service", "-s", "/world/" + world_name + "/remove",
-                          "--reqtype", "ignition.msgs.Entity",
-                          "--reptype", "ignition.msgs.Boolean",
+        self.set_command([self.gazebo_command, "service", "-s", "/world/" + world_name + "/remove",
+                          "--reqtype", self.gazebo_msg_prefix + ".msgs.Entity",
+                          "--reptype", self.gazebo_msg_prefix + ".msgs.Boolean",
                           "--timeout", "1000", "--req", "name: \"" + entity_name + "\" type: MODEL"])
 
     def on_executed(self):

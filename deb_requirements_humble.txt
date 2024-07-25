@@ -4,3 +4,7 @@ ros-humble-py-trees
 python3-autopep8
 clang-format
 pylint
+python3-antlr4
+python3-pexpect
+python3-transforms3d
+python3-defusedxml

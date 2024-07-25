@@ -18,6 +18,7 @@ import py_trees
 from enum import Enum
 import time
 from scenario_execution.actions.run_process import RunProcess
+from .utils import SpawnUtils
 
 
 class WaitForSimulationActionState(Enum):
@@ -38,9 +39,10 @@ class GazeboWaitForSim(RunProcess):
     def __init__(self, world_name: str, timeout: int):
         super().__init__()
         self.current_state = WaitForSimulationActionState.IDLE
+        self.gazebo_command, _ = SpawnUtils.get_env()
 
     def execute(self, world_name: str, timeout: int):  # pylint: disable=arguments-differ
-        self.set_command(["ign", "topic", "-t", "/world/" +
+        self.set_command([self.gazebo_command, "topic", "-t", "/world/" +
                           world_name + "/clock", "-e", "--json-output", "-n", "1"])
         self.world_name = world_name
         self.timeout_sec = timeout

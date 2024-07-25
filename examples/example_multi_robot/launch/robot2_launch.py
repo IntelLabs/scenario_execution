@@ -14,6 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
@@ -30,6 +31,11 @@ def generate_launch_description():
 
     robot_name = LaunchConfiguration('robot_name')
 
+    if os.environ['ROS_DISTRO'] == 'humble':
+        sim_prefix = 'ignition'
+    else:
+        sim_prefix = 'gz'
+
     cmd_vel_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -40,10 +46,10 @@ def generate_launch_description():
         }],
         arguments=[
             [robot_name,
-             '/cmd_vel' + '@geometry_msgs/msg/Twist' + '[ignition.msgs.Twist'],
+             '/cmd_vel' + '@geometry_msgs/msg/Twist' + '[' + sim_prefix + '.msgs.Twist'],
             ['/model/', robot_name, '/cmd_vel' +
              '@geometry_msgs/msg/Twist' +
-             ']ignition.msgs.Twist']
+             ']' + sim_prefix + '.msgs.Twist']
         ],
         remappings=[
             (['/model/', robot_name, '/cmd_vel'], [robot_name, '/cmd_vel'])

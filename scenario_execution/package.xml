@@ -9,6 +9,10 @@
   <license file="../LICENSE">Apache-2.0</license>
 
   <exec_depend>py_trees</exec_depend>
+  <exec_depend>python3-antlr4</exec_depend>
+  <exec_depend>python3-pexpect</exec_depend>
+  <exec_depend>python3-defusedxml</exec_depend>
+  <exec_depend>python3-transforms3d</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

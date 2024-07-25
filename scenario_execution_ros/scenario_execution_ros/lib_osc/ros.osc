@@ -102,8 +102,8 @@ action differential_drive_robot.nav_to_pose:
 
 action differential_drive_robot.odometry_distance_traveled:
     # Wait until a defined distance was traveled, based on odometry
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
     distance: length                     # traveled distance at which the action succeeds.
+    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
 
 action differential_drive_robot.tf_close_to:
     # Wait until a TF frame is close to a defined reference point

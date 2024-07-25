@@ -57,6 +57,8 @@ class GazeboSpawnActor(RunProcess):
         self.model_sub = None
         self.sdf = None
         self.utils = None
+        self.gazebo_command = None
+        self.gazebo_msg_prefix = None
 
     def setup(self, **kwargs):
         """
@@ -90,6 +92,7 @@ class GazeboSpawnActor(RunProcess):
             if not self.sdf:
                 raise ValueError(f'Invalid model specified ({self.entity_model})')
             self.current_state = SpawnActionState.MODEL_AVAILABLE
+        self.gazebo_command, self.gazebo_msg_prefix = SpawnUtils.get_env()
 
     def execute(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):  # pylint: disable=arguments-differ
         if self.entity_model != model or set(self.xacro_arguments) != set(xacro_arguments):
@@ -129,9 +132,9 @@ class GazeboSpawnActor(RunProcess):
             return
 
         self.logger.info(f"Deleting entity '{self.entity_name}' from simulation.")
-        subprocess.run(["ign", "service", "-s", "/world/" + self.world_name + "/remove",  # pylint: disable=subprocess-run-check
-                        "--reqtype", "ignition.msgs.Entity",
-                        "--reptype", "ignition.msgs.Boolean",
+        subprocess.run([self.gazebo_command, "service", "-s", "/world/" + self.world_name + "/remove",  # pylint: disable=subprocess-run-check
+                        "--reqtype", self.gazebo_msg_prefix + ".msgs.Entity",
+                        "--reptype", self.gazebo_msg_prefix + ".msgs.Boolean",
                         "--timeout", "1000", "--req", "name: \"" + self.entity_name + "\" type: MODEL"])
 
     def on_process_finished(self, ret):
@@ -184,9 +187,9 @@ class GazeboSpawnActor(RunProcess):
         """
         pose = self.get_spawn_pose()
 
-        super().set_command(["ign", "service", "-s", "/world/" + self.world_name + "/create",
-                             "--reqtype", "ignition.msgs.EntityFactory",
-                             "--reptype", "ignition.msgs.Boolean",
+        super().set_command([self.gazebo_command, "service", "-s", "/world/" + self.world_name + "/create",
+                             "--reqtype", self.gazebo_msg_prefix + ".msgs.EntityFactory",
+                             "--reptype", self.gazebo_msg_prefix + ".msgs.Boolean",
                              "--timeout", "30000", "--req", "pose: " + pose + " name: \"" + self.entity_name + "\" allow_renaming: false sdf: \"" + command + "\""])
 
     def topic_callback(self, msg):

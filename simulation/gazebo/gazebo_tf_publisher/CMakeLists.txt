@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.8)
 project(gazebo_tf_publisher)
 
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+# Default to C++17
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -11,21 +21,30 @@ find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2_msgs REQUIRED)
 
-# gazebo
-find_package(ignition-gazebo6 REQUIRED)
-find_package(ignition-msgs8 REQUIRED)
+set(ROS_DISTRO $ENV{ROS_DISTRO})
+if("${ROS_DISTRO}" STREQUAL "humble")
 find_package(ignition-transport11 REQUIRED)
-find_package(ignition-plugin1 REQUIRED COMPONENTS register)
-
-
-add_executable(gazebo_tf_publisher_node src/gazebo_tf_publisher_node.cpp)
-
+add_executable(gazebo_tf_publisher_node src/ignition_tf_publisher_node.cpp)
 ament_target_dependencies(gazebo_tf_publisher_node
   rclcpp
   geometry_msgs
   tf2_msgs
-  ignition-gazebo6 ignition-transport11 ignition-msgs8
+  ignition-transport11
 )
+else()
+find_package(gz_transport_vendor REQUIRED)
+find_package(gz-transport REQUIRED)
+add_executable(gazebo_tf_publisher_node src/gazebo_tf_publisher_node.cpp)
+ament_target_dependencies(gazebo_tf_publisher_node
+  rclcpp
+  geometry_msgs
+  tf2_msgs
+)
+target_link_libraries(gazebo_tf_publisher_node
+  gz-transport::core
+)
+
+endif()
 
 install(DIRECTORY 
   launch

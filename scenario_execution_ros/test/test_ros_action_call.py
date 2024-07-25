@@ -37,7 +37,7 @@ import time
 os.environ["PYTHONUNBUFFERED"] = '1'
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestRosActionCall(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self):

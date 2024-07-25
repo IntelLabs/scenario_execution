@@ -19,11 +19,12 @@ from scenario_execution.actions.run_process import RunProcess
 import py_trees
 from enum import Enum
 import json
+from .utils import SpawnUtils
 
 
 class ActorExistsActionState(Enum):
     """
-    States for executing a entity check in ignition
+    States for executing a entity check in gazebo
     """
     IDLE = 1
     WAITING_FOR_ACTOR = 2
@@ -33,17 +34,18 @@ class ActorExistsActionState(Enum):
 
 class GazeboActorExists(RunProcess):
     """
-    Class to check existance of an entity in Ignition
+    Class to check existance of an entity in gazebo
 
     """
 
     def __init__(self, entity_name: str, world_name: str):
         super().__init__()
         self.current_state = ActorExistsActionState.IDLE
+        self.gazebo_command, _ = SpawnUtils.get_env()
 
     def execute(self, entity_name: str, world_name: str):  # pylint: disable=arguments-differ
         self.entity_name = entity_name
-        self.set_command(["ign", "topic", "-t", "/world/" +
+        self.set_command([self.gazebo_command, "topic", "-t", "/world/" +
                           world_name + "/pose/info", "-e", "--json-output"])
 
     def on_executed(self):

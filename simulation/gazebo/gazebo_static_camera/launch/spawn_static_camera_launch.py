@@ -14,12 +14,14 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression, EnvironmentVariable
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
+from launch.conditions import IfCondition, UnlessCondition
 
 from launch_ros.actions import Node
 
@@ -45,6 +47,11 @@ def generate_launch_description():
     x, y, z = LaunchConfiguration('x'), LaunchConfiguration('y'), LaunchConfiguration('z')
     roll, pitch, yaw = LaunchConfiguration('roll'), LaunchConfiguration('pitch'), LaunchConfiguration('yaw')
 
+    if os.environ['ROS_DISTRO'] == 'humble':
+        sim_prefix = 'ignition'
+    else:
+        sim_prefix = 'gz'
+
     camera_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -55,12 +62,12 @@ def generate_launch_description():
              '/model/', camera_name,
              '/link/link/sensor/camera/image' +
              '@sensor_msgs/msg/Image' +
-             '[ignition.msgs.Image'],
+             '[' + sim_prefix + '.msgs.Image'],
             ['/world/', world_name,
              '/model/', camera_name,
              '/link/link/sensor/camera/camera_info' +
              '@sensor_msgs/msg/CameraInfo' +
-             '[ignition.msgs.CameraInfo'],
+             '[' + sim_prefix + '.msgs.CameraInfo'],
         ],
         remappings=[
             (['/world/', world_name, '/model/', camera_name, '/link/link/sensor/camera/image'],
@@ -70,8 +77,25 @@ def generate_launch_description():
         ]
     )
 
-    spawn_camera = Node(
+    is_humble = PythonExpression(["'", EnvironmentVariable('ROS_DISTRO'), "'== 'humble'"])
+
+    spawn_camera_humble = Node(
+        condition=IfCondition(is_humble),
         package='ros_ign_gazebo',
+        executable='create',
+        arguments=['-name', camera_name,
+                   '-x', x,
+                   '-y', y,
+                   '-z', z,
+                   '-R', roll,
+                   '-P', pitch,
+                   '-Y', yaw,
+                   '-file', PathJoinSubstitution([gazebo_static_camera_dir, 'models', 'camera.sdf'])],
+        output='screen'
+    )
+    spawn_camera = Node(
+        condition=UnlessCondition(is_humble),
+        package='ros_gz_sim',
         executable='create',
         arguments=['-name', camera_name,
                    '-x', x,
@@ -86,5 +110,6 @@ def generate_launch_description():
 
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(camera_bridge)
+    ld.add_action(spawn_camera_humble)
     ld.add_action(spawn_camera)
     return ld

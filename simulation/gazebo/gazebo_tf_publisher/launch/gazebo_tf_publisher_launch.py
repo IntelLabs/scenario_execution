@@ -24,7 +24,7 @@ from launch_ros.actions import Node, PushRosNamespace
 def generate_launch_description():
     namespace = LaunchConfiguration("namespace")
     use_namespace = LaunchConfiguration("use_namespace")
-    ign_pose_topic = LaunchConfiguration("ign_pose_topic")
+    gz_pose_topic = LaunchConfiguration("gz_pose_topic")
     base_frame_id = LaunchConfiguration("base_frame_id")
     ld = LaunchDescription(
         [
@@ -39,7 +39,7 @@ def generate_launch_description():
                 default_value="leo_sim",
             ),
             DeclareLaunchArgument(
-                "ign_pose_topic",
+                "gz_pose_topic",
                 description="ignition topic to subscribe to",
             ),
             DeclareLaunchArgument(
@@ -57,7 +57,7 @@ def generate_launch_description():
                         name="gazebo_tf_publisher",
                         executable="gazebo_tf_publisher_node",
                         parameters=[
-                            {"ign_pose_topic": ign_pose_topic},
+                            {"gz_pose_topic": gz_pose_topic},
                             {"base_frame_id": base_frame_id},
                         ],
                     ),

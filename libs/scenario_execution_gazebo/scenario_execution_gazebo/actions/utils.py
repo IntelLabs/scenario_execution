@@ -17,7 +17,6 @@
 import os
 import subprocess  # nosec B404
 import glob
-
 import defusedxml.ElementTree
 from ament_index_python import get_package_share_directory
 from pathlib import Path
@@ -241,3 +240,12 @@ class SpawnUtils(object):
             else:
                 print(f'[{entity_name}] unrecognized model file definition: {mesh_name}')
         return None
+
+    def get_env():  # pylint: disable=no-method-argument
+        if "ROS_DISTRO" not in os.environ:
+            raise ValueError("ROS_DISTRO not set.")
+
+        if os.environ["ROS_DISTRO"] == "humble":
+            return 'ign', 'ignition'
+        else:
+            return 'gz', 'gz'
