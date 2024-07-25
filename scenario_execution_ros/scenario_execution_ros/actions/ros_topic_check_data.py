@@ -98,6 +98,7 @@ class RosTopicCheckData(BaseAction):
                 self.feedback_message = f"Found expected value in previously received message."  # pylint: disable= attribute-defined-outside-init
 
     def update(self) -> py_trees.common.Status:
+        print(f"FOUND {self.found}")
         if self.found is True:
             return py_trees.common.Status.SUCCESS
         elif self.found is False:
