@@ -2,7 +2,7 @@
 name: test-build
 on:
   pull_request:
-    branches: [main]
+    branches: [main, humble, jazzy]
   workflow_dispatch:
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
