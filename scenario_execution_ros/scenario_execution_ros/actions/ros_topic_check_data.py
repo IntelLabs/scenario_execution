@@ -103,8 +103,9 @@ class RosTopicCheckData(BaseAction):
         elif self.found is False:
             if self.fail_if_bad_comparison:
                 return py_trees.common.Status.FAILURE
-
-        return py_trees.common.Status.RUNNING
+            else:
+                return py_trees.common.Status.RUNNING
+        return py_trees.common.Status.FAILURE
 
     def _callback(self, msg):
         self.last_msg = msg
