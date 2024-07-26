@@ -12,9 +12,9 @@ on:
   schedule:
     - cron: '37 10 * * 5'
   push:
-    branches: [ "main" ]
+    branches: [main, humble, jazzy]
   pull_request:
-    branches: [main]
+    branches: [main, humble, jazzy]
 
 # Declare default permissions as read only.
 permissions: read-all
