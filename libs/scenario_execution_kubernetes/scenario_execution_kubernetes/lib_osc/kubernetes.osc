@@ -1,0 +1,45 @@
+import osc.standard.base
+
+
+enum kubernetes_pod_status: [
+  pending,
+  running,
+  failed,
+  succeeded
+]
+
+enum kubernetes_network_policy_status: [
+  added,
+  modified,
+  deleted
+]
+
+action kubernetes_delete:
+    # delete an element from kubernetes cluster
+    target: string                       # target element to delete
+    regex: bool = false                  # is the specified target a regular expression
+    element_type: string = "pod"         # element type to delete
+    namespace: string = "default"        # namespace within kubernetes cluster
+    grace_period: time = 5s              # grace period to wait before forcing deletion
+    within_cluster: bool = false         # set to true if you want to access the cluster from within a running container/pod.
+
+action kubernetes_create_from_yaml:
+    # create elements from yaml-file
+    yaml_file: string                    # yaml file to create from
+    namespace: string = "default"        # namespace within kubernetes cluster
+    within_cluster: bool = false         # set to true if you want to access the cluster from within a running container/pod.
+
+action kubernetes_wait_for_pod_status:
+    # wait for a pod to reach the specified state
+    target: string                       # pod name to monitor
+    status: kubernetes_pod_status        # expected pod status
+    regex: bool = false                  # is the specified target a regular expression
+    namespace: string = "default"        # namespace within kubernetes cluster
+    within_cluster: bool = false         # set to true if you want to access the cluster from within a running container/pod.
+
+action kubernetes_wait_for_network_policy_status:
+    # wait for a network-policy to reach the specified state
+    target: string                         # network-policy name to monitor
+    status: kubernetes_network_policy_status # expected network-policy status
+    namespace: string = "default"        # namespace within kubernetes cluster
+    within_cluster: bool = false         # set to true if you want to access the cluster from within a running container/pod.

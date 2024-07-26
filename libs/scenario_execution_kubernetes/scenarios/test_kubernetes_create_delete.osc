@@ -1,0 +1,11 @@
+import osc.standard.base
+import osc.kubernetes
+import osc.helpers
+
+scenario test_kubernetes_create_from_yaml:
+    timeout(30s)
+    do serial:
+        kubernetes_create_from_yaml("test.yaml")
+        kubernetes_wait_for_pod_status("test", kubernetes_pod_status!running)
+        #kubernetes_wait_for_network_policy_status("test-network-policy", kubernetes_network_policy_status!added)
+        kubernetes_delete("test")
