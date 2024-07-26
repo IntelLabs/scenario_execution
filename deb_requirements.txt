@@ -4,3 +4,4 @@ ros-humble-py-trees
 python3-autopep8
 clang-format
 pylint
+python3-kubernetes
