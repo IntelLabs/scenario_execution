@@ -28,7 +28,8 @@ class KubernetesWaitForPodStatusState(Enum):
     IDLE = 1
     MONITORING = 2
     FAILURE = 3
-    
+
+
 class KubernetesWaitForPodStatus(BaseAction):
 
     def __init__(self, target: str, regex: bool, status: tuple, namespace: str, within_cluster: bool):
@@ -85,7 +86,8 @@ class KubernetesWaitForPodStatus(BaseAction):
     def watch_pods(self):
         w = watch.Watch()
         try:
-            for event in w.stream(self.client.list_namespaced_pod, namespace=self.namespace): # TODO: make use of send_initial_events=false in the future
+            # TODO: make use of send_initial_events=false in the future
+            for event in w.stream(self.client.list_namespaced_pod, namespace=self.namespace):
                 pod_name = event['object'].metadata.name
                 pod_status = event['object'].status.phase
                 if self.current_state == KubernetesWaitForPodStatusState.MONITORING:

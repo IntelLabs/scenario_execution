@@ -68,7 +68,8 @@ class AssertLifecycleState(BaseAction):
     def execute(self, node_name: str, state_sequence: list, allow_initial_skip: bool, fail_on_unexpected: bool, keep_running: bool):
         print(f"AAAAAAAAAAAAAAAAAAA EXECUTE {node_name} {state_sequence} {allow_initial_skip} {fail_on_unexpected } {keep_running}")
         if self.node_name != node_name or self.state_sequence != state_sequence:
-            raise ValueError(f"Updating node name or state_sequence not supported. {self.node_name} != {node_name}, {self.state_sequence} != {state_sequence}")
+            raise ValueError(
+                f"Updating node name or state_sequence not supported. {self.node_name} != {node_name}, {self.state_sequence} != {state_sequence}")
 
         if all(isinstance(state, tuple) and len(state) == 2 for state in self.state_sequence):
             self.state_sequence = [state[0] for state in self.state_sequence]
