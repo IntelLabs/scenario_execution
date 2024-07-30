@@ -43,7 +43,7 @@ class GazeboActorExists(RunProcess):
 
     def execute(self, entity_name: str, world_name: str):  # pylint: disable=arguments-differ
         self.entity_name = entity_name
-        self.set_command(["ign", "topic", "-t", "/world/" +
+        self.set_command(["gz", "topic", "-t", "/world/" +
                           world_name + "/pose/info", "-e", "--json-output"])
 
     def on_executed(self):
