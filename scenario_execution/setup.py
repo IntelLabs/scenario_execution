@@ -25,11 +25,11 @@ PACKAGE_NAME = 'scenario_execution'
 # read the contents of the README file
 this_directory = Path(__file__).parent
 try:
-    long_description = (this_directory / "README.md").read_text()
+    LONG_DESCRIPTION = (this_directory / "README.md").read_text()
 except: # pylint: disable=W0702
     # in case we do colcon build --symlink-install, wo do not need the
     # description
-    long_description = ''
+    LONG_DESCRIPTION = ''
 
 setup(
     name=PACKAGE_NAME,
@@ -58,7 +58,7 @@ setup(
         "Issues": "https://github.com/IntelLabs/scenario_execution/issues",
     },
     description='Scenario Execution for Robotics',
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
     license='Apache License 2.0',
     classifiers=[
