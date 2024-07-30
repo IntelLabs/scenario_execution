@@ -19,7 +19,7 @@ import py_trees  # pylint: disable=import-error
 from rclpy.node import Node
 import time
 import tf2_ros
-from scenario_execution_ros.actions.nav2_common import NamespacedTransformListener
+from .common import NamespacedTransformListener
 from scenario_execution.actions.base_action import BaseAction
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 import math

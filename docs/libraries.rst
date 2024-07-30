@@ -346,6 +346,107 @@ Actors
 A general robot actor.
 
 
+Nav2
+----
+
+The library contains actions to interact with the `Nav2 <https://docs.nav2.org/>`__ navigation stack. Import it with ``import osc.nav2``. It is provided by the package :repo_link:`libs/scenario_execution_nav2`.
+
+Actions
+^^^^^^^
+
+``differential_drive_robot.init_nav2()``
+""""""""""""""""""""""""""""""""""""""""
+
+Initialize nav2.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``initial_pose``
+     - ``pose_3d``
+     -
+     - The initial pose to set during initialization
+   * - ``base_frame_id``
+     - ``string``
+     - ``base_link``
+     - Base Frame ID
+   * - ``use_initial_pose``
+     - ``bool``
+     - ``true``
+     - If false, no initial_pose is needed (useful when using slam instead of amcl for localization)
+   * - ``namespace_override``
+     - ``string``
+     - 
+     - If set, it's used as namespace (instead of the associated actor's namespace)
+   * - ``wait_for_initial_pose``
+     - ``bool``
+     - ``false``
+     - If true the initial pose needs to be set externally (e.g. manually through rviz)
+
+``differential_drive_robot.nav_through_poses()``
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+Use nav2 to navigate through poses.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_poses``
+     - ``list of pose_3d``
+     -
+     - Goal poses to navigate through
+   * - ``namespace_override``
+     - ``string``
+     - ``''``
+     - If set, it's used as namespace (instead of the associated actor's namespace)
+   * - ``monitor_progress``
+     - ``bool``
+     - ``true``
+     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
+
+``differential_drive_robot.nav_to_pose()``
+""""""""""""""""""""""""""""""""""""""""""
+Use nav2 to navigate to goal pose.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_pose``
+     - ``pose_3d``
+     - 
+     - Goal pose to navigate to
+   * - ``namespace_override``
+     - ``string``
+     - 
+     - If set, it's used as namespace (instead of the associated actor's namespace)
+   * - ``action_topic``
+     - ``string``
+     - ``navigate_to_pose``
+     - Action name
+   * - ``monitor_progress``
+     - ``bool``
+     - ``true``
+     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
+
+
 ROS
 ---
 
@@ -566,98 +667,6 @@ Compare received topic messages using the given ``comparison_operator``, against
      - ``bool``
      - ``true``
      - start checking with the first received message after action execution. If false, the check is executed on the last received message.
-
-``differential_drive_robot.init_nav2()``
-""""""""""""""""""""""""""""""""""""""""
-
-Initialize nav2.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``initial_pose``
-     - ``pose_3d``
-     -
-     - The initial pose to set during initialization
-   * - ``base_frame_id``
-     - ``string``
-     - ``base_link``
-     - Base Frame ID
-   * - ``use_initial_pose``
-     - ``bool``
-     - ``true``
-     - If false, no initial_pose is needed (useful when using slam instead of amcl for localization)
-   * - ``namespace_override``
-     - ``string``
-     - 
-     - If set, it's used as namespace (instead of the associated actor's namespace)
-   * - ``wait_for_initial_pose``
-     - ``bool``
-     - ``false``
-     - If true the initial pose needs to be set externally (e.g. manually through rviz)
-
-``differential_drive_robot.nav_through_poses()``
-""""""""""""""""""""""""""""""""""""""""""""""""
-
-Use nav2 to navigate through poses.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``goal_poses``
-     - ``list of pose_3d``
-     -
-     - Goal poses to navigate through
-   * - ``namespace_override``
-     - ``string``
-     - ``''``
-     - If set, it's used as namespace (instead of the associated actor's namespace)
-   * - ``monitor_progress``
-     - ``bool``
-     - ``true``
-     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
-
-``differential_drive_robot.nav_to_pose()``
-""""""""""""""""""""""""""""""""""""""""""
-Use nav2 to navigate to goal pose.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``goal_pose``
-     - ``pose_3d``
-     - 
-     - Goal pose to navigate to
-   * - ``namespace_override``
-     - ``string``
-     - 
-     - If set, it's used as namespace (instead of the associated actor's namespace)
-   * - ``action_topic``
-     - ``string``
-     - ``navigate_to_pose``
-     - Action name
-   * - ``monitor_progress``
-     - ``bool``
-     - ``true``
-     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
 
 ``differential_drive_robot.odometry_distance_traveled()``
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
