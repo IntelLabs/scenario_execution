@@ -17,9 +17,8 @@ docker build . --tag floorplan:latest
 
 # build scenario execution and dependencies
 source /opt/ros/humble/setup.bash
-colcon build --packages-up-to scenario_execution_floorplan_dsl scenario_execution_ros scenario_execution_gazebo tb4_sim_scenario
+colcon build --packages-up-to scenario_execution_floorplan_dsl scenario_execution_ros scenario_execution_gazebo scenario_execution_nav2 tb4_sim_scenario
 source install/setup.bash
-pip install -r libs/scenario_execution_floorplan_dsl/requirements.txt
 ```
 
 ## Test
