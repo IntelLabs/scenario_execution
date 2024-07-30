@@ -1,4 +1,5 @@
 import osc.ros
+import osc.nav2
 
 scenario initialize_nav2:
     turtlebot4: differential_drive_robot
