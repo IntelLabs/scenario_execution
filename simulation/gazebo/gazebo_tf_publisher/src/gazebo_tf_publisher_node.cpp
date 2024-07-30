@@ -21,7 +21,7 @@
 #include <tf2_msgs/msg/tf_message.hpp>
 
 class GazeboTFPublisher : public rclcpp::Node {
-  std::shared_ptr<ignition::transport::Node> mIgnNode;
+  std::shared_ptr<ignition::transport::Node> mSimNode;
   rclcpp::Publisher<tf2_msgs::msg::TFMessage>::SharedPtr mPublisher;
   std::string gz_pose_topic;
   std::string base_frame_id;
@@ -36,12 +36,12 @@ public:
 
 GazeboTFPublisher::GazeboTFPublisher() : Node("gazebo_tf_publisher") {
   mPublisher = this->create_publisher<tf2_msgs::msg::TFMessage>("tf", 10);
-  mIgnNode = std::make_shared<ignition::transport::Node>();
+  mSimNode = std::make_shared<ignition::transport::Node>();
   declare_parameter("gz_pose_topic", "/world/name/dynamic_pose/info");
   gz_pose_topic = get_parameter("gz_pose_topic").as_string();
   declare_parameter("base_frame_id", "base_link");
   base_frame_id = get_parameter("base_frame_id").as_string();
-  mIgnNode->Subscribe(gz_pose_topic, &GazeboTFPublisher::simulationCallback,
+  mSimNode->Subscribe(gz_pose_topic, &GazeboTFPublisher::simulationCallback,
                       this);
 }
 
