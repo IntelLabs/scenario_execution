@@ -23,9 +23,9 @@ from setuptools import find_namespace_packages, setup
 PACKAGE_NAME = 'scenario_execution'
 
 # read the contents of the README file
-this_directory = Path(__file__).parent
-base_directory = this_directory.parent
-long_description = (base_directory / "README.md").read_text()
+this_directory = Path(__file__).resolve()
+root_directory = [p for p in this_directory.parents if p.parts[-1] == PACKAGE_NAME][0]
+long_description = Path.joinpath(root_directory, "README.md").read_text()
 
 setup(
     name=PACKAGE_NAME,
