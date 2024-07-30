@@ -9,6 +9,8 @@
   <license file="../LICENSE">Apache-2.0</license>
 
   <exec_depend>scenario_execution</exec_depend>
+  <test_depend>python3-pexpect</test_depend>
+  <test_depend>python3-defusedxml</test_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
