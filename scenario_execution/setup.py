@@ -23,9 +23,13 @@ from setuptools import find_namespace_packages, setup
 PACKAGE_NAME = 'scenario_execution'
 
 # read the contents of the README file
-this_directory = Path(__file__).resolve()
-root_directory = [p for p in this_directory.parents if p.parts[-1] == PACKAGE_NAME][0]
-long_description = Path.joinpath(root_directory, "README.md").read_text()
+this_directory = Path(__file__).parent
+try:
+    long_description = (this_directory / "README.md").read_text()
+except:
+    # in case we do colcon build --symlink-install, wo do not need the
+    # description
+    long_description = ''
 
 setup(
     name=PACKAGE_NAME,
