@@ -79,27 +79,6 @@ action check_data:
     fail_if_bad_comparison: bool = false # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
     wait_for_first_message: bool = true  # start checking with the first received message after action execution. If false, the check is executed on the last received message
 
-action differential_drive_robot.init_nav2:
-    # Initialize nav2
-    initial_pose: pose_3d                # the initial pose to set during initialization
-    base_frame_id: string = 'base_link'  # the base frame id
-    use_initial_pose: bool = true        # if false, no initial_pose is needed (useful when using slam instead of amcl for localization)
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
-    wait_for_initial_pose: bool = false  # if true the initial pose needs to be set externally (e.g. manually through rviz)
-
-action differential_drive_robot.nav_through_poses:
-    # Use nav2 to navigate through poses.
-    goal_poses: list of pose_3d          # goal poses to navigate through
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
-    monitor_progress: bool = true        # if true, the action returns after the goal is reached or on failure. If no, the action returns after request.
-
-action differential_drive_robot.nav_to_pose:
-    # Nav2 to navigate to goal pose.
-    goal_pose: pose_3d                   # goal pose to navigate to
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
-    action_topic: string = 'navigate_to_pose' # Name of action
-    monitor_progress: bool = true        # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
-
 action differential_drive_robot.odometry_distance_traveled:
     # Wait until a defined distance was traveled, based on odometry
     distance: length                     # traveled distance at which the action succeeds.

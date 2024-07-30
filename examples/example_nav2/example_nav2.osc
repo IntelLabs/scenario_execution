@@ -1,5 +1,6 @@
 import osc.helpers
 import osc.ros
+import osc.nav2
 
 scenario example_nav2:
     timeout(60s)

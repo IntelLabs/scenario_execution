@@ -29,7 +29,8 @@ from tf2_ros import Buffer
 from datetime import datetime, timedelta
 import py_trees
 
-from .nav2_common import NamespaceAwareBasicNavigator, get_pose_stamped, NamespacedTransformListener
+from .nav2_common import NamespaceAwareBasicNavigator
+from scenario_execution_ros.actions.common import get_pose_stamped, NamespacedTransformListener
 from scenario_execution.actions.base_action import BaseAction
 
 

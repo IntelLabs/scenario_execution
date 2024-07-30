@@ -1,5 +1,6 @@
 import osc.helpers
 import osc.ros
+import osc.nav2
 
 scenario nav2_simulation_fault_injection:
     timeout(240s)

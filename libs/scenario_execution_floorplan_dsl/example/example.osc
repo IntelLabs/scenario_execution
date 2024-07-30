@@ -1,6 +1,7 @@
 import osc.helpers
 import osc.floorplan_dsl
 import osc.ros
+import osc.nav2
 
 scenario test:
     timeout(120s)
