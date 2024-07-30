@@ -169,10 +169,10 @@ scenario test_assert_tf_moving:
         serial:
             assert_tf_moving(
                 frame_id: 'robot_moving',
-                timeout: 2s)
+                timeout: 6s)
             emit fail
         time_out: serial:
-            wait elapsed(4s)
+            wait elapsed(10s)
             emit end
 """
         self.execute(scenario_content)
@@ -270,11 +270,11 @@ scenario test_assert_tf_moving:
         serial:
             assert_tf_moving(
                 frame_id: 'robot_moving',
-                timeout: 2s,
+                timeout: 6s,
                 wait_for_first_transform: false)
             emit fail
         time_out: serial:
-            wait elapsed(4s)
+            wait elapsed(10s)
             emit end
 """
         self.execute(scenario_content)

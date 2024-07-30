@@ -19,8 +19,8 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetLaunchConfiguration
-from launch.conditions import IfCondition, UnlessCondition
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
@@ -29,7 +29,6 @@ def generate_launch_description():
 
     tb4_sim_scenario_dir = get_package_share_directory('tb4_sim_scenario')
     scenario_execution_dir = get_package_share_directory('scenario_execution_ros')
-    message_modification_dir = get_package_share_directory('message_modification')
     gazebo_tf_publisher_dir = get_package_share_directory('gazebo_tf_publisher')
     tf_to_pose_publisher_dir = get_package_share_directory('tf_to_pose_publisher')
 
@@ -44,40 +43,28 @@ def generate_launch_description():
     arg_world_name = DeclareLaunchArgument('world_name', default_value='default',
                                            description='Name of Simulation World')
 
-    faulty_scan = LaunchConfiguration('faulty_scan')
-    arg_faulty_scan = DeclareLaunchArgument(
-        'faulty_scan',
-        default_value='false',
-        choices=['false', 'true'],
-        description='Whether to inject sensor faults to scan message')
-
-    ignition = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'ignition_launch.py'])]),
-    )
-
-    robot_spawn = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'ignition_robot_launch.py'])]),
-        launch_arguments=[
-            ('scan_topic', LaunchConfiguration('sim_scan_topic')),
-        ]
+    simulation = GroupAction(
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'ignition_launch.py'])]),
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'ignition_robot_launch.py'])])
+            )]
     )
 
     nav2_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'nav2_launch.py'])]),
+        launch_arguments={
+            'use_sim_time': 'True',
+            'map': [PathJoinSubstitution([tb4_sim_scenario_dir, 'maps', 'maze.yaml'])],
+        }.items()
     )
 
     groundtruth_publisher = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(gazebo_tf_publisher_dir, 'launch', 'gazebo_tf_publisher_launch.py')),
         launch_arguments=[
-            ('ign_pose_topic', ['/world/', world_name, '/dynamic_pose/info']),
-        ]
-    )
-
-    scan_modification = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(message_modification_dir, 'launch', 'scan_modification_launch.py')),
-        condition=IfCondition(faulty_scan),
-        launch_arguments=[
-            ('ign_pose_topic', ['/world/', world_name, '/dynamic_pose/info']),
+            ('gz_pose_topic', ['/world/', world_name, '/dynamic_pose/info']),
         ]
     )
 
@@ -96,22 +83,14 @@ def generate_launch_description():
     ld = LaunchDescription([
         arg_scenario,
         arg_scenario_execution,
-        arg_world_name,
-        arg_faulty_scan,
-        SetLaunchConfiguration(
-            name='sim_scan_topic',
-            condition=IfCondition(faulty_scan),
-            value='scan_sim'),
-        SetLaunchConfiguration(
-            name='sim_scan_topic',
-            condition=UnlessCondition(faulty_scan),
-            value='scan'),
+        arg_world_name
     ])
-    ld.add_action(ignition)
-    ld.add_action(robot_spawn)
+
+    for pose_element in ['x', 'y', 'z', 'yaw']:
+        ld.add_action(DeclareLaunchArgument(pose_element, default_value='0.0', description=f'{pose_element} component of the robot pose.'))
+    ld.add_action(simulation)
     ld.add_action(nav2_bringup)
     ld.add_action(groundtruth_publisher)
-    ld.add_action(scan_modification)
     ld.add_action(scenario_exec)
     ld.add_action(tf_to_pose)
     return ld

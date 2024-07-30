@@ -28,7 +28,11 @@ setup(
             ['resource/' + PACKAGE_NAME]),
         ('share/' + PACKAGE_NAME, ['package.xml'])
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'transforms3d==0.3.1',
+        'defusedxml==0.7.1',
+    ],
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',

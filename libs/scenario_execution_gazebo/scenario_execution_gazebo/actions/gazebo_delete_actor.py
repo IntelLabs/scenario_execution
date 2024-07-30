@@ -33,7 +33,7 @@ class DeleteActionState(Enum):
 
 class GazeboDeleteActor(RunProcess):
     """
-    Class to delete an entity in Ignition
+    Class to delete an entity in gazebo
 
     """
 

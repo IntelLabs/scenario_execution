@@ -23,12 +23,12 @@
 class GazeboTFPublisher : public rclcpp::Node {
   std::shared_ptr<ignition::transport::Node> mIgnNode;
   rclcpp::Publisher<tf2_msgs::msg::TFMessage>::SharedPtr mPublisher;
-  std::string ign_pose_topic;
+  std::string gz_pose_topic;
   std::string base_frame_id;
   std::vector<unsigned int> robot_frame_ids;
   std::string previous_frame_id;
 
-  void IgnCB(const ignition::msgs::Pose_V &poses);
+  void simulationCallback(const ignition::msgs::Pose_V &poses);
 
 public:
   GazeboTFPublisher();
@@ -37,20 +37,22 @@ public:
 GazeboTFPublisher::GazeboTFPublisher() : Node("gazebo_tf_publisher") {
   mPublisher = this->create_publisher<tf2_msgs::msg::TFMessage>("tf", 10);
   mIgnNode = std::make_shared<ignition::transport::Node>();
-  declare_parameter("ign_pose_topic", "/world/name/dynamic_pose/info");
-  ign_pose_topic = get_parameter("ign_pose_topic").as_string();
+  declare_parameter("gz_pose_topic", "/world/name/dynamic_pose/info");
+  gz_pose_topic = get_parameter("gz_pose_topic").as_string();
   declare_parameter("base_frame_id", "base_link");
   base_frame_id = get_parameter("base_frame_id").as_string();
-  mIgnNode->Subscribe(ign_pose_topic, &GazeboTFPublisher::IgnCB, this);
+  mIgnNode->Subscribe(gz_pose_topic, &GazeboTFPublisher::simulationCallback,
+                      this);
 }
 
-void GazeboTFPublisher::IgnCB(const ignition::msgs::Pose_V &poses) {
+void GazeboTFPublisher::simulationCallback(
+    const ignition::msgs::Pose_V &poses) {
   auto tf_msg = std::make_shared<tf2_msgs::msg::TFMessage>();
   auto ros2_clock = get_clock()->now();
   for (int i = 0; i < poses.pose_size(); i++) {
     if (poses.pose(i).name() == base_frame_id) {
       // each robot_frame_id is expected to have corresponding
-      // base_link_id -1 in ignition pose topic.
+      // base_link_id -1 in gazebo pose topic.
       unsigned int robot_frame_id = poses.pose(i).id() - 1;
       if (std::find(robot_frame_ids.begin(), robot_frame_ids.end(),
                     robot_frame_id) == robot_frame_ids.end()) {

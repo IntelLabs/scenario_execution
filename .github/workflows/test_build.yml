@@ -7,6 +7,7 @@ on:
 concurrency: 
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+permissions: read-all
 jobs:
   build:
     #TODO model dependency to image-workflow. Workaround: retrigger run after image-workflow finished.
@@ -302,7 +303,7 @@ jobs:
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
           sed -i 's/240s/900s/g' examples/example_multi_robot/scenarios/example_multi_robot.osc
           # shellcheck disable=SC1083
-          scenario_batch_execution -i examples/example_multi_robot/scenarios/ -o test_example_multirobot -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} yaw:=3.14 output_dir:={OUTPUT_DIR} headless:=True
+          scenario_batch_execution -i examples/example_multi_robot/scenarios/ -o test_example_multirobot -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR} headless:=True
       - name: Upload result
         uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         if: always()
@@ -412,7 +413,7 @@ jobs:
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
-          sed -i 's/p.GUI/p.DIRECT/g' ./install/scenario_execution_pybullet/lib/python3.10/site-packages/scenario_execution_pybullet/actions/sim_initialize.py
+          sed -i 's/p.GUI/p.DIRECT/g' ./install/scenario_execution_pybullet/lib/python3.1*/site-packages/scenario_execution_pybullet/actions/sim_initialize.py
           ros2 run scenario_execution scenario_execution libs/scenario_execution_pybullet/scenarios/example_pybullet.osc -t -s 0.00416666666 -o test_scenario_execution_pybullet
       - name: Upload result
         uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
@@ -436,6 +437,9 @@ jobs:
     - test-scenario-execution-pybullet
     runs-on: intellabs-01
     if: ${{ always() }}
+    permissions:
+      checks: write
+      pull-requests: write
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@7a1cd3216ca9260cd8022db641d960b1db4d1be4 #v4.0
