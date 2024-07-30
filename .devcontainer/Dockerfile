@@ -21,7 +21,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libxext6 \
     libx11-6 \
     mesa-utils \
-    libgl1-mesa-glx \
+    libglx-mesa0 \
     libglu1-mesa-dev \
     freeglut3-dev \
     mesa-common-dev \
