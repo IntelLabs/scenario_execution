@@ -40,11 +40,8 @@ setup(
     ],
     install_requires=[
         'setuptools',
-        'antlr4-python3-runtime==4.7.2',
-        'transforms3d==0.3.1',
-        'pexpect==4.9.0',
-        'defusedxml==0.7.1',
-        'pyyaml==6.0.1',
+        'antlr4-python3-runtime==4.9.1',
+        'pyyaml==5.4.1',
         'py-trees==2.2.3'
     ],
     zip_safe=True,

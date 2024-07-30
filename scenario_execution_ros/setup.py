@@ -33,7 +33,10 @@ setup(
         (os.path.join('share', PACKAGE_NAME, 'scenarios', 'test'), glob('scenarios/test/*osc')),
         (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py'))
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'transforms3d==0.3.1',
+    ],
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
