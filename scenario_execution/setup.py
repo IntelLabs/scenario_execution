@@ -24,7 +24,8 @@ PACKAGE_NAME = 'scenario_execution'
 
 # read the contents of the README file
 this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text()
+base_directory = this_directory.parent
+long_description = (base_directory / "README.md").read_text()
 
 setup(
     name=PACKAGE_NAME,
