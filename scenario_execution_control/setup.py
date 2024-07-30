@@ -25,7 +25,7 @@ from setuptools import setup
 PACKAGE_NAME = 'scenario_execution_control'
 setup(
     name=PACKAGE_NAME,
-    version='1.1.0',
+    version='1.2.0',
     packages=[PACKAGE_NAME],
     data_files=[
         ('share/ament_index/resource_index/packages',
