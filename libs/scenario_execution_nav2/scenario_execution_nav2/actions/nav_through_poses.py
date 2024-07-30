@@ -24,7 +24,7 @@ import py_trees
 from nav2_simple_commander.robot_navigator import TaskResult  # pylint: disable=import-error
 
 from .nav2_common import NamespaceAwareBasicNavigator
-from .nav2_common import get_pose_stamped
+from scenario_execution_ros.actions.common import get_pose_stamped
 from scenario_execution.actions.base_action import BaseAction
 
 

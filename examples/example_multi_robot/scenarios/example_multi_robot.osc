@@ -1,6 +1,7 @@
 import osc.helpers
 import osc.ros
 import osc.gazebo
+import osc.nav2
 
 scenario multi_robot:
     timeout(240s)

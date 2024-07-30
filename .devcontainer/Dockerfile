@@ -52,8 +52,8 @@ RUN --mount=type=bind,target=/tmp_setup export DEBIAN_FRONTEND=noninteractive &&
 ##############################################################################
 ARG USER=ros
 ARG PASSWORD=ros
-ARG UID=1000
-ARG GID=1000
+ARG UID=1234
+ARG GID=1234
 ENV UID=${UID}
 ENV GID=${GID}
 ENV USER=${USER}

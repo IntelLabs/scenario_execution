@@ -24,9 +24,8 @@ PACKAGE_NAME = 'scenario_execution'
 
 # read the contents of the README file
 this_directory = Path(__file__).resolve()
-root_directory = [p for p in this_directory.parents[1:] if p.parts[-1] == PACKAGE_NAME][0]
-src_directory = Path.joinpath(root_directory, PACKAGE_NAME)
-long_description = (src_directory / "README.md").read_text()
+root_directory = [p for p in this_directory.parents if p.parts[-1] == PACKAGE_NAME][0]
+long_description = Path.joinpath(root_directory, "README.md").read_text()
 
 setup(
     name=PACKAGE_NAME,
