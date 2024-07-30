@@ -17,6 +17,7 @@
   <depend>scenario_execution</depend>
   <depend>message_modification</depend>
   <depend>tf_to_pose_publisher</depend>
+  <depend>nav2_minimal_tb4_sim</depend>
   
   
   <test_depend>ament_lint_auto</test_depend>

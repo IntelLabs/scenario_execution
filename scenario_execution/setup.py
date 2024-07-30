@@ -39,9 +39,9 @@ setup(
     ],
     install_requires=[
         'setuptools',
-        'antlr4-python3-runtime==4.9.1',
-        'pyyaml==5.4.1',
-        'py-trees==2.2.3'
+        'antlr4-python3-runtime==4.9.2',
+        'pyyaml==6.0.1',
+        'py-trees==2.2.1'
     ],
     zip_safe=True,
     include_package_data=True,
