@@ -1,6 +1,7 @@
 import osc.helpers
 import osc.ros
 import osc.gazebo
+import osc.nav2
 
 scenario example_simulation:
     timeout(120s)

@@ -1,6 +1,7 @@
 import osc.ros
 import osc.gazebo
 import osc.helpers
+import osc.nav2
 
 scenario test_relative_spawn:
     timeout(600s)
