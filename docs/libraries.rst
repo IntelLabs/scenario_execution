@@ -1064,9 +1064,9 @@ Delete a Kubernetes element (e.g., a pod or network policy). Inherits from ``kub
      - ``false``
      - Is the specified target a regular expression
    * - ``element_type``
-     - ``string``
-     - ``pod``
-     - Type of the element to delete (e.g., pod or network policy)
+     - ``kubernetes_element_type``
+     - 
+     - Type of the element to delete (e.g., ``kubernetes_element_type!pod``)
    * - ``grace_period``
      - ``time``
      - ``5s``
