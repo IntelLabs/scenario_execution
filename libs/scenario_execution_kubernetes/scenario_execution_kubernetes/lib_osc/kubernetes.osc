@@ -18,7 +18,6 @@ action kubernetes_base_action:
     namespace: string = "default"        # namespace within kubernetes cluster
     within_cluster: bool = false         # set to true if you want to access the cluster from within a running container/pod.
 
-
 action kubernetes_create_from_yaml inherits kubernetes_base_action:
     # create elements from yaml-file
     yaml_file: string                    # yaml file to create from

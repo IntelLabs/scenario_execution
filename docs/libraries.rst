@@ -18,6 +18,8 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
      - ROS Library (provided with :repo_link:`scenario_execution_ros`)
    * - ``osc.gazebo``
      - Gazebo Library (provided with :repo_link:`scenario_execution_gazebo`)
+   * - ``osc.kubernetes``
+     - Kubernetes Library (provided with :repo_link:`libs/scenario_execution_kubernetes`)
 
 Additional features can be implemented by defining your own library.
 
@@ -982,3 +984,166 @@ Wait for topics to get available (i.e. publisher gets available).
      - ``list of string``
      - 
      - List of topics to wait for
+
+Kubernetes
+----------
+
+The library contains actions to interact with the `Kubernetes API <https://kubernetes.io>`_. Import it with ``import osc.kubernetes``. It's provided by the package :repo_link:`libs/scenario_execution_kubernetes`.
+
+Actions
+^^^^^^^
+
+``kubernetes_base_action()``
+""""""""""""""""""""""""""""
+
+Base action containing parameters common for all Kubernetes actions
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+
+
+``kubernetes_create_from_yaml()``
+"""""""""""""""""""""""""""""""""
+
+Create a Kubernetes object (e.g., a pod or network policy) from a yaml file. Inherits from ``kubernetes_base_action``
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``yaml_file``
+     - ``string``
+     - 
+     - The yaml-file to use create the object from
+
+
+``kubernetes_delete()``
+"""""""""""""""""""""""
+
+Delete a Kubernetes element (e.g., a pod or network policy). Inherits from ``kubernetes_base_action``
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target``
+     - ``string``
+     - 
+     - The target element to delete
+   * - ``regex``
+     - ``bool``
+     - ``false``
+     - Is the specified target a regular expression
+   * - ``element_type``
+     - ``string``
+     - ``pod``
+     - Type of the element to delete (e.g., pod or network policy)
+   * - ``grace_period``
+     - ``time``
+     - ``5s``
+     - Grace period to wait before forcing deletion
+
+
+``kubernetes_patch_network_policy()``
+"""""""""""""""""""""""""""""""""""""
+
+Patch an existing Kubernetes network policy. Inherits from ``kubernetes_base_action``
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target``
+     - ``string``
+     - 
+     - The target network policy to patch
+   * - ``network_enabled``
+     - ``bool``
+     - 
+     - Should the network be enabled
+   * - ``match_label``
+     - ``key_value``
+     - 
+     - key-value pair to match (e.g., ``key_value("app", "pod_name"))``
+
+
+``kubernetes_wait_for_network_policy_status()``
+"""""""""""""""""""""""""""""""""""""""""""""""
+
+Wait for an existing Kubernetes network policy to reach a specified state. Inherits from ``kubernetes_base_action``
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target``
+     - ``string``
+     - 
+     - The target network policy to monitor
+   * - ``status``
+     - ``kubernetes_network_policy_status``
+     - 
+     - Expected status of the network policy, e.g., ``kubernetes_network_policy_status!added``
+
+
+``kubernetes_wait_for_pod_status()``
+""""""""""""""""""""""""""""""""""""
+
+Wait for a Kubernetes pod to reach a specified state. Inherits from ``kubernetes_base_action``
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target``
+     - ``string``
+     - 
+     - The name of the pod to monitor
+   * - ``status``
+     - ``kubernetes_pod_status``
+     - 
+     - Expected status of the pod, e.g., ``kubernetes_pod_status!running``
+   * - ``regex``
+     - ``bool``
+     - ``false``
+     - Is the specified target a regular expression
