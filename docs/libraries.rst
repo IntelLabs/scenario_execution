@@ -29,7 +29,7 @@ Additional features can be implemented by defining your own library.
 Gazebo
 ------
 
-The library contains actions to interact with the `Gazebo Simulation <https://gazebosim.org/>`_. Import it with ``import osc.gazebo``. It's provided by the package :repo_link:`scenario_execution_gazebo`.
+The library contains actions to interact with the `Gazebo Simulation <https://gazebosim.org/>`_. Import it with ``import osc.gazebo``. It's provided by the package :repo_link:`libs/scenario_execution_gazebo`.
 
 Actions
 ^^^^^^^
