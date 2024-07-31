@@ -122,7 +122,7 @@ class KubernetesDelete(BaseAction):
                         if len(matched_policies) > 1:
                             self.feedback_message = f"'{self.target}' regex identified more than one policy {', '.join(matched_policies)}. Only one policy is supported!"  # pylint: disable= attribute-defined-outside-init
                             return py_trees.common.Status.FAILURE
-                        found_policy = matched_policy[0]
+                        found_policy = matched_policies[0]
                 else:
                     if self.target in current_policies:
                         found_policy = self.target
