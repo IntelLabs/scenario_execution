@@ -2179,7 +2179,7 @@ class OpenSCENARIO2Parser (Parser):
             self.enterOuterAlt(localctx, 1)
             self.state = 397
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__11) | (1 << OpenSCENARIO2Parser.T__12) | (1 << OpenSCENARIO2Parser.T__13) | (1 << OpenSCENARIO2Parser.T__14) | (1 << OpenSCENARIO2Parser.T__15) | (1 << OpenSCENARIO2Parser.T__16) | (1 << OpenSCENARIO2Parser.T__17) | (1 << OpenSCENARIO2Parser.T__18))) != 0)):
+            if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__11) | (1 << OpenSCENARIO2Parser.T__12) | (1 << OpenSCENARIO2Parser.T__13) | (1 << OpenSCENARIO2Parser.T__14) | (1 << OpenSCENARIO2Parser.T__15) | (1 << OpenSCENARIO2Parser.T__16) | (1 << OpenSCENARIO2Parser.T__17) | (1 << OpenSCENARIO2Parser.T__18))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -2370,7 +2370,7 @@ class OpenSCENARIO2Parser (Parser):
             self.enterOuterAlt(localctx, 1)
             self.state = 419
             _la = self._input.LA(1)
-            if not(_la == OpenSCENARIO2Parser.UintLiteral or _la == OpenSCENARIO2Parser.HexUintLiteral):
+            if not (_la == OpenSCENARIO2Parser.UintLiteral or _la == OpenSCENARIO2Parser.HexUintLiteral):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -4618,7 +4618,7 @@ class OpenSCENARIO2Parser (Parser):
             self.enterOuterAlt(localctx, 1)
             self.state = 670
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__32) | (1 << OpenSCENARIO2Parser.T__33) | (1 << OpenSCENARIO2Parser.T__34) | (1 << OpenSCENARIO2Parser.T__35) | (1 << OpenSCENARIO2Parser.T__36))) != 0)):
+            if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__32) | (1 << OpenSCENARIO2Parser.T__33) | (1 << OpenSCENARIO2Parser.T__34) | (1 << OpenSCENARIO2Parser.T__35) | (1 << OpenSCENARIO2Parser.T__36))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -5378,7 +5378,7 @@ class OpenSCENARIO2Parser (Parser):
                 localctx._Identifier = self.match(OpenSCENARIO2Parser.Identifier)
 
                 offsetName = (None if localctx._Identifier is None else localctx._Identifier.text)
-                if(not (offsetName == "offset")):
+                if (not (offsetName == "offset")):
                     print("%s must be offset" % offsetName)
                     raise NoViableAltException(self)
 
@@ -6155,7 +6155,7 @@ class OpenSCENARIO2Parser (Parser):
             self.enterOuterAlt(localctx, 1)
             self.state = 837
             _la = self._input.LA(1)
-            if not(_la == OpenSCENARIO2Parser.T__49 or _la == OpenSCENARIO2Parser.T__50):
+            if not (_la == OpenSCENARIO2Parser.T__49 or _la == OpenSCENARIO2Parser.T__50):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -6956,7 +6956,7 @@ class OpenSCENARIO2Parser (Parser):
             self.enterOuterAlt(localctx, 1)
             self.state = 927
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__54) | (1 << OpenSCENARIO2Parser.T__55) | (1 << OpenSCENARIO2Parser.T__56))) != 0)):
+            if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__54) | (1 << OpenSCENARIO2Parser.T__55) | (1 << OpenSCENARIO2Parser.T__56))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -8897,7 +8897,7 @@ class OpenSCENARIO2Parser (Parser):
             self.enterOuterAlt(localctx, 1)
             self.state = 1139
             _la = self._input.LA(1)
-            if not(((((_la - 23)) & ~0x3f) == 0 and ((1 << (_la - 23)) & ((1 << (OpenSCENARIO2Parser.T__22 - 23)) | (1 << (OpenSCENARIO2Parser.T__75 - 23)) | (1 << (OpenSCENARIO2Parser.T__76 - 23)) | (1 << (OpenSCENARIO2Parser.T__77 - 23)) | (1 << (OpenSCENARIO2Parser.T__78 - 23)) | (1 << (OpenSCENARIO2Parser.T__79 - 23)) | (1 << (OpenSCENARIO2Parser.T__80 - 23)))) != 0)):
+            if not (((((_la - 23)) & ~0x3f) == 0 and ((1 << (_la - 23)) & ((1 << (OpenSCENARIO2Parser.T__22 - 23)) | (1 << (OpenSCENARIO2Parser.T__75 - 23)) | (1 << (OpenSCENARIO2Parser.T__76 - 23)) | (1 << (OpenSCENARIO2Parser.T__77 - 23)) | (1 << (OpenSCENARIO2Parser.T__78 - 23)) | (1 << (OpenSCENARIO2Parser.T__79 - 23)) | (1 << (OpenSCENARIO2Parser.T__80 - 23)))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -9055,7 +9055,7 @@ class OpenSCENARIO2Parser (Parser):
             self.enterOuterAlt(localctx, 1)
             self.state = 1153
             _la = self._input.LA(1)
-            if not(_la == OpenSCENARIO2Parser.T__81 or _la == OpenSCENARIO2Parser.T__82):
+            if not (_la == OpenSCENARIO2Parser.T__81 or _la == OpenSCENARIO2Parser.T__82):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -9213,7 +9213,7 @@ class OpenSCENARIO2Parser (Parser):
             self.enterOuterAlt(localctx, 1)
             self.state = 1167
             _la = self._input.LA(1)
-            if not(((((_la - 84)) & ~0x3f) == 0 and ((1 << (_la - 84)) & ((1 << (OpenSCENARIO2Parser.T__83 - 84)) | (1 << (OpenSCENARIO2Parser.T__84 - 84)) | (1 << (OpenSCENARIO2Parser.T__85 - 84)))) != 0)):
+            if not (((((_la - 84)) & ~0x3f) == 0 and ((1 << (_la - 84)) & ((1 << (OpenSCENARIO2Parser.T__83 - 84)) | (1 << (OpenSCENARIO2Parser.T__84 - 84)) | (1 << (OpenSCENARIO2Parser.T__85 - 84)))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -10544,7 +10544,7 @@ class OpenSCENARIO2Parser (Parser):
             self.enterOuterAlt(localctx, 1)
             self.state = 1324
             _la = self._input.LA(1)
-            if not(((((_la - 99)) & ~0x3f) == 0 and ((1 << (_la - 99)) & ((1 << (OpenSCENARIO2Parser.UintLiteral - 99)) | (1 << (OpenSCENARIO2Parser.HexUintLiteral - 99)) | (1 << (OpenSCENARIO2Parser.IntLiteral - 99)))) != 0)):
+            if not (((((_la - 99)) & ~0x3f) == 0 and ((1 << (_la - 99)) & ((1 << (OpenSCENARIO2Parser.UintLiteral - 99)) | (1 << (OpenSCENARIO2Parser.HexUintLiteral - 99)) | (1 << (OpenSCENARIO2Parser.IntLiteral - 99)))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
