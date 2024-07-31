@@ -26,7 +26,7 @@ PACKAGE_NAME = 'scenario_execution'
 this_directory = Path(__file__).parent
 try:
     LONG_DESCRIPTION = (this_directory / "README.md").read_text()
-except: # pylint: disable=W0702
+except:  # pylint: disable=W0702
     # in case we do colcon build --symlink-install, wo do not need the
     # description
     LONG_DESCRIPTION = ''
