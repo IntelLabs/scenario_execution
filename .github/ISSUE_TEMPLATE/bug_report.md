@@ -21,7 +21,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Version information (please complete the following information):**
 - OS: [e.g. Ubuntu 22.04]
-- Version [e.g. 1.1.0]
+- Version [e.g. 1.2.0]
 - ROS version: [e.g. humble]
 
 **Additional context**

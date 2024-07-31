@@ -21,7 +21,7 @@ PACKAGE_NAME = 'scenario_execution_floorplan_dsl'
 
 setup(
     name=PACKAGE_NAME,
-    version='1.1.0',
+    version='1.2.0',
     packages=find_namespace_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',
