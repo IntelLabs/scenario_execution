@@ -16,8 +16,12 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
      - Robotics Library (provided with :repo_link:`scenario_execution`)
    * - ``osc.ros``
      - ROS Library (provided with :repo_link:`scenario_execution_ros`)
+   * - ``osc.nav2``
+     - ROS Nav2 navigation stack Library (provided with :repo_link:`libs/scenario_execution_nav2`)
+   * - ``osc.os``
+     - Library to interact with the operating system (provided with :repo_link:`libs/scenario_execution_os`)
    * - ``osc.gazebo``
-     - Gazebo Library (provided with :repo_link:`scenario_execution_gazebo`)
+     - Gazebo Library (provided with :repo_link:`libs/scenario_execution_gazebo`)
 
 Additional features can be implemented by defining your own library.
 
