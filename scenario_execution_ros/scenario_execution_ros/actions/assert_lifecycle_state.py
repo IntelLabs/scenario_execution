@@ -66,7 +66,6 @@ class AssertLifecycleState(BaseAction):
         self.client = self.node.create_client(GetState, service_get_state_name)
 
     def execute(self, node_name: str, state_sequence: list, allow_initial_skip: bool, fail_on_unexpected: bool, keep_running: bool):
-        print(f"AAAAAAAAAAAAAAAAAAA EXECUTE {node_name} {state_sequence} {allow_initial_skip} {fail_on_unexpected } {keep_running}")
         if self.node_name != node_name or self.state_sequence != state_sequence:
             raise ValueError(
                 f"Updating node name or state_sequence not supported. {self.node_name} != {node_name}, {self.state_sequence} != {state_sequence}")
@@ -78,14 +77,12 @@ class AssertLifecycleState(BaseAction):
             for value in self.state_sequence:
                 if value not in allowed_states:
                     raise ValueError("The specified state_sequence is not valid")
-        print(f"AAAAAAAAAAAAAAAAAAA CREATE DEQUE")
         self.state_sequence = deque(self.state_sequence)
         self.allow_initial_skip = allow_initial_skip
         self.fail_on_unexpected = fail_on_unexpected
         self.keep_running = keep_running
 
     def update(self) -> py_trees.common.Status:  # pylint: disable= too-many-return-statements
-        print(f"AAAAAAAAAAAAAAAAAAA update {self.current_state}")
         if self.current_state == AssertLifecycleStateState.IDLE:
             if self.client.service_is_ready():
                 self.get_initial_state()
@@ -98,7 +95,6 @@ class AssertLifecycleState(BaseAction):
         elif self.current_state == AssertLifecycleStateState.CHECKING_STATE:
             while not self.received_state_transition_queue.empty():
                 state = self.received_state_transition_queue.get()
-                print(f"AAAAAAAAAAAAAAAAAAA update check state {state} {self.state_sequence}")
                 self.feedback_message = f"State '{state}' reached..."  # pylint: disable= attribute-defined-outside-init
                 if not self.state_sequence:
                     self.feedback_message = f"Unexpected state '{state}' reached..."  # pylint: disable= attribute-defined-outside-init
@@ -107,10 +103,8 @@ class AssertLifecycleState(BaseAction):
                     else:
                         return py_trees.common.Status.SUCCESS
                 if self.state_sequence[0] == state:
-                    print(f"AAAAAAAAAAAAAAAAAAA update == state")
                     self.state_sequence.popleft()
                 else:
-                    print(f"AAAAAAAAAAAAAAAAAAA update != state")
                     if self.allow_initial_skip and not self.initial_states_skipped:
                         found = False
                         skipped = []
@@ -137,25 +131,21 @@ class AssertLifecycleState(BaseAction):
     def get_initial_state(self):
         self.feedback_message = "Getting initial lifecycle state..."  # pylint: disable= attribute-defined-outside-init
         req = GetState.Request()
-        print(f"AAAAAAAAAAAAAAAAAAA get_initial_state")
         future = self.client.call_async(req)
         future.add_done_callback(self.handle_initial_state_response)
 
     def add_to_queue(self, elem):
-        print(f"AAAAAAAAAAAAAAAAAAA ADD TO QUEUE {elem}")
         if elem not in ('configuring', 'cleaningup', 'deactivating', 'activating'):
             self.received_state_transition_queue.put(elem)
 
     def handle_initial_state_response(self, future):
         if self.current_state != AssertLifecycleStateState.WAITING_FOR_INITIAL_STATE:
-            print(f"AAAAAAAAAAAAAAAAAAA handle_initial_state_response return")
             return
         try:
             response = future.result()
             if response:
                 self.add_to_queue(response.current_state.label)
                 self.current_state = AssertLifecycleStateState.CHECKING_STATE
-                print(f"AAAAAAAAAAAAAAAAAAA handle_initial_state_response CHECKING_STATE")
                 # self.feedback_message = f"State '{response.current_state.label}' reached."  # pylint: disable= attribute-defined-outside-init
             else:
                 self.logger.error("Failed to get initial state.")
@@ -165,7 +155,6 @@ class AssertLifecycleState(BaseAction):
             self.logger.error(f"Exception in getting inital state: str({e})")
 
     def lifecycle_callback(self, msg):
-        print(f"AAAAAAAAAAAAAAAAAAA lifecycle_callback {self.current_state}")
         if self.current_state == AssertLifecycleStateState.IDLE:
             return
         if self.current_state == AssertLifecycleStateState.WAITING_FOR_INITIAL_STATE:
