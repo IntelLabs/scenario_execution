@@ -158,7 +158,7 @@ class KubernetesDelete(BaseAction):
                         namespace=self.namespace)
                     return py_trees.common.Status.RUNNING
                 else:
-                        self.feedback_message = f"Error while deleting '{self.target}' in namespace '{self.namespace}'."  # pylint: disable= attribute-defined-outside-init
+                    self.feedback_message = f"Error while deleting '{self.target}' in namespace '{self.namespace}'."  # pylint: disable= attribute-defined-outside-init
             else:
                 return py_trees.common.Status.RUNNING
         elif self.current_state == KubernetesDeleteActionState.WAIT_FOR_DELETION:
