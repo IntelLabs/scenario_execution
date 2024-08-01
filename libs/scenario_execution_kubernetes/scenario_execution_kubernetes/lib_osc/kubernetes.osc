@@ -1,0 +1,51 @@
+import osc.standard.base
+
+enum kubernetes_element_type: [
+  pod,
+  networkpolicy
+]
+
+enum kubernetes_pod_status: [
+  pending,
+  running,
+  failed,
+  succeeded
+]
+
+enum kubernetes_network_policy_status: [
+  added,
+  modified,
+  deleted
+]
+
+action kubernetes_base_action:
+    namespace: string = "default"               # namespace within kubernetes cluster
+    within_cluster: bool = false                # set to true if you want to access the cluster from within a running container/pod.
+
+action kubernetes_create_from_yaml inherits kubernetes_base_action:
+    # create elements from yaml-file
+    yaml_file: string                           # yaml file to create from
+
+action kubernetes_delete inherits kubernetes_base_action:
+    # delete an element from kubernetes cluster
+    target: string                              # target element to delete
+    regex: bool = false                         # is the specified target a regular expression
+    element_type: kubernetes_element_type       # element type to delete
+    grace_period: time = 5s                     # grace period to wait before forcing deletion
+
+action kubernetes_patch_network_policy inherits kubernetes_base_action:
+    # patch an existing network policy
+    target: string                              # network-policy name to monitor
+    network_enabled: bool                       # should the network be enabled?
+    match_label: key_value                      # key-value pair to match
+
+action kubernetes_wait_for_network_policy_status inherits kubernetes_base_action:
+    # wait for a network-policy to reach the specified state
+    target: string                              # network-policy name to monitor
+    status: kubernetes_network_policy_status    # expected network-policy status
+
+action kubernetes_wait_for_pod_status inherits kubernetes_base_action:
+    # wait for a pod to reach the specified state
+    target: string                              # pod name to monitor
+    status: kubernetes_pod_status               # expected pod status
+    regex: bool = false                         # is the specified target a regular expression
