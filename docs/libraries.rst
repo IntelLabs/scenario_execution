@@ -10,18 +10,20 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
    
    * - Name
      - Description
+   * - ``osc.gazebo``
+     - Gazebo Library (provided with :repo_link:`libs/scenario_execution_gazebo`)
    * - ``osc.helpers``
      - Helpers Library (provided with :repo_link:`scenario_execution`)
-   * - ``osc.robotics``
-     - Robotics Library (provided with :repo_link:`scenario_execution`)
-   * - ``osc.ros``
-     - ROS Library (provided with :repo_link:`scenario_execution_ros`)
+   * - ``osc.kubernetes``
+     - Kubernetes Library (provided with :repo_link:`libs/scenario_execution_kubernetes`)
    * - ``osc.nav2``
      - ROS Nav2 navigation stack Library (provided with :repo_link:`libs/scenario_execution_nav2`)
    * - ``osc.os``
      - Library to interact with the operating system (provided with :repo_link:`libs/scenario_execution_os`)
-   * - ``osc.gazebo``
-     - Gazebo Library (provided with :repo_link:`libs/scenario_execution_gazebo`)
+   * - ``osc.robotics``
+     - Robotics Library (provided with :repo_link:`scenario_execution`)
+   * - ``osc.ros``
+     - ROS Library (provided with :repo_link:`scenario_execution_ros`)
 
 Additional features can be implemented by defining your own library.
 
@@ -309,18 +311,18 @@ Modifier to set a timeout for a sub-tree.
      - Maximum number of permitted failures
 
 
-OS
---
+Kubernetes
+----------
 
-The library contains actions to interact with the operating system. Import it with ``import osc.os``. It is provided by the package :repo_link:`libs/scenario_execution_os`.
+The library contains actions to interact with the `Kubernetes API <https://kubernetes.io>`_. Import it with ``import osc.kubernetes``. It's provided by the package :repo_link:`libs/scenario_execution_kubernetes`.
 
 Actions
 ^^^^^^^
 
-``check_file_exists()``
-"""""""""""""""""""""""
+``kubernetes_create_from_yaml()``
+"""""""""""""""""""""""""""""""""
 
-Report success if a file exists.
+Create a Kubernetes object (e.g., a pod or network policy) from a yaml file. 
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -331,23 +333,162 @@ Report success if a file exists.
      - Type
      - Default
      - Description
-   * - ``file_name``
+   * - ``namespace``
      - ``string``
-     -
-     - File to check
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``yaml_file``
+     - ``string``
+     - 
+     - The yaml-file to use create the object from
 
 
-Robotics
---------
+``kubernetes_delete()``
+"""""""""""""""""""""""
 
-The library contains elements reusable in different robotic contexts. Import it with ``import osc.robotics``. It is provided by the package :repo_link:`scenario_execution`.
+Delete a Kubernetes element (e.g., a pod or network policy).
 
-Actors
-^^^^^^
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The target element to delete
+   * - ``regex``
+     - ``bool``
+     - ``false``
+     - Is the specified target a regular expression
+   * - ``element_type``
+     - ``kubernetes_element_type``
+     - 
+     - Type of the element to delete (e.g., ``kubernetes_element_type!pod``)
+   * - ``grace_period``
+     - ``time``
+     - ``5s``
+     - Grace period to wait before forcing deletion
 
-``robot``
-"""""""""
-A general robot actor.
+
+``kubernetes_patch_network_policy()``
+"""""""""""""""""""""""""""""""""""""
+
+Patch an existing Kubernetes network policy.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The target network policy to patch
+   * - ``network_enabled``
+     - ``bool``
+     - 
+     - Should the network be enabled
+   * - ``match_label``
+     - ``key_value``
+     - 
+     - key-value pair to match (e.g., ``key_value("app", "pod_name"))``
+
+
+``kubernetes_wait_for_network_policy_status()``
+"""""""""""""""""""""""""""""""""""""""""""""""
+
+Wait for an existing Kubernetes network policy to reach a specified state.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The target network policy to monitor
+   * - ``status``
+     - ``kubernetes_network_policy_status``
+     - 
+     - Expected status of the network policy, e.g., ``kubernetes_network_policy_status!added``
+
+
+``kubernetes_wait_for_pod_status()``
+""""""""""""""""""""""""""""""""""""
+
+Wait for a Kubernetes pod to reach a specified state.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The name of the pod to monitor
+   * - ``status``
+     - ``kubernetes_pod_status``
+     - 
+     - Expected status of the pod, e.g., ``kubernetes_pod_status!running``
+   * - ``regex``
+     - ``bool``
+     - ``false``
+     - Is the specified target a regular expression
 
 
 Nav2
@@ -449,6 +590,47 @@ Use nav2 to navigate to goal pose.
      - ``bool``
      - ``true``
      - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
+
+
+OS
+--
+
+The library contains actions to interact with the operating system. Import it with ``import osc.os``. It is provided by the package :repo_link:`libs/scenario_execution_os`.
+
+Actions
+^^^^^^^
+
+``check_file_exists()``
+"""""""""""""""""""""""
+
+Report success if a file exists.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``file_name``
+     - ``string``
+     -
+     - File to check
+
+
+Robotics
+--------
+
+The library contains elements reusable in different robotic contexts. Import it with ``import osc.robotics``. It is provided by the package :repo_link:`scenario_execution`.
+
+Actors
+^^^^^^
+
+``robot``
+"""""""""
+A general robot actor.
 
 
 ROS

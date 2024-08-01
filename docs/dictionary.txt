@@ -31,3 +31,5 @@ runtime
 dot
 png
 svg
+Kubernetes
+yaml

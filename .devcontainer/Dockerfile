@@ -39,6 +39,7 @@ RUN chmod +x /ros_entrypoint.sh
 RUN --mount=type=bind,target=/tmp_setup export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     xargs -a /tmp_setup/deb_requirements.txt apt-get install -y --no-install-recommends && \
+    xargs -a /tmp_setup/libs/scenario_execution_kubernetes/deb_requirements.txt apt-get install -y --no-install-recommends && \
     rosdep update --rosdistro="${ROS_DISTRO}" && \
     for d in /tmp_setup/*; do \
         [[ ! -d  "$d" ]] && continue; \
