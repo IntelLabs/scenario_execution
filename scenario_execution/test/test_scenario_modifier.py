@@ -376,3 +376,103 @@ scenario test:
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution.process_results())
+
+    def test_modifier_failure_is_running(self):
+        scenario_content = """
+import osc.helpers
+
+scenario test:
+    do parallel:
+        serial:
+            run_process("false") with:
+                failure_is_running()
+            emit fail
+        serial:
+            wait elapsed(2s)
+            emit end
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution.process_results())
+
+    def test_modifier_failure_is_success(self):
+        scenario_content = """
+import osc.helpers
+
+scenario test:
+    do parallel:
+        serial:
+            run_process("false") with:
+                failure_is_success()
+            emit end
+        serial:
+            wait elapsed(2s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution.process_results())
+
+    def test_modifier_running_is_failure(self):
+        scenario_content = """
+import osc.helpers
+
+scenario test:
+    do parallel:
+        serial:
+            run_process("sleep 10") with:
+                running_is_failure()
+        serial:
+            wait elapsed(5s)
+            emit end
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution.process_results())
+
+    def test_modifier_running_is_success(self):
+        scenario_content = """
+import osc.helpers
+
+scenario test:
+    do parallel:
+        serial:
+            run_process("sleep 10") with:
+                running_is_success()
+            emit end
+        serial:
+            wait elapsed(5s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution.process_results())
+
+    def test_modifier_success_is_failure(self):
+        scenario_content = """
+import osc.helpers
+
+scenario test:
+    do parallel:
+        serial:
+            run_process("true") with:
+                success_is_failure()
+        serial:
+            wait elapsed(5s)
+            emit end
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution.process_results())
+
+    def test_modifier_success_is_running(self):
+        scenario_content = """
+import osc.helpers
+
+scenario test:
+    do parallel:
+        serial:
+            run_process("true") with:
+                success_is_running()
+            emit fail
+        serial:
+            wait elapsed(5s)
+            emit end
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution.process_results())

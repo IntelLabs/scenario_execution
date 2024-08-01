@@ -204,7 +204,8 @@ class ModelToPyTree(object):
             return method_args, error_string
 
         def create_decorator(self, node: ModifierDeclaration, resolved_values):
-            available_modifiers = ["repeat", "inverter", "timeout", "retry"]
+            available_modifiers = ["repeat", "inverter", "timeout", "retry", "failure_is_running", "failure_is_success",
+                                   "running_is_failure", "running_is_success", "success_is_failure", "success_is_running"]
             if node.name not in available_modifiers:
                 raise OSC2ParsingError(
                     msg=f'Unknown modifier "{node.name}". Available modifiers {available_modifiers}.', context=node.get_ctx())
@@ -212,13 +213,25 @@ class ModelToPyTree(object):
             if parent:
                 parent.children.remove(self.__cur_behavior)
             if node.name == "repeat":
-                instance = py_trees.decorators.Repeat(name="Repeat", child=self.__cur_behavior, num_success=resolved_values["count"])
+                instance = py_trees.decorators.Repeat(name="repeat", child=self.__cur_behavior, num_success=resolved_values["count"])
             elif node.name == "inverter":
-                instance = py_trees.decorators.Inverter(name="Inverter", child=self.__cur_behavior)
+                instance = py_trees.decorators.Inverter(name="inverter", child=self.__cur_behavior)
             elif node.name == "timeout":
-                instance = py_trees.decorators.Timeout(name="Timeout", child=self.__cur_behavior, duration=resolved_values["duration"])
+                instance = py_trees.decorators.Timeout(name="timeout", child=self.__cur_behavior, duration=resolved_values["duration"])
             elif node.name == "retry":
-                instance = py_trees.decorators.Retry(name="Retry", child=self.__cur_behavior, num_failures=resolved_values["count"])
+                instance = py_trees.decorators.Retry(name="retry", child=self.__cur_behavior, num_failures=resolved_values["count"])
+            elif node.name == "failure_is_running":
+                instance = py_trees.decorators.FailureIsRunning(name="failure_is_running", child=self.__cur_behavior)
+            elif node.name == "failure_is_success":
+                instance = py_trees.decorators.FailureIsSuccess(name="failure_is_success", child=self.__cur_behavior)
+            elif node.name == "running_is_failure":
+                instance = py_trees.decorators.RunningIsFailure(name="running_is_failure", child=self.__cur_behavior)
+            elif node.name == "running_is_success":
+                instance = py_trees.decorators.RunningIsSuccess(name="running_is_success", child=self.__cur_behavior)
+            elif node.name == "success_is_failure":
+                instance = py_trees.decorators.SuccessIsFailure(name="success_is_failure", child=self.__cur_behavior)
+            elif node.name == "success_is_running":
+                instance = py_trees.decorators.SuccessIsRunning(name="success_is_running", child=self.__cur_behavior)
             else:
                 raise ValueError('unknown.')
 

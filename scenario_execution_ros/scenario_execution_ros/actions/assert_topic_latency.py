@@ -26,14 +26,13 @@ from scenario_execution.actions.base_action import BaseAction
 
 class AssertTopicLatency(BaseAction):
 
-    def __init__(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, fail_on_finish: bool, rolling_average_count: int, wait_for_first_message: bool):
+    def __init__(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, rolling_average_count: int, wait_for_first_message: bool):
         super().__init__()
         self.topic_name = topic_name
         self.topic_type = topic_type
         self.latency = latency
         self.comparison_operator_feedback = comparison_operator[0]
         self.comparison_operator = get_comparison_operator(comparison_operator)
-        self.fail_on_finish = fail_on_finish
         self.rolling_average_count = rolling_average_count
         self.rolling_average_count_queue = deque(maxlen=rolling_average_count)
         self.wait_for_first_message = wait_for_first_message
@@ -86,11 +85,8 @@ class AssertTopicLatency(BaseAction):
                     if self.comparison_operator(self.average_latency, self.latency):
                         result = py_trees.common.Status.RUNNING
                         self.feedback_message = f'Latency within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
-                    if not self.comparison_operator(self.average_latency, self.latency) and self.fail_on_finish:
+                    else:
                         result = py_trees.common.Status.FAILURE
-                        self.feedback_message = f'Latency not within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
-                    elif not self.comparison_operator(self.average_latency, self.latency):
-                        result = py_trees.common.Status.SUCCESS
                         self.feedback_message = f'Latency not within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
                 else:
                     result = py_trees.common.Status.RUNNING

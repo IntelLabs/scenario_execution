@@ -123,7 +123,6 @@ class TestAssertTfMoving(unittest.TestCase):
 # DEFAULT VALUES
     # threshold_translation: 0.01 mps (meters per second)
     # threshold_rotation: 0.01 radps (radians per second)
-    # fail_on_finish: True
     # wait_for_first_transform: True
     # tf_topic_namespace: (optional)
     # use_sim_time: (optional)
@@ -140,7 +139,7 @@ class TestAssertTfMoving(unittest.TestCase):
     # Case 4: Test with threshold_translation set to 1 mps. The test fails with timeout as the average threshold of the robot_moving frame is less than 1 mps (meters per second).
     # Case 5: Test with threshold_rotation set to 5 radps. The test fails with timeout as the average threshold of the robot_rotating frame is less than 5 radps (radians per second).
 
-# 3. fail_on_finish: False
+# 3. failure_is_success
     # Case 6: Test succeeds if no movement is observed between frames.
 
 # 4. wait_for_first_transform: False
@@ -223,13 +222,14 @@ scenario test_assert_tf_moving:
 
     def test_case_6(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot',
-            timeout: 2s,
-            fail_on_finish: false)
+            timeout: 2s) with:
+            failure_is_success()
         emit end
 """
         self.execute(scenario_content)
