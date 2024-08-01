@@ -44,3 +44,21 @@ modifier retry:
 modifier timeout:
     # modifier to set a timeout for a subtree
     duration: time                       # time to wait
+
+modifier failure_is_running
+    # don't stop running
+
+modifier failure_is_success
+    # be positive, always succeed
+
+modifier running_is_failure
+    # got to be snappy! We want results...yesterday
+
+modifier running_is_success
+    # don't hang around...
+
+modifier success_is_failure
+    # be depressed, always fail
+
+modifier success_is_running
+    # the tickling never ends...

@@ -13,6 +13,7 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
         tk \
         libgl1 && \
     xargs -a /scenario_execution/deb_requirements.txt apt-get install -y --no-install-recommends && \
+    xargs -a /scenario_execution/libs/scenario_execution_kubernetes/deb_requirements.txt apt-get install -y --no-install-recommends && \
     rosdep update --rosdistro=${ROS_DISTRO} && \
     rosdep install --rosdistro=${ROS_DISTRO} --from-paths /scenario_execution/ --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
