@@ -221,6 +221,7 @@ scenario test_assert_topic_latency:
     def test_case_8(self):
         scenario_content = """
 import osc.ros
+import osc.helpers
 
 scenario test_assert_topic_latency:
     do parallel:
