@@ -310,6 +310,36 @@ Modifier to set a timeout for a sub-tree.
      - 
      - Maximum number of permitted failures
 
+``failure_is_running()``
+""""""""""""""""""""""""
+
+Don't stop running.
+
+``failure_is_success()``
+""""""""""""""""""""""""
+
+Be positive, always succeed.
+
+``running_is_failure()``
+""""""""""""""""""""""""
+
+Got to be snappy! We want results...yesterday.
+
+``running_is_success()``
+""""""""""""""""""""""""
+
+Don't hang around...
+
+``success_is_failure()``
+""""""""""""""""""""""""
+
+Be depressed, always fail.
+
+``success_is_running()``
+""""""""""""""""""""""""
+
+The tickling never ends...
+
 
 Kubernetes
 ----------
@@ -712,7 +742,7 @@ Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/n
 ``assert_tf_moving()``
 """"""""""""""""""""""
 
-Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. If there is no movement within ``timeout`` the action ends, depending on ``fail_on_finish``, either with success or failure. Speeds below ``threshold_translation`` and ``threshold_rotation`` are discarded. By default the action waits for the first transform to get available before starting the timeout timer. This can be changed by setting ``wait_for_first_transform`` to ``false``. If the tf topics are not available on ``/tf`` and ``/tf_static`` you can specify a namespace by setting ``tf_topic_namespace``.
+Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. If there is no movement within ``timeout`` the action with failure. Speeds below ``threshold_translation`` and ``threshold_rotation`` are discarded. By default the action waits for the first transform to get available before starting the timeout timer. This can be changed by setting ``wait_for_first_transform`` to ``false``. If the tf topics are not available on ``/tf`` and ``/tf_static`` you can specify a namespace by setting ``tf_topic_namespace``.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -743,10 +773,6 @@ Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. 
      - ``angular_rate``
      - ``0.01radps``
      - Rotational speed below this threshold is skipped.
-   * - ``fail_on_finish``
-     - ``bool``
-     - ``true``
-     - If true and there is no movement, the action fails. Otherwise it succeeds.
    * - ``wait_for_first_transform``
      - ``bool``
      - ``true``
@@ -763,7 +789,7 @@ Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. 
 ``assert_topic_latency()``
 """"""""""""""""""""""""""
 
-Check the latency of the specified topic (in system time). If the check with ``comparison_operator`` gets true, the action ends, depending on ``fail_on_finish``, either with success or failure.
+Check the latency of the specified topic (in system time). If the check with ``comparison_operator`` gets true, the action ends with failure.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -786,10 +812,6 @@ Check the latency of the specified topic (in system time). If the check with ``c
      - ``comparison_operator``
      - ``comparison_operator!le``
      - operator to compare latency time.
-   * - ``fail_on_finish``
-     - ``bool``
-     - ``true``
-     - If false action success, if comparison is true.
    * - ``rolling_average_count``
      - ``int``
      - ``1``

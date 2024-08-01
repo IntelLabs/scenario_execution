@@ -70,7 +70,6 @@ class TestAssertTopicLatency(unittest.TestCase):
 
 # DEFAULT VALUES
     # comparison_operator: 'le' (less than or equal to)
-    # fail_on_finish: True
     # rolling_average_count: 1
     # wait_for_first_message: True
     # topic_type: (optional)
@@ -81,14 +80,14 @@ class TestAssertTopicLatency(unittest.TestCase):
     # Description: All default values remain; only topic name and latency are specified.
     # Case 1: Test fails if recorded latency is more than the specified one.
     # Case 2 & 3: Test fails if the topic type is specified and is incorrect or invalid.
-    # Case 4: Test succeeds if topic_type is provided and right, but end with failure in this case as recorded latency is greater than expected and fail_on_finish is True (default)
+    # Case 4: Test succeeds if topic_type is provided and right, but end with failure in this case as recorded latency is greater than expected
     # Case 5: Test keeps running and ends with timeout if topic provided not exist.
     # Case 6: Test keeps running and ends with a scenario timeout as latency condition is satisfied (recorded latency is less than the specified one).
 
 # 2. Comparison Operator 'ge' (greater than or equal to):
     # Case 7: Test fails if recorded latency is less than the specified one.
 
-# 3. fail_on_finish: False
+# 3. failure_is_success
     # Case 8: Test succeeds if recorded latency is more than the specified one (for default comparison operator 'le').
 
 # 4. rolling_average_count: > 1
@@ -228,8 +227,8 @@ scenario test_assert_topic_latency:
         serial:
             assert_topic_latency(
                 topic_name: '/bla',
-                latency: 0.5s,
-                fail_on_finish: false)
+                latency: 0.5s) with:
+                failure_is_success()
             emit end
 """
         self.execute(scenario_content)
