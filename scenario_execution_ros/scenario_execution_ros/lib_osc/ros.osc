@@ -42,27 +42,24 @@ action assert_lifecycle_state:
     keep_running: bool = true            # if true, the action keeps running while the last state in the state_sequence remains
 
 action assert_tf_moving:
-    # Checks that a tf frame_id keeps moving in respect to a parent_frame_id. If there is no movement within timeout the action ends,
-    # depending on fail_on_finish, either with success or failure. Speeds below threshold_translation and threshold_rotation
-    # are discarded. By default the action waits for the first transform to get available before starting the timeout timer.
-    # This can be changed by setting wait_for_first_transform to false. If the tf topics are not available on /tf and /tf_static 
-    # you can specify a namespace by setting tf_topic_namespace.
+    # Checks that a tf frame_id keeps moving in respect to a parent_frame_id. If there is no movement within timeout the action ends with failure.
+    # Speeds below threshold_translation and threshold_rotation are discarded. By default the action waits for the first transform to get available
+    # before starting the timeout timer. This can be changed by setting wait_for_first_transform to false. If the tf topics are not available 
+    # on /tf and /tf_static you can specify a namespace by setting tf_topic_namespace.
     frame_id: string                     # frame_id to check for movement
     parent_frame_id: string = "map"      # parent frame_id against which the movement is checked
     timeout: time                        # timeout without movement
     threshold_translation: speed = 0.01mps # translation speed, below this threshold is skipped
     threshold_rotation: angular_rate = 0.01radps # rotational speed, below this threshold is skipped
-    fail_on_finish: bool = true          # if false, the action should success if no movement
     wait_for_first_transform: bool = true # start measuring with the first received message
     tf_topic_namespace: string = ''      # if set, it's used as namespace
     use_sim_time: bool = false           # in simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time
 
 action assert_topic_latency:
-    # Check the latency of the specified topic (in system time). If the check with comparison_operator gets true, the action ends, depending on fail_on_finish, either with success or failure.
+    # Check the latency of the specified topic (in system time). If the check with comparison_operator gets true, the action ends with failure.
     topic_name: string                   # topic name to wait for message
     latency: time                        # the time to compare against
     comparison_operator: comparison_operator = comparison_operator!le # the comparison is done using the python operator module
-    fail_on_finish: bool = true          # if false, the action should succeed if comparison is true
     rolling_average_count: int = 1       # the check is done aganist the rolling average over x elements
     wait_for_first_message: bool = true  # start measuring with the first received message
     topic_type: string                   # class of message type, only required when wait_for_first_message is set to false (e.g. std_msgs.msg.String)
