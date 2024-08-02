@@ -10,14 +10,20 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
    
    * - Name
      - Description
+   * - ``osc.gazebo``
+     - Gazebo Library (provided with :repo_link:`libs/scenario_execution_gazebo`)
    * - ``osc.helpers``
      - Helpers Library (provided with :repo_link:`scenario_execution`)
+   * - ``osc.kubernetes``
+     - Kubernetes Library (provided with :repo_link:`libs/scenario_execution_kubernetes`)
+   * - ``osc.nav2``
+     - ROS Nav2 navigation stack Library (provided with :repo_link:`libs/scenario_execution_nav2`)
+   * - ``osc.os``
+     - Library to interact with the operating system (provided with :repo_link:`libs/scenario_execution_os`)
    * - ``osc.robotics``
      - Robotics Library (provided with :repo_link:`scenario_execution`)
    * - ``osc.ros``
      - ROS Library (provided with :repo_link:`scenario_execution_ros`)
-   * - ``osc.gazebo``
-     - Gazebo Library (provided with :repo_link:`scenario_execution_gazebo`)
 
 Additional features can be implemented by defining your own library.
 
@@ -25,7 +31,7 @@ Additional features can be implemented by defining your own library.
 Gazebo
 ------
 
-The library contains actions to interact with the `Gazebo Simulation <https://gazebosim.org/>`_. Import it with ``import osc.gazebo``. It's provided by the package :repo_link:`scenario_execution_gazebo`.
+The library contains actions to interact with the `Gazebo Simulation <https://gazebosim.org/>`_. Import it with ``import osc.gazebo``. It's provided by the package :repo_link:`libs/scenario_execution_gazebo`.
 
 Actions
 ^^^^^^^
@@ -209,7 +215,7 @@ For debugging purposes, log a string using the available log mechanism.
      - String to log
 
 ``run_process()``
-""""""""""""""""""""""""""
+"""""""""""""""""
 
 Run a process. Reports `running` while the process has not finished.
 
@@ -241,6 +247,381 @@ If ``wait_for_shutdown`` is ``false`` and the process is still running on scenar
      - ``10s``
      - (Only used if ``wait_for_shutdown`` is ``false``) time to wait between ``shutdown_signal`` and SIGKILL getting sent, if process is still running on scenario shutdown
 
+
+Modifiers
+^^^^^^^^^
+
+``inverter()``
+""""""""""""""
+
+Modifier to invert the action result. A failing action will report ``success``, a succeeding action will report ``failure``.
+
+``repeat()``
+""""""""""""
+Modifier to repeat a sub-tree. If any of the included children report ``failure``, the repetition stops and ``failure`` is reported.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``count``
+     - ``int``
+     - ``-1``
+     - Repeat this many times (-1 to repeat indefinitely)
+
+``retry()``
+"""""""""""
+Modifier to retry a sub-tree until it succeeds.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``count``
+     - ``int``
+     - 
+     - Maximum number of permitted failures
+
+``timeout()``
+"""""""""""""
+Modifier to set a timeout for a sub-tree.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``count``
+     - ``int``
+     - 
+     - Maximum number of permitted failures
+
+``failure_is_running()``
+""""""""""""""""""""""""
+
+Don't stop running.
+
+``failure_is_success()``
+""""""""""""""""""""""""
+
+Be positive, always succeed.
+
+``running_is_failure()``
+""""""""""""""""""""""""
+
+Got to be snappy! We want results...yesterday.
+
+``running_is_success()``
+""""""""""""""""""""""""
+
+Don't hang around...
+
+``success_is_failure()``
+""""""""""""""""""""""""
+
+Be depressed, always fail.
+
+``success_is_running()``
+""""""""""""""""""""""""
+
+The tickling never ends...
+
+
+Kubernetes
+----------
+
+The library contains actions to interact with the `Kubernetes API <https://kubernetes.io>`_. Import it with ``import osc.kubernetes``. It's provided by the package :repo_link:`libs/scenario_execution_kubernetes`.
+
+Actions
+^^^^^^^
+
+``kubernetes_create_from_yaml()``
+"""""""""""""""""""""""""""""""""
+
+Create a Kubernetes object (e.g., a pod or network policy) from a yaml file. 
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``yaml_file``
+     - ``string``
+     - 
+     - The yaml-file to use create the object from
+
+
+``kubernetes_delete()``
+"""""""""""""""""""""""
+
+Delete a Kubernetes element (e.g., a pod or network policy).
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The target element to delete
+   * - ``regex``
+     - ``bool``
+     - ``false``
+     - Is the specified target a regular expression
+   * - ``element_type``
+     - ``kubernetes_element_type``
+     - 
+     - Type of the element to delete (e.g., ``kubernetes_element_type!pod``)
+   * - ``grace_period``
+     - ``time``
+     - ``5s``
+     - Grace period to wait before forcing deletion
+
+
+``kubernetes_patch_network_policy()``
+"""""""""""""""""""""""""""""""""""""
+
+Patch an existing Kubernetes network policy.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The target network policy to patch
+   * - ``network_enabled``
+     - ``bool``
+     - 
+     - Should the network be enabled
+   * - ``match_label``
+     - ``key_value``
+     - 
+     - key-value pair to match (e.g., ``key_value("app", "pod_name"))``
+
+
+``kubernetes_wait_for_network_policy_status()``
+"""""""""""""""""""""""""""""""""""""""""""""""
+
+Wait for an existing Kubernetes network policy to reach a specified state.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The target network policy to monitor
+   * - ``status``
+     - ``kubernetes_network_policy_status``
+     - 
+     - Expected status of the network policy, e.g., ``kubernetes_network_policy_status!added``
+
+
+``kubernetes_wait_for_pod_status()``
+""""""""""""""""""""""""""""""""""""
+
+Wait for a Kubernetes pod to reach a specified state.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The name of the pod to monitor
+   * - ``status``
+     - ``kubernetes_pod_status``
+     - 
+     - Expected status of the pod, e.g., ``kubernetes_pod_status!running``
+   * - ``regex``
+     - ``bool``
+     - ``false``
+     - Is the specified target a regular expression
+
+
+Nav2
+----
+
+The library contains actions to interact with the `Nav2 <https://docs.nav2.org/>`__ navigation stack. Import it with ``import osc.nav2``. It is provided by the package :repo_link:`libs/scenario_execution_nav2`.
+
+Actions
+^^^^^^^
+
+``differential_drive_robot.init_nav2()``
+""""""""""""""""""""""""""""""""""""""""
+
+Initialize nav2.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``initial_pose``
+     - ``pose_3d``
+     -
+     - The initial pose to set during initialization
+   * - ``base_frame_id``
+     - ``string``
+     - ``base_link``
+     - Base Frame ID
+   * - ``use_initial_pose``
+     - ``bool``
+     - ``true``
+     - If false, no initial_pose is needed (useful when using slam instead of amcl for localization)
+   * - ``namespace_override``
+     - ``string``
+     - 
+     - If set, it's used as namespace (instead of the associated actor's namespace)
+   * - ``wait_for_initial_pose``
+     - ``bool``
+     - ``false``
+     - If true the initial pose needs to be set externally (e.g. manually through rviz)
+
+``differential_drive_robot.nav_through_poses()``
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+Use nav2 to navigate through poses.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_poses``
+     - ``list of pose_3d``
+     -
+     - Goal poses to navigate through
+   * - ``namespace_override``
+     - ``string``
+     - ``''``
+     - If set, it's used as namespace (instead of the associated actor's namespace)
+   * - ``monitor_progress``
+     - ``bool``
+     - ``true``
+     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
+
+``differential_drive_robot.nav_to_pose()``
+""""""""""""""""""""""""""""""""""""""""""
+Use nav2 to navigate to goal pose.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_pose``
+     - ``pose_3d``
+     - 
+     - Goal pose to navigate to
+   * - ``namespace_override``
+     - ``string``
+     - 
+     - If set, it's used as namespace (instead of the associated actor's namespace)
+   * - ``action_topic``
+     - ``string``
+     - ``navigate_to_pose``
+     - Action name
+   * - ``monitor_progress``
+     - ``bool``
+     - ``true``
+     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
+
+
 OS
 --
 
@@ -253,26 +634,6 @@ Actions
 """""""""""""""""""""""
 
 Report success if a file exists.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``file_name``
-     - ``string``
-     -
-     - File to check
-
-
-``check_file_not_exists()``
-"""""""""""""""""""""""""""
-
-Report success if a file does not exist.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -381,7 +742,7 @@ Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/n
 ``assert_tf_moving()``
 """"""""""""""""""""""
 
-Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. If there is no movement within ``timeout`` the action ends, depending on ``fail_on_finish``, either with success or failure. Speeds below ``threshold_translation`` and ``threshold_rotation`` are discarded. By default the action waits for the first transform to get available before starting the timeout timer. This can be changed by setting ``wait_for_first_transform`` to ``false``. If the tf topics are not available on ``/tf`` and ``/tf_static`` you can specify a namespace by setting ``tf_topic_namespace``.
+Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. If there is no movement within ``timeout`` the action with failure. Speeds below ``threshold_translation`` and ``threshold_rotation`` are discarded. By default the action waits for the first transform to get available before starting the timeout timer. This can be changed by setting ``wait_for_first_transform`` to ``false``. If the tf topics are not available on ``/tf`` and ``/tf_static`` you can specify a namespace by setting ``tf_topic_namespace``.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -412,10 +773,6 @@ Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. 
      - ``angular_rate``
      - ``0.01radps``
      - Rotational speed below this threshold is skipped.
-   * - ``fail_on_finish``
-     - ``bool``
-     - ``true``
-     - If true and there is no movement, the action fails. Otherwise it succeeds.
    * - ``wait_for_first_transform``
      - ``bool``
      - ``true``
@@ -432,7 +789,7 @@ Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. 
 ``assert_topic_latency()``
 """"""""""""""""""""""""""
 
-Check the latency of the specified topic (in system time). If the check with ``comparison_operator`` gets true, the action ends, depending on ``fail_on_finish``, either with success or failure.
+Check the latency of the specified topic (in system time). If the check with ``comparison_operator`` gets true, the action ends with failure.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -455,10 +812,6 @@ Check the latency of the specified topic (in system time). If the check with ``c
      - ``comparison_operator``
      - ``comparison_operator!le``
      - operator to compare latency time.
-   * - ``fail_on_finish``
-     - ``bool``
-     - ``true``
-     - If false action success, if comparison is true.
    * - ``rolling_average_count``
      - ``int``
      - ``1``
@@ -523,98 +876,6 @@ Compare received topic messages using the given ``comparison_operator``, against
      - ``true``
      - start checking with the first received message after action execution. If false, the check is executed on the last received message.
 
-``differential_drive_robot.init_nav2()``
-""""""""""""""""""""""""""""""""""""""""
-
-Initialize nav2.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``initial_pose``
-     - ``pose_3d``
-     -
-     - The initial pose to set during initialization
-   * - ``base_frame_id``
-     - ``string``
-     - ``base_link``
-     - Base Frame ID
-   * - ``use_initial_pose``
-     - ``bool``
-     - ``true``
-     - If false, no initial_pose is needed (useful when using slam instead of amcl for localization)
-   * - ``namespace_override``
-     - ``string``
-     - 
-     - If set, it's used as namespace (instead of the associated actor's namespace)
-   * - ``wait_for_initial_pose``
-     - ``bool``
-     - ``false``
-     - If true the initial pose needs to be set externally (e.g. manually through rviz)
-
-``differential_drive_robot.nav_through_poses()``
-""""""""""""""""""""""""""""""""""""""""""""""""
-
-Use nav2 to navigate through poses.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``goal_poses``
-     - ``list of pose_3d``
-     -
-     - Goal poses to navigate through
-   * - ``namespace_override``
-     - ``string``
-     - ``''``
-     - If set, it's used as namespace (instead of the associated actor's namespace)
-   * - ``monitor_progress``
-     - ``bool``
-     - ``true``
-     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
-
-``differential_drive_robot.nav_to_pose()``
-""""""""""""""""""""""""""""""""""""""""""
-Use nav2 to navigate to goal pose.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``goal_pose``
-     - ``pose_3d``
-     - 
-     - Goal pose to navigate to
-   * - ``namespace_override``
-     - ``string``
-     - 
-     - If set, it's used as namespace (instead of the associated actor's namespace)
-   * - ``action_topic``
-     - ``string``
-     - ``navigate_to_pose``
-     - Action name
-   * - ``monitor_progress``
-     - ``bool``
-     - ``true``
-     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
-
 ``differential_drive_robot.odometry_distance_traveled()``
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -652,26 +913,26 @@ Wait until a TF frame is close to a defined reference point.
      - Type
      - Default
      - Description
-   * - ``namespace_override``
-     - ``string``
-     - 
-     - if set, it's used as namespace (instead of the associated actor's namespace)
-   * - ``reference_point``
-     - ``position_3d``
-     -
-     - Reference point to measure to distance to (z is not considered)
    * - ``threshold``
      - ``length``
      - 
      - Distance at which the action succeeds.
-   * - ``sim``
-     - ``bool``
-     - ``false``
-     - In simulation, we need to look up the transform map --> base_link at a different time as the scenario execution node is not allowed to use the sim time
+   * - ``reference_point``
+     - ``position_3d``
+     -
+     - Reference point to measure to distance to (z is not considered)
    * - ``robot_frame_id``
      - ``string``
      - ``base_link``
      - Defines the TF frame id of the robot
+   * - ``sim``
+     - ``bool``
+     - ``false``
+     - In simulation, we need to look up the transform map --> base_link at a different time as the scenario execution node is not allowed to use the sim time
+   * - ``namespace_override``
+     - ``string``
+     - ``''``
+     - if set, it's used as namespace (instead of the associated actor's namespace)
 
 ``log_check()``
 """""""""""""""
@@ -698,7 +959,9 @@ Wait for specific output in ROS log (i.e. ``/rosout`` topic). If any of the entr
 ``record_bag()``
 """"""""""""""""
 
-Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: '.')
+Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: '.').
+
+A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree. When replaying the bag-file, this allows to visualize the current state of the scenario in RViz, using the ``scenario_execution_rviz`` plugin.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -723,8 +986,12 @@ Record a ROS bag, stored in directory ``output_dir`` defined by command-line par
      - Whether to record hidden topics
    * - ``storage``
      - ``string``
-     - 
+     - ``''``
      - Storage type to use (empty string: use ROS bag record default)
+   * - ``use_sim_time``
+     - ``bool``
+     - ``false``
+     - Use simulation time for message timestamps by subscribing to the /clock topic
 
 ``ros_launch()``
 """"""""""""""""

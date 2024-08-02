@@ -14,7 +14,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# Generated from OpenSCENARIO2.g4 by ANTLR 4.7.2
+# Generated from OpenSCENARIO2.g4 by ANTLR 4.9.1
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .OpenSCENARIO2Parser import OpenSCENARIO2Parser
@@ -1249,3 +1249,6 @@ class OpenSCENARIO2Listener(ParseTreeListener):
     # Exit a parse tree produced by OpenSCENARIO2Parser#integerLiteral.
     def exitIntegerLiteral(self, ctx: OpenSCENARIO2Parser.IntegerLiteralContext):
         pass
+
+
+del OpenSCENARIO2Parser

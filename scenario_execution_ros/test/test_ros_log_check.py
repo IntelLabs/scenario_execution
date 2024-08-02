@@ -29,7 +29,7 @@ from antlr4.InputStream import InputStream
 os.environ["PYTHONUNBUFFERED"] = '1'
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestRosLogCheck(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self):
@@ -53,7 +53,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
         self.scenario_execution_ros.run()
 
@@ -78,54 +78,44 @@ scenario test_success:
             wait elapsed(10s)
             emit fail
 """
-        self.scenario_execution_ros.live_tree = True
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_timeout(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_timeout:
-    do parallel:
-        serial:
-            log_check(values: ['UNKNOWN'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        log_check(values: ['UNKNOWN'])
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_module_success(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_module_success:
-    do parallel:
-        serial:
-            log_check(module_name: 'test_node_logging', values: ['ERROR'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        log_check(module_name: 'test_node_logging', values: ['ERROR'])
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_module_timeout(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_module_timeout:
-    do parallel:
-        serial:
-            log_check(module_name: 'UNKNOWN', values: ['ERROR'])
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        log_check(module_name: 'UNKNOWN', values: ['ERROR'])
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())

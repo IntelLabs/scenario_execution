@@ -24,7 +24,7 @@ from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestRosPublishReceive(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self) -> None:
@@ -38,30 +38,27 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def test_success(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_ros_topic_publish:
-    do serial:
-        parallel:
-            test: serial:
-                wait elapsed(1s)
-                topic_publish() with:
-                    keep(it.topic_name == '/bla')
-                    keep(it.topic_type == 'std_msgs.msg.Bool')
-                    keep(it.value == '{\\\"data\\\": True}')
-            receive: serial:
-                wait_for_data() with:
-                    keep(it.topic_name == '/bla')
-                    keep(it.topic_type == 'std_msgs.msg.Bool')
-                emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish() with:
+                keep(it.topic_name == '/bla')
+                keep(it.topic_type == 'std_msgs.msg.Bool')
+                keep(it.value == '{\\\"data\\\": True}')
+        receive: serial:
+            wait_for_data() with:
+                keep(it.topic_name == '/bla')
+                keep(it.topic_type == 'std_msgs.msg.Bool')
+            emit end
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
-        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
         self.assertTrue(self.scenario_execution_ros.process_results())

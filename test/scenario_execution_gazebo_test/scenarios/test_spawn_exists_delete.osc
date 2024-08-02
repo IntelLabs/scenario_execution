@@ -1,6 +1,8 @@
 import osc.gazebo
+import osc.helpers
 
 scenario test_spawn_and_exists:
+    timeout(30s)
         
     test_obstacle: osc_actor
 
@@ -12,7 +14,3 @@ scenario test_spawn_and_exists:
             wait elapsed(5s)
             actor_exists('test_obstacle')
             delete_obstacle: test_obstacle.delete(entity_name: 'test_obstacle')
-            emit end
-        time_out: serial:
-            wait elapsed(30s)
-            emit fail

@@ -39,7 +39,7 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution.tree = self.tree
         self.scenario_execution.run()
 
@@ -49,14 +49,10 @@ import osc.standard.base
 import osc.helpers
 
 scenario test_run_process:
-    do parallel:
-        serial:
-            run_process() with:
-                keep(it.command == 'false')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            time_out_shutdown: emit fail
+    timeout(10s)
+    do serial:
+        run_process() with:
+            keep(it.command == 'false')
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution.process_results())
@@ -67,14 +63,10 @@ import osc.standard.base
 import osc.helpers
 
 scenario test_run_process:
-    do parallel:
-        serial:
-            run_process() with:
-                keep(it.command == 'true')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            time_out_shutdown: emit fail
+    timeout(10s)
+    do serial:
+        run_process() with:
+            keep(it.command == 'true')
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution.process_results())
@@ -85,13 +77,9 @@ import osc.standard.base
 import osc.helpers
 
 scenario test_run_process:
-    do parallel:
-        serial:
-            run_process('sleep 2')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            time_out_shutdown: emit fail
+    timeout(10s)
+    do serial:
+        run_process('sleep 2')
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution.process_results())
@@ -102,24 +90,20 @@ import osc.standard.base
 import osc.helpers
 
 scenario test_run_process:
-    do parallel:
-        serial:
-            run_process('sleep 15', wait_for_shutdown: false)
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            time_out_shutdown: emit fail
+    timeout(3s)
+    do serial:
+        run_process('sleep 15', wait_for_shutdown: false)
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution.tree = self.tree
 
         start = datetime.now()
         self.scenario_execution.run()
         end = datetime.now()
         duration = (end-start).total_seconds()
-        self.assertLessEqual(duration, 10.)
+        self.assertLessEqual(duration, 3.)
         self.assertTrue(self.scenario_execution.process_results())
 
     def test_signal_parsing(self):
@@ -132,4 +116,4 @@ scenario test_run_process:
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)

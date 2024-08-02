@@ -23,7 +23,7 @@ import json
 
 class ActorExistsActionState(Enum):
     """
-    States for executing a entity check in ignition
+    States for executing a entity check in gazebo
     """
     IDLE = 1
     WAITING_FOR_ACTOR = 2
@@ -33,7 +33,7 @@ class ActorExistsActionState(Enum):
 
 class GazeboActorExists(RunProcess):
     """
-    Class to check existance of an entity in Ignition
+    Class to check existance of an entity in gazebo
 
     """
 

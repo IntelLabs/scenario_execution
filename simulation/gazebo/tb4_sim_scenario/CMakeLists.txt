@@ -8,10 +8,8 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 
-find_package(ros_ign_interfaces REQUIRED)
-
 install(
-  DIRECTORY config launch params worlds urdf
+  DIRECTORY config launch params worlds urdf maps
   DESTINATION share/${PROJECT_NAME}
 )
 

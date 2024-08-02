@@ -135,8 +135,8 @@ class ModelElement(object):  # pylint: disable=too-many-public-methods
             raise ValueError(f"Expected only one child. Found {self.get_child_count()}")
         return self.get_child(0)
 
-    def set_children(self, *childs):
-        for child in childs:
+    def set_children(self, *children):
+        for child in children:
             if child is not None:
                 if isinstance(child, List):
                     for ch in child:
@@ -840,12 +840,15 @@ class ActionInherits(Inheritance):
             return visitor.visit_children(self)
 
 
-class ModifierDeclaration(Declaration):
+class ModifierDeclaration(StructuredDeclaration):
 
-    def __init__(self, actor_name, modifier_name):
-        super().__init__()
-        self.actor = actor_name
-        self.modifier = modifier_name
+    def __init__(self, actor, name):
+        if actor:
+            super().__init__(actor + "." + name)
+        else:
+            super().__init__(name)
+        self.actor = actor
+        self.modifier = name
 
     def enter_node(self, listener):
         if hasattr(listener, "enter_modifier_declaration"):
@@ -1521,13 +1524,12 @@ class BehaviorInvocation(StructuredDeclaration):
         return params
 
 
-class ModifierInvocation(ModelElement):
+class ModifierInvocation(StructuredDeclaration):
 
-    def __init__(self, actor, modifier_name):
+    def __init__(self, actor, modifier):
         super().__init__()
         self.actor = actor
-        self.modifier_name = modifier_name
-        # self.set_children(actor, modifier_name)
+        self.modifier = modifier
 
     def enter_node(self, listener):
         if hasattr(listener, "enter_modifier_invocation"):
@@ -1542,6 +1544,9 @@ class ModifierInvocation(ModelElement):
             return visitor.visit_modifier_invocation(self)
         else:
             return visitor.visit_children(self)
+
+    def get_base_type(self):
+        return self.modifier
 
 
 class RiseExpression(Expression):
@@ -1742,6 +1747,9 @@ class FunctionApplicationExpression(Expression):
                 if named:
                     raise OSC2ParsingError(
                         msg=f'Positional argument after named argument not allowed.', context=child.get_ctx())
+                if len(param_keys) <= pos:
+                    raise OSC2ParsingError(
+                        msg=f'Positional argument at position {pos} not expected.', context=child.get_ctx())
                 key = param_keys[pos]
                 pos += 1
             elif isinstance(child, NamedArgument):

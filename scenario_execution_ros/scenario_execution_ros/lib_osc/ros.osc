@@ -42,27 +42,24 @@ action assert_lifecycle_state:
     keep_running: bool = true            # if true, the action keeps running while the last state in the state_sequence remains
 
 action assert_tf_moving:
-    # Checks that a tf frame_id keeps moving in respect to a parent_frame_id. If there is no movement within timeout the action ends,
-    # depending on fail_on_finish, either with success or failure. Speeds below threshold_translation and threshold_rotation
-    # are discarded. By default the action waits for the first transform to get available before starting the timeout timer.
-    # This can be changed by setting wait_for_first_transform to false. If the tf topics are not available on /tf and /tf_static 
-    # you can specify a namespace by setting tf_topic_namespace.
+    # Checks that a tf frame_id keeps moving in respect to a parent_frame_id. If there is no movement within timeout the action ends with failure.
+    # Speeds below threshold_translation and threshold_rotation are discarded. By default the action waits for the first transform to get available
+    # before starting the timeout timer. This can be changed by setting wait_for_first_transform to false. If the tf topics are not available 
+    # on /tf and /tf_static you can specify a namespace by setting tf_topic_namespace.
     frame_id: string                     # frame_id to check for movement
     parent_frame_id: string = "map"      # parent frame_id against which the movement is checked
     timeout: time                        # timeout without movement
     threshold_translation: speed = 0.01mps # translation speed, below this threshold is skipped
     threshold_rotation: angular_rate = 0.01radps # rotational speed, below this threshold is skipped
-    fail_on_finish: bool = true          # if false, the action should success if no movement
     wait_for_first_transform: bool = true # start measuring with the first received message
     tf_topic_namespace: string = ''      # if set, it's used as namespace
     use_sim_time: bool = false           # in simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time
 
 action assert_topic_latency:
-    # Check the latency of the specified topic (in system time). If the check with comparison_operator gets true, the action ends, depending on fail_on_finish, either with success or failure.
+    # Check the latency of the specified topic (in system time). If the check with comparison_operator gets true, the action ends with failure.
     topic_name: string                   # topic name to wait for message
     latency: time                        # the time to compare against
     comparison_operator: comparison_operator = comparison_operator!le # the comparison is done using the python operator module
-    fail_on_finish: bool = true          # if false, the action should succeed if comparison is true
     rolling_average_count: int = 1       # the check is done aganist the rolling average over x elements
     wait_for_first_message: bool = true  # start measuring with the first received message
     topic_type: string                   # class of message type, only required when wait_for_first_message is set to false (e.g. std_msgs.msg.String)
@@ -79,39 +76,18 @@ action check_data:
     fail_if_bad_comparison: bool = false # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
     wait_for_first_message: bool = true  # start checking with the first received message after action execution. If false, the check is executed on the last received message
 
-action differential_drive_robot.init_nav2:
-    # Initialize nav2
-    initial_pose: pose_3d                # the initial pose to set during initialization
-    base_frame_id: string = 'base_link'  # the base frame id
-    use_initial_pose: bool = true        # if false, no initial_pose is needed (useful when using slam instead of amcl for localization)
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
-    wait_for_initial_pose: bool = false  # if true the initial pose needs to be set externally (e.g. manually through rviz)
-
-action differential_drive_robot.nav_through_poses:
-    # Use nav2 to navigate through poses.
-    goal_poses: list of pose_3d          # goal poses to navigate through
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
-    monitor_progress: bool = true        # if true, the action returns after the goal is reached or on failure. If no, the action returns after request.
-
-action differential_drive_robot.nav_to_pose:
-    # Nav2 to navigate to goal pose.
-    goal_pose: pose_3d                   # goal pose to navigate to
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
-    action_topic: string = 'navigate_to_pose' # Name of action
-    monitor_progress: bool = true        # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
-
 action differential_drive_robot.odometry_distance_traveled:
     # Wait until a defined distance was traveled, based on odometry
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
     distance: length                     # traveled distance at which the action succeeds.
+    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
 
 action differential_drive_robot.tf_close_to:
     # Wait until a TF frame is close to a defined reference point
-    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
-    reference_point: position_3d         # z is not considered
     threshold: length                    # distance at which the action succeeds
-    sim: bool = false                    # in simulation, we need to look up the transform map --> base_link at a different time as the scenario execution node is not allowed to use the sim time
+    reference_point: position_3d         # z is not considered
     robot_frame_id: string = 'base_link' # defines the TF frame id of the robot 
+    sim: bool = false                    # in simulation, we need to look up the transform map --> base_link at a different time as the scenario execution node is not allowed to use the sim time
+    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
 
 action log_check:
     # Check the ROS log for specific output
@@ -124,6 +100,7 @@ action record_bag:
     timestamp_suffix: bool = true        # Add a timestamp suffix to output directory name
     hidden_topics: bool = false          # whether to record hidden topics
     storage: string = ''                 # storage type to use (empty string: use default)
+    use_sim_time: bool = false           # use simulation time for message timestamps by subscribing to the /clock topic
 
 action ros_launch:
     # Execute a ros launch file

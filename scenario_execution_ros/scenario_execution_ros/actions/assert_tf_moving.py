@@ -19,7 +19,7 @@ import py_trees  # pylint: disable=import-error
 from rclpy.node import Node
 import time
 import tf2_ros
-from scenario_execution_ros.actions.nav2_common import NamespacedTransformListener
+from .common import NamespacedTransformListener
 from scenario_execution.actions.base_action import BaseAction
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 import math
@@ -27,12 +27,11 @@ import math
 
 class AssertTfMoving(BaseAction):
 
-    def __init__(self, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, fail_on_finish: bool, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
+    def __init__(self, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
         super().__init__()
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.timeout = timeout
-        self.fail_on_finish = fail_on_finish
         self.threshold_translation = threshold_translation
         self.threshold_rotation = threshold_rotation
         self.wait_for_first_transform = wait_for_first_transform
@@ -93,13 +92,9 @@ class AssertTfMoving(BaseAction):
                 if not self.start_timeout:
                     self.timer = time.time()
                     self.start_timeout = True
-                elif now - self.timer > self.timeout and self.fail_on_finish:
+                elif now - self.timer > self.timeout:
                     self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds."  # pylint: disable= attribute-defined-outside-init
                     result = py_trees.common.Status.FAILURE
-                elif now - self.timer > self.timeout and not self.fail_on_finish:
-                    self.logger.error("Timeout: No movement detected for {} seconds.".format(self.timeout))
-                    self.feedback_message = f"Timeout: No movement detected for {self.timeout} seconds."  # pylint: disable= attribute-defined-outside-init
-                    result = py_trees.common.Status.SUCCESS
                 else:
                     self.feedback_message = "Frame is not moving."  # pylint: disable= attribute-defined-outside-init
                     result = py_trees.common.Status.RUNNING

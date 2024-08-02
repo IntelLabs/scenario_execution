@@ -21,14 +21,18 @@ PACKAGE_NAME = 'scenario_execution_gazebo'
 
 setup(
     name=PACKAGE_NAME,
-    version='1.1.0',
+    version='1.2.0',
     packages=find_namespace_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
         ('share/' + PACKAGE_NAME, ['package.xml'])
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'transforms3d==0.3.1',
+        'defusedxml==0.7.1',
+    ],
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',

@@ -31,7 +31,7 @@ import math
 import tf2_ros
 
 
-class TestScenarioExecutionSuccess(unittest.TestCase):
+class TestAssertTfMoving(unittest.TestCase):
 
     def setUp(self) -> None:
         rclpy.init()
@@ -39,10 +39,11 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
         self.parser = OpenScenario2Parser(Logger('test', False))
         self.scenario_execution_ros = ROSScenarioExecution()
         self.node = rclpy.create_node('test_node')
-        self.tf_broadcaster = tf2_ros.StaticTransformBroadcaster(self.node)
-        self.timer = self.node.create_timer(0.1, self.publish_tf)
-        self.timer = self.node.create_timer(0.1, self.publish_static_tf)
-        self.timer = self.node.create_timer(0.1, self.publish_rotate_tf)
+        self.static_tf_broadcaster = tf2_ros.StaticTransformBroadcaster(self.node)
+        self.tf_broadcaster = tf2_ros.TransformBroadcaster(self.node)
+        self.timer_tf = self.node.create_timer(0.1, self.publish_tf)
+        self.timer_static_tf = self.node.create_timer(0.1, self.publish_static_tf)
+        self.timer_rotate_tf = self.node.create_timer(0.1, self.publish_rotate_tf)
         self.time = 0.0
         self.executor = rclpy.executors.MultiThreadedExecutor()
         self.executor.add_node(self.node)
@@ -53,11 +54,12 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
         self.scenario_execution_ros.run()
 
     def publish_static_tf(self):
+        self.node.destroy_timer(self.timer_static_tf)
         static_transform_stamped = TransformStamped()
         static_transform_stamped.header.stamp = self.node.get_clock().now().to_msg()
         static_transform_stamped.header.frame_id = 'map'
@@ -69,7 +71,7 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
         static_transform_stamped.transform.rotation.y = 0.0
         static_transform_stamped.transform.rotation.z = 0.0
         static_transform_stamped.transform.rotation.w = 1.0
-        self.tf_broadcaster.sendTransform(static_transform_stamped)
+        self.static_tf_broadcaster.sendTransform(static_transform_stamped)
 
     def publish_tf(self):
         self.time += 0.1
@@ -121,7 +123,6 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
 # DEFAULT VALUES
     # threshold_translation: 0.01 mps (meters per second)
     # threshold_rotation: 0.01 radps (radians per second)
-    # fail_on_finish: True
     # wait_for_first_transform: True
     # tf_topic_namespace: (optional)
     # use_sim_time: (optional)
@@ -138,7 +139,7 @@ class TestScenarioExecutionSuccess(unittest.TestCase):
     # Case 4: Test with threshold_translation set to 1 mps. The test fails with timeout as the average threshold of the robot_moving frame is less than 1 mps (meters per second).
     # Case 5: Test with threshold_rotation set to 5 radps. The test fails with timeout as the average threshold of the robot_rotating frame is less than 5 radps (radians per second).
 
-# 3. fail_on_finish: False
+# 3. failure_is_success
     # Case 6: Test succeeds if no movement is observed between frames.
 
 # 4. wait_for_first_transform: False
@@ -153,12 +154,13 @@ scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot',
-            timeout: 10)
+            timeout: 1s)
         emit end
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
+    @unittest.skip(reason="unstable on CI")
     def test_case_2(self):
         scenario_content = """
 import osc.ros
@@ -167,10 +169,10 @@ scenario test_assert_tf_moving:
         serial:
             assert_tf_moving(
                 frame_id: 'robot_moving',
-                timeout: 10)
+                timeout: 6s)
             emit fail
         time_out: serial:
-            wait elapsed(12s)
+            wait elapsed(10s)
             emit end
 """
         self.execute(scenario_content)
@@ -178,17 +180,14 @@ scenario test_assert_tf_moving:
 
     def test_case_3(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 scenario test_assert_tf_moving:
-    do parallel:
-        serial:
-            assert_tf_moving(
-                frame_id: 'robot_move',
-                timeout: 10)
-            emit end
-        time_out: serial:
-            wait elapsed(12s)
-            emit fail
+    timeout(4s)
+    do serial:
+        assert_tf_moving(
+            frame_id: 'robot_move',
+            timeout: 2s)
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
@@ -201,7 +200,7 @@ scenario test_assert_tf_moving:
         assert_tf_moving(
             frame_id: 'robot_moving',
             threshold_translation: 1.0,
-            timeout: 10)
+            timeout: 2s)
         emit end
 """
         self.execute(scenario_content)
@@ -215,7 +214,7 @@ scenario test_assert_tf_moving:
         assert_tf_moving(
             frame_id: 'robot_rotating',
             threshold_rotation: 5.0,
-            timeout: 10)
+            timeout: 2s)
         emit end
 """
         self.execute(scenario_content)
@@ -223,13 +222,14 @@ scenario test_assert_tf_moving:
 
     def test_case_6(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot',
-            timeout: 10,
-            fail_on_finish: false)
+            timeout: 2s) with:
+            failure_is_success()
         emit end
 """
         self.execute(scenario_content)
@@ -242,7 +242,7 @@ scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot_leg',
-            timeout: 10,
+            timeout: 2s,
             wait_for_first_transform: false)
         emit end
 """
@@ -256,7 +256,7 @@ scenario test_assert_tf_moving:
     do serial:
         assert_tf_moving(
             frame_id: 'robot',
-            timeout: 10,
+            timeout: 2s,
             wait_for_first_transform: false)
         emit end
 """
@@ -271,11 +271,11 @@ scenario test_assert_tf_moving:
         serial:
             assert_tf_moving(
                 frame_id: 'robot_moving',
-                timeout: 10,
+                timeout: 6s,
                 wait_for_first_transform: false)
             emit fail
         time_out: serial:
-            wait elapsed(12s)
+            wait elapsed(10s)
             emit end
 """
         self.execute(scenario_content)

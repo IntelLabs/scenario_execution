@@ -20,29 +20,11 @@ Test for Intermediate Scenario model Serialization and Deserialization
 import unittest
 
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
-from scenario_execution.utils.logging import BaseLogger, Logger
+from scenario_execution.utils.logging import Logger
 from scenario_execution.model.types import print_tree, serialize, deserialize
+from .common import DebugLogger
 from antlr4.InputStream import InputStream
 import py_trees
-
-
-class DebugLogger(BaseLogger):
-
-    def __init__(self, name):
-        super().__init__(name, False)
-        self.logs = []
-
-    def info(self, msg: str) -> None:
-        self.logs.append(msg)
-
-    def debug(self, msg: str) -> None:
-        self.logs.append(msg)
-
-    def warning(self, msg: str) -> None:
-        self.logs.append(msg)
-
-    def error(self, msg: str) -> None:
-        self.logs.append(msg)
 
 
 class TestOSC2Parser(unittest.TestCase):
@@ -66,7 +48,6 @@ action log:
 scenario test:
     do serial:
         log("foo")
-        emit end
 """
         model = self.parse(scenario_content)
         serialize_data = serialize(model)['CompilationUnit']['_children']

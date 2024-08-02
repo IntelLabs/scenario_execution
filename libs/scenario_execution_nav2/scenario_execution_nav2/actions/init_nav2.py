@@ -29,7 +29,8 @@ from tf2_ros import Buffer
 from datetime import datetime, timedelta
 import py_trees
 
-from .nav2_common import NamespaceAwareBasicNavigator, get_pose_stamped, NamespacedTransformListener
+from .nav2_common import NamespaceAwareBasicNavigator
+from scenario_execution_ros.actions.common import get_pose_stamped, NamespacedTransformListener
 from scenario_execution.actions.base_action import BaseAction
 
 
@@ -116,6 +117,15 @@ class InitNav2(BaseAction):
                                                                    self._amcl_pose_callback,
                                                                    amcl_pose_qos,
                                                                    callback_group=ReentrantCallbackGroup())
+
+    def execute(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):
+        self.initial_pose = initial_pose
+        self.base_frame_id = base_frame_id
+        self.wait_for_initial_pose = wait_for_initial_pose
+        self.use_initial_pose = use_initial_pose
+        self.namespace = associated_actor["namespace"]
+        if namespace_override:
+            self.namespace = namespace_override
 
     def update(self) -> py_trees.common.Status:
         """

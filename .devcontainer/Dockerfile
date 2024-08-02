@@ -1,13 +1,13 @@
 ARG ROS_DISTRO=humble
 
-FROM ros:${ROS_DISTRO}-ros-base
+FROM osrf/ros:${ROS_DISTRO}-desktop-full
 ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ##############################################################################
-##                                 Global Dependencies                       ##
+##                                 Global Dependencies                      ##
 ##############################################################################
 # Install libraries for rendering
 # hadolint ignore=DL3008
@@ -21,7 +21,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libxext6 \
     libx11-6 \
     mesa-utils \
-    libgl1-mesa-glx \
+    libglx-mesa0 \
     libglu1-mesa-dev \
     freeglut3-dev \
     mesa-common-dev \
@@ -35,23 +35,26 @@ RUN chmod +x /ros_entrypoint.sh
 ##############################################################################
 ##                      Scenario Execution Dependencies                     ##
 ##############################################################################
-# hadolint ignore=DL3008
-RUN --mount=type=bind,target=/tmp_setup apt-get update \
-    && xargs -a "/tmp_setup/.devcontainer/deb_requirements_${ROS_DISTRO}.txt" apt-get install -y --no-install-recommends "ros-${ROS_DISTRO}-rosbag2-storage-mcap" \
-    && rm -rf /var/lib/apt/lists/*
-    
-# hadolint ignore=DL3013
-RUN --mount=type=bind,target=/tmp_setup \
-    python3 -m pip install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir -r /tmp_setup/requirements.txt
+
+RUN --mount=type=bind,target=/tmp_setup export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    xargs -a /tmp_setup/deb_requirements.txt apt-get install -y --no-install-recommends && \
+    xargs -a /tmp_setup/libs/scenario_execution_kubernetes/deb_requirements.txt apt-get install -y --no-install-recommends && \
+    rosdep update --rosdistro="${ROS_DISTRO}" && \
+    for d in /tmp_setup/*; do \
+        [[ ! -d  "$d" ]] && continue; \
+        [[ "$(basename $d)" =~ ^(install|build|log)$ ]] && continue; \
+        rosdep install --rosdistro="${ROS_DISTRO}" --from-paths "$d" --ignore-src -r -y; \
+    done && \
+    rm -rf /var/lib/apt/lists/*
 
 ##############################################################################
 ##                           Create Non-root User                           ##
 ##############################################################################
 ARG USER=ros
 ARG PASSWORD=ros
-ARG UID=1000
-ARG GID=1000
+ARG UID=1234
+ARG GID=1234
 ENV UID=${UID}
 ENV GID=${GID}
 ENV USER=${USER}
@@ -60,19 +63,13 @@ RUN groupadd -g "$GID" "$USER"  && \
     echo "$USER:$PASSWORD" | chpasswd && \
     echo "%sudo ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudogrp
 
+##############################################################################
+##                           Setup ROS environment                          ##
+##############################################################################
+
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /etc/bash.bashrc
 USER $USER
-
-
-##############################################################################
-##                                 Build ROS and run                        ##
-##############################################################################
-
 WORKDIR /workspace
-RUN . "/opt/ros/$ROS_DISTRO/setup.sh" \
-    && colcon build 
-    # --symlink-install
-
 RUN printf "if [ -f /workspace/install/setup.bash ]; then \n\
               source /workspace/install/setup.bash \n\
           else \n\
@@ -81,4 +78,3 @@ RUN printf "if [ -f /workspace/install/setup.bash ]; then \n\
 
 # Switch to cyclonedds
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-ENV IGN_FILE_PATH=/workspace/install/tb4_sim_scenario/share/

@@ -38,36 +38,43 @@ class TestCheckFileExists(unittest.TestCase):
     def parse(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution.tree = self.tree
         self.scenario_execution.run()
 
     def test_success(self):
         self.parse("""
+import osc.helpers
 import osc.os
 
 scenario test:
-    do parallel:
-        serial:
-            check_file_exists('""" + self.tmp_file.name + """')
-            emit end
-        time_out: serial:
-            wait elapsed(1s)
-            emit fail
+    timeout(1s)
+    do serial:
+        check_file_exists('""" + self.tmp_file.name + """')
 """)
         self.assertTrue(self.scenario_execution.process_results())
 
     def test_fail(self):
         self.parse("""
+import osc.helpers
 import osc.os
 
 scenario test:
-    do parallel:
-        serial:
-            check_file_exists('UNKNOWN_FILE')
-            emit end
-        time_out: serial:
-            wait elapsed(1s)
-            emit fail
+    timeout(1s)
+    do serial:
+        check_file_exists('UNKNOWN_FILE')
 """)
         self.assertFalse(self.scenario_execution.process_results())
+
+    def test_fail_inverted(self):
+        self.parse("""
+import osc.helpers
+import osc.os
+
+scenario test:
+    timeout(1s)
+    do serial:
+        check_file_exists('UNKNOWN_FILE') with:
+            inverter()
+""")
+        self.assertTrue(self.scenario_execution.process_results())

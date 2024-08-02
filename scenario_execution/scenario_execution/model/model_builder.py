@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from .types import CompilationUnit, PhysicalTypeDeclaration, UnitDeclaration, EnumDeclaration, EnumMemberDeclaration, EnumValueReference, StructDeclaration, StructInherits, ActionDeclaration, ActionInherits, ActorDeclaration, ActorInherits, FieldAccessExpression,  FloatLiteral, FunctionApplicationExpression, Argument, BehaviorInvocation, BinaryExpression, BoolLiteral, DoDirective, ElapsedExpression, DoMember, EmitDirective,  EventCondition, EventDeclaration, EventFieldDecl, EventReference,  GlobalParameterDeclaration, Identifier, IdentifierReference, IntegerLiteral, KeepConstraintDeclaration,  LogicalExpression, MethodBody, MethodDeclaration, NamedArgument, OnDirective, ParameterDeclaration, PhysicalLiteral, ParameterReference, PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier, StringLiteral, ScenarioDeclaration, StructuredTypeExtension,  Type, VariableDeclaration, WaitDirective, ListExpression
+from .types import CompilationUnit, PhysicalTypeDeclaration, UnitDeclaration, EnumDeclaration, EnumMemberDeclaration, EnumValueReference, StructDeclaration, StructInherits, ActionDeclaration, ActionInherits, ActorDeclaration, ActorInherits, FieldAccessExpression,  FloatLiteral, FunctionApplicationExpression, Argument, BehaviorInvocation, BinaryExpression, BoolLiteral, DoDirective, ElapsedExpression, DoMember, EmitDirective,  EventCondition, EventDeclaration, EventFieldDecl, EventReference,  GlobalParameterDeclaration, Identifier, IdentifierReference, IntegerLiteral, KeepConstraintDeclaration,  LogicalExpression, MethodBody, MethodDeclaration, NamedArgument, OnDirective, ParameterDeclaration, PhysicalLiteral, ParameterReference, PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier, StringLiteral, ScenarioDeclaration, StructuredTypeExtension,  Type, VariableDeclaration, WaitDirective, ListExpression, ModifierDeclaration, ModifierInvocation
 
 
 from ..osc2_parsing.OpenSCENARIO2Parser import OpenSCENARIO2Parser
@@ -525,19 +525,22 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
 
     # Enter a parse tree produced by OpenSCENARIO2Parser#modifierDeclaration.
     def enterModifierDeclaration(self, ctx: OpenSCENARIO2Parser.ModifierDeclarationContext):
-        raise OSC2ParsingError(msg=f"modifier declaration not supported yet.", context=ctx)
-        # self.__node_stack.append(self.__cur_node)
-        # actor_name = None
-        # if ctx.actorName():
-        #     actor_name = ctx.actorName().getText()
+        self.__node_stack.append(self.__cur_node)
+        actor_name = None
+        if ctx.actorName():
+            raise OSC2ParsingError(msg="Modifier refering actor currently not supported", context=ctx)
+            # actor_name = ctx.actorName().getText()
 
-        # modifier_name = ctx.modifierName().getText()
+        if ctx.qualifiedBehaviorName():
+            raise OSC2ParsingError(msg="Modifier with qualified behavior name  actor currently not supported", context=ctx)
 
-        # node = ModifierDeclaration(actor_name, modifier_name)
-        # node.set_ctx(ctx, self.current_file)
+        name = ctx.modifierName().getText()
 
-        # self.__cur_node.set_children(node)
-        # self.__cur_node = node
+        node = ModifierDeclaration(actor_name, name)
+        node.set_ctx(ctx, self.current_file)
+
+        self.__cur_node.set_children(node)
+        self.__cur_node = node
 
     # Exit a parse tree produced by OpenSCENARIO2Parser#modifierDeclaration.
     def exitModifierDeclaration(self, ctx: OpenSCENARIO2Parser.ModifierDeclarationContext):
@@ -1068,22 +1071,21 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
 
     # Enter a parse tree produced by OpenSCENARIO2Parser#modifierInvocation.
     def enterModifierInvocation(self, ctx: OpenSCENARIO2Parser.ModifierInvocationContext):
-        raise OSC2ParsingError(msg=f"modifier invocation not supported yet.", context=ctx)
-        # self.__node_stack.append(self.__cur_node)
-        # modifier_name = ctx.modifierName().getText()
+        self.__node_stack.append(self.__cur_node)
+        modifier = ctx.modifierName().getText()
 
-        # actor = None
-        # if ctx.actorExpression():
-        #     actor = ctx.actorExpression().getText()
+        actor = None
+        if ctx.actorExpression():
+            actor = ctx.actorExpression().getText()
 
-        # if ctx.behaviorExpression():
-        #     actor = ctx.behaviorExpression().getText()
+        if ctx.behaviorExpression():
+            actor = ctx.behaviorExpression().getText()
 
-        # node = ModifierInvocation(actor, modifier_name)
-        # node.set_ctx(ctx, self.current_file)
+        node = ModifierInvocation(actor, modifier)
+        node.set_ctx(ctx, self.current_file)
 
-        # self.__cur_node.set_children(node)
-        # self.__cur_node = node
+        self.__cur_node.set_children(node)
+        self.__cur_node = node
 
     # Exit a parse tree produced by OpenSCENARIO2Parser#modifierInvocation.
     def exitModifierInvocation(self, ctx: OpenSCENARIO2Parser.ModifierInvocationContext):

@@ -24,6 +24,8 @@ class BaseAction(py_trees.behaviour.Behaviour):
     # CAUTION: __init__() only gets the initial parameter values. In case variables get modified during scenario execution,
     #          the latest values are available in execute() only.
     def __init__(self, resolve_variable_reference_arguments_in_execute=True):
+        self._model = None
+        self.logger = None
         self.blackboard = None
         self.resolve_variable_reference_arguments_in_execute = resolve_variable_reference_arguments_in_execute
         super().__init__(self.__class__.__name__)
@@ -44,18 +46,19 @@ class BaseAction(py_trees.behaviour.Behaviour):
         if execute_method is not None and callable(execute_method):
 
             if self.resolve_variable_reference_arguments_in_execute:
-                final_args = self.model.get_resolved_value(self.get_blackboard_client())
+                final_args = self._model.get_resolved_value(self.get_blackboard_client())
             else:
-                final_args = self.model.get_resolved_value_with_variable_references(self.get_blackboard_client())
+                final_args = self._model.get_resolved_value_with_variable_references(self.get_blackboard_client())
 
-            if self.model.actor:
-                final_args["associated_actor"] = self.model.actor.get_resolved_value(self.get_blackboard_client())
-                final_args["associated_actor"]["name"] = self.model.actor.name
+            if self._model.actor:
+                final_args["associated_actor"] = self._model.actor.get_resolved_value(self.get_blackboard_client())
+                final_args["associated_actor"]["name"] = self._model.actor.name
             self.execute(**final_args)
 
-    def _set_name_and_model(self, name, model):
+    def _set_base_properities(self, name, model, logger):
         self.name = name
-        self.model = model
+        self._model = model
+        self.logger = logger
 
     def get_blackboard_client(self):
         if self.blackboard:
@@ -70,15 +73,24 @@ class BaseAction(py_trees.behaviour.Behaviour):
             else:
                 return None
 
-        self.blackboard = self.attach_blackboard_client(name=self.name, namespace=get_blackboard_namespace(self.model))
+        self.blackboard = self.attach_blackboard_client(name=self.name, namespace=get_blackboard_namespace(self._model))
         return self.blackboard
 
-    def set_associated_actor_variable(self, variable_name, value):
-        if not self.model.actor:
+    def register_access_to_associated_actor_variable(self, variable_name):
+        if not self._model.actor:
             raise ValueError("Model does not have 'actor'.")
         blackboard = self.get_blackboard_client()
-        model_blackboard_name = self.model.actor.get_fully_qualified_var_name(include_scenario=False)
+        model_blackboard_name = self._model.actor.get_fully_qualified_var_name(include_scenario=False)
         model_blackboard_name += "/" + variable_name
         blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.WRITE)
+        return model_blackboard_name
+
+    def set_associated_actor_variable(self, variable_name, value):
+        model_blackboard_name = self.register_access_to_associated_actor_variable(variable_name)
         self.logger.debug(f"Set variable '{model_blackboard_name}' to '{value}'")
-        setattr(blackboard, model_blackboard_name, value)
+        setattr(self.get_blackboard_client(), model_blackboard_name, value)
+
+    def get_associated_actor_variable(self, variable_name):
+        model_blackboard_name = self.register_access_to_associated_actor_variable(variable_name)
+        self.logger.debug(f"Get variable '{model_blackboard_name}'")
+        return getattr(self.get_blackboard_client(), model_blackboard_name)

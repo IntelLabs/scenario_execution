@@ -14,7 +14,31 @@ The `standard library of
 OSC2 <https://www.asam.net/static_downloads/public/asam-openscenario/2.0.0/domain-model/standard_library.html>`__
 was adapted to be usable by the current parsing support of scenario execution.
 
-In the following the supported features are described.
+
+Mapping to py-trees
+-------------------
+
+.. list-table:: 
+   :widths: 15 25 60
+   :header-rows: 1
+   :class: tight-table   
+   
+   - * OpenScenario2  
+     * py-trees
+     * Comment
+   - * ``action``
+     * ``Behaviour``
+     * Actions are derived from ``scenario_execution.actions.base_action.BaseAction`` which is derived from ``py_trees.behaviour.Behaviour``
+   - * ``event``
+     * blackboard entry and ``Behaviour``
+     * ``Behaviour`` is used to read and write blackboard variable
+   - * ``modifier``
+     * ``Decorator``
+     *
+   - * ``var``
+     * blackboard entry
+     * Variables are stored within the blackboard
+
 
 .. role:: raw-html(raw)
    :format: html
@@ -87,13 +111,13 @@ Composition Types
 
 Composition types are ``struct``, ``actor``, ``action``, ``scenario``.
 
-============== ==================== =========
+============== ==================== ===========================
 Element Type   Support              Notes
-============== ==================== =========
+============== ==================== ===========================
 Event          :raw-html:`&#9989;`      
 Field          :raw-html:`&#9989;`     
 Constraint     :raw-html:`&#9989;`  partially
-Method         :raw-html:`&#10060;`       
+Method         :raw-html:`&#9989;`       
 Coverage       :raw-html:`&#10060;`       
-Modifier       :raw-html:`&#10060;`       
-============== ==================== =========
+Modifier       :raw-html:`&#9989;`  partially (only predefined)     
+============== ==================== ===========================

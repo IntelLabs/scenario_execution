@@ -23,7 +23,7 @@ PACKAGE_NAME = 'scenario_execution_ros'
 
 setup(
     name=PACKAGE_NAME,
-    version='1.1.0',
+    version='1.2.0',
     packages=find_namespace_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -33,7 +33,10 @@ setup(
         (os.path.join('share', PACKAGE_NAME, 'scenarios', 'test'), glob('scenarios/test/*osc')),
         (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py'))
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'transforms3d==0.3.1',
+    ],
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
@@ -51,9 +54,6 @@ setup(
             'assert_tf_moving = scenario_execution_ros.actions.assert_tf_moving:AssertTfMoving',
             'assert_lifecycle_state = scenario_execution_ros.actions.assert_lifecycle_state:AssertLifecycleState',
             'check_data = scenario_execution_ros.actions.ros_topic_check_data:RosTopicCheckData',
-            'differential_drive_robot.init_nav2 = scenario_execution_ros.actions.init_nav2:InitNav2',
-            'differential_drive_robot.nav_to_pose = scenario_execution_ros.actions.nav_to_pose:NavToPose',
-            'differential_drive_robot.nav_through_poses = scenario_execution_ros.actions.nav_through_poses:NavThroughPoses',
             'differential_drive_robot.odometry_distance_traveled = scenario_execution_ros.actions.odometry_distance_traveled:OdometryDistanceTraveled',
             'differential_drive_robot.tf_close_to = scenario_execution_ros.actions.tf_close_to:TfCloseTo',
             'log_check = scenario_execution_ros.actions.ros_log_check:RosLogCheck',

@@ -16,7 +16,7 @@
 
 from scenario_execution.model.types import ActionDeclaration, ActionInherits, EnumDeclaration, EnumValueReference, KeepConstraintDeclaration, EmitDirective, Type
 
-from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree
+from .types import Argument, UnitDeclaration, EnumValueReference, StructInherits, ActionDeclaration, ActionInherits, ActorInherits, FieldAccessExpression,  BehaviorInvocation, EmitDirective, GlobalParameterDeclaration, IdentifierReference, Parameter, MethodBody, MethodDeclaration, ModelElement, StructuredDeclaration, KeepConstraintDeclaration, NamedArgument, ParameterDeclaration, PhysicalLiteral,  PositionalArgument,  RelationExpression, ScenarioInherits, SIUnitSpecifier,  Type, EnumMemberDeclaration, ListExpression, print_tree, ModifierInvocation, ScenarioDeclaration, DoDirective
 
 from .model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
@@ -326,3 +326,21 @@ class ModelResolver(ModelBaseVisitor):
         else:
             raise OSC2ParsingError(
                 msg=f'MethodDeclaration currently only supports "external", not "{body.type_ref}"', context=node.get_ctx())
+
+    def visit_modifier_invocation(self, node: ModifierInvocation):
+        if node.actor:
+            raise OSC2ParsingError(
+                msg=f'Actor not supported yet.', context=node.get_ctx())
+        resolved = node.resolve(node.modifier)
+        if not resolved:
+            raise OSC2ParsingError(
+                msg=f'ModifierInvocation uses unknown modifier "{node.modifier}".', context=node.get_ctx())
+        node.modifier = resolved
+        super().visit_modifier_invocation(node)
+
+    def visit_do_directive(self, node: DoDirective):
+        if not isinstance(node.get_parent(), ScenarioDeclaration):
+            raise OSC2ParsingError(
+                msg=f'Do directory currently only supported within scenario.', context=node.get_ctx())
+
+        return super().visit_do_directive(node)

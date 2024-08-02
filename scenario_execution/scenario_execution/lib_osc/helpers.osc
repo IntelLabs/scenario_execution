@@ -11,15 +11,54 @@ enum signal: [
 
 action log:
     # Print out a message
-    msg: string # Message to print
+    msg: string                          # Message to print
 
 action run_process:
     # Run an external process. If wait_for_shutdown is false and the process is still running on scenario shutdown, shutdown_signal is sent. If the process does not shutdown within shutdown_timeout, SIGKILL is sent.
-    command: string # Command to execute
-    wait_for_shutdown: bool = true # wait for the process to be finished. If false, the action immediately finishes.
+    command: string                      # Command to execute
+    wait_for_shutdown: bool = true       # wait for the process to be finished. If false, the action immediately finishes.
     shutdown_signal: signal = signal!sigterm # (only used if wait_for_shutdown is false) signal that is sent if a process is still running on scenario shutdown
-    shutdown_timeout: time = 10s # (only used if wait_for_shutdown is false) time to wait between shutdown_signal and SIGKILL getting sent if process is still running on scenario shutdown
+    shutdown_timeout: time = 10s         # (only used if wait_for_shutdown is false) time to wait between shutdown_signal and SIGKILL getting sent if process is still running on scenario shutdown
 
 struct random:
     def seed(seed_value: int = 0) is external scenario_execution.external_methods.random.seed()
     def get_float(min_val: float, max_val: float) -> float is external scenario_execution.external_methods.random.get_float()
+
+
+
+#########################
+# Common modifiers
+#########################
+
+modifier inverter
+    # Modifier to invert the action result. A failing action will report success, a succeeding action will report failure.
+
+modifier repeat:
+    # modifier to repeat a subtree. If any of the included children report failure, the repetition stops and failure is reported.
+    count: int = -1                      # repeat this many times (-1 to repeat indefinitely)
+
+modifier retry:
+    # modifier to retry a subtree until it succeeds
+    count: int                           # maximum number of permitted failures
+
+modifier timeout:
+    # modifier to set a timeout for a subtree
+    duration: time                       # time to wait
+
+modifier failure_is_running
+    # don't stop running
+
+modifier failure_is_success
+    # be positive, always succeed
+
+modifier running_is_failure
+    # got to be snappy! We want results...yesterday
+
+modifier running_is_success
+    # don't hang around...
+
+modifier success_is_failure
+    # be depressed, always fail
+
+modifier success_is_running
+    # the tickling never ends...

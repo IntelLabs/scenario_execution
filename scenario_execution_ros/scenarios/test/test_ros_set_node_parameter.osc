@@ -1,18 +1,14 @@
+import osc.helpers
 import osc.ros
 
 scenario test_ros_set_node_parameter:
-    do parallel:
-        test: serial:
-            set_node_parameter() with:
-                keep(it.node_name == '/test_node')
-                keep(it.parameter_name == 'testFloatParam')
-                keep(it.parameter_value == '3.14')
-            second_call: set_node_parameter() with:
-                keep(it.node_name == '/test_node')
-                keep(it.parameter_name == 'testBoolParam')
-                keep(it.parameter_value == 'True')
-            wait elapsed(3s)
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            time_out_shutdown: emit fail
+    timeout(10s)
+    do serial:
+        set_node_parameter() with:
+            keep(it.node_name == '/test_node')
+            keep(it.parameter_name == 'testFloatParam')
+            keep(it.parameter_value == '3.14')
+        second_call: set_node_parameter() with:
+            keep(it.node_name == '/test_node')
+            keep(it.parameter_name == 'testBoolParam')
+            keep(it.parameter_value == 'True')

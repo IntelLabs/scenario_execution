@@ -49,7 +49,7 @@ invalid
     def test_empty(self):
         scenario_content = ""
         model = self.parse(scenario_content)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.assertEqual(0, len(self.tree.children))
 
     def test_global_var(self):

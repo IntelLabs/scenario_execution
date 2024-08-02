@@ -24,15 +24,6 @@ class Log(BaseAction):
     Class for logging
     """
 
-    def setup(self, **kwargs) -> None:
-        """
-        setup before ticking
-
-        Args:
-            kwargs: arguments passed from py_trees.behaviour.Behaviour
-        """
-        self.logger = kwargs['logger']
-
     def execute(self, msg: str):
         self.msg = msg
         self.published = False

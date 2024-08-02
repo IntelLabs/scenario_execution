@@ -28,7 +28,7 @@ from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestAssertTopicLatency(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self) -> None:
@@ -49,9 +49,8 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
-        self.scenario_execution_ros.live_tree = True
         self.scenario_execution_ros.run()
 
     def publish_messages(self):
@@ -71,7 +70,6 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
 # DEFAULT VALUES
     # comparison_operator: 'le' (less than or equal to)
-    # fail_on_finish: True
     # rolling_average_count: 1
     # wait_for_first_message: True
     # topic_type: (optional)
@@ -82,14 +80,14 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     # Description: All default values remain; only topic name and latency are specified.
     # Case 1: Test fails if recorded latency is more than the specified one.
     # Case 2 & 3: Test fails if the topic type is specified and is incorrect or invalid.
-    # Case 4: Test succeeds if topic_type is provided and right, but end with failure in this case as recorded latency is greater than expected and fail_on_finish is True (default)
+    # Case 4: Test succeeds if topic_type is provided and right, but end with failure in this case as recorded latency is greater than expected
     # Case 5: Test keeps running and ends with timeout if topic provided not exist.
     # Case 6: Test keeps running and ends with a scenario timeout as latency condition is satisfied (recorded latency is less than the specified one).
 
 # 2. Comparison Operator 'ge' (greater than or equal to):
     # Case 7: Test fails if recorded latency is less than the specified one.
 
-# 3. fail_on_finish: False
+# 3. failure_is_success
     # Case 8: Test succeeds if recorded latency is more than the specified one (for default comparison operator 'le').
 
 # 4. rolling_average_count: > 1
@@ -152,15 +150,17 @@ scenario test_assert_topic_latency:
 
     def test_case_4(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test_assert_topic_latency:
     do parallel:
+        assert_topic_latency(
+            topic_name: '/bla',
+            latency: 0.5s,
+            topic_type: 'std_msgs.msg.String')
         serial:
-            assert_topic_latency(
-                topic_name: '/bla',
-                latency: 0.5s,
-                topic_type: 'std_msgs.msg.String')
+            wait elapsed(3s)
             emit end
 """
         self.execute(scenario_content)
@@ -221,14 +221,15 @@ scenario test_assert_topic_latency:
     def test_case_8(self):
         scenario_content = """
 import osc.ros
+import osc.helpers
 
 scenario test_assert_topic_latency:
     do parallel:
         serial:
             assert_topic_latency(
                 topic_name: '/bla',
-                latency: 0.5s,
-                fail_on_finish: false)
+                latency: 0.5s) with:
+                failure_is_success()
             emit end
 """
         self.execute(scenario_content)

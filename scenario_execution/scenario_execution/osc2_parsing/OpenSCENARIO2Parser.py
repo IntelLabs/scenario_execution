@@ -14,12 +14,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# Generated from OpenSCENARIO2.g4 by ANTLR 4.7.2
+# Generated from OpenSCENARIO2.g4 by ANTLR 4.9.1
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
-from typing.io import TextIO
 import sys
+if sys.version_info[1] > 5:
+    from typing import TextIO
+else:
+    from typing.io import TextIO
 
 
 def serializedATN():
@@ -1017,11 +1020,12 @@ class OpenSCENARIO2Parser (Parser):
 
     def __init__(self, input: TokenStream, output: TextIO = sys.stdout):
         super().__init__(input, output)
-        self.checkVersion("4.7.2")
+        self.checkVersion("4.9.1")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
     class Osc_fileContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1098,6 +1102,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class PreludeStatementContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1140,6 +1145,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ImportStatementContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1202,6 +1208,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ImportReferenceContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1260,6 +1267,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class StructuredIdentifierContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1331,6 +1339,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class OscDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1461,6 +1470,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class PhysicalTypeDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1517,6 +1527,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class PhysicalTypeNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1559,6 +1570,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class BaseUnitSpecifierContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1601,6 +1613,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class SIBaseUnitSpecifierContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1655,6 +1668,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class UnitDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1718,6 +1732,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class UnitSpecifierContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1760,6 +1775,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class UnitNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1818,6 +1834,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class SiBaseExponentListContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1876,6 +1893,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class SiBaseExponentContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -1925,6 +1943,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class SiUnitSpecifierContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2004,6 +2023,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class SiFactorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2065,6 +2085,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class SiOffsetContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2126,6 +2147,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class SiBaseUnitNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2171,6 +2193,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EnumDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2253,6 +2276,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EnumMemberDeclContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2308,6 +2332,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EnumMemberValueContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2359,6 +2384,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EnumNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2401,6 +2427,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EnumMemberNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2443,6 +2470,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EnumValueReferenceContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2492,6 +2520,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class InheritsConditionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2566,6 +2595,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class StructDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2668,6 +2698,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class StructInheritsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2723,6 +2754,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class StructMemberDeclContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2805,6 +2837,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class FieldNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2847,6 +2880,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class StructNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2889,6 +2923,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ActorDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -2991,6 +3026,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ActorInheritsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3046,6 +3082,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ActorMemberDeclContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3128,6 +3165,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ActorNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3170,6 +3208,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ScenarioDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3290,6 +3329,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ScenarioInheritsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3345,6 +3385,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ScenarioMemberDeclContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3438,6 +3479,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class QualifiedBehaviorNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3492,6 +3534,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class BehaviorNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3534,6 +3577,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ActionDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3654,6 +3698,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ActionInheritsContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3709,6 +3754,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ModifierDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3825,6 +3871,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ModifierNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3867,6 +3914,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class TypeExtensionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -3924,6 +3972,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EnumTypeExtensionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4006,6 +4055,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class StructuredTypeExtensionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4086,6 +4136,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ExtendableTypeNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4143,6 +4194,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ExtensionMemberDeclContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4218,6 +4270,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class GlobalParameterDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4317,6 +4370,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class TypeDeclaratorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4375,6 +4429,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class NonAggregateTypeDeclaratorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4441,6 +4496,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class AggregateTypeDeclaratorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4483,6 +4539,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ListTypeDeclaratorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4529,6 +4586,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class PrimitiveTypeContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4574,6 +4632,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class TypeNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4616,6 +4675,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EventDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4698,6 +4758,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EventSpecificationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4776,6 +4837,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EventReferenceContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4820,6 +4882,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EventFieldDeclContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4864,6 +4927,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EventFieldNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4906,6 +4970,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EventNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -4948,6 +5013,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EventPathContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5002,6 +5068,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EventConditionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5084,6 +5151,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class RiseExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5138,6 +5206,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class FallExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5192,6 +5261,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ElapsedExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5246,6 +5316,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EveryExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5327,6 +5398,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class BoolExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5369,6 +5441,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class DurationExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5411,6 +5484,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class FieldDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5469,6 +5543,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ParameterDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5566,6 +5641,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class VariableDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5664,6 +5740,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class SampleExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5738,6 +5815,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class DefaultValueContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5780,6 +5858,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ParameterWithDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5855,6 +5934,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ParameterWithMemberContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5913,6 +5993,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ConstraintDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -5971,6 +6052,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class KeepConstraintDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6041,6 +6123,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ConstraintQualifierContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6086,6 +6169,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ConstraintExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6128,6 +6212,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class RemoveDefaultDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6187,6 +6272,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ParameterReferenceContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6244,6 +6330,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ModifierInvocationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6338,6 +6425,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class BehaviorExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6387,6 +6475,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class BehaviorSpecificationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6445,6 +6534,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class OnDirectiveContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6525,6 +6615,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class OnMemberContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6583,6 +6674,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class DoDirectiveContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6627,6 +6719,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class DoMemberContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6717,6 +6810,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class CompositionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6830,6 +6924,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class CompositionOperatorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6875,6 +6970,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class BehaviorInvocationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -6970,6 +7066,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class BehaviorWithDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7045,6 +7142,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class BehaviorWithMemberContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7111,6 +7209,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class LabelNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7153,6 +7252,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ActorExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7195,6 +7295,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class WaitDirectiveContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7244,6 +7345,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class EmitDirectiveContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7314,6 +7416,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class CallDirectiveContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7363,6 +7466,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class UntilDirectiveContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7412,6 +7516,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class MethodInvocationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7475,6 +7580,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class MethodDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7562,6 +7668,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ReturnTypeContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7604,6 +7711,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class MethodImplementationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7702,6 +7810,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class MethodQualifierContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7741,6 +7850,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class MethodNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7783,6 +7893,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class CoverageDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7841,6 +7952,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class CoverDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -7922,6 +8034,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class RecordDeclarationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8003,6 +8116,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class CoverageArgumentListContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8243,6 +8357,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class TargetNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8285,6 +8400,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8342,6 +8458,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class TernaryOpExpContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8398,6 +8515,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ImplicationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8456,6 +8574,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class DisjunctionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8514,6 +8633,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ConjunctionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8572,6 +8692,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class InversionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8632,6 +8753,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class RelationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8743,6 +8865,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class RelationalOpContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8788,6 +8911,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class SumExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8899,6 +9023,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class AdditiveOpContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -8944,6 +9069,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class TermContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9055,6 +9181,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class MultiplicativeOpContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9100,6 +9227,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class FactorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9160,6 +9288,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class PostfixExpContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9480,6 +9609,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class FieldAccessContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9529,6 +9659,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class PrimaryExpContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9611,6 +9742,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ValueExpContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9731,6 +9863,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ListConstructorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9799,6 +9932,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class RangeConstructorContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9887,6 +10021,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class IdentifierReferenceContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -9945,6 +10080,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ArgumentListSpecificationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -10003,6 +10139,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ArgumentSpecificationContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -10065,6 +10202,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ArgumentNameContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -10107,6 +10245,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class ArgumentListContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -10208,6 +10347,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class PositionalArgumentContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -10250,6 +10390,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class NamedArgumentContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -10299,6 +10440,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class PhysicalLiteralContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
@@ -10361,6 +10503,7 @@ class OpenSCENARIO2Parser (Parser):
         return localctx
 
     class IntegerLiteralContext(ParserRuleContext):
+        __slots__ = 'parser'
 
         def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)

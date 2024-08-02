@@ -37,7 +37,7 @@ import time
 os.environ["PYTHONUNBUFFERED"] = '1'
 
 
-class TestScenarioExectionSuccess(unittest.TestCase):
+class TestRosActionCall(unittest.TestCase):
     # pylint: disable=missing-function-docstring
 
     def setUp(self):
@@ -69,7 +69,7 @@ class TestScenarioExectionSuccess(unittest.TestCase):
     def execute(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        create_py_tree(model, self.tree, self.parser.logger, False)
+        self.tree = create_py_tree(model, self.tree, self.parser.logger, False)
         self.scenario_execution_ros.tree = self.tree
         self.scenario_execution_ros.run()
 
@@ -108,34 +108,28 @@ class TestScenarioExectionSuccess(unittest.TestCase):
 
     def test_success(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_goal_not_accepted(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
 """
         self.goal_callback_reponse = GoalResponse.REJECT
         self.execute(scenario_content)
@@ -143,17 +137,14 @@ scenario test:
 
     def test_action_aborted(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
 """
         self.goal_response = GoalEvent.ABORT
         self.execute(scenario_content)
@@ -161,17 +152,14 @@ scenario test:
 
     def test_action_canceled(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
 """
         self.goal_response = GoalEvent.CANCELED
         self.execute(scenario_content)
@@ -179,17 +167,14 @@ scenario test:
 
     def test_invalid_type(self):
         scenario_content = """
+import osc.helpers
 import osc.ros
 
 scenario test:
-    do parallel:
-        serial:
-            wait elapsed(1s)
-            action_call(action_name: "/test_action", action_type: "UNKNOWN", data: '{\\"order\\": 3}')
-            emit end
-        time_out: serial:
-            wait elapsed(10s)
-            emit fail
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        action_call(action_name: "/test_action", action_type: "UNKNOWN", data: '{\\"order\\": 3}')
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())

@@ -6,11 +6,11 @@
         "context": "..",
         "dockerfile": "Dockerfile",
         "args": {
-            "USERNAME": "ros"
+            "USERNAME": "ros",
             "http_proxy": "${env:http_proxy}",
             "https_proxy": "${env:https_proxy}",
             "no_proxy": "${env:no_proxy}",
-            "NO_PROXY": "${env:NO_PROXY}",
+            "NO_PROXY": "${env:NO_PROXY}"
         }
     },
     "workspaceFolder": "/workspace",
@@ -25,7 +25,8 @@
                 "twxs.cmake",
                 "donjayamanne.python-extension-pack",
                 "eamodio.gitlens",
-                "ms-iot.vscode-ros"
+                "ms-iot.vscode-ros",
+                "BenjaminEngel.asam-osc2"
             ]
         }
     },
@@ -42,7 +43,7 @@
         "-e", "DISPLAY=${env:DISPLAY}"
     ],
     "mounts": [
-       "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+        "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
         "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached"
     ],
 }
