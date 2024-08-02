@@ -14,10 +14,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Main entry for scenario execution """
-
 from . import actions
 
 __all__ = [
-    'actions',
+    'actions'
 ]

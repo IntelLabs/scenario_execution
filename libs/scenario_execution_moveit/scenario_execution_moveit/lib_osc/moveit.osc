@@ -1,4 +1,5 @@
 import osc.robotics
+import osc.standard.base
 
 actor robotic_arm inherits robot:
     namespace: string = ''

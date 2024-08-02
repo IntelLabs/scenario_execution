@@ -8,16 +8,11 @@
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../LICENSE">Apache-2.0</license>
 
-  <depend>scenario_execution</depend>
+  <depend>scenario_execution_ros</depend>
 
   <exec_depend>rclpy</exec_depend>
-  <exec_depend>py_trees</exec_depend>
-  <exec_depend>py_trees_ros</exec_depend>
-  <exec_depend>visualization_msgs</exec_depend>
   <exec_depend>pymoveit2</exec_depend>
-  <exec_depend>xacro</exec_depend>
-  <exec_depend>rcl_interfaces</exec_depend>
-  <exec_depend>scenario_status</exec_depend>
+  <exec_depend>moveit_msgs</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
