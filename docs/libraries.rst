@@ -586,10 +586,10 @@ Use nav2 to navigate through poses.
      - ``string``
      - ``''``
      - If set, it's used as namespace (instead of the associated actor's namespace)
-   * - ``monitor_progress``
-     - ``bool``
-     - ``true``
-     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
+   * - ``action_topic``
+     - ``string``
+     - ``navigate_through_poses``
+     - Action name
 
 ``differential_drive_robot.nav_to_pose()``
 """"""""""""""""""""""""""""""""""""""""""
@@ -616,10 +616,6 @@ Use nav2 to navigate to goal pose.
      - ``string``
      - ``navigate_to_pose``
      - Action name
-   * - ``monitor_progress``
-     - ``bool``
-     - ``true``
-     - If yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
 
 
 OS
