@@ -1,0 +1,15 @@
+import osc.helpers
+import osc.ros
+import osc.nav2
+
+scenario example_nav2:
+    timeout(600s)
+    robot: differential_drive_robot
+    do serial:
+        ros_launch("gazebo_static_camera", "spawn_static_camera_launch.py", [ key_value('z', '10'), key_value('pitch', '1.57')], wait_for_shutdown: false)
+        record_bag(['/tf', '/tf_static', '/scenario_execution/snapshots', '/map', '/static_camera/image_raw', '/local_costmap/costmap'], use_sim_time: true)
+        robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+        serial:
+            repeat(2)
+            robot.nav_through_poses([pose_3d(position_3d(x: 0.75m, y: -0.75m)), pose_3d(position_3d(x: 1.5m, y: -1.5m))])
+            robot.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))

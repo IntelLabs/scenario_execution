@@ -48,15 +48,12 @@ class RosActionCall(BaseAction):
         self.client = None
         self.send_goal_future = None
         self.goal_handle = None
-        self.action_type = action_type
+        self.action_type_string = action_type
+        self.action_type = None
         self.action_name = action_name
         self.received_feedback = None
-        if data:
-            try:
-                trimmed_data = data.encode('utf-8').decode('unicode_escape')
-                self.data = literal_eval(trimmed_data)
-            except Exception as e:  # pylint: disable=broad-except
-                raise ValueError(f"Error while parsing sevice call data:") from e
+        self.data = None
+        self.parse_data(data)
         self.current_state = ActionCallActionState.IDLE
         self.cb_group = ReentrantCallbackGroup()
 
@@ -72,7 +69,7 @@ class RosActionCall(BaseAction):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
-        datatype_in_list = self.action_type.split(".")
+        datatype_in_list = self.action_type_string.split(".")
         try:
             self.action_type = getattr(
                 importlib.import_module(".".join(datatype_in_list[0:-1])),
@@ -81,6 +78,21 @@ class RosActionCall(BaseAction):
             raise ValueError(f"Invalid action_type '{self.action_type}':") from e
 
         self.client = ActionClient(self.node, self.action_type, self.action_name, callback_group=self.cb_group)
+
+    def execute(self, action_name: str, action_type: str, data: str):
+        if self.action_name != action_name or self.action_type_string != action_type:
+            raise ValueError(f"Updating action_name or action_type_string not supported.")
+
+        self.parse_data(data)
+        self.current_state = ActionCallActionState.IDLE
+
+    def parse_data(self, data):
+        if data:
+            try:
+                trimmed_data = data.encode('utf-8').decode('unicode_escape')
+                self.data = literal_eval(trimmed_data)
+            except Exception as e:  # pylint: disable=broad-except
+                raise ValueError(f"Error while parsing sevice call data:") from e
 
     def update(self) -> py_trees.common.Status:
         """

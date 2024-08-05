@@ -13,11 +13,10 @@ action differential_drive_robot.nav_through_poses:
     # Use nav2 to navigate through poses.
     goal_poses: list of pose_3d          # goal poses to navigate through
     namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
-    monitor_progress: bool = true        # if true, the action returns after the goal is reached or on failure. If no, the action returns after request.
+    action_topic: string = 'navigate_through_poses' # Name of action
 
 action differential_drive_robot.nav_to_pose:
     # Nav2 to navigate to goal pose.
     goal_pose: pose_3d                   # goal pose to navigate to
     namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
     action_topic: string = 'navigate_to_pose' # Name of action
-    monitor_progress: bool = true        # if yes, the action returns after the goal is reached or on failure. If no, the action returns after request.
