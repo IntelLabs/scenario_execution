@@ -351,7 +351,7 @@ jobs:
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
           # shellcheck disable=SC1083
-          scenario_batch_execution -i examples/example_external_method/scenarios -o test_example_external_method -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+          scenario_batch_execution -i examples/example_external_method/scenarios -o test_example_external_method -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR} headless:=True
       - name: Upload result
         uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         if: always()
@@ -384,13 +384,59 @@ jobs:
           export ROS_DOMAIN_ID=2
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
           # shellcheck disable=SC1083
-          scenario_batch_execution -i test/scenario_execution_gazebo_test/scenarios/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+          scenario_batch_execution -i test/scenario_execution_gazebo_test/scenarios/ -o test_scenario_execution_gazebo -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR} headless:=True
       - name: Upload result
         uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         if: always()
         with:
           name: test-scenario-execution-gazebo
           path: test_scenario_execution_gazebo/test.xml
+  test-scenario-execution-nav2:
+    needs: [build]
+    runs-on: intellabs-01
+    timeout-minutes: 30
+    container:
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
+      - name: Test Scenario Execution Nav2
+        shell: bash
+        run: |
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source install/setup.bash
+          Xvfb :1 -screen 0 800x600x16 &
+          export DISPLAY=:1.0
+          export -n CYCLONEDDS_URI
+          export ROS_DOMAIN_ID=2
+          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+          # shellcheck disable=SC1083
+          scenario_batch_execution -i test/scenario_execution_nav2_test/scenarios/ -o test_scenario_execution_nav2 -- ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR} headless:=True
+      - name: Upload result
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+        if: always()
+        with:
+          name: test-scenario-execution-nav2
+          path: test_scenario_execution_nav2/test.xml
+      - name: Convert video
+        if: always()
+        shell: bash
+        run: |
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /rosbag2_to_video/install/setup.bash
+          ros2 bag to_video  -t /static_camera/image_raw -o test_scenario_execution_nav2/test_scenario_execution_nav2/example_nav2.mp4  test_scenario_execution_nav2/test_scenario_execution_nav2/rosbag2_* --fps 5 --codec mp4v
+      - name: Upload video
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+        if: always()
+        with:
+          name: test-scenario-execution-nav2-video
+          path: test_scenario_execution_nav2/test_scenario_execution_nav2/example_nav2.mp4
   test-scenario-execution-pybullet:
     needs: [build]
     runs-on: intellabs-01
@@ -434,6 +480,7 @@ jobs:
     - test-example-multirobot
     - test-example-external-method
     - test-scenario-execution-gazebo
+    - test-scenario-execution-nav2
     - test-scenario-execution-pybullet
     runs-on: intellabs-01
     if: ${{ always() }}
@@ -471,4 +518,5 @@ jobs:
             downloaded-artifacts/test-example-multirobot-result/test.xml
             downloaded-artifacts/test-example-external-method-result/test.xml
             downloaded-artifacts/test-scenario-execution-gazebo/test.xml
+            downloaded-artifacts/test-scenario-execution-nav2/test.xml
             downloaded-artifacts/test-scenario-execution-pybullet/test.xml

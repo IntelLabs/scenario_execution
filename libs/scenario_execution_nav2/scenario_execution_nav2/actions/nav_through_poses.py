@@ -14,117 +14,47 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from enum import Enum
-
-from rclpy.node import Node
 from rclpy.duration import Duration
-
-import py_trees
-
-from nav2_simple_commander.robot_navigator import TaskResult  # pylint: disable=import-error
-
-from .nav2_common import NamespaceAwareBasicNavigator
+from nav2_msgs.action import NavigateThroughPoses
 from scenario_execution_ros.actions.common import get_pose_stamped
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution_ros.actions.ros_action_call import RosActionCall, ActionCallActionState
 
 
-class NavThroughPosesState(Enum):
-    """
-    States for executing a nav-through-poses with nav2
-    """
-    IDLE = 1
-    NAV_TO_GOAL = 2
-    DONE = 3
-
-
-class NavThroughPoses(BaseAction):
+class NavThroughPoses(RosActionCall):
     """
     Class to navigate through poses
     """
 
-    def __init__(self, associated_actor, goal_poses: list, monitor_progress: bool, namespace_override: str):
-        super().__init__()
+    def __init__(self, associated_actor, goal_poses: list, action_topic: str, namespace_override: str):
         self.namespace = associated_actor["namespace"]
-        self.monitor_progress = monitor_progress
-        self.node = None
-        self.future = None
-        self.current_state = NavThroughPosesState.IDLE
-        self.nav = None
         if namespace_override:
             self.namespace = namespace_override
+        self.goal_poses = None
+        super().__init__(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateThroughPoses", "")
 
-        if not isinstance(goal_poses, list):
-            raise TypeError(f'goal_poses needs to be list of position_3d, got {type(goal_poses)}.')
-        else:
-            self.goal_poses = goal_poses
+    def execute(self, associated_actor, goal_poses: list, action_topic: str, namespace_override: str) -> None:  # pylint: disable=arguments-differ
+        self.namespace = associated_actor["namespace"]
+        if namespace_override:
+            self.namespace = namespace_override
+        self.goal_poses = goal_poses
+        super().execute(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateThroughPoses", "")
 
-    def setup(self, **kwargs):
-        """
-        Setup ROS2 node and service client
+    def get_goal_msg(self):
+        goal_msg = NavigateThroughPoses.Goal()
+        for pose in self.goal_poses:
+            goal_msg.poses.append(get_pose_stamped(self.node.get_clock().now().to_msg(), pose))
+        return goal_msg
 
-        """
-        try:
-            self.node: Node = kwargs['node']
-        except KeyError as e:
-            error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
-                self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+    def get_feedback_message(self, current_state):
+        feedback_message = super().get_feedback_message(current_state)
 
-        self.nav = NamespaceAwareBasicNavigator(
-            node_name="basic_nav_nav_through_poses", namespace=self.namespace)
-
-    def update(self) -> py_trees.common.Status:
-        """
-        Execute states
-        """
-        self.logger.debug(f"Current State {self.current_state}")
-        result = py_trees.common.Status.FAILURE
-        if self.current_state == NavThroughPosesState.IDLE:
-            self.current_state = NavThroughPosesState.NAV_TO_GOAL
-            goal_poses = []
-            for pose in self.goal_poses:
-                goal_poses.append(get_pose_stamped(self.nav.get_clock().now().to_msg(), pose))
-            self.feedback_message = "Execute navigation."  # pylint: disable= attribute-defined-outside-init
-            go_to_pose_result = self.nav.goThroughPoses(goal_poses)
-            if go_to_pose_result:
-                if self.monitor_progress:
-                    result = py_trees.common.Status.RUNNING
-                    self.current_state = NavThroughPosesState.NAV_TO_GOAL
-                else:
-                    result = py_trees.common.Status.SUCCESS
-                    self.current_state = NavThroughPosesState.DONE
+        if self.current_state == ActionCallActionState.IDLE:
+            feedback_message = "Waiting for navigation"
+        elif self.current_state == ActionCallActionState.ACTION_CALLED:
+            if self.received_feedback:
+                feedback_message = f'Estimated time of arrival: {Duration.from_msg(self.received_feedback.estimated_time_remaining).nanoseconds / 1e9:0.0f}, poses left {self.received_feedback.number_of_poses_remaining}.'
             else:
-                self.current_state = NavThroughPosesState.DONE
-                result = py_trees.common.Status.FAILURE
-        elif self.current_state == NavThroughPosesState.NAV_TO_GOAL:
-            if not self.nav.isTaskComplete():
-                feedback = self.nav.getFeedback()
-                if feedback:
-                    self.feedback_message = 'Estimated time of arrival: ' + '{0:.0f}'.format(  # pylint: disable= attribute-defined-outside-init
-                        Duration.from_msg(feedback.estimated_time_remaining).nanoseconds / 1e9) + ' seconds.'
-
-                    if Duration.from_msg(feedback.navigation_time) > Duration(seconds=600):
-                        self.nav.cancelTask()
-                result = py_trees.common.Status.RUNNING
-            else:
-                self.current_state = NavThroughPosesState.DONE
-                result = self.nav.getResult()
-                if result == TaskResult.SUCCEEDED:
-                    self.feedback_message = 'Goal succeeded!'  # pylint: disable= attribute-defined-outside-init
-                    result = py_trees.common.Status.SUCCESS
-                elif result == TaskResult.CANCELED:
-                    self.feedback_message = 'Goal was canceled!'  # pylint: disable= attribute-defined-outside-init
-                    result = py_trees.common.Status.FAILURE
-                elif result == TaskResult.FAILED:
-                    self.feedback_message = 'Goal failed!'  # pylint: disable= attribute-defined-outside-init
-                    result = py_trees.common.Status.FAILURE
-        elif self.current_state == NavThroughPosesState.DONE:
-            self.logger.debug("Nothing to do!")
-        else:
-            self.logger.error(f"Invalid state {self.current_state}")
-
-        return result
-
-    def shutdown(self):
-        self.nav.cancelTask()
-        self.nav.destroy_node()
+                feedback_message = f"Executing navigation to ({self.goal_poses})."
+        elif current_state == ActionCallActionState.DONE:
+            feedback_message = f"Goal reached."
+        return feedback_message
