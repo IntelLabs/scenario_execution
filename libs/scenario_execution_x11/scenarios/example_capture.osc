@@ -1,0 +1,10 @@
+import osc.helpers
+import osc.x11
+
+scenario example_x11:
+    do parallel:
+        capture_screen()
+        run_process("glxgears")
+        serial:
+            wait elapsed(10s)
+            emit end

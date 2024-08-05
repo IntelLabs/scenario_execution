@@ -1,0 +1,6 @@
+import osc.standard.base
+
+action capture_screen:
+    # create video from screen capture
+    output_filename: string = "capture.mp4" # the initial pose to set during initialization
+    frame_rate: float = 25.0             # framerate of the resulting video
