@@ -24,6 +24,8 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
      - Robotics Library (provided with :repo_link:`scenario_execution`)
    * - ``osc.ros``
      - ROS Library (provided with :repo_link:`scenario_execution_ros`)
+   * - ``osc.x11``
+     - X11 Library (provided with :repo_link:`libs/scenario_execution_x11`)
 
 Additional features can be implemented by defining your own library.
 
@@ -33,11 +35,8 @@ Gazebo
 
 The library contains actions to interact with the `Gazebo Simulation <https://gazebosim.org/>`_. Import it with ``import osc.gazebo``. It's provided by the package :repo_link:`libs/scenario_execution_gazebo`.
 
-Actions
-^^^^^^^
-
 ``actor_exists()``
-""""""""""""""""""
+^^^^^^^^^^^^^^^^^^
 
 Waits for an actor to exist within simulation.
 
@@ -60,7 +59,7 @@ Waits for an actor to exist within simulation.
      - Gazebo world name
 
 ``osc_object.delete()``
-"""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Delete an object from the simulation.
 
@@ -83,7 +82,7 @@ Delete an object from the simulation.
      - Gazebo world name
 
 ``osc_object.relative_spawn()``
-"""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Spawn an actor relative to a given ``frame_id`` within simulation (at a specified ``distance`` in front of ``frame_id``).
 
@@ -122,7 +121,7 @@ Spawn an actor relative to a given ``frame_id`` within simulation (at a specifie
      - (optional) Comma-separated list of argument key:=value pairs
 
 ``osc_object.spawn()``
-""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^
 
 Spawn an actor within simulation.
 
@@ -165,7 +164,8 @@ Spawn an actor within simulation.
     If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
 
 ``wait_for_sim()``
-""""""""""""""""""
+^^^^^^^^^^^^^^^^^^
+
 Wait for simulation to become active (checks for simulation clock).
 
 .. list-table:: 
@@ -191,62 +191,6 @@ Helpers
 -------
 
 The library contains basic helper methods. Import it with ``import osc.helpers``.
-
-Actions
-^^^^^^^
-
-``log()``
-"""""""""
-
-For debugging purposes, log a string using the available log mechanism.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``msg``
-     - ``string``
-     -
-     - String to log
-
-``run_process()``
-"""""""""""""""""
-
-Run a process. Reports `running` while the process has not finished.
-
-If ``wait_for_shutdown`` is ``false`` and the process is still running on scenario shutdown, ``shutdown_signal`` is sent. If the process does not shutdown within shutdown_timeout, ``signal.sigkill`` is sent.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``command``
-     - ``string``
-     -
-     - Command to execute
-   * - ``wait_for_shutdown``
-     - ``bool``
-     - ``true``
-     - Wait for the process to be finished. If false, the action immediately finishes
-   * - ``shutdown_signal``
-     - ``signal``
-     - ``signal!sigterm``
-     - (Only used if ``wait_for_shutdown`` is ``false``) Signal that is sent if a process is still running on scenario shutdown
-   * - ``shutdown_timeout``
-     - ``time``
-     - ``10s``
-     - (Only used if ``wait_for_shutdown`` is ``false``) time to wait between ``shutdown_signal`` and SIGKILL getting sent, if process is still running on scenario shutdown
-
 
 Modifiers
 ^^^^^^^^^
@@ -341,16 +285,66 @@ Be depressed, always fail.
 The tickling never ends...
 
 
+``log()``
+^^^^^^^^^
+
+For debugging purposes, log a string using the available log mechanism.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``msg``
+     - ``string``
+     -
+     - String to log
+
+``run_process()``
+^^^^^^^^^^^^^^^^^
+
+Run a process. Reports `running` while the process has not finished.
+
+If ``wait_for_shutdown`` is ``false`` and the process is still running on scenario shutdown, ``shutdown_signal`` is sent. If the process does not shutdown within shutdown_timeout, ``signal.sigkill`` is sent.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``command``
+     - ``string``
+     -
+     - Command to execute
+   * - ``wait_for_shutdown``
+     - ``bool``
+     - ``true``
+     - Wait for the process to be finished. If false, the action immediately finishes
+   * - ``shutdown_signal``
+     - ``signal``
+     - ``signal!sigterm``
+     - (Only used if ``wait_for_shutdown`` is ``false``) Signal that is sent if a process is still running on scenario shutdown
+   * - ``shutdown_timeout``
+     - ``time``
+     - ``10s``
+     - (Only used if ``wait_for_shutdown`` is ``false``) time to wait between ``shutdown_signal`` and SIGKILL getting sent, if process is still running on scenario shutdown
+
+
 Kubernetes
 ----------
 
 The library contains actions to interact with the `Kubernetes API <https://kubernetes.io>`_. Import it with ``import osc.kubernetes``. It's provided by the package :repo_link:`libs/scenario_execution_kubernetes`.
 
-Actions
-^^^^^^^
-
 ``kubernetes_create_from_yaml()``
-"""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Create a Kubernetes object (e.g., a pod or network policy) from a yaml file. 
 
@@ -378,7 +372,7 @@ Create a Kubernetes object (e.g., a pod or network policy) from a yaml file.
 
 
 ``kubernetes_delete()``
-"""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Delete a Kubernetes element (e.g., a pod or network policy).
 
@@ -418,7 +412,7 @@ Delete a Kubernetes element (e.g., a pod or network policy).
 
 
 ``kubernetes_patch_network_policy()``
-"""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Patch an existing Kubernetes network policy.
 
@@ -454,7 +448,7 @@ Patch an existing Kubernetes network policy.
 
 
 ``kubernetes_wait_for_network_policy_status()``
-"""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Wait for an existing Kubernetes network policy to reach a specified state.
 
@@ -486,7 +480,7 @@ Wait for an existing Kubernetes network policy to reach a specified state.
 
 
 ``kubernetes_wait_for_pod_status()``
-""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Wait for a Kubernetes pod to reach a specified state.
 
@@ -526,11 +520,8 @@ Nav2
 
 The library contains actions to interact with the `Nav2 <https://docs.nav2.org/>`__ navigation stack. Import it with ``import osc.nav2``. It is provided by the package :repo_link:`libs/scenario_execution_nav2`.
 
-Actions
-^^^^^^^
-
 ``differential_drive_robot.init_nav2()``
-""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Initialize nav2.
 
@@ -565,7 +556,7 @@ Initialize nav2.
      - If true the initial pose needs to be set externally (e.g. manually through rviz)
 
 ``differential_drive_robot.nav_through_poses()``
-""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Use nav2 to navigate through poses.
 
@@ -592,7 +583,8 @@ Use nav2 to navigate through poses.
      - Action name
 
 ``differential_drive_robot.nav_to_pose()``
-""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Use nav2 to navigate to goal pose.
 
 .. list-table:: 
@@ -623,11 +615,8 @@ OS
 
 The library contains actions to interact with the operating system. Import it with ``import osc.os``. It is provided by the package :repo_link:`libs/scenario_execution_os`.
 
-Actions
-^^^^^^^
-
 ``check_file_exists()``
-"""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Report success if a file exists.
 
@@ -671,11 +660,10 @@ Actors
 """"""""""""""""""""""""""""
 A differential drive robot actor inheriting from the more general ``robot`` actor
 
-Actions
-^^^^^^^
 
 ``action_call()``
-"""""""""""""""""
+^^^^^^^^^^^^^^^^^
+
 Call a ROS action and wait for the result.
 
 .. list-table:: 
@@ -701,7 +689,8 @@ Call a ROS action and wait for the result.
      - Call content (e.g. ``{\"order\": 3}``)
 
 ``assert_lifecycle_state()``
-""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/node_lifecycle.html>`__ node.
 
 .. list-table:: 
@@ -736,7 +725,7 @@ Checks for the state of a `lifecycle-managed <https://design.ros2.org/articles/n
 
 
 ``assert_tf_moving()``
-""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^
 
 Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. If there is no movement within ``timeout`` the action with failure. Speeds below ``threshold_translation`` and ``threshold_rotation`` are discarded. By default the action waits for the first transform to get available before starting the timeout timer. This can be changed by setting ``wait_for_first_transform`` to ``false``. If the tf topics are not available on ``/tf`` and ``/tf_static`` you can specify a namespace by setting ``tf_topic_namespace``.
 
@@ -783,7 +772,7 @@ Checks that a tf ``frame_id`` keeps moving in respect to a ``parent_frame_id``. 
      - In simulation, we need to look up the transform at a different time as the scenario execution node is not allowed to use the sim time
 
 ``assert_topic_latency()``
-""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Check the latency of the specified topic (in system time). If the check with ``comparison_operator`` gets true, the action ends with failure.
 
@@ -823,7 +812,8 @@ Check the latency of the specified topic (in system time). If the check with ``c
 
 
 ``check_data()``
-""""""""""""""""
+^^^^^^^^^^^^^^^^
+
 Compare received topic messages using the given ``comparison_operator``, against the specified value. Either the whole message gets compared or a member defined by ``member_name``.
 
 .. list-table:: 
@@ -873,7 +863,7 @@ Compare received topic messages using the given ``comparison_operator``, against
      - start checking with the first received message after action execution. If false, the check is executed on the last received message.
 
 ``differential_drive_robot.odometry_distance_traveled()``
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Wait until a defined distance was traveled, based on odometry.
 
@@ -896,7 +886,7 @@ Wait until a defined distance was traveled, based on odometry.
      - if set, it's used as namespace (instead of the associated actor's namespace)
 
 ``differential_drive_robot.tf_close_to()``
-""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Wait until a TF frame is close to a defined reference point.
 
@@ -931,7 +921,8 @@ Wait until a TF frame is close to a defined reference point.
      - if set, it's used as namespace (instead of the associated actor's namespace)
 
 ``log_check()``
-"""""""""""""""
+^^^^^^^^^^^^^^^
+
 Wait for specific output in ROS log (i.e. ``/rosout`` topic). If any of the entries within ``values`` the action succeeds.
 
 .. list-table:: 
@@ -953,7 +944,7 @@ Wait for specific output in ROS log (i.e. ``/rosout`` topic). If any of the entr
      - list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
 
 ``record_bag()``
-""""""""""""""""
+^^^^^^^^^^^^^^^^
 
 Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: '.').
 
@@ -990,7 +981,7 @@ A common topic to record is ``/scenario_execution/snapshots`` which publishes ch
      - Use simulation time for message timestamps by subscribing to the /clock topic
 
 ``ros_launch()``
-""""""""""""""""
+^^^^^^^^^^^^^^^^
 
 Execute a ROS launch file.
 
@@ -1025,7 +1016,7 @@ Execute a ROS launch file.
      - (Only used ``if wait_for_shutdown`` is ``false``) Time to wait between ``SIGINT`` and ``SIGKILL`` getting sent, if process is still running on scenario shutdown
 
 ``service_call()``
-""""""""""""""""""
+^^^^^^^^^^^^^^^^^^
 
 Call a ROS service and wait for the reply.
 
@@ -1052,7 +1043,7 @@ Call a ROS service and wait for the reply.
      - Service call content
 
 ``set_node_parameter()``
-""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set a parameter of a node.
 
@@ -1079,7 +1070,7 @@ Set a parameter of a node.
      - Value of the parameter
 
 ``topic_monitor()``
-"""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^
 
 Subscribe to a topic and store the last message within a variable.
 
@@ -1110,7 +1101,7 @@ Subscribe to a topic and store the last message within a variable.
      - QoS profile for the subscriber (default: ``qos_preset_profiles!system_default``)
 
 ``topic_publish()``
-"""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^
 
 Publish a message on a topic.
 
@@ -1141,7 +1132,7 @@ Publish a message on a topic.
      - QoS Preset Profile for the subscriber (default: ``qos_preset_profiles!system_default``)
 
 ``wait_for_data()``
-"""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^
 
 Wait for any message on a ROS topic.
 
@@ -1169,7 +1160,7 @@ Wait for any message on a ROS topic.
 
 
 ``wait_for_topics()``
-"""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^
 
 Wait for topics to get available (i.e. publisher gets available).
 
@@ -1186,3 +1177,32 @@ Wait for topics to get available (i.e. publisher gets available).
      - ``list of string``
      - 
      - List of topics to wait for
+
+
+X11
+---
+
+The library contains actions to interact with the X11 window system. Import it with ``import osc.x11``. It is provided by the package :repo_link:`libs/scenario_execution_x11`.
+
+``capture_screen()``
+^^^^^^^^^^^^^^^^^^^^
+
+Capture the screen content within a video.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table
+
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``output_filename``
+     - ``string``
+     - ``capture.mp4``
+     - Name of the resulting video file (use ``--output-dir`` command-line argument to store the file within a specific directory)
+   * - ``frame_rate``
+     - ``float``
+     - ``25.0``
+     - Frame-rate of the resulting video

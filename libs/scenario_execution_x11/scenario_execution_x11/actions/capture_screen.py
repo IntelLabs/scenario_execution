@@ -15,24 +15,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from enum import Enum
-
-
-from geometry_msgs.msg import PoseWithCovarianceStamped
-from lifecycle_msgs.srv import GetState
-from rclpy.node import Node
-from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy
-from rclpy.qos import QoSProfile, QoSReliabilityPolicy
-from rclpy.callback_groups import ReentrantCallbackGroup
-from rclpy.time import Time
-from rclpy.duration import Duration
-from tf2_ros import Buffer
-from datetime import datetime, timedelta
 import py_trees
 import os
-
-from scenario_execution_ros.actions.common import get_pose_stamped, NamespacedTransformListener
 from scenario_execution.actions.run_process import RunProcess
-import signal
+
 
 class CaptureScreenState(Enum):
     IDLE = 1
@@ -40,27 +26,29 @@ class CaptureScreenState(Enum):
     DONE = 11
     FAILURE = 12
 
+
 class CaptureScreen(RunProcess):
 
     def __init__(self, output_filename: str, frame_rate: float):
         super().__init__("", wait_for_shutdown=True)
-        self.current_state = CaptureScreenState.IDLE
+        self.current_state = None
         self.output_dir = "."
-        
+
     def setup(self, **kwargs):
         if "DISPLAY" not in os.environ:
             raise ValueError("capture_screen() requires environment variable 'DISPLAY' to be set.")
-        
+
         if kwargs['output_dir']:
             if not os.path.exists(kwargs['output_dir']):
                 raise ValueError(
                     f"Specified destination dir '{kwargs['output_dir']}' does not exist")
             self.output_dir = kwargs['output_dir']
-        
-    def execute(self, output_filename: str, frame_rate: float): # pylint: disable=arguments-differ
-        cmd = ["ffmpeg", 
-               "-f", "x11grab", 
-               "-draw_mouse", "0", 
+
+    def execute(self, output_filename: str, frame_rate: float):  # pylint: disable=arguments-differ
+        self.current_state = CaptureScreenState.IDLE
+        cmd = ["ffmpeg",
+               "-f", "x11grab",
+               "-draw_mouse", "0",
                "-framerate", str(frame_rate),
                "-i", os.environ["DISPLAY"],
                "-c:v", "libx264",
@@ -72,10 +60,10 @@ class CaptureScreen(RunProcess):
 
     def get_logger_stdout(self):
         return self.logger.debug
-    
+
     def get_logger_stderr(self):
         return self.logger.debug
-        
+
     def on_executed(self):
         self.current_state = CaptureScreenState.CAPTURING
         self.feedback_message = f"Capturing screen..."  # pylint: disable= attribute-defined-outside-init
@@ -84,3 +72,4 @@ class CaptureScreen(RunProcess):
         if self.current_state == CaptureScreenState.CAPTURING:
             self.feedback_message = f"Capturing screen failed. {self.output[-1]}"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.FAILURE
+        return py_trees.common.Status.SUCCESS

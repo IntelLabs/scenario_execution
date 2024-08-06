@@ -1,6 +1,6 @@
 import osc.standard.base
 
 action capture_screen:
-    # create video from screen capture
-    output_filename: string = "capture.mp4" # the initial pose to set during initialization
-    frame_rate: float = 25.0             # framerate of the resulting video
+    # Capture the screen content within a video
+    output_filename: string = "capture.mp4" # name of the resulting video file (use ``--output-dir`` command-line argument to store the file within a specific directory)
+    frame_rate: float = 25.0             # frame-rate of the resulting video
