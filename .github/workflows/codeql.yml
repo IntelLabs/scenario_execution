@@ -2,12 +2,12 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main, humble, jazzy]
   pull_request:
-    branches: [ "main" ]
+    branches: [main, humble, jazzy]
   schedule:
     - cron: '16 21 * * 6'
-
+permissions: read-all
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
