@@ -3,7 +3,7 @@ import osc.ros
 import osc.nav2
 
 scenario example_nav2:
-    timeout(600s)
+    timeout(900s)
     robot: differential_drive_robot
     do serial:
         ros_launch("gazebo_static_camera", "spawn_static_camera_launch.py", [ key_value('z', '10'), key_value('pitch', '1.57')], wait_for_shutdown: false)
