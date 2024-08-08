@@ -467,6 +467,43 @@ jobs:
         with:
           name: test-scenario-execution-pybullet
           path: test_scenario_execution_pybullet/test.xml
+  test-scenario-execution-x11:
+    needs: [build]
+    runs-on: intellabs-01
+    timeout-minutes: 3
+    container:
+      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Restore cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          key: ${{ runner.os }}-build-${{ github.run_number }}
+          path: .
+      - name: Test Scenario Execution X11
+        shell: bash
+        run: |
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source install/setup.bash
+          sudo apt -y install mesa-utils
+          Xvfb :1 -screen 0 800x600x16 &
+          export DISPLAY=:1.0
+          ros2 run scenario_execution_ros scenario_execution_ros  libs/scenario_execution_x11/scenarios/example_capture.osc -t -o test_scenario_execution_x11
+          find test_scenario_execution_x11
+      - name: Upload result
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+        if: always()
+        with:
+          name: test-scenario-execution-x11
+          path: test_scenario_execution_x11/test.xml
+      - name: Upload video
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+        if: always()
+        with:
+          name: test-scenario-execution-x11-video
+          path: test_scenario_execution_x11/capture.mp4
   tests:
     needs: 
     - test-scenario-execution
@@ -482,6 +519,7 @@ jobs:
     - test-scenario-execution-gazebo
     - test-scenario-execution-nav2
     - test-scenario-execution-pybullet
+    - test-scenario-execution-x11
     runs-on: intellabs-01
     if: ${{ always() }}
     permissions:
