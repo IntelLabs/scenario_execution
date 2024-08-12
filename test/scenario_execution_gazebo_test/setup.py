@@ -17,14 +17,14 @@
 """ Setup python package """
 from glob import glob
 import os
-from setuptools import find_namespace_packages, setup
+from setuptools import find_packages, setup
 
 PACKAGE_NAME = 'scenario_execution_gazebo_test'
 
 setup(
     name=PACKAGE_NAME,
     version='1.2.0',
-    packages=find_namespace_packages(),
+    packages=find_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
