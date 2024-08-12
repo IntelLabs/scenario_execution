@@ -447,6 +447,70 @@ Patch an existing Kubernetes network policy.
      - key-value pair to match (e.g., ``key_value("app", "pod_name"))``
 
 
+``kubernetes_patch_pod()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Patch an existing pod. If patching resources, please check `feature gates <https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#container-resize-policies>`__
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The target pod to patch
+   * - ``body``
+     - ``string``
+     - 
+     - Patch to apply. Example: ``'{\"spec\":{\"containers\":[{\"name\":\"main\", \"resources\":{\"requests\":{\"cpu\":\"200m\"}, \"limits\":{\"cpu\":\"200m\"}}}]}}'``
+
+
+``kubernetes_pod_exec()``
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Execute a command within a running pod
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - ``default``
+     - Kubernetes namespace
+   * - ``within_cluster``
+     - ``bool``
+     - ``false``
+     - set to true if you want to access the cluster from within a running container/pod
+   * - ``target``
+     - ``string``
+     - 
+     - The target pod to execute the command in 
+   * - ``command``
+     - ``list of string``
+     - 
+     - Command to execute
+
+
 ``kubernetes_wait_for_network_policy_status()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

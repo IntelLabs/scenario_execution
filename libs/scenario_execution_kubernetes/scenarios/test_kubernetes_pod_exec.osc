@@ -1,0 +1,14 @@
+import osc.standard.base
+import osc.kubernetes
+import osc.helpers
+
+scenario test_kubernetes_create_from_yaml:
+    timeout(60s)
+    do serial:
+        kubernetes_create_from_yaml(yaml_file: "test.yaml")
+        kubernetes_wait_for_pod_status(target: "test", status: kubernetes_pod_status!running)
+        kubernetes_patch_pod(target: "test", body: '{\"spec\":{\"containers\":[{\"name\":\"main\", \"resources\":{\"requests\":{\"cpu\":\"200m\"}, \"limits\":{\"cpu\":\"200m\"}}}]}}')
+        kubernetes_pod_exec(target: "test", command:  ['sysbench', 'cpu', 'run'])
+        kubernetes_patch_pod(target: "test", body: '{\"spec\":{\"containers\":[{\"name\":\"main\", \"resources\":{\"requests\":{\"cpu\":\"800m\"}, \"limits\":{\"cpu\":\"800m\"}}}]}}')
+        kubernetes_pod_exec(target: "test", command:  ['sysbench', 'cpu', 'run'])
+        kubernetes_delete(target: "test", element_type: kubernetes_element_type!pod)
