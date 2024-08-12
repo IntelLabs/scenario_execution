@@ -26,12 +26,19 @@ class NavToPose(RosActionCall):
     Class to navigate to a pose
     """
 
-    def __init__(self, associated_actor, goal_pose: list, monitor_progress: bool, action_topic: str, namespace_override: str) -> None:
+    def __init__(self, associated_actor, goal_pose: list, action_topic: str, namespace_override: str) -> None:
+        self.namespace = associated_actor["namespace"]
+        if namespace_override:
+            self.namespace = namespace_override
+        self.goal_pose = None
+        super().__init__(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateToPose", "")
+
+    def execute(self, associated_actor, goal_pose: list, action_topic: str, namespace_override: str) -> None:  # pylint: disable=arguments-differ
         self.namespace = associated_actor["namespace"]
         if namespace_override:
             self.namespace = namespace_override
         self.goal_pose = goal_pose
-        super().__init__(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateToPose", "")
+        super().execute(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateToPose", "")
 
     def get_goal_msg(self):
         goal_msg = NavigateToPose.Goal()
@@ -45,11 +52,9 @@ class NavToPose(RosActionCall):
             feedback_message = "Waiting for navigation"
         elif self.current_state == ActionCallActionState.ACTION_CALLED:
             if self.received_feedback:
-                feedback_message = 'Estimated time of arrival: ' + \
-                    '{0:.0f}'.format(Duration.from_msg(self.received_feedback.estimated_time_remaining).nanoseconds / 1e9) + ' seconds.'
+                feedback_message = f'Estimated time of arrival: {Duration.from_msg(self.received_feedback.estimated_time_remaining).nanoseconds / 1e9:0.0f}.'
             else:
-                goal_msg = self.get_goal_msg()
-                feedback_message = f"Executing navigation to ({goal_msg.pose.pose.position.x}, {goal_msg.pose.pose.position.y})."
+                feedback_message = f"Executing navigation to ({self.goal_pose})."
         elif current_state == ActionCallActionState.DONE:
             feedback_message = f"Goal reached."
         return feedback_message

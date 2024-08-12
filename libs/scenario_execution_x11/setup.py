@@ -14,30 +14,34 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-""" Setup python package """
-from glob import glob
-import os
-from setuptools import find_packages, setup
+from setuptools import find_namespace_packages, setup
 
-PACKAGE_NAME = 'scenario_execution_gazebo_test'
+PACKAGE_NAME = 'scenario_execution_x11'
 
 setup(
     name=PACKAGE_NAME,
     version='1.2.0',
-    packages=find_packages(),
+    packages=find_namespace_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
-        ('share/' + PACKAGE_NAME, ['package.xml']),
-        (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
-        (os.path.join('share', PACKAGE_NAME, 'models'), glob('models/*.sdf*')),
+        ('share/' + PACKAGE_NAME, ['package.xml'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='Tests for Scenario Execution library for Gazebo',
+    description='Scenario Execution library for X11',
     license='Apache License 2.0',
     tests_require=['pytest'],
-    entry_points={},
+    include_package_data=True,
+    entry_points={
+        'scenario_execution.actions': [
+            'capture_screen = scenario_execution_x11.actions.capture_screen:CaptureScreen',
+        ],
+        'scenario_execution.osc_libraries': [
+            'x11 = '
+            'scenario_execution_x11.get_osc_library:get_osc_library',
+        ]
+    },
 )

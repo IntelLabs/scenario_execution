@@ -27,6 +27,7 @@ setup(
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + PACKAGE_NAME]),
+        ('share/' + PACKAGE_NAME, ['package.xml']),
         (os.path.join('share', PACKAGE_NAME, 'models'), glob('models/*.sdf')),
         (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*.py')),
     ],

@@ -19,7 +19,7 @@ from glob import glob
 import os
 from setuptools import find_packages, setup
 
-PACKAGE_NAME = 'scenario_execution_gazebo_test'
+PACKAGE_NAME = 'scenario_execution_nav2_test'
 
 setup(
     name=PACKAGE_NAME,
@@ -30,13 +30,12 @@ setup(
             ['resource/' + PACKAGE_NAME]),
         ('share/' + PACKAGE_NAME, ['package.xml']),
         (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
-        (os.path.join('share', PACKAGE_NAME, 'models'), glob('models/*.sdf*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='Tests for Scenario Execution library for Gazebo',
+    description='Tests for Scenario Execution library for Nav2',
     license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={},
