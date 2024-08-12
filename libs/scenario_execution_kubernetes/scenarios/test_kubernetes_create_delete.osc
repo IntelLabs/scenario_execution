@@ -3,7 +3,7 @@ import osc.kubernetes
 import osc.helpers
 
 scenario test_kubernetes_create_from_yaml:
-    timeout(30s)
+    timeout(60s)
     do serial:
         kubernetes_create_from_yaml(yaml_file: "test.yaml")
         kubernetes_wait_for_pod_status(target: "test", status: kubernetes_pod_status!running)

@@ -47,8 +47,12 @@ class KubernetesCreateFromYaml(BaseAction):
 
     def update(self) -> py_trees.common.Status:  # pylint: disable=too-many-return-statements
         if self.current_state == KubernetesCreateFromYamlActionState.IDLE:
-            self.current_request = utils.create_from_yaml(
-                self.client, self.yaml_file, verbose=False, namespace=self.namespace, async_req=True)
+            try:
+                self.current_request = utils.create_from_yaml(
+                    self.client, self.yaml_file, verbose=False, namespace=self.namespace, async_req=True)
+            except Exception as e:  # pylint: disable=broad-except
+                self.feedback_message = f"Error while creating from yaml: {e}"
+                return py_trees.common.Status.FAILURE
             self.current_state = KubernetesCreateFromYamlActionState.CREATION_REQUESTED
             self.feedback_message = f"Requested creation from yaml file '{self.yaml_file}' in namespace '{self.namespace}'"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.RUNNING
