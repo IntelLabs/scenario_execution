@@ -68,7 +68,7 @@ class RosSetNodeParameter(RosServiceCall):
                          service_type='rcl_interfaces.srv.SetParameters',
                          data='{ "parameters": [{ "name": "' + parameter_name + '", "value": { "type": ' + str(parameter_type) + ', "' + parameter_assign_name + '": ' + parameter_value + '}}]}')
 
-    def execute(self, node_name: str, parameter_name: str, parameter_value: str):   # pylint: disable=arguments-differ
+    def execute(self, node_name: str, parameter_name: str, parameter_value: str):   # pylint: disable=arguments-differ,arguments-renamed
         if self.node_name != node_name or self.parameter_name != parameter_name or self.parameter_value != parameter_value:
             raise ValueError("node_name, parameter_name and parameter_value are not changeable during runtime.")
 

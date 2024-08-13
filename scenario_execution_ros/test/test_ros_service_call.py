@@ -21,8 +21,8 @@ import threading
 from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.utils.logging import Logger
-from ament_index_python.packages import get_package_share_directory
 from scenario_execution.model.model_to_py_tree import create_py_tree
+from ament_index_python.packages import get_package_share_directory
 from antlr4.InputStream import InputStream
 import py_trees
 from std_srvs.srv import SetBool
