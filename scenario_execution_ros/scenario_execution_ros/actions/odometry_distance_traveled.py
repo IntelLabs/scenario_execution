@@ -38,8 +38,7 @@ class OdometryDistanceTraveled(BaseAction):
         self.node = None
         self.subscriber = None
         self.callback_group = None
-        if namespace_override:
-            self.namespace = namespace_override
+        self.namespace_override = namespace_override
 
     def setup(self, **kwargs):
         """
@@ -52,8 +51,20 @@ class OdometryDistanceTraveled(BaseAction):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
         self.callback_group = rclpy.callback_groups.MutuallyExclusiveCallbackGroup()
+        namespace = self.namespace
+        if self.namespace_override:
+            namespace = self.namespace_override
         self.subscriber = self.node.create_subscription(
-            Odometry, self.namespace + '/odom', self._callback, 1000, callback_group=self.callback_group)
+            Odometry, namespace + '/odom', self._callback, 1000, callback_group=self.callback_group)
+
+    def execute(self, associated_actor, distance: float, namespace_override: str):
+        if self.namespace != associated_actor["namespace"] or self.namespace_override != namespace_override:
+            raise ValueError("Runtime change of namespace not supported.")
+        self.distance_expected = distance
+        self.distance_traveled = 0.0
+        self.previous_x = 0
+        self.previous_y = 0
+        self.first_run = True
 
     def _callback(self, msg):
         '''
@@ -79,15 +90,6 @@ class OdometryDistanceTraveled(BaseAction):
 
         self.previous_x = msg.pose.pose.position.x
         self.previous_y = msg.pose.pose.position.y
-
-    def initialise(self):
-        '''
-        Initialize before ticking.
-        '''
-        self.distance_traveled = 0.0
-        self.previous_x = 0
-        self.previous_y = 0
-        self.first_run = True
 
     def update(self) -> py_trees.common.Status:
         """

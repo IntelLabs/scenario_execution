@@ -29,7 +29,7 @@ class AssertTopicLatency(BaseAction):
     def __init__(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, rolling_average_count: int, wait_for_first_message: bool):
         super().__init__()
         self.topic_name = topic_name
-        self.topic_type = topic_type
+        self.topic_type_str = topic_type
         self.latency = latency
         self.comparison_operator_feedback = comparison_operator[0]
         self.comparison_operator = get_comparison_operator(comparison_operator)
@@ -59,6 +59,9 @@ class AssertTopicLatency(BaseAction):
         elif not success and not self.wait_for_first_message:
             raise ValueError("Topic type must be specified. Please provide a valid topic type.")
 
+    def execute(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, rolling_average_count: int, wait_for_first_message: bool):
+        if self.timer != 0:
+            raise ValueError("Action does not yet support to get retriggered")
         self.timer = time.time()
 
     def update(self) -> py_trees.common.Status:
@@ -98,8 +101,8 @@ class AssertTopicLatency(BaseAction):
             for name, topic_type in available_topics:
                 if name == self.topic_name:
                     topic_type = topic_type[0].replace('/', '.')
-                    if self.topic_type:
-                        if self.topic_type == topic_type:
+                    if self.topic_type_str:
+                        if self.topic_type_str == topic_type:
                             self.call_subscriber()
                             self.is_topic = True
                             return True
@@ -121,7 +124,7 @@ class AssertTopicLatency(BaseAction):
                 return True
 
     def call_subscriber(self):
-        datatype_in_list = self.topic_type.split(".")
+        datatype_in_list = self.topic_type_str.split(".")
         self.topic_type = getattr(
             importlib.import_module(".".join(datatype_in_list[:-1])),
             datatype_in_list[-1]
