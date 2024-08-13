@@ -128,6 +128,7 @@ action topic_monitor:
     topic_type: string                   # class of the message type (e.g. std_msgs.msg.String)
     target_variable: string              # name of the variable (e.g. a 'var' within an actor instance)
     qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
+    member_name: string = ""             # if not empty, only the value of the member is stored within the variable
 
 action topic_publish:
     # publish a message on a topic

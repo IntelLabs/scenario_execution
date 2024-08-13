@@ -125,7 +125,7 @@ class RosTopicCheckData(BaseAction):
             try:
                 value = check_attr(msg)
             except AttributeError:
-                self.feedback_message = "Member name not found {self.member_name}]"
+                self.feedback_message = f"Member name not found {self.member_name}"
         self.found = self.comparison_operator(value, self.expected_value)
 
     def set_expected_value(self, expected_value_string):
