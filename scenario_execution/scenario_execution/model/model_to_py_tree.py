@@ -18,10 +18,10 @@ import copy
 import py_trees
 from py_trees.common import Access, Status
 from pkg_resources import iter_entry_points
-
+import operator
 import inspect
 
-from scenario_execution.model.types import ActionDeclaration, EventReference, FunctionApplicationExpression, ModifierInvocation, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration
+from scenario_execution.model.types import ActionDeclaration, EventReference, FunctionApplicationExpression, IdentifierReference, ModifierInvocation, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration, VariableReference
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.actions.base_action import BaseAction
@@ -101,6 +101,40 @@ class TopicPublish(py_trees.behaviour.Behaviour):
         """
         self.client.set(self.key, self.msg)
         return Status.SUCCESS
+
+class ComparisonExpression(object):
+    def __init__(self, left, right, op) -> None:
+        self.left = left
+        self.right = right
+        self.op = op
+    
+    def resolve(self, param):
+        if isinstance(param, ComparisonExpression):
+            return param.check()
+        elif isinstance(param, VariableReference):
+            return param.get_value()
+        else:
+            return param
+        
+    def check(self):
+        left = self.resolve(self.left)
+        right = self.resolve(self.right)
+            
+        print(f"CHECK {left} {str(self.op)} {right} --> {self.op(left, right)}")
+        return self.op(left, right)
+
+class RelationExpressionBehavior(py_trees.behaviour.Behaviour):
+
+    def __init__(self, name: "RelationExpressionBehavior", comparison: ComparisonExpression):
+        super().__init__(name)
+
+        self.comparison = comparison
+
+    def update(self):
+        if self.comparison.check():
+            return Status.SUCCESS
+        else:
+            return Status.RUNNING
 
 
 class ModelToPyTree(object):
@@ -349,18 +383,44 @@ class ModelToPyTree(object):
             expression = ""
             for child in node.get_children():
                 if isinstance(child, RelationExpression):
-                    raise NotImplementedError()
+                    comparison = self.visit_relation_expression(child)
+                    expression = RelationExpressionBehavior(name=node.get_ctx()[2], comparison=comparison)
                 elif isinstance(child, LogicalExpression):
-                    raise NotImplementedError()
+                    raise NotImplementedError("LogicalExpression not implemented yet")
                 elif isinstance(child, ElapsedExpression):
                     elapsed_condition = self.visit_elapsed_expression(child)
-                    expression = py_trees.timers.Timer(
-                        name=f"wait {elapsed_condition}s", duration=float(elapsed_condition))
+                    expression = py_trees.timers.Timer(name=f"wait {elapsed_condition}s", duration=float(elapsed_condition))
                 else:
                     raise OSC2ParsingError(
                         msg=f'Invalid event condition {child}', context=node.get_ctx())
             return expression
 
+        def visit_relation_expression(self, node: RelationExpression):
+            op = None
+            if node.operator == "==":
+                op = operator.eq
+            else:
+                raise NotImplementedError("RelationExpression operators other than '==' not implemented yet")
+            
+            if node.get_child_count() != 2:
+                raise ValueError("RelationExpression is expected to have two children.")
+            
+            args = []
+            for child in node.get_children():
+                if not isinstance(child, RelationExpression):
+                    if isinstance(child, IdentifierReference):
+                        var_def = child.get_variable_reference(self.blackboard)
+                        if var_def is not None:
+                            args.append(var_def)
+                        else:
+                            args.append(child.get_resolved_value(self.blackboard))
+                    else:
+                        args.append(child.get_resolved_value(self.blackboard))
+                else:
+                    args.append(self.visit(node.get_child(0)))
+            
+            return ComparisonExpression(args[0], args[1], op)
+        
         def visit_elapsed_expression(self, node: ElapsedExpression):
             elem = node.find_first_child_of_type(PhysicalLiteral)
             if not elem:

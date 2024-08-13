@@ -145,3 +145,30 @@ scenario test_scenario:
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
+
+
+    def test_member_relation_expr_success(self):
+        scenario_content = """
+import osc.ros
+import osc.helpers
+ 
+struct current_state:
+    var message_count: int = 1
+ 
+scenario test_scenario:
+    timeout(10s)
+    current: current_state
+    do serial:
+        parallel:
+            serial:
+                repeat()
+                wait elapsed(1s)
+                topic_publish("/bla", "std_msgs.msg.Int64", '{\\\"data\\\": 2}')
+            topic_monitor("/bla", "std_msgs.msg.Int64", member_name: "data", target_variable: current.message_count)
+
+            serial:
+                wait current.message_count == 2
+                emit end
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())

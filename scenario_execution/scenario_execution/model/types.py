@@ -2198,6 +2198,8 @@ class IdentifierReference(ModelElement):
     def get_blackboard_reference(self, blackboard):
         if not isinstance(self.ref, list) or len(self.ref) == 0:
             raise ValueError("Variable Reference only supported if reference is list with at least one element")
+        if not isinstance(self.ref[0], ParameterDeclaration):
+            raise ValueError("Variable Reference only supported if reference is part of a parameter declaration")            
         fqn = self.ref[0].get_fully_qualified_var_name(include_scenario=False)
         if blackboard is None:
             raise ValueError("Variable Reference found, but no blackboard client available.")
@@ -2205,6 +2207,12 @@ class IdentifierReference(ModelElement):
             fqn += "/" + sub_elem.name
         blackboard.register_key(fqn, access=py_trees.common.Access.WRITE)
         return VariableReference(blackboard, fqn)
+
+    def get_variable_reference(self, blackboard):
+        if isinstance(self.ref, list) and any(isinstance(x, VariableDeclaration) for x in self.ref):
+            return self.get_blackboard_reference(blackboard)
+        else:
+            return None
 
     def get_resolved_value(self, blackboard=None):
         if isinstance(self.ref, list):
