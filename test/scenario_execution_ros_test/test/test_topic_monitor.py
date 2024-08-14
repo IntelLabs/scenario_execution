@@ -146,7 +146,6 @@ scenario test_scenario:
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
 
-
     def test_member_relation_expr_success(self):
         scenario_content = """
 import osc.ros

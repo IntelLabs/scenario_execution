@@ -18,6 +18,7 @@ from typing import List
 from scenario_execution.model.error import OSC2ParsingError
 import sys
 import py_trees
+import operator
 
 
 def print_tree(elem, logger, whitespace=""):
@@ -338,16 +339,19 @@ class Parameter(Declaration):
             return None
 
         for child in self.get_children():
-            if isinstance(child, (StringLiteral, FloatLiteral, BoolLiteral, IntegerLiteral, FunctionApplicationExpression, IdentifierReference, PhysicalLiteral, EnumValueReference, ListExpression)):
+            if isinstance(child, (StringLiteral, FloatLiteral, BoolLiteral, IntegerLiteral, FunctionApplicationExpression, IdentifierReference, PhysicalLiteral, EnumValueReference, ListExpression, BinaryExpression, RelationExpression, LogicalExpression)):
                 return child
+            elif not isinstance(child, Type):
+                raise OSC2ParsingError(msg=f'Parameter has invalid value "{type(child).__name__}".', context=self.get_ctx())
         return None
 
     def get_resolved_value(self, blackboard=None):
         param_type, is_list = self.get_type()
         vals = {}
         params = {}
-        if self.get_value_child():
-            vals = self.get_value_child().get_resolved_value(blackboard)
+        val_child = self.get_value_child()
+        if val_child:
+            vals = val_child.get_resolved_value(blackboard)
 
         if isinstance(param_type, StructuredDeclaration) and not is_list:
             params = param_type.get_resolved_value(blackboard)
@@ -1816,6 +1820,22 @@ class BinaryExpression(Expression):
         else:
             return visitor.visit_children(self)
 
+    def get_type_string(self):
+        type_string = None
+        for child in self.get_children():
+            current = child.get_type_string()
+            if self.operator in ["/", "%", "*"]:  # multiplied by factor
+                if type_string is None or type_string in ["float", "int"]:
+                    type_string = current
+            else:
+                if type_string != None and current != type_string:
+                    raise OSC2ParsingError(f'Children have different types {current}, {type_string}', context=self.get_ctx())
+                type_string = current
+        return type_string
+
+    def get_resolved_value(self, blackboard=None):
+        return visit_expression(self, blackboard).eval()
+
 
 class UnaryExpression(Expression):
 
@@ -1878,6 +1898,12 @@ class LogicalExpression(Expression):
         else:
             return visitor.visit_children(self)
 
+    def get_type_string(self):
+        return "bool"
+
+    def get_resolved_value(self, blackboard=None):
+        return visit_expression(self, blackboard).eval()
+
 
 class RelationExpression(Expression):
 
@@ -1898,6 +1924,12 @@ class RelationExpression(Expression):
             return visitor.visit_relation_expression(self)
         else:
             return visitor.visit_children(self)
+
+    def get_type_string(self):
+        return "bool"
+
+    def get_resolved_value(self, blackboard=None):
+        return visit_expression(self, blackboard).eval()
 
 
 class ListExpression(Expression):
@@ -2199,7 +2231,7 @@ class IdentifierReference(ModelElement):
         if not isinstance(self.ref, list) or len(self.ref) == 0:
             raise ValueError("Variable Reference only supported if reference is list with at least one element")
         if not isinstance(self.ref[0], ParameterDeclaration):
-            raise ValueError("Variable Reference only supported if reference is part of a parameter declaration")            
+            raise ValueError("Variable Reference only supported if reference is part of a parameter declaration")
         fqn = self.ref[0].get_fully_qualified_var_name(include_scenario=False)
         if blackboard is None:
             raise ValueError("Variable Reference found, but no blackboard client available.")
@@ -2230,3 +2262,89 @@ class IdentifierReference(ModelElement):
                 return val
         else:
             return self.ref.get_resolved_value(blackboard)
+
+
+class Expression(object):
+    def __init__(self, left, right, op) -> None:
+        self.left = left
+        self.right = right
+        self.op = op
+
+    def resolve(self, param):
+        if isinstance(param, Expression):
+            return param.eval()
+        elif isinstance(param, VariableReference):
+            return param.get_value()
+        else:
+            return param
+
+    def eval(self):
+        left = self.resolve(self.left)
+        if self.right is None:
+            print(f"EVAL {left} {str(self.op)}  --> {self.op(left)}")
+            return self.op(left)
+        else:
+            right = self.resolve(self.right)
+
+            print(f"EVAL {left} {str(self.op)} {right} --> {self.op(left, right)}")
+            return self.op(left, right)
+
+
+def visit_expression(node, blackboard):
+    op = None
+    single_child = False
+    if node.operator == "==":
+        op = operator.eq
+    elif node.operator == "!=":
+        op = operator.ne
+    elif node.operator == "<":
+        op = operator.lt
+    elif node.operator == "<=":
+        op = operator.le
+    elif node.operator == ">":
+        op = operator.gt
+    elif node.operator == ">=":
+        op = operator.ge
+    elif node.operator == "and":
+        op = operator.and_
+    elif node.operator == "or":
+        op = operator.or_
+    elif node.operator == "not":
+        single_child = True
+        op = operator.not_
+    elif node.operator == "+":
+        op = operator.add
+    elif node.operator == "-":
+        op = operator.sub
+    elif node.operator == "*":
+        op = operator.mul
+    elif node.operator == "/":
+        op = operator.truediv
+    elif node.operator == "%":
+        op = operator.mod
+    else:
+        raise NotImplementedError(f"Unknown expression operator '{node.operator}'.")
+
+    if not single_child and node.get_child_count() != 2:
+        raise ValueError("Expression is expected to have two children.")
+
+    idx = 0
+    args = [None, None]
+    for child in node.get_children():
+        if isinstance(child, (RelationExpression, BinaryExpression, LogicalExpression)):
+            args[idx] = visit_expression(child, blackboard)
+        else:
+            if isinstance(child, IdentifierReference):
+                var_def = child.get_variable_reference(blackboard)
+                if var_def is not None:
+                    args[idx] = var_def
+                else:
+                    args[idx] = child.get_resolved_value(blackboard)
+            else:
+                args[idx] = child.get_resolved_value(blackboard)
+        idx += 1
+
+    if single_child:
+        return Expression(args[0], args[1], op)
+    else:
+        return Expression(args[0], args[1], op)
