@@ -341,6 +341,8 @@ class Parameter(Declaration):
         for child in self.get_children():
             if isinstance(child, (StringLiteral, FloatLiteral, BoolLiteral, IntegerLiteral, FunctionApplicationExpression, IdentifierReference, PhysicalLiteral, EnumValueReference, ListExpression, BinaryExpression, RelationExpression, LogicalExpression)):
                 return child
+            elif isinstance(child, KeepConstraintDeclaration):
+                pass
             elif not isinstance(child, Type):
                 raise OSC2ParsingError(msg=f'Parameter has invalid value "{type(child).__name__}".', context=self.get_ctx())
         return None
@@ -451,7 +453,7 @@ class StructuredDeclaration(Declaration):
         return self.name
 
 
-class Expression(ModelElement):
+class ModelExpression(ModelElement):
     pass
 
 
@@ -1553,7 +1555,7 @@ class ModifierInvocation(StructuredDeclaration):
         return self.modifier
 
 
-class RiseExpression(Expression):
+class RiseExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1573,7 +1575,7 @@ class RiseExpression(Expression):
             return visitor.visit_children(self)
 
 
-class FallExpression(Expression):
+class FallExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1593,7 +1595,7 @@ class FallExpression(Expression):
             return visitor.visit_children(self)
 
 
-class ElapsedExpression(Expression):
+class ElapsedExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1613,7 +1615,7 @@ class ElapsedExpression(Expression):
             return visitor.visit_children(self)
 
 
-class EveryExpression(Expression):
+class EveryExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1633,7 +1635,7 @@ class EveryExpression(Expression):
             return visitor.visit_children(self)
 
 
-class SampleExpression(Expression):
+class SampleExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1653,7 +1655,7 @@ class SampleExpression(Expression):
             return visitor.visit_children(self)
 
 
-class CastExpression(Expression):
+class CastExpression(ModelExpression):
 
     def __init__(self, object_def, target_type):
         super().__init__()
@@ -1675,7 +1677,7 @@ class CastExpression(Expression):
             return visitor.visit_children(self)
 
 
-class TypeTestExpression(Expression):
+class TypeTestExpression(ModelExpression):
 
     def __init__(self, object_def, target_type):
         super().__init__()
@@ -1697,7 +1699,7 @@ class TypeTestExpression(Expression):
             return visitor.visit_children(self)
 
 
-class ElementAccessExpression(Expression):
+class ElementAccessExpression(ModelExpression):
 
     def __init__(self, list_name, index):
         super().__init__()
@@ -1719,7 +1721,7 @@ class ElementAccessExpression(Expression):
             return visitor.visit_children(self)
 
 
-class FunctionApplicationExpression(Expression):
+class FunctionApplicationExpression(ModelExpression):
 
     def __init__(self, func_name):
         super().__init__()
@@ -1779,7 +1781,7 @@ class FunctionApplicationExpression(Expression):
         return self.get_type()[0].name
 
 
-class FieldAccessExpression(Expression):
+class FieldAccessExpression(ModelExpression):
 
     def __init__(self, field_name):
         super().__init__()
@@ -1800,7 +1802,7 @@ class FieldAccessExpression(Expression):
             return visitor.visit_children(self)
 
 
-class BinaryExpression(Expression):
+class BinaryExpression(ModelExpression):
 
     def __init__(self, operator):
         super().__init__()
@@ -1837,7 +1839,7 @@ class BinaryExpression(Expression):
         return visit_expression(self, blackboard).eval()
 
 
-class UnaryExpression(Expression):
+class UnaryExpression(ModelExpression):
 
     def __init__(self, operator):
         super().__init__()
@@ -1858,7 +1860,7 @@ class UnaryExpression(Expression):
             return visitor.visit_children(self)
 
 
-class TernaryExpression(Expression):
+class TernaryExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1878,7 +1880,7 @@ class TernaryExpression(Expression):
             return visitor.visit_children(self)
 
 
-class LogicalExpression(Expression):
+class LogicalExpression(ModelExpression):
 
     def __init__(self, operator):
         super().__init__()
@@ -1905,7 +1907,7 @@ class LogicalExpression(Expression):
         return visit_expression(self, blackboard).eval()
 
 
-class RelationExpression(Expression):
+class RelationExpression(ModelExpression):
 
     def __init__(self, operator):
         super().__init__()
@@ -1932,7 +1934,7 @@ class RelationExpression(Expression):
         return visit_expression(self, blackboard).eval()
 
 
-class ListExpression(Expression):
+class ListExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1967,7 +1969,7 @@ class ListExpression(Expression):
         return value
 
 
-class RangeExpression(Expression):
+class RangeExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()

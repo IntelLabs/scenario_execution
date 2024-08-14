@@ -20,7 +20,7 @@ from py_trees.common import Access, Status
 from pkg_resources import iter_entry_points
 import inspect
 
-from scenario_execution.model.types import visit_expression, ActionDeclaration, BinaryExpression, EventReference, Expression, FunctionApplicationExpression, ModifierInvocation, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration
+from scenario_execution.model.types import KeepConstraintDeclaration, visit_expression, ActionDeclaration, BinaryExpression, EventReference, Expression, FunctionApplicationExpression, ModifierInvocation, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.actions.base_action import BaseAction
@@ -409,3 +409,7 @@ class ModelToPyTree(object):
                 self.create_decorator(node.modifier, resolved_values)
             except ValueError as e:
                 raise OSC2ParsingError(msg=f'ModifierDeclaration {e}.', context=node.get_ctx()) from e
+
+        def visit_keep_constraint_declaration(self, node: KeepConstraintDeclaration):
+            # skip relation-expression
+            pass
