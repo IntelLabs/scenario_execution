@@ -81,6 +81,25 @@ scenario test_success:
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
+    def test_success_repeat(self):
+        scenario_content = """
+import osc.ros
+import osc.helpers
+
+scenario test_success:
+    do parallel:
+        serial:
+            serial:
+                repeat(2)
+                log_check(values: ['ERROR'])
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
     def test_timeout(self):
         scenario_content = """
 import osc.helpers
