@@ -64,6 +64,11 @@ class RosLogCheck(BaseAction):
         )
         self.feedback_message = f"Waiting for log"  # pylint: disable= attribute-defined-outside-init
 
+    def execute(self, values: list, module_name: str):
+        self.module_name = module_name
+        self.values = values
+        self.found = None
+
     def update(self) -> py_trees.common.Status:
         """
         Wait for specified log entries

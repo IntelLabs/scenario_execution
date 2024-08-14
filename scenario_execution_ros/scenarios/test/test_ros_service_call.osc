@@ -4,8 +4,5 @@ import osc.ros
 scenario test_ros_service_call:
     timeout(30s)
     do serial:
-        service_call() with:
-            keep(it.service_name == '/bla')
-            keep(it.service_type == 'std_srvs.srv.SetBool')
-            keep(it.data == '{\"data\": True}')
+        service_call('/bla', 'std_srvs.srv.SetBool', '{\"data\": True}')
         emit end
