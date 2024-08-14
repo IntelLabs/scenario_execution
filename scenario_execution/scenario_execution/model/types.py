@@ -18,6 +18,7 @@ from typing import List
 from scenario_execution.model.error import OSC2ParsingError
 import sys
 import py_trees
+import operator as op
 
 
 def print_tree(elem, logger, whitespace=""):
@@ -338,16 +339,21 @@ class Parameter(Declaration):
             return None
 
         for child in self.get_children():
-            if isinstance(child, (StringLiteral, FloatLiteral, BoolLiteral, IntegerLiteral, FunctionApplicationExpression, IdentifierReference, PhysicalLiteral, EnumValueReference, ListExpression)):
+            if isinstance(child, (StringLiteral, FloatLiteral, BoolLiteral, IntegerLiteral, FunctionApplicationExpression, IdentifierReference, PhysicalLiteral, EnumValueReference, ListExpression, BinaryExpression, RelationExpression, LogicalExpression)):
                 return child
+            elif isinstance(child, KeepConstraintDeclaration):
+                pass
+            elif not isinstance(child, Type):
+                raise OSC2ParsingError(msg=f'Parameter has invalid value "{type(child).__name__}".', context=self.get_ctx())
         return None
 
     def get_resolved_value(self, blackboard=None):
         param_type, is_list = self.get_type()
         vals = {}
         params = {}
-        if self.get_value_child():
-            vals = self.get_value_child().get_resolved_value(blackboard)
+        val_child = self.get_value_child()
+        if val_child:
+            vals = val_child.get_resolved_value(blackboard)
 
         if isinstance(param_type, StructuredDeclaration) and not is_list:
             params = param_type.get_resolved_value(blackboard)
@@ -447,7 +453,7 @@ class StructuredDeclaration(Declaration):
         return self.name
 
 
-class Expression(ModelElement):
+class ModelExpression(ModelElement):
     pass
 
 
@@ -1549,7 +1555,7 @@ class ModifierInvocation(StructuredDeclaration):
         return self.modifier
 
 
-class RiseExpression(Expression):
+class RiseExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1569,7 +1575,7 @@ class RiseExpression(Expression):
             return visitor.visit_children(self)
 
 
-class FallExpression(Expression):
+class FallExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1589,7 +1595,7 @@ class FallExpression(Expression):
             return visitor.visit_children(self)
 
 
-class ElapsedExpression(Expression):
+class ElapsedExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1609,7 +1615,7 @@ class ElapsedExpression(Expression):
             return visitor.visit_children(self)
 
 
-class EveryExpression(Expression):
+class EveryExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1629,7 +1635,7 @@ class EveryExpression(Expression):
             return visitor.visit_children(self)
 
 
-class SampleExpression(Expression):
+class SampleExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1649,7 +1655,7 @@ class SampleExpression(Expression):
             return visitor.visit_children(self)
 
 
-class CastExpression(Expression):
+class CastExpression(ModelExpression):
 
     def __init__(self, object_def, target_type):
         super().__init__()
@@ -1671,7 +1677,7 @@ class CastExpression(Expression):
             return visitor.visit_children(self)
 
 
-class TypeTestExpression(Expression):
+class TypeTestExpression(ModelExpression):
 
     def __init__(self, object_def, target_type):
         super().__init__()
@@ -1693,7 +1699,7 @@ class TypeTestExpression(Expression):
             return visitor.visit_children(self)
 
 
-class ElementAccessExpression(Expression):
+class ElementAccessExpression(ModelExpression):
 
     def __init__(self, list_name, index):
         super().__init__()
@@ -1715,7 +1721,7 @@ class ElementAccessExpression(Expression):
             return visitor.visit_children(self)
 
 
-class FunctionApplicationExpression(Expression):
+class FunctionApplicationExpression(ModelExpression):
 
     def __init__(self, func_name):
         super().__init__()
@@ -1775,7 +1781,7 @@ class FunctionApplicationExpression(Expression):
         return self.get_type()[0].name
 
 
-class FieldAccessExpression(Expression):
+class FieldAccessExpression(ModelExpression):
 
     def __init__(self, field_name):
         super().__init__()
@@ -1796,7 +1802,7 @@ class FieldAccessExpression(Expression):
             return visitor.visit_children(self)
 
 
-class BinaryExpression(Expression):
+class BinaryExpression(ModelExpression):
 
     def __init__(self, operator):
         super().__init__()
@@ -1816,8 +1822,24 @@ class BinaryExpression(Expression):
         else:
             return visitor.visit_children(self)
 
+    def get_type_string(self):
+        type_string = None
+        for child in self.get_children():
+            current = child.get_type_string()
+            if self.operator in ("/", "%", "*"):  # multiplied by factor
+                if type_string is None or type_string in ("float", "int"):
+                    type_string = current
+            else:
+                if type_string not in (current, type_string):
+                    raise OSC2ParsingError(f'Children have different types {current}, {type_string}', context=self.get_ctx())
+                type_string = current
+        return type_string
 
-class UnaryExpression(Expression):
+    def get_resolved_value(self, blackboard=None):
+        return visit_expression(self, blackboard).eval()
+
+
+class UnaryExpression(ModelExpression):
 
     def __init__(self, operator):
         super().__init__()
@@ -1838,7 +1860,7 @@ class UnaryExpression(Expression):
             return visitor.visit_children(self)
 
 
-class TernaryExpression(Expression):
+class TernaryExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1858,7 +1880,7 @@ class TernaryExpression(Expression):
             return visitor.visit_children(self)
 
 
-class LogicalExpression(Expression):
+class LogicalExpression(ModelExpression):
 
     def __init__(self, operator):
         super().__init__()
@@ -1878,8 +1900,14 @@ class LogicalExpression(Expression):
         else:
             return visitor.visit_children(self)
 
+    def get_type_string(self):
+        return "bool"
 
-class RelationExpression(Expression):
+    def get_resolved_value(self, blackboard=None):
+        return visit_expression(self, blackboard).eval()
+
+
+class RelationExpression(ModelExpression):
 
     def __init__(self, operator):
         super().__init__()
@@ -1899,8 +1927,14 @@ class RelationExpression(Expression):
         else:
             return visitor.visit_children(self)
 
+    def get_type_string(self):
+        return "bool"
 
-class ListExpression(Expression):
+    def get_resolved_value(self, blackboard=None):
+        return visit_expression(self, blackboard).eval()
+
+
+class ListExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -1935,7 +1969,7 @@ class ListExpression(Expression):
         return value
 
 
-class RangeExpression(Expression):
+class RangeExpression(ModelExpression):
 
     def __init__(self):
         super().__init__()
@@ -2198,6 +2232,8 @@ class IdentifierReference(ModelElement):
     def get_blackboard_reference(self, blackboard):
         if not isinstance(self.ref, list) or len(self.ref) == 0:
             raise ValueError("Variable Reference only supported if reference is list with at least one element")
+        if not isinstance(self.ref[0], ParameterDeclaration):
+            raise ValueError("Variable Reference only supported if reference is part of a parameter declaration")
         fqn = self.ref[0].get_fully_qualified_var_name(include_scenario=False)
         if blackboard is None:
             raise ValueError("Variable Reference found, but no blackboard client available.")
@@ -2205,6 +2241,12 @@ class IdentifierReference(ModelElement):
             fqn += "/" + sub_elem.name
         blackboard.register_key(fqn, access=py_trees.common.Access.WRITE)
         return VariableReference(blackboard, fqn)
+
+    def get_variable_reference(self, blackboard):
+        if isinstance(self.ref, list) and any(isinstance(x, VariableDeclaration) for x in self.ref):
+            return self.get_blackboard_reference(blackboard)
+        else:
+            return None
 
     def get_resolved_value(self, blackboard=None):
         if isinstance(self.ref, list):
@@ -2222,3 +2264,86 @@ class IdentifierReference(ModelElement):
                 return val
         else:
             return self.ref.get_resolved_value(blackboard)
+
+
+class Expression(object):
+    def __init__(self, left, right, operator) -> None:
+        self.left = left
+        self.right = right
+        self.operator = operator
+
+    def resolve(self, param):
+        if isinstance(param, Expression):
+            return param.eval()
+        elif isinstance(param, VariableReference):
+            return param.get_value()
+        else:
+            return param
+
+    def eval(self):
+        left = self.resolve(self.left)
+        if self.right is None:
+            return self.operator(left)
+        else:
+            right = self.resolve(self.right)
+            return self.operator(left, right)
+
+
+def visit_expression(node, blackboard):
+    operator = None
+    single_child = False
+    if node.operator == "==":
+        operator = op.eq
+    elif node.operator == "!=":
+        operator = op.ne
+    elif node.operator == "<":
+        operator = op.lt
+    elif node.operator == "<=":
+        operator = op.le
+    elif node.operator == ">":
+        operator = op.gt
+    elif node.operator == ">=":
+        operator = op.ge
+    elif node.operator == "and":
+        operator = op.and_
+    elif node.operator == "or":
+        operator = op.or_
+    elif node.operator == "not":
+        single_child = True
+        operator = op.not_
+    elif node.operator == "+":
+        operator = op.add
+    elif node.operator == "-":
+        operator = op.sub
+    elif node.operator == "*":
+        operator = op.mul
+    elif node.operator == "/":
+        operator = op.truediv
+    elif node.operator == "%":
+        operator = op.mod
+    else:
+        raise NotImplementedError(f"Unknown expression operator '{node.operator}'.")
+
+    if not single_child and node.get_child_count() != 2:
+        raise ValueError("Expression is expected to have two children.")
+
+    idx = 0
+    args = [None, None]
+    for child in node.get_children():
+        if isinstance(child, (RelationExpression, BinaryExpression, LogicalExpression)):
+            args[idx] = visit_expression(child, blackboard)
+        else:
+            if isinstance(child, IdentifierReference):
+                var_def = child.get_variable_reference(blackboard)
+                if var_def is not None:
+                    args[idx] = var_def
+                else:
+                    args[idx] = child.get_resolved_value(blackboard)
+            else:
+                args[idx] = child.get_resolved_value(blackboard)
+        idx += 1
+
+    if single_child:
+        return Expression(args[0], args[1], operator)
+    else:
+        return Expression(args[0], args[1], operator)
