@@ -37,7 +37,7 @@ class TestExpression(unittest.TestCase):
         return self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
 
     def test_add(self):
-        scenario_content = """ 
+        scenario_content = """
 type time is SI(s: 1)
 unit s          of time is SI(s: 1, factor: 1)
 unit ms         of time is SI(s: 1, factor: 0.001)

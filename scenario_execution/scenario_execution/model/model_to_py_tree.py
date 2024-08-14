@@ -18,10 +18,9 @@ import copy
 import py_trees
 from py_trees.common import Access, Status
 from pkg_resources import iter_entry_points
-import operator
 import inspect
 
-from scenario_execution.model.types import visit_expression, ActionDeclaration, BinaryExpression, EventReference, Expression, FunctionApplicationExpression, IdentifierReference, ModifierInvocation, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration, VariableReference
+from scenario_execution.model.types import visit_expression, ActionDeclaration, BinaryExpression, EventReference, Expression, FunctionApplicationExpression, ModifierInvocation, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.actions.base_action import BaseAction

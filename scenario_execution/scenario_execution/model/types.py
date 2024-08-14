@@ -18,7 +18,7 @@ from typing import List
 from scenario_execution.model.error import OSC2ParsingError
 import sys
 import py_trees
-import operator
+import operator as op
 
 
 def print_tree(elem, logger, whitespace=""):
@@ -1824,11 +1824,11 @@ class BinaryExpression(Expression):
         type_string = None
         for child in self.get_children():
             current = child.get_type_string()
-            if self.operator in ["/", "%", "*"]:  # multiplied by factor
-                if type_string is None or type_string in ["float", "int"]:
+            if self.operator in ("/", "%", "*"):  # multiplied by factor
+                if type_string is None or type_string in ("float", "int"):
                     type_string = current
             else:
-                if type_string != None and current != type_string:
+                if type_string not in (current, type_string):
                     raise OSC2ParsingError(f'Children have different types {current}, {type_string}', context=self.get_ctx())
                 type_string = current
         return type_string
@@ -2265,10 +2265,10 @@ class IdentifierReference(ModelElement):
 
 
 class Expression(object):
-    def __init__(self, left, right, op) -> None:
+    def __init__(self, left, right, operator) -> None:
         self.left = left
         self.right = right
-        self.op = op
+        self.operator = operator
 
     def resolve(self, param):
         if isinstance(param, Expression):
@@ -2281,47 +2281,44 @@ class Expression(object):
     def eval(self):
         left = self.resolve(self.left)
         if self.right is None:
-            print(f"EVAL {left} {str(self.op)}  --> {self.op(left)}")
-            return self.op(left)
+            return self.operator(left)
         else:
             right = self.resolve(self.right)
-
-            print(f"EVAL {left} {str(self.op)} {right} --> {self.op(left, right)}")
-            return self.op(left, right)
+            return self.operator(left, right)
 
 
 def visit_expression(node, blackboard):
-    op = None
+    operator = None
     single_child = False
     if node.operator == "==":
-        op = operator.eq
+        operator = op.eq
     elif node.operator == "!=":
-        op = operator.ne
+        operator = op.ne
     elif node.operator == "<":
-        op = operator.lt
+        operator = op.lt
     elif node.operator == "<=":
-        op = operator.le
+        operator = op.le
     elif node.operator == ">":
-        op = operator.gt
+        operator = op.gt
     elif node.operator == ">=":
-        op = operator.ge
+        operator = op.ge
     elif node.operator == "and":
-        op = operator.and_
+        operator = op.and_
     elif node.operator == "or":
-        op = operator.or_
+        operator = op.or_
     elif node.operator == "not":
         single_child = True
-        op = operator.not_
+        operator = op.not_
     elif node.operator == "+":
-        op = operator.add
+        operator = op.add
     elif node.operator == "-":
-        op = operator.sub
+        operator = op.sub
     elif node.operator == "*":
-        op = operator.mul
+        operator = op.mul
     elif node.operator == "/":
-        op = operator.truediv
+        operator = op.truediv
     elif node.operator == "%":
-        op = operator.mod
+        operator = op.mod
     else:
         raise NotImplementedError(f"Unknown expression operator '{node.operator}'.")
 
@@ -2345,6 +2342,6 @@ def visit_expression(node, blackboard):
         idx += 1
 
     if single_child:
-        return Expression(args[0], args[1], op)
+        return Expression(args[0], args[1], operator)
     else:
-        return Expression(args[0], args[1], op)
+        return Expression(args[0], args[1], operator)
