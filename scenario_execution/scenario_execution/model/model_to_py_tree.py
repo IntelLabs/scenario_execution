@@ -18,10 +18,9 @@ import copy
 import py_trees
 from py_trees.common import Access, Status
 from pkg_resources import iter_entry_points
-
 import inspect
 
-from scenario_execution.model.types import ActionDeclaration, EventReference, FunctionApplicationExpression, ModifierInvocation, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration
+from scenario_execution.model.types import KeepConstraintDeclaration, visit_expression, ActionDeclaration, BinaryExpression, EventReference, Expression, FunctionApplicationExpression, ModifierInvocation, ScenarioDeclaration, DoMember, WaitDirective, EmitDirective, BehaviorInvocation, EventCondition, EventDeclaration, RelationExpression, LogicalExpression, ElapsedExpression, PhysicalLiteral, ModifierDeclaration
 from scenario_execution.model.model_base_visitor import ModelBaseVisitor
 from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.actions.base_action import BaseAction
@@ -103,6 +102,20 @@ class TopicPublish(py_trees.behaviour.Behaviour):
         return Status.SUCCESS
 
 
+class ExpressionBehavior(py_trees.behaviour.Behaviour):
+
+    def __init__(self, name: "ExpressionBehavior", expression: Expression):
+        super().__init__(name)
+
+        self.expression = expression
+
+    def update(self):
+        if self.expression.eval():
+            return Status.SUCCESS
+        else:
+            return Status.RUNNING
+
+
 class ModelToPyTree(object):
 
     def __init__(self, logger):
@@ -122,6 +135,7 @@ class ModelToPyTree(object):
         def __init__(self, logger, tree) -> None:
             super().__init__()
             self.logger = logger
+            self.blackboard = None
             if not isinstance(tree, py_trees.composites.Sequence):
                 raise ValueError("ModelToPyTree requires a py-tree sequence as input")
             self.tree = tree
@@ -348,18 +362,24 @@ class ModelToPyTree(object):
         def visit_event_condition(self, node: EventCondition):
             expression = ""
             for child in node.get_children():
-                if isinstance(child, RelationExpression):
-                    raise NotImplementedError()
-                elif isinstance(child, LogicalExpression):
-                    raise NotImplementedError()
+                if isinstance(child, (RelationExpression, LogicalExpression)):
+                    expression = ExpressionBehavior(name=node.get_ctx()[2], expression=self.visit(child))
                 elif isinstance(child, ElapsedExpression):
                     elapsed_condition = self.visit_elapsed_expression(child)
-                    expression = py_trees.timers.Timer(
-                        name=f"wait {elapsed_condition}s", duration=float(elapsed_condition))
+                    expression = py_trees.timers.Timer(name=f"wait {elapsed_condition}s", duration=float(elapsed_condition))
                 else:
                     raise OSC2ParsingError(
                         msg=f'Invalid event condition {child}', context=node.get_ctx())
             return expression
+
+        def visit_relation_expression(self, node: RelationExpression):
+            return visit_expression(node, self.blackboard)
+
+        def visit_logical_expression(self, node: LogicalExpression):
+            return visit_expression(node, self.blackboard)
+
+        def visit_binary_expression(self, node: BinaryExpression):
+            return visit_expression(node, self.blackboard)
 
         def visit_elapsed_expression(self, node: ElapsedExpression):
             elem = node.find_first_child_of_type(PhysicalLiteral)
@@ -389,3 +409,7 @@ class ModelToPyTree(object):
                 self.create_decorator(node.modifier, resolved_values)
             except ValueError as e:
                 raise OSC2ParsingError(msg=f'ModifierDeclaration {e}.', context=node.get_ctx()) from e
+
+        def visit_keep_constraint_declaration(self, node: KeepConstraintDeclaration):
+            # skip relation-expression
+            pass

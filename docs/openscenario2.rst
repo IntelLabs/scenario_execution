@@ -66,7 +66,7 @@ Element Tag             Support              Notes
 ``enum``                :raw-html:`&#9989;`              
 ``event``               :raw-html:`&#9989;`              
 ``every``               :raw-html:`&#10060;`        
-``expression``          :raw-html:`&#10060;`    
+``expression``          :raw-html:`&#9989;`
 ``extend``              :raw-html:`&#10060;`        
 ``external``            :raw-html:`&#10060;`      
 ``fall``                :raw-html:`&#10060;`          
