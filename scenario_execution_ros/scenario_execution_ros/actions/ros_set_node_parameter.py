@@ -26,6 +26,9 @@ class RosSetNodeParameter(RosServiceCall):
     """
 
     def __init__(self, node_name: str, parameter_name: str, parameter_value: str):
+        self.node_name = node_name
+        self.parameter_name = parameter_name
+        self.parameter_value = parameter_value
         service_name = node_name + '/set_parameters'
         if not service_name.startswith('/'):
             service_name = '/' + service_name
@@ -64,6 +67,10 @@ class RosSetNodeParameter(RosServiceCall):
         super().__init__(service_name=service_name,
                          service_type='rcl_interfaces.srv.SetParameters',
                          data='{ "parameters": [{ "name": "' + parameter_name + '", "value": { "type": ' + str(parameter_type) + ', "' + parameter_assign_name + '": ' + parameter_value + '}}]}')
+
+    def execute(self, node_name: str, parameter_name: str, parameter_value: str):   # pylint: disable=arguments-differ,arguments-renamed
+        if self.node_name != node_name or self.parameter_name != parameter_name or self.parameter_value != parameter_value:
+            raise ValueError("node_name, parameter_name and parameter_value are not changeable during runtime.")
 
     @staticmethod
     def is_float(element: any) -> bool:

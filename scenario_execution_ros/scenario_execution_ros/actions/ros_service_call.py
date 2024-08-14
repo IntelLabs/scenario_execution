@@ -44,10 +44,12 @@ class RosServiceCall(BaseAction):
         self.node = None
         self.client = None
         self.future = None
-        self.service_type = service_type
+        self.service_type_str = service_type
+        self.service_type = None
         self.service_name = service_name
+        self.data_str = data
         try:
-            trimmed_data = data.encode('utf-8').decode('unicode_escape')
+            trimmed_data = self.data_str.encode('utf-8').decode('unicode_escape')
             self.data = literal_eval(trimmed_data)
         except Exception as e:  # pylint: disable=broad-except
             raise ValueError(f"Error while parsing sevice call data:") from e
@@ -66,7 +68,7 @@ class RosServiceCall(BaseAction):
                 self.name, self.__class__.__name__)
             raise KeyError(error_message) from e
 
-        datatype_in_list = self.service_type.split(".")
+        datatype_in_list = self.service_type_str.split(".")
         try:
             self.service_type = getattr(
                 importlib.import_module(".".join(datatype_in_list[0:-1])),
@@ -76,6 +78,11 @@ class RosServiceCall(BaseAction):
 
         self.client = self.node.create_client(
             self.service_type, self.service_name, callback_group=self.cb_group)
+
+    def execute(self,  service_name: str, service_type: str, data: str):
+        if self.service_name != service_name or self.service_type_str != service_type or self.data_str != data:
+            raise ValueError("service_name, service_type and data arguments are not changeable during runtime.")
+        self.current_state = ServiceCallActionState.IDLE
 
     def update(self) -> py_trees.common.Status:
         """
