@@ -25,7 +25,7 @@ import yaml
 import py_trees
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_resolver import resolve_internal_model
-from scenario_execution.model.types import RelationExpression, ListExpression, FieldAccessExpression, Expression, print_tree, serialize, to_string
+from scenario_execution.model.types import RelationExpression, ListExpression, FieldAccessExpression, ModelExpression, print_tree, serialize, to_string
 from scenario_execution.utils.logging import Logger
 
 
@@ -138,7 +138,7 @@ class ScenarioVariation(object):
             # create description
             variation_descriptions = []
             for descr, entry in model[1]:
-                if isinstance(entry, Expression):
+                if isinstance(entry, ModelExpression):
                     val = None
                     for child in entry.get_children():
                         if not isinstance(child, FieldAccessExpression):
