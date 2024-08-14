@@ -46,8 +46,9 @@ action kubernetes_patch_pod inherits kubernetes_base_action:
 
 action kubernetes_pod_exec inherits kubernetes_base_action:
     # execute a command within a running pod
-    target: string                              # pod to patch
-    command: list of string                             # command to execute
+    target: string                              # pod to execute the command in
+    command: list of string                     # command to execute
+    regex: bool = false                         # is the specified target a regular expression
 
 action kubernetes_wait_for_network_policy_status inherits kubernetes_base_action:
     # wait for a network-policy to reach the specified state
