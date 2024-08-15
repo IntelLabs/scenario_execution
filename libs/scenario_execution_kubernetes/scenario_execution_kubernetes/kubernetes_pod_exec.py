@@ -20,26 +20,32 @@ import queue
 import threading
 from kubernetes import client, config, stream
 from enum import Enum
+import re
 
 
 class KubernetesPodExecState(Enum):
     IDLE = 1
-    RUNNING = 2
-    FAILURE = 3
+    WAITING_FOR_LIST_RUNNING = 2
+    POD_NAME_PRESENT = 3
+    RUNNING = 4
+    FAILURE = 5
 
 
 class KubernetesPodExec(BaseAction):
 
-    def __init__(self, target: str, command: list, namespace: str, within_cluster: bool):
+    def __init__(self, target: str, command: list, regex: bool, namespace: str, within_cluster: bool):
         super().__init__()
         self.target = target
         self.namespace = namespace
+        self.regex = regex
         self.command = command
         self.within_cluster = within_cluster
         self.client = None
         self.reponse_queue = queue.Queue()
         self.current_state = KubernetesPodExecState.IDLE
         self.output_queue = queue.Queue()
+        self.pod_list_request = None
+        self.pod_name = None
 
     def setup(self, **kwargs):
         if self.within_cluster:
@@ -50,18 +56,57 @@ class KubernetesPodExec(BaseAction):
 
         self.exec_thread = threading.Thread(target=self.pod_exec, daemon=True)
 
-    def execute(self, target: str, command: list, namespace: str, within_cluster: bool):
+    def execute(self, target: str, command: list, regex: bool, namespace: str, within_cluster: bool):
         if within_cluster != self.within_cluster:
             raise ValueError("parameter 'within_cluster' is not allowed to change since initialization.")
         self.target = target
         self.namespace = namespace
         self.command = command
+        self.regex = regex
+        if self.pod_list_request:
+            self.pod_list_request.cancel()
+        self.pod_name = None
         self.current_state = KubernetesPodExecState.IDLE
 
-    def update(self) -> py_trees.common.Status:
+    def update(self) -> py_trees.common.Status:  # pylint: disable=too-many-return-statements
         if self.current_state == KubernetesPodExecState.IDLE:
+            if self.regex:
+                self.current_state = KubernetesPodExecState.WAITING_FOR_LIST_RUNNING
+                self.feedback_message = f"Requesting list of pods in namespace '{self.namespace}'"  # pylint: disable= attribute-defined-outside-init
+                self.pod_list_request = self.client.list_namespaced_pod(namespace=self.namespace, async_req=True)
+                return py_trees.common.Status.RUNNING
+            else:
+                self.pod_name = self.target
+                self.current_state = KubernetesPodExecState.POD_NAME_PRESENT
+
+        if self.current_state == KubernetesPodExecState.WAITING_FOR_LIST_RUNNING:
+            if not self.pod_list_request.ready():
+                return py_trees.common.Status.RUNNING
+            current_elements = []
+            for i in self.pod_list_request.get().items:
+                current_elements.append(i.metadata.name)
+
+            found_element = None
+            matched_elements = []
+            for element in current_elements:
+                if re.search(self.target, element):
+                    matched_elements.append(element)
+            if matched_elements:
+                if len(matched_elements) > 1:
+                    self.feedback_message = f"'{self.target}' regex identified more than one pod {', '.join(matched_elements)}. Only one element is supported!"  # pylint: disable= attribute-defined-outside-init
+                    return py_trees.common.Status.FAILURE
+                found_element = matched_elements[0]
+
+            if found_element:
+                self.pod_name = found_element
+                self.current_state = KubernetesPodExecState.POD_NAME_PRESENT
+            else:
+                self.feedback_message = f"'{self.target}' not found in list of available pods (namespace: '{self.namespace}'). Available: {', '.join(current_elements)}'"  # pylint: disable= attribute-defined-outside-init
+                return py_trees.common.Status.FAILURE
+
+        if self.current_state == KubernetesPodExecState.POD_NAME_PRESENT:
             self.current_state = KubernetesPodExecState.RUNNING
-            self.feedback_message = f"Executing on pod '{self.target}': {self.command}..."  # pylint: disable= attribute-defined-outside-init
+            self.feedback_message = f"Executing on pod '{self.pod_name}': {self.command}..."  # pylint: disable= attribute-defined-outside-init
             self.exec_thread.start()
             return py_trees.common.Status.RUNNING
         elif self.current_state == KubernetesPodExecState.RUNNING:
@@ -82,7 +127,7 @@ class KubernetesPodExec(BaseAction):
 
     def pod_exec(self):
         resp = stream.stream(self.client.connect_get_namespaced_pod_exec,
-                             self.target,
+                             self.pod_name,
                              self.namespace,
                              command=self.command,
                              stderr=True, stdin=False,

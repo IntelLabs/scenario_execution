@@ -509,6 +509,10 @@ Execute a command within a running pod
      - ``list of string``
      - 
      - Command to execute
+   * - ``regex``
+     - ``bool``
+     - ``false``
+     - Is the specified target a regular expression
 
 
 ``kubernetes_wait_for_network_policy_status()``
