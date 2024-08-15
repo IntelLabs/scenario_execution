@@ -31,7 +31,6 @@ def generate_launch_description():
     log_model = LaunchConfiguration('log_model')
     log_level = LaunchConfiguration('log_level')
     scenario_execution = LaunchConfiguration('scenario_execution')
-    scenario_status = LaunchConfiguration('scenario_status')
     output_dir = LaunchConfiguration('output_dir')
 
     return LaunchDescription([
@@ -66,18 +65,6 @@ def generate_launch_description():
                 'scenario': scenario
             }],
             on_exit=Shutdown()),
-
-        Node(
-            condition=IfCondition(scenario_status),
-            package='scenario_status',
-            executable='scenario_status_node',
-            name='scenario_status_node',
-            parameters=[{
-                'scenario_status_topic': '/scenario_status',
-
-            }],
-            output='screen'
-        ),
 
         # Parse log for message on how to execute scenario separately
         LogInfo(
