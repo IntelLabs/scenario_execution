@@ -18,6 +18,7 @@ import time
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 from rclpy.logging import get_logger
+from rclpy.action.client import GoalStatus
 from pymoveit2 import MoveIt2State
 from scenario_execution_moveit.moveit_common import MoveIt2Interface
 from scenario_execution.actions.base_action import BaseAction
@@ -49,8 +50,7 @@ class MoveToPose(BaseAction):
         self.current_state = None
         self.logger = None
         self.service_available = False
-        self.future = None
-        self.state = None
+        self.goal_status = None
         self.last_error_code = None
         # timeout
         self.service_start_time = None
@@ -84,6 +84,7 @@ class MoveToPose(BaseAction):
         # Scale down velocity and acceleration of joints (percentage of maximum)
         self.moveit2.max_velocity = 0.5
         self.moveit2.max_acceleration = 0.5
+
         self.moveit2.cartesian_avoid_collisions = self.cartesian_avoid_collisions
         self.moveit2.cartesian_jump_threshold = self.cartesian_jump_threshold
 
@@ -109,14 +110,12 @@ class MoveToPose(BaseAction):
                 self.feedback_message = "Another motion is in progress. Waiting for current motion to complete..."   # pylint: disable= attribute-defined-outside-init
                 return result
             else:
+                self.feedback_message = "Motion to pose in progress..."  # pylint: disable= attribute-defined-outside-init
                 if not self.future_called:
                     future = self.moveit2.get_execution_future()
                     future.add_done_callback(self.future_done_callback)
                     self.future_called = True
-                    return result
-                else:
-                    self.feedback_message = "Motion to pose in progress..."  # pylint: disable= attribute-defined-outside-init
-                    return result
+                return result
         # Handle idle state
         if self.current_state == MoveIt2State.IDLE:
             if not self.execute:
@@ -124,31 +123,22 @@ class MoveToPose(BaseAction):
                 self.feedback_message = f"Moving to pose."  # pylint: disable= attribute-defined-outside-init
                 self.move_to_pose()
                 self.execute = True
-                self.retry_start_time = None  # Reset execution timeout for new action
                 return result
-            if self.state:
-                if self.state.status == 4:
+            else:
+                if self.goal_status is None or self.goal_status == GoalStatus.STATUS_UNKNOWN:
+                    self.logger.debug(f"Goal aborted by the controller {self.log_moveit_error(self.last_error_code)}. Retrying...")
+                    self.feedback_message = f"Goal aborted by the controller {self.log_moveit_error(self.last_error_code)}. Retrying..."   # pylint: disable= attribute-defined-outside-init
+                    self.execute = False
+                    self.future_called = False
+                    self.goal_status = None
+                    return result
+                if self.goal_status == GoalStatus.STATUS_SUCCEEDED:
                     self.logger.info("Motion to pose successful.")
                     self.feedback_message = "Motion to pose successful."  # pylint: disable= attribute-defined-outside-init
                     return py_trees.common.Status.SUCCESS
                 else:
-                    self.logger.info(f"Motion failed with error code: {str(self.state.result.error_code)}")
+                    self.logger.info(f"Motion move to pose failed.")
                     return py_trees.common.Status.FAILURE
-            if self.last_error_code:
-                if self.last_error_code.val == 1:
-                    self.logger.info("Arm is already at the specified pose.")
-                    self.feedback_message = "Motion to pose successful."  # pylint: disable= attribute-defined-outside-init
-                    return py_trees.common.Status.SUCCESS
-                else:
-                    error_info = self.log_moveit_error(self.last_error_code)
-                    self.logger.info(f"{error_info}. Retrying...")
-                    self.execute = False
-                    if self.retry_start_time is None:
-                        self.retry_start_time = time.time()
-                    if self.check_timeout(self.retry_start_time):
-                        self.feedback_message = f"Timeout retrying to move to pose."  # pylint: disable= attribute-defined-outside-init
-                        return py_trees.common.Status.FAILURE
-                    return result
         if self.execution_start_time is None:
             self.execution_start_time = time.time()
         if self.check_timeout(self.execution_start_time):
@@ -166,7 +156,7 @@ class MoveToPose(BaseAction):
     def future_done_callback(self, future):
         if not future.result():
             return
-        self.state = future.result()
+        self.goal_status = future.result().status
 
     def check_timeout(self, start_time):
         if start_time is None:

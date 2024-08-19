@@ -94,6 +94,7 @@ class MoveToJointPose(BaseAction):
             self.logger.info("Waiting for MoveIt to become active...")
             self.feedback_message = "Waiting for MoveIt to become active..."  # pylint: disable= attribute-defined-outside-init
             return result
+        # Handle executing state
         if self.current_state == MoveIt2State.EXECUTING:
             if not self.execute:
                 self.feedback_message = "Another motion is in progress. Waiting for current motion to complete..."   # pylint: disable= attribute-defined-outside-init
@@ -105,6 +106,7 @@ class MoveToJointPose(BaseAction):
                     future.add_done_callback(self.future_done_callback)
                     self.future_called = True
                 return result
+        # Handle idle state
         if self.current_state == MoveIt2State.IDLE:
             if not self.execute:
                 self.logger.info("No motion in progress. Initiating move to joint pose...")

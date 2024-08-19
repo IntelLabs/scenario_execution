@@ -17,9 +17,8 @@ scenario example_moveit:
         serial:
             box.spawn(spawn_pose: pose_3d(
                             position: position_3d(x: 0.25m, y: 0.0m, z: 0.02m),
-                            orientation: orientation_3d(yaw: 0.0rad)),
-                        model: 'example_moveit_simulation://models/box.sdf',world_name: 'empty')
-        serial:
+                        orientation: orientation_3d(yaw: 0.0rad)),
+                        model: 'example_moveit_simulation://models/box.sdf')
             wx200.move_to_joint_pose(joint_pose: '[0.0, 0.122173, 0.296706, 1.0472, 0.0]')
             wx200.move_gripper(gripper:'open')
             wx200.move_to_joint_pose(joint_pose: '[0.0, 0.296706, 0.296706, 1.22173, 0.0]')
