@@ -35,9 +35,20 @@ action kubernetes_delete inherits kubernetes_base_action:
 
 action kubernetes_patch_network_policy inherits kubernetes_base_action:
     # patch an existing network policy
-    target: string                              # network-policy name to monitor
+    target: string                              # network-policy to patch
     network_enabled: bool                       # should the network be enabled?
-    match_label: key_value                      # key-value pair to match
+    match_label: key_value   
+
+action kubernetes_patch_pod inherits kubernetes_base_action:
+    # patch an existing pod. If patching resources, please check feature gates: https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/#container-resize-policies
+    target: string                              # pod to patch
+    body: string                                # patch to apply
+
+action kubernetes_pod_exec inherits kubernetes_base_action:
+    # execute a command within a running pod
+    target: string                              # pod to execute the command in
+    command: list of string                     # command to execute
+    regex: bool = false                         # is the specified target a regular expression
 
 action kubernetes_wait_for_network_policy_status inherits kubernetes_base_action:
     # wait for a network-policy to reach the specified state

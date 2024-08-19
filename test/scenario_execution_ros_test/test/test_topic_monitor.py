@@ -90,3 +90,84 @@ scenario test_scenario:
         with open(self.tmp_file.name) as f:
             result = f.read()
         self.assertEqual(result, "std_msgs.msg.String(data='TEST')")
+
+    def test_member_success(self):
+        scenario_content = """
+import osc.ros
+
+action store_action:
+    file_path: string
+    value: string
+
+actor test_actor:
+    var test: string = "one"
+
+scenario test_scenario:
+    foo: test_actor
+
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish("/bla", "std_msgs.msg.String", '{\\\"data\\\": \\\"TEST\\\"}')
+        serial:
+            topic_monitor("/bla", "std_msgs.msg.String", foo.test, member_name: "data")
+            wait elapsed(2s)
+            store_action('""" + self.tmp_file.name + """', foo.test)
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+        with open(self.tmp_file.name) as f:
+            result = f.read()
+        self.assertEqual(result, "TEST")
+
+    def test_member_unknown(self):
+        scenario_content = """
+import osc.ros
+
+action store_action:
+    file_path: string
+    value: string
+
+actor test_actor:
+    var test: string = "one"
+
+scenario test_scenario:
+    foo: test_actor
+
+    do parallel:
+        serial:
+            wait elapsed(1s)
+            topic_publish("/bla", "std_msgs.msg.String", '{\\\"data\\\": \\\"TEST\\\"}')
+        serial:
+            topic_monitor("/bla", "std_msgs.msg.String", foo.test, member_name: "UNKNOWN")
+            wait elapsed(2s)
+            store_action('""" + self.tmp_file.name + """', foo.test)
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_member_relation_expr_success(self):
+        scenario_content = """
+import osc.ros
+import osc.helpers
+ 
+struct current_state:
+    var message_count: int = 1
+ 
+scenario test_scenario:
+    timeout(10s)
+    current: current_state
+    do serial:
+        parallel:
+            serial:
+                repeat()
+                wait elapsed(1s)
+                topic_publish("/bla", "std_msgs.msg.Int64", '{\\\"data\\\": 2}')
+            topic_monitor("/bla", "std_msgs.msg.Int64", member_name: "data", target_variable: current.message_count)
+
+            serial:
+                wait current.message_count == 2
+                emit end
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())

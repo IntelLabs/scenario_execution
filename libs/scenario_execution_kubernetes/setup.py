@@ -44,6 +44,8 @@ setup(
             'kubernetes_create_from_yaml = scenario_execution_kubernetes.kubernetes_create_from_yaml:KubernetesCreateFromYaml',
             'kubernetes_delete = scenario_execution_kubernetes.kubernetes_delete:KubernetesDelete',
             'kubernetes_patch_network_policy = scenario_execution_kubernetes.kubernetes_patch_network_policy:KubernetesPatchNetworkPolicy',
+            'kubernetes_patch_pod = scenario_execution_kubernetes.kubernetes_patch_pod:KubernetesPatchPod',
+            'kubernetes_pod_exec = scenario_execution_kubernetes.kubernetes_pod_exec:KubernetesPodExec',
             'kubernetes_wait_for_network_policy_status = scenario_execution_kubernetes.kubernetes_wait_for_network_policy_status:KubernetesWaitForNetworkPolicyStatus',
             'kubernetes_wait_for_pod_status = scenario_execution_kubernetes.kubernetes_wait_for_pod_status:KubernetesWaitForPodStatus',
         ],

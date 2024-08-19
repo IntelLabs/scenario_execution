@@ -65,6 +65,17 @@ class AssertTfMoving(BaseAction):
             tf_static_topic=(tf_prefix + "/tf_static"),
         )
 
+    def execute(self, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
+        if self.tf_topic_namespace != tf_topic_namespace:
+            raise ValueError("Runtime change of argument 'tf_topic_namespace' not supported.")
+        self.frame_id = frame_id
+        self.parent_frame_id = parent_frame_id
+        self.timeout = timeout
+        self.threshold_translation = threshold_translation
+        self.threshold_rotation = threshold_rotation
+        self.wait_for_first_transform = wait_for_first_transform
+        self.use_sim_time = use_sim_time
+
     def update(self) -> py_trees.common.Status:
         now = time.time()
         transform = self.get_transform(self.frame_id, self.parent_frame_id)
