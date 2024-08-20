@@ -19,6 +19,7 @@ import importlib
 from enum import Enum
 from rclpy.node import Node
 from rclpy.callback_groups import ReentrantCallbackGroup
+from rclpy.qos import QoSProfile, DurabilityPolicy
 from rosidl_runtime_py.set_message import set_message_fields
 import py_trees  # pylint: disable=import-error
 from scenario_execution.actions.base_action import BaseAction
@@ -39,7 +40,7 @@ class RosServiceCall(BaseAction):
     ros service call behavior
     """
 
-    def __init__(self, service_name: str, service_type: str, data: str):
+    def __init__(self, service_name: str, service_type: str, data: str, transient_local: bool):
         super().__init__()
         self.node = None
         self.client = None
@@ -55,6 +56,8 @@ class RosServiceCall(BaseAction):
             raise ValueError(f"Error while parsing sevice call data:") from e
         self.current_state = ServiceCallActionState.IDLE
         self.cb_group = ReentrantCallbackGroup()
+        self.transient_local = transient_local
+        self.qos_profile = None
 
     def setup(self, **kwargs):
         """
@@ -76,11 +79,24 @@ class RosServiceCall(BaseAction):
         except ValueError as e:
             raise ValueError(f"Invalid service_type '{self.service_type}':") from e
 
-        self.client = self.node.create_client(
-            self.service_type, self.service_name, callback_group=self.cb_group)
+        self.qos_profile = QoSProfile(depth=1)
+        self.qos_profile.durability = DurabilityPolicy.TRANSIENT_LOCAL
 
-    def execute(self,  service_name: str, service_type: str, data: str):
-        if self.service_name != service_name or self.service_type_str != service_type or self.data_str != data:
+        client_kwargs = {
+            "callback_group": self.cb_group,
+        }
+
+        if self.transient_local:
+            client_kwargs["qos_profile"] = self.qos_profile
+
+        self.client = self.node.create_client(
+            self.service_type,
+            self.service_name,
+            **client_kwargs
+        )
+
+    def execute(self,  service_name: str, service_type: str, data: str, transient_local: bool):
+        if self.service_name != service_name or self.service_type_str != service_type or self.data_str != data or self.transient_local != transient_local:
             raise ValueError("service_name, service_type and data arguments are not changeable during runtime.")
         self.current_state = ServiceCallActionState.IDLE
 

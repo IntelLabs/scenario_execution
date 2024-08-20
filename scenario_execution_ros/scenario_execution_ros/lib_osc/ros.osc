@@ -115,6 +115,7 @@ action service_call:
     service_name: string                 # name of the service to connect to
     service_type: string                 # class of the message type (e.g. std_srvs.msg.Empty)
     data: string                         # call content
+    transient_local: bool = false
 
 action set_node_parameter:
     # Set a parameter of a node.
