@@ -90,8 +90,8 @@ class RosActionCall(BaseAction):
 
         self.client = ActionClient(self.node, self.action_type, self.action_name, **client_kwargs)
 
-    def execute(self, action_name: str, action_type: str, data: str):
-        if self.action_name != action_name or self.action_type_string != action_type:
+    def execute(self, action_name: str, action_type: str, data: str, transient_local: bool):
+        if self.action_name != action_name or self.action_type_string != action_type or self.transient_local != transient_local:
             raise ValueError(f"Updating action_name or action_type_string not supported.")
 
         self.parse_data(data)
