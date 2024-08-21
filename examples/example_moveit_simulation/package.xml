@@ -8,10 +8,8 @@
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../../LICENSE">Apache-2.0</license>
 
-  <depend>scenario_execution</depend>
-  <depend>scenario_execution_gazebo</depend>
+
   <depend>arm_sim_scenario</depend>
-  <depend>scenario_execution_moveit</depend>
   
   <exec_depend>rclpy</exec_depend>
 

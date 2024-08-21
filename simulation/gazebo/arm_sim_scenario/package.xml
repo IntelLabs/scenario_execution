@@ -16,6 +16,10 @@
   <depend>gazebo_ros2_control</depend>
   <depend>joint_trajectory_controller</depend>
   <depend>moveit</depend>
+  <depend>scenario_execution</depend>
+  <depend>scenario_execution_ros</depend>
+  <depend>scenario_execution_moveit</depend>
+  <depend>scenario_execution_gazebo</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
