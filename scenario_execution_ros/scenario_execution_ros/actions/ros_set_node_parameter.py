@@ -66,7 +66,7 @@ class RosSetNodeParameter(RosServiceCall):
 
         super().__init__(service_name=service_name,
                          service_type='rcl_interfaces.srv.SetParameters',
-                         data='{ "parameters": [{ "name": "' + parameter_name + '", "value": { "type": ' + str(parameter_type) + ', "' + parameter_assign_name + '": ' + parameter_value + '}}]}', transient_local='false')
+                         data='{ "parameters": [{ "name": "' + parameter_name + '", "value": { "type": ' + str(parameter_type) + ', "' + parameter_assign_name + '": ' + parameter_value + '}}]}', transient_local=False)
 
     def execute(self, node_name: str, parameter_name: str, parameter_value: str):   # pylint: disable=arguments-differ,arguments-renamed
         if self.node_name != node_name or self.parameter_name != parameter_name or self.parameter_value != parameter_value:
