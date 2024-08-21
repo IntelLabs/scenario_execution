@@ -40,7 +40,7 @@ class RosServiceCall(BaseAction):
     ros service call behavior
     """
 
-    def __init__(self, service_name: str, service_type: str, data: str, transient_local: bool):
+    def __init__(self, service_name: str, service_type: str, data: str, transient_local: bool = False):
         super().__init__()
         self.node = None
         self.client = None
@@ -57,7 +57,6 @@ class RosServiceCall(BaseAction):
         self.current_state = ServiceCallActionState.IDLE
         self.cb_group = ReentrantCallbackGroup()
         self.transient_local = transient_local
-        self.qos_profile = None
 
     def setup(self, **kwargs):
         """
@@ -79,15 +78,14 @@ class RosServiceCall(BaseAction):
         except ValueError as e:
             raise ValueError(f"Invalid service_type '{self.service_type}':") from e
 
-        self.qos_profile = QoSProfile(depth=1)
-        self.qos_profile.durability = DurabilityPolicy.TRANSIENT_LOCAL
-
         client_kwargs = {
             "callback_group": self.cb_group,
         }
 
         if self.transient_local:
-            client_kwargs["qos_profile"] = self.qos_profile
+            qos_profile = QoSProfile(depth=1)
+            qos_profile.durability = DurabilityPolicy.TRANSIENT_LOCAL
+            client_kwargs["qos_profile"] = qos_profile
 
         self.client = self.node.create_client(
             self.service_type,
