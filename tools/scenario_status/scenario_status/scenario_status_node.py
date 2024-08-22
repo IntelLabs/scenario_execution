@@ -29,7 +29,7 @@ from rosgraph_msgs.msg import Clock
 
 class ScenarioStatus(Node):
 
-    """Simple node subscribing to the py-trees-behaviour tree snapshot. The output is a 
+    """Simple node subscribing to the py-trees-behaviour tree snapshot. The output is a
     string that describes any behavior state changes and timestamps."""
 
     def __init__(self):
