@@ -33,7 +33,7 @@ class NavToPose(RosActionCall):
         self.goal_pose = None
         super().__init__(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateToPose", "")
 
-    def execute(self, associated_actor, goal_pose: list, action_topic: str, namespace_override: str) -> None:  # pylint: disable=arguments-differ
+    def execute(self, associated_actor, goal_pose: list, action_topic: str, namespace_override: str) -> None:  # pylint: disable=arguments-differ,arguments-renamed
         self.namespace = associated_actor["namespace"]
         if namespace_override:
             self.namespace = namespace_override
