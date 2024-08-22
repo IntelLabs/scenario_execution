@@ -18,9 +18,8 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, Shutdown
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-
 
 
 def generate_launch_description():
@@ -34,7 +33,6 @@ def generate_launch_description():
                               description='Simulation World File'),
     ]
 
-    
     env = {'GZ_SIM_SYSTEM_PLUGIN_PATH':
            ':'.join([os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', default=''),
                      os.environ.get('LD_LIBRARY_PATH', default='')]),
@@ -51,7 +49,6 @@ def generate_launch_description():
         log_cmd=True,
         emulate_tty=True
     )
-
 
     clock_bridge = Node(package='ros_gz_bridge', executable='parameter_bridge',
                         name='clock_bridge',
