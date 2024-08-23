@@ -60,3 +60,4 @@ action kubernetes_wait_for_pod_status inherits kubernetes_base_action:
     target: string                              # pod name to monitor
     status: kubernetes_pod_status               # expected pod status
     regex: bool = false                         # is the specified target a regular expression
+    include_initial_state: bool = true          # check initial states (not only state changes)

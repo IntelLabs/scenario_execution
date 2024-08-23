@@ -21,18 +21,11 @@ import threading
 from kubernetes import client, config, watch
 from kubernetes.client.rest import ApiException
 import re
-from enum import Enum
-
-
-class KubernetesWaitForPodStatusState(Enum):
-    IDLE = 1
-    MONITORING = 2
-    FAILURE = 3
 
 
 class KubernetesWaitForPodStatus(BaseAction):
 
-    def __init__(self, target: str, regex: bool, status: tuple, namespace: str, within_cluster: bool):
+    def __init__(self, target: str, regex: bool, status: tuple, include_initial_state: bool, namespace: str, within_cluster: bool):
         super().__init__()
         self.target = target
         self.namespace = namespace
@@ -42,8 +35,8 @@ class KubernetesWaitForPodStatus(BaseAction):
         self.within_cluster = within_cluster
         self.regex = regex
         self.client = None
+        self.watch = None
         self.update_queue = queue.Queue()
-        self.current_state = KubernetesWaitForPodStatusState.IDLE
 
     def setup(self, **kwargs):
         if self.within_cluster:
@@ -55,13 +48,21 @@ class KubernetesWaitForPodStatus(BaseAction):
         self.monitoring_thread = threading.Thread(target=self.watch_pods, daemon=True)
         self.monitoring_thread.start()
 
-    def execute(self, target: str, regex: bool, status: tuple, namespace: str, within_cluster: bool):
+    def execute(self, target: str, regex: bool, status: tuple, include_initial_state: bool, namespace: str, within_cluster: bool):
         self.target = target
         self.namespace = namespace
         self.expected_status = status[0]
         self.within_cluster = within_cluster
         self.regex = regex
-        self.current_state = KubernetesWaitForPodStatusState.MONITORING
+        if not include_initial_state:
+            # clear queue
+            try:
+                while True:
+                    self.update_queue.get(False)
+            except queue.Empty:
+                pass
+            self.last_found_state = None
+        self.feedback_message = f"waiting for status of pod '{self.target}'."  # pylint: disable= attribute-defined-outside-init
 
     def update(self) -> py_trees.common.Status:
         while not self.update_queue.empty():
@@ -69,18 +70,19 @@ class KubernetesWaitForPodStatus(BaseAction):
             if len(item) != 2:
                 return py_trees.common.Status.FAILURE
 
-            self.feedback_message = f"waiting for status of pod '{self.target}'."  # pylint: disable= attribute-defined-outside-init
             if not self.regex:
                 if item[0] != self.target:
                     continue
             else:
                 if not re.search(self.target, item[0]):
                     continue
-            if item[1].lower() == self.expected_status:
-                self.feedback_message = f"Pod '{item[0]}' changed to expected status '{item[1].lower()}'."  # pylint: disable= attribute-defined-outside-init
+            self.last_found_state = item
+        if self.last_found_state is not None:
+            if self.last_found_state[1].lower() == self.expected_status:
+                self.feedback_message = f"Pod '{self.last_found_state[0]}' changed to expected status '{self.last_found_state[1].lower()}'."  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.SUCCESS
             else:
-                self.feedback_message = f"Pod '{item[0]}' changed to status '{item[1].lower()}', expected '{self.expected_status}'."  # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = f"Pod '{self.last_found_state[0]}' changed to status '{self.last_found_state[1].lower()}', expected '{self.expected_status}'."  # pylint: disable= attribute-defined-outside-init
         return py_trees.common.Status.RUNNING
 
     def watch_pods(self):
@@ -90,8 +92,7 @@ class KubernetesWaitForPodStatus(BaseAction):
             for event in w.stream(self.client.list_namespaced_pod, namespace=self.namespace):
                 pod_name = event['object'].metadata.name
                 pod_status = event['object'].status.phase
-                if self.current_state == KubernetesWaitForPodStatusState.MONITORING:
-                    self.update_queue.put((pod_name, pod_status))
+                self.update_queue.put((pod_name, pod_status))
         except ApiException as e:
             self.logger.error(f"Error accessing kubernetes: {e}")
             self.update_queue.put(())

@@ -581,6 +581,10 @@ Wait for a Kubernetes pod to reach a specified state.
      - ``bool``
      - ``false``
      - Is the specified target a regular expression
+   * - ``include_initial_state``
+     - ``bool``
+     - ``true``
+     - Check initial states (not only state changes)
 
 
 Nav2
@@ -1009,7 +1013,7 @@ Wait for specific output in ROS log (i.e. ``/rosout`` topic). If any of the entr
    * - ``values``
      - ``list of string``
      - 
-     - list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
+     - list of strings to check for(e.g. ``["foo", "bar"]``)
 
 ``record_bag()``
 ^^^^^^^^^^^^^^^^
