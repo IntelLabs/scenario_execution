@@ -1227,6 +1227,26 @@ Wait for any message on a ROS topic.
      - QoS Preset Profile for the subscriber (default: ``qos_preset_profiles!system_default``)
 
 
+``wait_for_nodes()``
+^^^^^^^^^^^^^^^^^^^^^
+
+Wait for nodes to get available.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``nodes``
+     - ``list of string``
+     - 
+     - List of nodes to wait for
+
+
 ``wait_for_topics()``
 ^^^^^^^^^^^^^^^^^^^^^
 
