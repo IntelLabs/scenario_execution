@@ -394,7 +394,9 @@ class StructuredDeclaration(Declaration):
                 names.append(child.name)
         return list(set(names))
 
-    def get_resolved_value(self, blackboard=None):
+    def get_resolved_value(self, blackboard=None, skip_keys=None):
+        if skip_keys is None:
+            skip_keys = []
         params = {}
 
         # set values defined in base type
@@ -406,6 +408,8 @@ class StructuredDeclaration(Declaration):
         param_keys = list(params.keys())
         for child in self.get_children():
             if isinstance(child, ParameterDeclaration):
+                if child.name in skip_keys:
+                    continue
                 # set from parameter
                 param_type, _ = child.get_type()
 
@@ -433,16 +437,19 @@ class StructuredDeclaration(Declaration):
                 if named:
                     raise OSC2ParsingError(
                         msg=f'Positional argument after named argument not allowed.', context=child.get_ctx())
-                params[param_keys[pos]] = child.get_resolved_value(blackboard)
+                if param_keys[pos] not in skip_keys:
+                    params[param_keys[pos]] = child.get_resolved_value(blackboard)
                 pos += 1
             elif isinstance(child, NamedArgument):
                 named = True
-                params[child.name] = child.get_resolved_value(blackboard)
+                if child.name not in skip_keys:
+                    params[child.name] = child.get_resolved_value(blackboard)
             elif isinstance(child, KeepConstraintDeclaration):
                 tmp = child.get_resolved_value(blackboard)
                 merge_nested_dicts(params, tmp, key_must_exist=False)
             elif isinstance(child, MethodDeclaration):
-                params[child.name] = child.get_resolved_value(blackboard)
+                if child.name not in skip_keys:
+                    params[child.name] = child.get_resolved_value(blackboard)
 
         return params
 

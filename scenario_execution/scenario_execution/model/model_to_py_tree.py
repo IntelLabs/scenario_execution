@@ -31,8 +31,7 @@ def create_py_tree(model, tree, logger, log_tree):
     try:
         final_tree = model_to_py_tree.build(model, tree, log_tree)
     except OSC2ParsingError as e:
-        raise ValueError(
-            f'Error while creating py-tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}') from e
+        raise ValueError(f'Error while creating py-tree: {e}') from e
     return final_tree
 
 
@@ -215,7 +214,7 @@ class ModelToPyTree(object):
                 if error_string:
                     error_string += ", "
                 error_string += "unknown: " + ", ".join(unknown_args)
-            return method_args, error_string
+            return method_args, error_string, missing_args
 
         def create_decorator(self, node: ModifierDeclaration, resolved_values):
             available_modifiers = ["repeat", "inverter", "timeout", "retry", "failure_is_running", "failure_is_success",
@@ -311,18 +310,19 @@ class ModelToPyTree(object):
                     # if __init__() is defined, check parameters. Allowed:
                     # - __init__(self)
                     # - __init__(self, resolve_variable_reference_arguments_in_execute)
-                    # - __init__(self, <all-osc-defined-args>)
-                    init_args, error_string = self.compare_method_arguments(init_method, expected_args, behavior_name, node)
+                    # - __init__(self, <some-or-all-osc-defined-args>)
+                    init_args, error_string, args_not_in_init = self.compare_method_arguments(
+                        init_method, expected_args, behavior_name, node)
                     if init_args != ["self"] and \
                             init_args != ["self", "resolve_variable_reference_arguments_in_execute"] and \
-                            set(init_args) != set(expected_args):
+                            not all(x in expected_args for x in init_args):
                         raise OSC2ParsingError(
-                            msg=f'Plugin {behavior_name}: __init__() either only has "self" argument or all arguments defined in osc. {error_string}\n'
+                            msg=f'Plugin {behavior_name}: __init__() either only has "self" argument and osc-defined arguments. {error_string}\n'
                                 f'expected definition with all arguments: {expected_args}', context=node.get_ctx()
                         )
                 execute_method = getattr(behavior_cls, "execute", None)
                 if execute_method is not None:
-                    _, error_string = self.compare_method_arguments(execute_method, expected_args, behavior_name, node)
+                    _, error_string, _ = self.compare_method_arguments(execute_method, expected_args, behavior_name, node)
                     if error_string:
                         raise OSC2ParsingError(
                             msg=f'Plugin {behavior_name}: execute() arguments differ from osc-definition: {error_string}.', context=node.get_ctx()
@@ -336,16 +336,18 @@ class ModelToPyTree(object):
                     f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected execute() arguments: {expected_args}")
                 try:
                     if init_args is not None and init_args != ['self'] and init_args != ['self', 'resolve_variable_reference_arguments_in_execute']:
-                        final_args = node.get_resolved_value(self.blackboard)
+                        final_args = node.get_resolved_value(self.blackboard, skip_keys=args_not_in_init)
 
                         if node.actor:
                             final_args["associated_actor"] = node.actor.get_resolved_value(self.blackboard)
                             final_args["associated_actor"]["name"] = node.actor.name
 
+                        for k in args_not_in_init:
+                            del final_args[k]
                         instance = behavior_cls(**final_args)
                     else:
                         instance = behavior_cls()
-                    instance._set_base_properities(action_name, node, self.logger)  # pylint: disable=protected-access
+                    instance._set_base_properities(action_name, node, self.logger, node.get_ctx())  # pylint: disable=protected-access
                 except Exception as e:
                     raise OSC2ParsingError(msg=f'Error while initializing plugin {behavior_name}: {e}', context=node.get_ctx()) from e
                 self.__cur_behavior.add_child(instance)

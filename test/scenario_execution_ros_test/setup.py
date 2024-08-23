@@ -41,5 +41,8 @@ setup(
     entry_points={
         'console_scripts': [
             'scenario_execution_ros_test = scenario_execution_ros_test.workload_node:main',
-        ]}
+        ],
+        'scenario_execution.actions': [
+            'get_pose3d = scenario_execution_ros_test.actions.get_pose3d:GetPose3d']
+    }
 )

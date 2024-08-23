@@ -16,6 +16,7 @@
 
 import py_trees
 from scenario_execution.model.types import ParameterDeclaration, ScenarioDeclaration
+from scenario_execution.model.error import OSC2Error
 
 
 class BaseAction(py_trees.behaviour.Behaviour):
@@ -27,6 +28,7 @@ class BaseAction(py_trees.behaviour.Behaviour):
         self._model = None
         self.logger = None
         self.blackboard = None
+        self.osc_ctx = None
         self.resolve_variable_reference_arguments_in_execute = resolve_variable_reference_arguments_in_execute
         super().__init__(self.__class__.__name__)
 
@@ -55,10 +57,11 @@ class BaseAction(py_trees.behaviour.Behaviour):
                 final_args["associated_actor"]["name"] = self._model.actor.name
             self.execute(**final_args)  # pylint: disable=no-member
 
-    def _set_base_properities(self, name, model, logger):
+    def _set_base_properities(self, name, model, logger, osc_ctx):
         self.name = name
         self._model = model
         self.logger = logger
+        self.osc_ctx = osc_ctx
 
     def get_blackboard_client(self):
         if self.blackboard:
@@ -94,3 +97,11 @@ class BaseAction(py_trees.behaviour.Behaviour):
         model_blackboard_name = self.register_access_to_associated_actor_variable(variable_name)
         self.logger.debug(f"Get variable '{model_blackboard_name}'")
         return getattr(self.get_blackboard_client(), model_blackboard_name)
+
+
+class ActionError(OSC2Error):
+
+    def __init__(self, msg: str, action: BaseAction, *args) -> None:
+        if action is not None:
+            ctx = action.osc_ctx
+        super().__init__(msg, ctx, *args)

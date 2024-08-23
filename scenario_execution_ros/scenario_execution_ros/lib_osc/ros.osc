@@ -26,7 +26,12 @@ enum lifecycle_state: [
 
 actor differential_drive_robot inherits robot:
     namespace: string = ''
-    
+
+struct msg_conversion:
+    def get_object_member(in_value: string, member_name: string = "") -> string is external scenario_execution_ros.external_methods.msg_conversion.get_object_member()
+    def to_dict(in_value: string, member_name: string = "") -> pose_3d is external scenario_execution_ros.external_methods.msg_conversion.to_dict()
+    def to_pose3d(in_value: string) -> pose_3d is external scenario_execution_ros.external_methods.msg_conversion.to_pose3d()
+
 action action_call:
     # Call a ros action and wait for the result
     action_name: string                  # name of the action to connect to

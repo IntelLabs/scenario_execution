@@ -23,7 +23,7 @@ import py_trees
 from py_trees.common import Status
 
 from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_ros_message_type
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class RosTopicPublish(BaseAction):
@@ -31,7 +31,7 @@ class RosTopicPublish(BaseAction):
     class for publish a message on a ROS topic
     """
 
-    def __init__(self, topic_type: str, topic_name: str, value: str, qos_profile: tuple):
+    def __init__(self, topic_type: str, topic_name: str, qos_profile: tuple):
         super().__init__()
         self.qos_profile = qos_profile
         self.topic_type = topic_type
@@ -48,15 +48,18 @@ class RosTopicPublish(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
-        topic_type = get_ros_message_type(self.topic_type)
-        self.msg_to_pub = topic_type()
-        self.publisher = self.node.create_publisher(
-            msg_type=topic_type,
-            topic=self.topic_name,
-            qos_profile=get_qos_preset_profile(self.qos_profile)
-        )
+        try:
+            topic_type = get_ros_message_type(self.topic_type)
+            self.msg_to_pub = topic_type()
+            self.publisher = self.node.create_publisher(
+                msg_type=topic_type,
+                topic=self.topic_name,
+                qos_profile=get_qos_preset_profile(self.qos_profile)
+            )
+        except ValueError as e:
+            raise ActionError(f"{e}", action=self) from e
 
     def execute(self, topic_type: str, topic_name: str, value: str, qos_profile: tuple):
         if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:

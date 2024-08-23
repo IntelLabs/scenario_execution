@@ -64,8 +64,7 @@ class OpenScenario2Parser(object):
             walker.walk(model_builder, tree)
             model = model_builder.get_model()
         except OSC2ParsingError as e:
-            raise ValueError(
-                f'Error creating internal model: Traceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}') from e
+            raise ValueError(f'Error creating internal model: {e}') from e
         if log_model:
             self.logger.info("----Internal model-----")
             print_tree(model, self.logger)
