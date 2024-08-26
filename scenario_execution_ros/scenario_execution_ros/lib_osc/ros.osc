@@ -145,6 +145,10 @@ action wait_for_data:
     topic_type: string                   # class of the message type (e.g. std_msgs.msg.String)
     qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
 
+action wait_for_nodes:
+    # Wait for nodes to get available.
+    nodes: list of string                # list of nodes to wait for
+
 action wait_for_topics:
     # Wait for topics to get available (i.e. publisher gets available).
-    topics: list of topics               # list of topics to wait for
+    topics: list of string               # list of topics to wait for
