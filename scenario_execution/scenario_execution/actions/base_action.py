@@ -53,7 +53,7 @@ class BaseAction(py_trees.behaviour.Behaviour):
             if self._model.actor:
                 final_args["associated_actor"] = self._model.actor.get_resolved_value(self.get_blackboard_client())
                 final_args["associated_actor"]["name"] = self._model.actor.name
-            self.execute(**final_args)
+            self.execute(**final_args)  # pylint: disable=no-member
 
     def _set_base_properities(self, name, model, logger):
         self.name = name

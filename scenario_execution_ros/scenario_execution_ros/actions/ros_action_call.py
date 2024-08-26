@@ -20,6 +20,7 @@ from enum import Enum
 from rclpy.node import Node
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.action import ActionClient
+from rclpy.qos import QoSProfile, DurabilityPolicy
 from rosidl_runtime_py.set_message import set_message_fields
 import py_trees  # pylint: disable=import-error
 from action_msgs.msg import GoalStatus
@@ -42,7 +43,7 @@ class RosActionCall(BaseAction):
     ros service call behavior
     """
 
-    def __init__(self, action_name: str, action_type: str, data: str):
+    def __init__(self, action_name: str, action_type: str, data: str, transient_local: bool = False):
         super().__init__()
         self.node = None
         self.client = None
@@ -56,6 +57,7 @@ class RosActionCall(BaseAction):
         self.parse_data(data)
         self.current_state = ActionCallActionState.IDLE
         self.cb_group = ReentrantCallbackGroup()
+        self.transient_local = transient_local
 
     def setup(self, **kwargs):
         """
@@ -77,10 +79,19 @@ class RosActionCall(BaseAction):
         except ValueError as e:
             raise ValueError(f"Invalid action_type '{self.action_type}':") from e
 
-        self.client = ActionClient(self.node, self.action_type, self.action_name, callback_group=self.cb_group)
+        client_kwargs = {
+            "callback_group": self.cb_group,
+        }
 
-    def execute(self, action_name: str, action_type: str, data: str):
-        if self.action_name != action_name or self.action_type_string != action_type:
+        if self.transient_local:
+            qos_profile = QoSProfile(depth=1)
+            qos_profile.durability = DurabilityPolicy.TRANSIENT_LOCAL
+            client_kwargs["result_service_qos_profile"] = qos_profile
+
+        self.client = ActionClient(self.node, self.action_type, self.action_name, **client_kwargs)
+
+    def execute(self, action_name: str, action_type: str, data: str, transient_local: bool = False):
+        if self.action_name != action_name or self.action_type_string != action_type or self.transient_local != transient_local:
             raise ValueError(f"Updating action_name or action_type_string not supported.")
 
         self.parse_data(data)
