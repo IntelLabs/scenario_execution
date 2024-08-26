@@ -64,9 +64,17 @@ class ScenarioView : public rviz_common::Panel {
 public:
   ScenarioView(QWidget *parent = 0);
 
+  virtual void load(const rviz_common::Config &config) override;
+  virtual void save(rviz_common::Config config) const override;
+
+Q_SIGNALS:
+  void doubleClickedA(int index);
+
 protected Q_SLOTS:
   void handleItemCollapsed(QTreeWidgetItem *collapsedItem);
   void handleItemExpanded(QTreeWidgetItem *expandedItem);
+  void onHeaderDoubleClicked(int idx);
+  void setupConnection();
 
 protected:
   virtual void onInitialize() override;
@@ -93,6 +101,8 @@ protected:
   TreeModel *mTreeModel;
   bool treeWidgetBuilt = false;
   QMap<QString, bool> *collapsedStates;
+  QString mSnapshotTopic;
+  QTimer mInitTimer;
 
   // icons
   QIcon runningIcon = QIcon(":/icons/chevron-right-o.png");
