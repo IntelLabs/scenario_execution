@@ -64,6 +64,7 @@ setup(
             'topic_monitor = scenario_execution_ros.actions.ros_topic_monitor:RosTopicMonitor',
             'topic_publish = scenario_execution_ros.actions.ros_topic_publish:RosTopicPublish',
             'wait_for_data = scenario_execution_ros.actions.ros_topic_wait_for_data:RosTopicWaitForData',
+            'wait_for_nodes = scenario_execution_ros.actions.ros_wait_for_nodes:RosWaitForNodes',
             'wait_for_topics = scenario_execution_ros.actions.ros_topic_wait_for_topics:RosTopicWaitForTopics',
         ],
         'scenario_execution.osc_libraries': [
