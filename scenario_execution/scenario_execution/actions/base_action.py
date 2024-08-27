@@ -16,6 +16,7 @@
 
 import py_trees
 from scenario_execution.model.types import ParameterDeclaration, ScenarioDeclaration
+from scenario_execution.model.error import OSC2Error
 
 
 class BaseAction(py_trees.behaviour.Behaviour):
@@ -78,7 +79,7 @@ class BaseAction(py_trees.behaviour.Behaviour):
 
     def register_access_to_associated_actor_variable(self, variable_name):
         if not self._model.actor:
-            raise ValueError("Model does not have 'actor'.")
+            raise ActionError("Model does not have 'actor'.", action=self)
         blackboard = self.get_blackboard_client()
         model_blackboard_name = self._model.actor.get_fully_qualified_var_name(include_scenario=False)
         model_blackboard_name += "/" + variable_name
@@ -94,3 +95,11 @@ class BaseAction(py_trees.behaviour.Behaviour):
         model_blackboard_name = self.register_access_to_associated_actor_variable(variable_name)
         self.logger.debug(f"Get variable '{model_blackboard_name}'")
         return getattr(self.get_blackboard_client(), model_blackboard_name)
+
+
+class ActionError(OSC2Error):
+
+    def __init__(self, msg: str, action: BaseAction, *args) -> None:
+        if action is not None:
+            ctx = action._model.get_ctx()
+        super().__init__(msg, ctx, *args)

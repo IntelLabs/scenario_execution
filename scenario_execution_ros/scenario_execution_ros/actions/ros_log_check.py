@@ -19,7 +19,7 @@ from rclpy.qos import QoSProfile, DurabilityPolicy, HistoryPolicy
 import rclpy
 from rcl_interfaces.msg import Log
 from py_trees.common import Status
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class RosLogCheck(BaseAction):
@@ -48,7 +48,7 @@ class RosLogCheck(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         topic_qos = QoSProfile(
             depth=100,

@@ -19,6 +19,7 @@ from datetime import datetime
 from enum import Enum
 
 import py_trees
+from scenario_execution.actions.base_action import ActionError
 from scenario_execution.actions.run_process import RunProcess
 import shutil
 import signal
@@ -50,12 +51,11 @@ class RosBagRecord(RunProcess):
         set up
         """
         if "output_dir" not in kwargs:
-            raise ValueError("output_dir not defined.")
+            raise ActionError("output_dir not defined.", action=self)
 
         if kwargs['output_dir']:
             if not os.path.exists(kwargs['output_dir']):
-                raise ValueError(
-                    f"Specified destination dir '{kwargs['output_dir']}' does not exist")
+                raise ActionError(f"Specified destination dir '{kwargs['output_dir']}' does not exist", action=self)
             self.output_dir = kwargs['output_dir']
 
     def execute(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str, use_sim_time: bool):  # pylint: disable=arguments-differ

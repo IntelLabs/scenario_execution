@@ -27,7 +27,7 @@ from tf2_ros.buffer import Buffer
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 
 from .common import NamespacedTransformListener
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class TfCloseTo(BaseAction):
@@ -79,7 +79,7 @@ class TfCloseTo(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         try:
             self.marker_handler = kwargs['marker_handler']
@@ -87,7 +87,7 @@ class TfCloseTo(BaseAction):
             error_message = "didn't find 'marker_handler' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__
             )
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
         self.feedback_message = f"Waiting for transform map --> base_link"  # pylint: disable= attribute-defined-outside-init
         self.tf_buffer = Buffer()
         tf_prefix = self.namespace
