@@ -31,8 +31,11 @@ class OSC2Error(Exception):
     def __str__(self) -> str:
         error_str = ""
         if self.osc_ctx is not None:
-            context = self.osc_ctx[2].replace('\n', '')
-            error_str = f"(line: {self.osc_ctx[0]}, column: {self.osc_ctx[1]} in '{self.osc_ctx[3]}') -> {context}: "
+            if len(self.osc_ctx) == 4:
+                context = self.osc_ctx[2].replace('\n', '')
+                error_str = f"(line: {self.osc_ctx[0]}, column: {self.osc_ctx[1]} in '{self.osc_ctx[3]}') -> {context}: "
+            else:
+                error_str = f"<invalid context: {self.osc_ctx}>: "
         error_str += self.msg
         return error_str
 

@@ -28,7 +28,6 @@ class BaseAction(py_trees.behaviour.Behaviour):
         self._model = None
         self.logger = None
         self.blackboard = None
-        self.osc_ctx = None
         self.resolve_variable_reference_arguments_in_execute = resolve_variable_reference_arguments_in_execute
         super().__init__(self.__class__.__name__)
 
