@@ -36,7 +36,7 @@ def to_dict(in_value, member_name=""):
     return json.loads(json.dumps(message_to_ordereddict(target)))
 
 
-def to_pose3d(in_value):
+def to_pose_3d(in_value):
     if isinstance(in_value, PoseWithCovarianceStamped):
         pose3d = {}
         pose3d["position"] = to_dict(in_value.pose.pose.position)
@@ -44,5 +44,7 @@ def to_pose3d(in_value):
                                       in_value.pose.pose.orientation.y, in_value.pose.pose.orientation.z])
         pose3d["orientation"] = {'roll': roll, 'pitch': pitch, 'yaw': yaw}
         return pose3d
+    elif isinstance(in_value, dict) and in_value == {}:  # allow empty input to enable expression evaluation
+        return in_value
     else:
         raise ValueError(f"to_pose3d not implemented for type {type(in_value)}")

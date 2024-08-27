@@ -50,7 +50,7 @@ class TestExternalMethodsMsgConversion(unittest.TestCase):
     def tearDown(self):
         rclpy.try_shutdown()
 
-    def test_success(self):
+    def test_get_object_member(self):
         scenario_content = """
 import osc.ros
 import osc.helpers
@@ -73,6 +73,30 @@ scenario test_success:
 
         serial:
             check_data('/pose_only', 'geometry_msgs.msg.Pose', expected_value: '{ \\\"position\\\": { \\\"x\\\": 42 }}')
+            emit end
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_to_pose_3d(self):
+        scenario_content = """
+import osc.ros
+import osc.helpers
+
+struct current_state:
+    var test_pose: string
+
+scenario test_success:
+    timeout(10s)
+    current: current_state
+    test_pose : pose_3d = pose_3d(position_3d(x: 42))
+    do parallel:
+        topic_monitor('/test_pose', 'geometry_msgs.msg.PoseWithCovarianceStamped', current.test_pose)
+        serial:
+            wait elapsed(0.5s)
+            topic_publish('/test_pose', 'geometry_msgs.msg.PoseWithCovarianceStamped', "{ \\\'pose\\\': { \\\'pose\\\': { \\\'position\\\': { \\\'x\\\': 42 }, \\\'orientation\\\': { \\\'w\\\': 1 }}}}")
+        serial:
+            wait test_pose == msg_conversion.to_pose_3d(current.test_pose)
             emit end
 """
         self.execute(scenario_content)

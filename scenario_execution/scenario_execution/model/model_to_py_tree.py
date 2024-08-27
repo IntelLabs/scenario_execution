@@ -101,15 +101,15 @@ class TopicPublish(py_trees.behaviour.Behaviour):
         return Status.SUCCESS
 
 
-class ExpressionBehavior(py_trees.behaviour.Behaviour):
+class ExpressionBehavior(BaseAction):  # py_trees.behaviour.Behaviour):
 
-    def __init__(self, name: "ExpressionBehavior", expression: Expression):
-        super().__init__(name)
-
+    def __init__(self, name: "ExpressionBehavior", expression: Expression, model, logger):
+        super().__init__()
+        self._set_base_properities(name, model, logger)
         self.expression = expression
 
     def update(self):
-        if self.expression.eval():
+        if self.expression.eval(self.get_blackboard_client()):
             return Status.SUCCESS
         else:
             return Status.RUNNING
@@ -347,7 +347,7 @@ class ModelToPyTree(object):
                         instance = behavior_cls(**final_args)
                     else:
                         instance = behavior_cls()
-                    instance._set_base_properities(action_name, node, self.logger, node.get_ctx())  # pylint: disable=protected-access
+                    instance._set_base_properities(action_name, node, self.logger)  # pylint: disable=protected-access
                 except Exception as e:
                     raise OSC2ParsingError(msg=f'Error while initializing plugin {behavior_name}: {e}', context=node.get_ctx()) from e
                 self.__cur_behavior.add_child(instance)
@@ -365,7 +365,7 @@ class ModelToPyTree(object):
             expression = ""
             for child in node.get_children():
                 if isinstance(child, (RelationExpression, LogicalExpression)):
-                    expression = ExpressionBehavior(name=node.get_ctx()[2], expression=self.visit(child))
+                    expression = ExpressionBehavior(name=node.get_ctx()[2], expression=self.visit(child), model=node, logger=self.logger)
                 elif isinstance(child, ElapsedExpression):
                     elapsed_condition = self.visit_elapsed_expression(child)
                     expression = py_trees.timers.Timer(name=f"wait {elapsed_condition}s", duration=float(elapsed_condition))

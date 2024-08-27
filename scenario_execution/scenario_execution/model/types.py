@@ -2279,20 +2279,22 @@ class Expression(object):
         self.right = right
         self.operator = operator
 
-    def resolve(self, param):
+    def resolve(self, param, blackboard):
         if isinstance(param, Expression):
-            return param.eval()
+            return param.eval(blackboard)
         elif isinstance(param, VariableReference):
             return param.get_value()
+        elif isinstance(param, FunctionApplicationExpression):
+            return param.get_resolved_value(blackboard)
         else:
             return param
 
-    def eval(self):
-        left = self.resolve(self.left)
+    def eval(self, blackboard):
+        left = self.resolve(self.left, blackboard)
         if self.right is None:
             return self.operator(left)
         else:
-            right = self.resolve(self.right)
+            right = self.resolve(self.right, blackboard)
             return self.operator(left, right)
 
 
@@ -2346,6 +2348,8 @@ def visit_expression(node, blackboard):
                     args[idx] = var_def
                 else:
                     args[idx] = child.get_resolved_value(blackboard)
+            elif isinstance(child, FunctionApplicationExpression):
+                args[idx] = child
             else:
                 args[idx] = child.get_resolved_value(blackboard)
         idx += 1
