@@ -39,12 +39,13 @@ class RosBagRecord(RunProcess):
     Class to execute ros bag recording
     """
 
-    def __init__(self, topics: list, timestamp_suffix: bool, hidden_topics: bool, storage: str, use_sim_time: bool):
+    def __init__(self):
         super().__init__()
         self.bag_dir = None
         self.current_state = RosBagRecordActionState.WAITING_FOR_TOPICS
         self.command = None
         self.output_dir = None
+        self.topics = None
 
     def setup(self, **kwargs):
         """

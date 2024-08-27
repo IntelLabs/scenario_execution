@@ -61,10 +61,7 @@ class RosTopicPublish(BaseAction):
         except ValueError as e:
             raise ActionError(f"{e}", action=self) from e
 
-    def execute(self, topic_type: str, topic_name: str, value: str, qos_profile: tuple):
-        if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:
-            raise ActionError("Updating topic parameters not supported.", action=self)
-
+    def execute(self, value: str):
         if isinstance(value, str):
             parsed_value = literal_eval("".join(value.split('\\')))
             if not isinstance(parsed_value, dict):

@@ -37,8 +37,9 @@ class GazeboActorExists(RunProcess):
 
     """
 
-    def __init__(self, entity_name: str, world_name: str):
+    def __init__(self):
         super().__init__()
+        self.entity_name = None
         self.current_state = ActorExistsActionState.IDLE
 
     def execute(self, entity_name: str, world_name: str):  # pylint: disable=arguments-differ

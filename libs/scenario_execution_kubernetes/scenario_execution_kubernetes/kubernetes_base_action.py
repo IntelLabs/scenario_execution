@@ -29,9 +29,9 @@ class KubernetesBaseActionState(Enum):
 
 class KubernetesBaseAction(BaseAction):
 
-    def __init__(self, namespace: str, within_cluster: bool):
+    def __init__(self, within_cluster: bool):
         super().__init__()
-        self.namespace = namespace
+        self.namespace = None
         self.within_cluster = within_cluster
         self.client = None
         self.current_state = KubernetesBaseActionState.IDLE
@@ -44,10 +44,8 @@ class KubernetesBaseAction(BaseAction):
             config.load_kube_config()
         self.client = client.CoreV1Api()
 
-    def execute(self, namespace: str, within_cluster: bool):
+    def execute(self, namespace: str):
         self.namespace = namespace
-        if within_cluster != self.within_cluster:
-            raise ValueError("parameter 'within_cluster' is not allowed to change since initialization.")
 
     def update(self) -> py_trees.common.Status:  # pylint: disable=too-many-return-statements
         if self.current_state == KubernetesBaseActionState.IDLE:

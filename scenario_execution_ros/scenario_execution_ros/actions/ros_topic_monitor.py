@@ -24,10 +24,10 @@ import operator
 
 class RosTopicMonitor(BaseAction):
 
-    def __init__(self, topic_name: str, topic_type: str, member_name: str, target_variable: object, qos_profile: tuple):
+    def __init__(self, topic_name: str, topic_type: str, qos_profile: tuple):
         super().__init__(resolve_variable_reference_arguments_in_execute=False)
         self.target_variable = None
-        self.member_name = member_name
+        self.member_name = None
         self.topic_type = topic_type
         self.qos_profile = qos_profile
         self.topic_name = topic_name
@@ -59,9 +59,7 @@ class RosTopicMonitor(BaseAction):
         )
         self.feedback_message = f"Monitoring data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
 
-    def execute(self, topic_name: str, topic_type: str, member_name: str, target_variable: object, qos_profile: tuple):
-        if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:
-            raise ActionError("Updating topic parameters not supported.", action=self)
+    def execute(self, member_name: str, target_variable: object):
         if not isinstance(target_variable, VariableReference):
             raise ActionError(f"'target_variable' is expected to be a variable reference.", action=self)
         self.target_variable = target_variable
@@ -75,7 +73,7 @@ class RosTopicMonitor(BaseAction):
             self.target_variable.set_value(self.get_value(msg))
 
     def get_value(self, msg):
-        if self.member_name != "":
+        if self.member_name is not None and self.member_name != "":
             check_attr = operator.attrgetter(self.member_name)
             try:
                 return check_attr(msg)

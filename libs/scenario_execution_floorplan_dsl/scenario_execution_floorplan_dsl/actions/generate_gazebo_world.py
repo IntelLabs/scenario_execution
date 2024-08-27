@@ -24,7 +24,7 @@ import tempfile
 
 class GenerateGazeboWorld(BaseAction):
 
-    def __init__(self, associated_actor, sdf_template: str, arguments: list):
+    def __init__(self, associated_actor, sdf_template: str):
         super().__init__()
         self.sdf_template = sdf_template
         self.spawn_utils = SpawnUtils(self.logger)
@@ -42,7 +42,7 @@ class GenerateGazeboWorld(BaseAction):
             raise ActionError(f"SDF Template {self.sdf_template} not found.", action=self)
         self.tmp_file = tempfile.NamedTemporaryFile(suffix=".sdf")  # for testing, do not delete temp file: delete=False
 
-    def execute(self, associated_actor, sdf_template: str, arguments: list):
+    def execute(self, associated_actor, arguments: list):
         self.arguments_string = ""
         for elem in arguments:
             self.arguments_string += f'{elem["key"]}:={elem["value"]}'
