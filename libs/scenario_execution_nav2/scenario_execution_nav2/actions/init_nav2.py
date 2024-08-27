@@ -31,7 +31,7 @@ import py_trees
 
 from .nav2_common import NamespaceAwareBasicNavigator
 from scenario_execution_ros.actions.common import get_pose_stamped, NamespacedTransformListener
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class InitNav2State(Enum):
@@ -91,7 +91,7 @@ class InitNav2(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         self.tf_buffer = Buffer()
         self.tf_listener = NamespacedTransformListener(

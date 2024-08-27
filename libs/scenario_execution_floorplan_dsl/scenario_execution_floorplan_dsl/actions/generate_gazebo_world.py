@@ -17,7 +17,7 @@
 import os
 import py_trees
 from scenario_execution_gazebo.actions.utils import SpawnUtils
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 from shutil import which
 import tempfile
 
@@ -31,15 +31,15 @@ class GenerateGazeboWorld(BaseAction):
 
     def setup(self, **kwargs):
         if which("xacro") is None:
-            raise ValueError("'xacro' not found.")
+            raise ActionError("'xacro' not found.", action=self)
         if "input_dir" not in kwargs:
-            raise ValueError("input_dir not defined.")
+            raise ActionError("input_dir not defined.", action=self)
         input_dir = kwargs["input_dir"]
 
         if not os.path.isabs(self.sdf_template):
             self.sdf_template = os.path.join(input_dir, self.sdf_template)
         if not os.path.isfile(self.sdf_template):
-            raise ValueError(f"SDF Template {self.sdf_template} not found.")
+            raise ActionError(f"SDF Template {self.sdf_template} not found.", action=self)
         self.tmp_file = tempfile.NamedTemporaryFile(suffix=".sdf")  # for testing, do not delete temp file: delete=False
 
     def execute(self, associated_actor, sdf_template: str, arguments: list):

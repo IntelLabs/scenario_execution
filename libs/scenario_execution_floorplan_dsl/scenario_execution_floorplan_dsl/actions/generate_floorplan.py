@@ -18,7 +18,7 @@ import os
 from enum import Enum
 
 import py_trees
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 import docker
 import tempfile
@@ -46,20 +46,20 @@ class GenerateFloorplan(BaseAction):
         # self.output_dir = tempfile.mkdtemp() # for testing: does not remove directory afterwards
 
         if "input_dir" not in kwargs:
-            raise ValueError("input_dir not defined.")
+            raise ActionError("input_dir not defined.", action=self)
         input_dir = kwargs["input_dir"]
         # check docker image
         self.client = docker.from_env()
         image_name = 'floorplan:latest'
         filterred_images = self.client.images.list(filters={'reference': image_name})
         if len(filterred_images) == 0:
-            raise ValueError(f"Required docker image '{image_name}' does not exist.")
+            raise ActionError(f"Required docker image '{image_name}' does not exist.", action=self)
 
         # check files
         if not os.path.isabs(self.file_path):
             self.file_path = os.path.join(input_dir, self.file_path)
         if not os.path.isfile(self.file_path):
-            raise ValueError(f"Floorplan file {self.file_path} not found.")
+            raise ActionError(f"Floorplan file {self.file_path} not found.", action=self)
         self.floorplan_name = os.path.splitext(os.path.basename(self.file_path))[0]
 
     def update(self) -> py_trees.common.Status:

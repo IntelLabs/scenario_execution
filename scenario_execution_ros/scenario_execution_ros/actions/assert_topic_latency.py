@@ -21,7 +21,7 @@ from rclpy.node import Node
 import importlib
 import time
 from scenario_execution_ros.actions.conversions import get_comparison_operator, get_qos_preset_profile
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class AssertTopicLatency(BaseAction):
@@ -51,17 +51,17 @@ class AssertTopicLatency(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         success = self.check_topic()
         if not success and self.wait_for_first_message:
-            raise ValueError("Invalid topic or type specified.")
+            raise ActionError("Invalid topic or type specified.", action=self)
         elif not success and not self.wait_for_first_message:
-            raise ValueError("Topic type must be specified. Please provide a valid topic type.")
+            raise ActionError("Topic type must be specified. Please provide a valid topic type.", action=self)
 
     def execute(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, rolling_average_count: int, wait_for_first_message: bool):
         if self.timer != 0:
-            raise ValueError("Action does not yet support to get retriggered")
+            raise ActionError("Action does not yet support to get retriggered", action=self)
         self.timer = time.time()
 
     def update(self) -> py_trees.common.Status:

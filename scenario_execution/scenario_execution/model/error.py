@@ -18,24 +18,36 @@
 from antlr4 import ParserRuleContext
 
 
-class OSC2ParsingError(Exception):
-    """
-    Error class for OSC2 parser
-    """
+class OSC2Error(Exception):
 
     def __init__(self, msg: str, context, *args) -> None:
         super().__init__(*args)
         self.msg = msg
         if isinstance(context, ParserRuleContext):
-            self.line = context.start.line
-            self.column = context.start.column
-            self.context = context.getText()
-            self.filename = ""
+            self.osc_ctx = (context.start.line, context.start.column, context.getText(), "")
         else:
-            self.line = context[0]
-            self.column = context[1]
-            self.context = context[2]
-            self.filename = context[3]
+            self.osc_ctx = context
 
     def __str__(self) -> str:
-        return self.msg
+        error_str = ""
+        if self.osc_ctx is not None:
+            if len(self.osc_ctx) == 4:
+                context = self.osc_ctx[2].replace('\n', '')
+                error_str = f"(line: {self.osc_ctx[0]}, column: {self.osc_ctx[1]} in '{self.osc_ctx[3]}') -> {context}: "
+            else:
+                error_str = f"<invalid context: {self.osc_ctx}>: "
+        error_str += self.msg
+        return error_str
+
+
+class OSC2ParsingError(OSC2Error):
+    """
+    Error class for OSC2 parser
+    """
+
+    def __init__(self, msg: str, context, *args) -> None:
+        if isinstance(context, ParserRuleContext):
+            ctx = (context.start.line, context.start.column, context.getText(), "")
+        else:
+            ctx = context
+        super().__init__(msg, ctx, *args)

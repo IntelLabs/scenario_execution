@@ -19,7 +19,7 @@ import rclpy
 from nav_msgs.msg import Odometry
 from py_trees.common import Status
 import py_trees
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class OdometryDistanceTraveled(BaseAction):
@@ -49,7 +49,7 @@ class OdometryDistanceTraveled(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
         self.callback_group = rclpy.callback_groups.MutuallyExclusiveCallbackGroup()
         namespace = self.namespace
         if self.namespace_override:
@@ -59,7 +59,7 @@ class OdometryDistanceTraveled(BaseAction):
 
     def execute(self, associated_actor, distance: float, namespace_override: str):
         if self.namespace != associated_actor["namespace"] or self.namespace_override != namespace_override:
-            raise ValueError("Runtime change of namespace not supported.")
+            raise ActionError("Runtime change of namespace not supported.", action=self)
         self.distance_expected = distance
         self.distance_traveled = 0.0
         self.previous_x = 0
