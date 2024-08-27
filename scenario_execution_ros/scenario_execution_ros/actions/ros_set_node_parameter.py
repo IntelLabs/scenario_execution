@@ -18,6 +18,7 @@ from ast import literal_eval
 
 from .ros_service_call import RosServiceCall
 from rcl_interfaces.msg import ParameterType
+from scenario_execution.actions.base_action import ActionError
 
 
 class RosSetNodeParameter(RosServiceCall):
@@ -70,7 +71,7 @@ class RosSetNodeParameter(RosServiceCall):
 
     def execute(self, node_name: str, parameter_name: str, parameter_value: str):   # pylint: disable=arguments-differ,arguments-renamed
         if self.node_name != node_name or self.parameter_name != parameter_name or self.parameter_value != parameter_value:
-            raise ValueError("node_name, parameter_name and parameter_value are not changeable during runtime.")
+            raise ActionError("node_name, parameter_name and parameter_value are not changeable during runtime.", action=self)
 
     @staticmethod
     def is_float(element: any) -> bool:

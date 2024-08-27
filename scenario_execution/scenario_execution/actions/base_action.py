@@ -79,7 +79,7 @@ class BaseAction(py_trees.behaviour.Behaviour):
 
     def register_access_to_associated_actor_variable(self, variable_name):
         if not self._model.actor:
-            raise ValueError("Model does not have 'actor'.")
+            raise ActionError("Model does not have 'actor'.", action=self)
         blackboard = self.get_blackboard_client()
         model_blackboard_name = self._model.actor.get_fully_qualified_var_name(include_scenario=False)
         model_blackboard_name += "/" + variable_name

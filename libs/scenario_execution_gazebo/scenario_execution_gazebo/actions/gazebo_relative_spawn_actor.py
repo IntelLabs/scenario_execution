@@ -21,6 +21,7 @@ from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
 from tf2_geometry_msgs import PoseStamped
 from .gazebo_spawn_actor import GazeboSpawnActor
+from scenario_execution.actions.base_action import ActionError
 
 
 class GazeboRelativeSpawnActor(GazeboSpawnActor):
@@ -97,4 +98,4 @@ class GazeboRelativeSpawnActor(GazeboSpawnActor):
                 f' w: {new_pose.pose.orientation.w} x: {new_pose.pose.orientation.x} y: {new_pose.pose.orientation.y} z: {new_pose.pose.orientation.z}' \
                 ' } }'
         except TransformException as e:
-            raise ValueError(f"No transform available ({self.parent_frame_id}->{self.frame_id})") from e
+            raise ActionError(f"No transform available ({self.parent_frame_id}->{self.frame_id})", action=self) from e

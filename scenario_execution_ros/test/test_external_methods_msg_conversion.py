@@ -19,7 +19,6 @@ import os
 import unittest
 import rclpy
 import py_trees
-import threading
 from scenario_execution_ros import ROSScenarioExecution
 from scenario_execution.model.osc2_parser import OpenScenario2Parser
 from scenario_execution.model.model_to_py_tree import create_py_tree

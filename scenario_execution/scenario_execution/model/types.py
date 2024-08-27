@@ -1843,7 +1843,7 @@ class BinaryExpression(ModelExpression):
         return type_string
 
     def get_resolved_value(self, blackboard=None):
-        return visit_expression(self, blackboard).eval()
+        return visit_expression(self, blackboard).eval(blackboard)
 
 
 class UnaryExpression(ModelExpression):
@@ -1911,7 +1911,7 @@ class LogicalExpression(ModelExpression):
         return "bool"
 
     def get_resolved_value(self, blackboard=None):
-        return visit_expression(self, blackboard).eval()
+        return visit_expression(self, blackboard).eval(blackboard)
 
 
 class RelationExpression(ModelExpression):
@@ -1938,7 +1938,7 @@ class RelationExpression(ModelExpression):
         return "bool"
 
     def get_resolved_value(self, blackboard=None):
-        return visit_expression(self, blackboard).eval()
+        return visit_expression(self, blackboard).eval(blackboard)
 
 
 class ListExpression(ModelExpression):
