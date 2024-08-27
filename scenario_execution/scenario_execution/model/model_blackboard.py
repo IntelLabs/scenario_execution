@@ -26,8 +26,7 @@ def create_py_tree_blackboard(model, tree, logger, log_tree):
     try:
         model_blackboard.build(model, tree, log_tree)
     except OSC2ParsingError as e:
-        raise ValueError(
-            f'Error while creating py-tree:\nTraceback <line: {e.line}, column: {e.column}> in "{e.filename}":\n  -> {e.context}\n{e.__class__.__name__}: {e.msg}') from e
+        raise ValueError(f'Error while creating py-tree: {e}') from e
 
 
 class ModelToBlackboard(object):

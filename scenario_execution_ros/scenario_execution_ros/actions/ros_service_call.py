@@ -22,7 +22,7 @@ from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.qos import QoSProfile, DurabilityPolicy
 from rosidl_runtime_py.set_message import set_message_fields
 import py_trees  # pylint: disable=import-error
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class ServiceCallActionState(Enum):
@@ -68,7 +68,7 @@ class RosServiceCall(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         datatype_in_list = self.service_type_str.split(".")
         try:
@@ -76,7 +76,7 @@ class RosServiceCall(BaseAction):
                 importlib.import_module(".".join(datatype_in_list[0:-1])),
                 datatype_in_list[-1])
         except ValueError as e:
-            raise ValueError(f"Invalid service_type '{self.service_type}':") from e
+            raise ActionError(f"Invalid service_type '{self.service_type}': {e}", action=self) from e
 
         client_kwargs = {
             "callback_group": self.cb_group,
@@ -95,7 +95,7 @@ class RosServiceCall(BaseAction):
 
     def execute(self,  service_name: str, service_type: str, data: str, transient_local: bool):
         if self.service_name != service_name or self.service_type_str != service_type or self.data_str != data or self.transient_local != transient_local:
-            raise ValueError("service_name, service_type and data arguments are not changeable during runtime.")
+            raise ActionError("service_name, service_type and data arguments are not changeable during runtime.", action=self)
         self.current_state = ServiceCallActionState.IDLE
 
     def update(self) -> py_trees.common.Status:
