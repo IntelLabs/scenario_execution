@@ -21,7 +21,7 @@ import pybullet as p
 
 class ActorSetJointMotorControl(BaseAction):
 
-    def __init__(self):
+    def __init__(self, associated_actor):
         super().__init__()
         self.target_velocity = None
         self.force = None

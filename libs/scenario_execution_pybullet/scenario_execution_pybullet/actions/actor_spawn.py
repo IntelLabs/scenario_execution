@@ -21,7 +21,7 @@ import pybullet as p
 
 class ActorSpawn(BaseAction):
 
-    def __init__(self):
+    def __init__(self, associated_actor):
         super().__init__()
         self.spawn_pose = None
         self.model = None

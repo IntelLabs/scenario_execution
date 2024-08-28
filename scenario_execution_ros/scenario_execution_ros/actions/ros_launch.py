@@ -21,9 +21,6 @@ import signal
 
 class RosLaunch(RunProcess):
 
-    def __init__(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):
-        super().__init__(None, wait_for_shutdown, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
-
     def execute(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):  # pylint: disable=arguments-differ
         super().execute(None, wait_for_shutdown, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
         self.command = ["ros2", "launch", package_name, launch_file]

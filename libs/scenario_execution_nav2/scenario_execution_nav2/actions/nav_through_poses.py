@@ -25,19 +25,16 @@ class NavThroughPoses(RosActionCall):
     Class to navigate through poses
     """
 
-    def __init__(self, associated_actor, goal_poses: list, action_topic: str, namespace_override: str):
+    def __init__(self, associated_actor, action_topic: str, namespace_override: str):
         self.namespace = associated_actor["namespace"]
         if namespace_override:
             self.namespace = namespace_override
         self.goal_poses = None
-        super().__init__(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateThroughPoses", "")
+        super().__init__(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateThroughPoses")
 
-    def execute(self, associated_actor, goal_poses: list, action_topic: str, namespace_override: str) -> None:  # pylint: disable=arguments-differ,arguments-renamed
-        self.namespace = associated_actor["namespace"]
-        if namespace_override:
-            self.namespace = namespace_override
+    def execute(self, associated_actor, goal_poses: list) -> None:  # pylint: disable=arguments-differ,arguments-renamed
         self.goal_poses = goal_poses
-        super().execute(self.namespace + '/' + action_topic, "nav2_msgs.action.NavigateThroughPoses", "")
+        super().execute("")
 
     def get_goal_msg(self):
         goal_msg = NavigateThroughPoses.Goal()

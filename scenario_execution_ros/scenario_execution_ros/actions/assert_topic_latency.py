@@ -59,7 +59,7 @@ class AssertTopicLatency(BaseAction):
         elif not success and not self.wait_for_first_message:
             raise ActionError("Topic type must be specified. Please provide a valid topic type.", action=self)
 
-    def execute(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, rolling_average_count: int, wait_for_first_message: bool):
+    def execute(self):
         if self.timer != 0:
             raise ActionError("Action does not yet support to get retriggered", action=self)
         self.timer = time.time()

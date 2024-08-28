@@ -45,7 +45,7 @@ class GazeboSpawnActor(RunProcess):
 
     """
 
-    def __init__(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):
+    def __init__(self, associated_actor, xacro_arguments: list, model: str):
         """
         init
         """
@@ -92,9 +92,7 @@ class GazeboSpawnActor(RunProcess):
                 raise ActionError(f'Invalid model specified ({self.entity_model})', action=self)
             self.current_state = SpawnActionState.MODEL_AVAILABLE
 
-    def execute(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):  # pylint: disable=arguments-differ
-        if self.entity_model != model or set(self.xacro_arguments) != set(xacro_arguments):
-            raise ActionError("Runtime change of model not supported.", action=self)
+    def execute(self, associated_actor, spawn_pose: list, world_name: str):  # pylint: disable=arguments-differ
         self.spawn_pose = spawn_pose
         self.world_name = world_name
 

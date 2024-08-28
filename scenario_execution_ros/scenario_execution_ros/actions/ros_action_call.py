@@ -43,7 +43,7 @@ class RosActionCall(BaseAction):
     ros service call behavior
     """
 
-    def __init__(self, action_name: str, action_type: str, data: str, transient_local: bool = False):
+    def __init__(self, action_name: str, action_type: str, transient_local: bool = False):
         super().__init__()
         self.node = None
         self.client = None
@@ -54,7 +54,6 @@ class RosActionCall(BaseAction):
         self.action_name = action_name
         self.received_feedback = None
         self.data = None
-        self.parse_data(data)
         self.current_state = ActionCallActionState.IDLE
         self.cb_group = ReentrantCallbackGroup()
         self.transient_local = transient_local
@@ -90,10 +89,7 @@ class RosActionCall(BaseAction):
 
         self.client = ActionClient(self.node, self.action_type, self.action_name, **client_kwargs)
 
-    def execute(self, action_name: str, action_type: str, data: str, transient_local: bool = False):
-        if self.action_name != action_name or self.action_type_string != action_type or self.transient_local != transient_local:
-            raise ActionError(f"Updating action_name or action_type_string not supported.", action=self)
-
+    def execute(self, data: str):
         self.parse_data(data)
         self.current_state = ActionCallActionState.IDLE
 

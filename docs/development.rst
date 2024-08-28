@@ -95,8 +95,9 @@ Implement an Action
    - Make use of ``kwargs['logger']``, available in ``setup()``
    - If you want to draw markers for RViz, use ``kwargs['marker_handler']``, available in ``setup()`` (with ROS backend)
 - Use arguments from ``__init__()`` for a longer running initialization in ``setup()`` and the arguments from ``execute()`` to set values just before executing the action.
-  - ``__init__()`` does not need to contain all osc2-defined arguments. This can be convenient as variable argument resolving might not be available during ``__init__()``.
-  - ``execute()`` contains all osc2-arguments.
+- ``__init__()`` and ``setup()`` are called once, ``execute()`` might be called multiple times.
+- osc2 arguments can only be consumed once, either in ``__init__()`` or ``execute()``. Exception: If an ``associated_actor`` exists, it's an argument of both methods.
+- Arguments that need late resolving (e.g. referring to variables or external methods) need to be consumed in ``execute()``.
 - ``setup()`` provides several arguments that might be useful:
   - ``input_dir``: Directory containing the scenario file
   - ``output_dir``: If given on command-line, contains the directory to save output to

@@ -200,21 +200,14 @@ class ModelToPyTree(object):
                 raise OSC2ParsingError(
                     msg=f'Plugin {behavior_name} {method.__name__} method is missing argument "self".', context=node.get_ctx())
 
-            unknown_args = []
+            unexpected_args = []
             missing_args = copy.copy(expected_args)
             for element in method_args:
                 if element not in expected_args:
-                    unknown_args.append(element)
+                    unexpected_args.append(element)
                 else:
                     missing_args.remove(element)
-            error_string = ""
-            if missing_args:
-                error_string += "missing: " + ", ".join(missing_args)
-            if unknown_args:
-                if error_string:
-                    error_string += ", "
-                error_string += "unknown: " + ", ".join(unknown_args)
-            return method_args, error_string, missing_args
+            return method_args, unexpected_args, missing_args
 
         def create_decorator(self, node: ModifierDeclaration, resolved_values):
             available_modifiers = ["repeat", "inverter", "timeout", "retry", "failure_is_running", "failure_is_success",
@@ -311,29 +304,42 @@ class ModelToPyTree(object):
                     # - __init__(self)
                     # - __init__(self, resolve_variable_reference_arguments_in_execute)
                     # - __init__(self, <some-or-all-osc-defined-args>)
-                    init_args, error_string, args_not_in_init = self.compare_method_arguments(
+                    init_args, unexpected_args, args_not_in_init = self.compare_method_arguments(
                         init_method, expected_args, behavior_name, node)
                     if init_args != ["self"] and \
                             init_args != ["self", "resolve_variable_reference_arguments_in_execute"] and \
                             not all(x in expected_args for x in init_args):
                         raise OSC2ParsingError(
-                            msg=f'Plugin {behavior_name}: __init__() either only has "self" argument and osc-defined arguments. {error_string}\n'
+                            msg=f'Plugin {behavior_name}: __init__() either only has "self" argument and osc-defined arguments. Unexpected args: {", ".join(unexpected_args)}\n'
                                 f'expected definition with all arguments: {expected_args}', context=node.get_ctx()
                         )
                 execute_method = getattr(behavior_cls, "execute", None)
-                if execute_method is not None:
-                    _, error_string, _ = self.compare_method_arguments(execute_method, expected_args, behavior_name, node)
-                    if error_string:
+                if execute_method is None:
+                    if args_not_in_init:
                         raise OSC2ParsingError(
-                            msg=f'Plugin {behavior_name}: execute() arguments differ from osc-definition: {error_string}.', context=node.get_ctx()
-                        )
+                            msg=f'Plugin {behavior_name}: execute() required, but not defined. Required arguments (i.e. not defined in __init__()): {", ".join(args_not_in_init)}.', context=node.get_ctx())
+                else:
+                    expected_execute_args = copy.deepcopy(args_not_in_init)
+                    expected_execute_args.append("self")
+                    if node.actor:
+                        expected_execute_args.append("associated_actor")
+                    _, unexpected_execute_args, missing_execute_args = self.compare_method_arguments(
+                        execute_method, expected_execute_args, behavior_name, node)
+                    if missing_execute_args:
+                        raise OSC2ParsingError(
+                            msg=f'Plugin {behavior_name}: execute() is missing arguments: {", ".join(missing_execute_args)}. Either specify in __init__() or execute().', context=node.get_ctx())
+                    if unexpected_execute_args:
+                        error = ""
+                        if any(x in init_args for x in unexpected_execute_args):
+                            error = " osc2 arguments, that are consumed in __init__() are not allowed to be used in execute() again. Please either remove argument(s) from __init__() or execute()."
+                        raise OSC2ParsingError(
+                            msg=f'Plugin {behavior_name}: execute() has unexpected arguments: {", ".join(unexpected_execute_args)}.{error}', context=node.get_ctx())
 
                 # initialize plugin instance
                 action_name = node.name
                 if not action_name:
                     action_name = behavior_name
-                self.logger.debug(
-                    f"Instantiate action '{action_name}', plugin '{behavior_name}'. with:\nExpected execute() arguments: {expected_args}")
+                self.logger.debug(f"Instantiate action '{action_name}', plugin '{behavior_name}'.")
                 try:
                     if init_args is not None and init_args != ['self'] and init_args != ['self', 'resolve_variable_reference_arguments_in_execute']:
                         final_args = node.get_resolved_value(self.blackboard, skip_keys=args_not_in_init)
@@ -342,8 +348,6 @@ class ModelToPyTree(object):
                             final_args["associated_actor"] = node.actor.get_resolved_value(self.blackboard)
                             final_args["associated_actor"]["name"] = node.actor.name
 
-                        for k in args_not_in_init:
-                            del final_args[k]
                         instance = behavior_cls(**final_args)
                     else:
                         instance = behavior_cls()
