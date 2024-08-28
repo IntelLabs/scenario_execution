@@ -20,6 +20,9 @@ from scenario_execution.actions.base_action import BaseAction
 
 class ActorSetValue(BaseAction):
 
+    def __init__(self, associated_actor):
+        super().__init__()
+
     def setup(self, **kwargs):
         self.i = 0
         self.value = None

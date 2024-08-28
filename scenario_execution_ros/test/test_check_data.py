@@ -91,6 +91,31 @@ scenario test:
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
+    def test_fail_unknown_type(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.Bool',
+                value: '{\\\"data\\\": True}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.UNKNOWN',
+                expected_value: 'True')
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
+
     def test_fail_unknown_member(self):
         scenario_content = """
 import osc.ros
@@ -114,9 +139,8 @@ scenario test:
             wait elapsed(10s)
             emit fail
 """
-        parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
-        model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
-        self.assertRaises(ValueError, create_py_tree, model, self.tree, self.parser.logger, False)
+        self.execute(scenario_content)
+        self.assertFalse(self.scenario_execution_ros.process_results())
 
     def test_fail_member_value_differ(self):
         scenario_content = """

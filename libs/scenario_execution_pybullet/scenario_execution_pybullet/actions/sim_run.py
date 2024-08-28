@@ -22,7 +22,7 @@ import math
 
 class SimRun(BaseAction):
 
-    def __init__(self):
+    def __init__(self, associated_actor):
         super().__init__()
         self.sim_steps_per_tick = 0
 

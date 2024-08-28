@@ -30,8 +30,8 @@ class CaptureScreenState(Enum):
 
 class CaptureScreen(RunProcess):
 
-    def __init__(self, output_filename: str, frame_rate: float):
-        super().__init__("", wait_for_shutdown=True)
+    def __init__(self):
+        super().__init__()
         self.current_state = None
         self.output_dir = "."
 
@@ -46,6 +46,7 @@ class CaptureScreen(RunProcess):
             self.output_dir = kwargs['output_dir']
 
     def execute(self, output_filename: str, frame_rate: float):  # pylint: disable=arguments-differ
+        super().execute(None, wait_for_shutdown=True)
         self.current_state = CaptureScreenState.IDLE
         cmd = ["ffmpeg",
                "-f", "x11grab",

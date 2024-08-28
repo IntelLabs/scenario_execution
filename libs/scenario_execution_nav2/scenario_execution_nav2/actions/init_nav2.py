@@ -58,12 +58,12 @@ class InitNav2(BaseAction):
 
     """
 
-    def __init__(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):
+    def __init__(self, associated_actor, namespace_override: str):
         super().__init__()
-        self.initial_pose = initial_pose
-        self.base_frame_id = base_frame_id
-        self.wait_for_initial_pose = wait_for_initial_pose
-        self.use_initial_pose = use_initial_pose
+        self.initial_pose = None
+        self.base_frame_id = None
+        self.wait_for_initial_pose = None
+        self.use_initial_pose = None
         self.namespace = associated_actor["namespace"]
         self.node = None
         self.future = None
@@ -118,14 +118,12 @@ class InitNav2(BaseAction):
                                                                    amcl_pose_qos,
                                                                    callback_group=ReentrantCallbackGroup())
 
-    def execute(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):
+    def execute(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool):
         self.initial_pose = initial_pose
         self.base_frame_id = base_frame_id
         self.wait_for_initial_pose = wait_for_initial_pose
         self.use_initial_pose = use_initial_pose
         self.namespace = associated_actor["namespace"]
-        if namespace_override:
-            self.namespace = namespace_override
 
     def update(self) -> py_trees.common.Status:
         """
