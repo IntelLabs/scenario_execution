@@ -33,12 +33,12 @@ class KubernetesPodExecState(Enum):
 
 class KubernetesPodExec(BaseAction):
 
-    def __init__(self, target: str, command: list, regex: bool, namespace: str, within_cluster: bool):
+    def __init__(self, within_cluster: bool):
         super().__init__()
-        self.target = target
-        self.namespace = namespace
-        self.regex = regex
-        self.command = command
+        self.target = None
+        self.namespace = None
+        self.regex = None
+        self.command = None
         self.within_cluster = within_cluster
         self.client = None
         self.reponse_queue = queue.Queue()
@@ -56,9 +56,7 @@ class KubernetesPodExec(BaseAction):
 
         self.exec_thread = threading.Thread(target=self.pod_exec, daemon=True)
 
-    def execute(self, target: str, command: list, regex: bool, namespace: str, within_cluster: bool):
-        if within_cluster != self.within_cluster:
-            raise ValueError("parameter 'within_cluster' is not allowed to change since initialization.")
+    def execute(self, target: str, command: list, regex: bool, namespace: str):
         self.target = target
         self.namespace = namespace
         self.command = command

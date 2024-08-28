@@ -59,9 +59,7 @@ class RosTopicWaitForData(BaseAction):
         )
         self.feedback_message = f"Waiting for data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
 
-    def execute(self, topic_name, topic_type, qos_profile):
-        if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:
-            raise ActionError("Updating topic parameters not supported.", action=self)
+    def execute(self):
         self.found = False
 
     def update(self) -> py_trees.common.Status:

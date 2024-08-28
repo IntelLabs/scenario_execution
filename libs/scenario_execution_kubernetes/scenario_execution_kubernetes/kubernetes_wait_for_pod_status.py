@@ -32,15 +32,13 @@ class KubernetesWaitForPodStatusState(Enum):
 
 class KubernetesWaitForPodStatus(BaseAction):
 
-    def __init__(self, target: str, regex: bool, status: tuple, namespace: str, within_cluster: bool):
+    def __init__(self, within_cluster: bool):
         super().__init__()
-        self.target = target
-        self.namespace = namespace
-        if not isinstance(status, tuple) or not isinstance(status[0], str):
-            raise ValueError("Status expected to be enum.")
-        self.expected_status = status[0]
+        self.target = None
+        self.namespace = None
+        self.expected_status = None
         self.within_cluster = within_cluster
-        self.regex = regex
+        self.regex = None
         self.client = None
         self.update_queue = queue.Queue()
         self.current_state = KubernetesWaitForPodStatusState.IDLE
@@ -55,11 +53,12 @@ class KubernetesWaitForPodStatus(BaseAction):
         self.monitoring_thread = threading.Thread(target=self.watch_pods, daemon=True)
         self.monitoring_thread.start()
 
-    def execute(self, target: str, regex: bool, status: tuple, namespace: str, within_cluster: bool):
+    def execute(self, target: str, regex: bool, status: tuple, namespace: str):
         self.target = target
         self.namespace = namespace
+        if not isinstance(status, tuple) or not isinstance(status[0], str):
+            raise ValueError("Status expected to be enum.")
         self.expected_status = status[0]
-        self.within_cluster = within_cluster
         self.regex = regex
         self.current_state = KubernetesWaitForPodStatusState.MONITORING
 

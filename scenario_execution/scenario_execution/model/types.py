@@ -450,7 +450,9 @@ class StructuredDeclaration(Declaration):
             elif isinstance(child, MethodDeclaration):
                 if child.name not in skip_keys:
                     params[child.name] = child.get_resolved_value(blackboard)
-
+        for k in skip_keys:
+            if k in params:
+                del params[k]
         return params
 
     def get_type(self):
@@ -1520,7 +1522,9 @@ class BehaviorInvocation(StructuredDeclaration):
     def get_type(self):
         return self.behavior, False
 
-    def get_resolved_value_with_variable_references(self, blackboard):
+    def get_resolved_value_with_variable_references(self, blackboard, skip_keys=None):
+        if skip_keys is None:
+            skip_keys = []
         params = self.get_resolved_value(blackboard)
 
         pos = 0
@@ -1528,12 +1532,16 @@ class BehaviorInvocation(StructuredDeclaration):
         for child in self.get_children():
             if isinstance(child, PositionalArgument):
                 if isinstance(child.get_child(0), IdentifierReference):
-                    params[param_keys[pos]] = child.get_child(0).get_blackboard_reference(blackboard)
+                    if param_keys[pos] not in skip_keys:
+                        params[param_keys[pos]] = child.get_child(0).get_blackboard_reference(blackboard)
                 pos += 1
             elif isinstance(child, NamedArgument):
                 if isinstance(child.get_child(0), IdentifierReference):
-                    params[child.name] = child.get_child(0).get_blackboard_reference(blackboard)
-
+                    if child.name not in skip_keys:
+                        params[child.name] = child.get_child(0).get_blackboard_reference(blackboard)
+        for k in skip_keys:
+            if k in params:
+                del params[k]
         return params
 
 

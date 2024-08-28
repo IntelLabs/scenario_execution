@@ -40,7 +40,7 @@ class RosServiceCall(BaseAction):
     ros service call behavior
     """
 
-    def __init__(self, service_name: str, service_type: str, data: str, transient_local: bool = False):
+    def __init__(self, service_name: str, service_type: str, transient_local: bool = False):
         super().__init__()
         self.node = None
         self.client = None
@@ -48,12 +48,7 @@ class RosServiceCall(BaseAction):
         self.service_type_str = service_type
         self.service_type = None
         self.service_name = service_name
-        self.data_str = data
-        try:
-            trimmed_data = self.data_str.encode('utf-8').decode('unicode_escape')
-            self.data = literal_eval(trimmed_data)
-        except Exception as e:  # pylint: disable=broad-except
-            raise ValueError(f"Error while parsing sevice call data:") from e
+        self.data = None
         self.current_state = ServiceCallActionState.IDLE
         self.cb_group = ReentrantCallbackGroup()
         self.transient_local = transient_local
@@ -93,9 +88,12 @@ class RosServiceCall(BaseAction):
             **client_kwargs
         )
 
-    def execute(self,  service_name: str, service_type: str, data: str, transient_local: bool):
-        if self.service_name != service_name or self.service_type_str != service_type or self.data_str != data or self.transient_local != transient_local:
-            raise ActionError("service_name, service_type and data arguments are not changeable during runtime.", action=self)
+    def execute(self, data: str):
+        try:
+            trimmed_data = data.encode('utf-8').decode('unicode_escape')
+            self.data = literal_eval(trimmed_data)
+        except Exception as e:  # pylint: disable=broad-except
+            raise ActionError(f"Error while parsing sevice call data: {e}", action=self) from e
         self.current_state = ServiceCallActionState.IDLE
 
     def update(self) -> py_trees.common.Status:
