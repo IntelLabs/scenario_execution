@@ -9,9 +9,7 @@ The following image shows a snapshot of the rviz plugin during a run of the [exa
 
 ![tree_example.png](../docs/images/scenario_view_example.png)
 
-### Known Issues
-
-The Scenario View panel can not display the scenario's behavior tree if initialized while the robot navigation is already running.
+The plugin subscribes to `/scenario_execution/snapshots` by default. Double-click on the header to modify the topic.
 
 ### Icon Licence
 

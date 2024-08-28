@@ -37,8 +37,9 @@ class GazeboDeleteActor(RunProcess):
 
     """
 
-    def __init__(self, associated_actor, entity_name: str, world_name: str):
+    def __init__(self, associated_actor):
         super().__init__()
+        self.entity_name = None
         self.current_state = DeleteActionState.IDLE
 
     def execute(self, associated_actor, entity_name: str, world_name: str):  # pylint: disable=arguments-differ

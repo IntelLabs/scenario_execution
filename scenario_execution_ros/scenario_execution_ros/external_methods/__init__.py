@@ -13,25 +13,3 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-
-import py_trees
-from scenario_execution.actions.base_action import BaseAction
-import pybullet as p
-import pybullet_data
-
-
-class SimInitialize(BaseAction):
-
-    def __init__(self, associated_actor):
-        super().__init__()
-        self.world = None
-
-    def execute(self, associated_actor, world: str):  # pylint: disable=arguments-differ
-        self.world = world
-
-    def update(self) -> py_trees.common.Status:
-        p.connect(p.GUI)
-        p.setAdditionalSearchPath(pybullet_data.getDataPath())
-        p.setGravity(0, 0, -9.8)
-        p.loadURDF(self.world)
-        return py_trees.common.Status.SUCCESS

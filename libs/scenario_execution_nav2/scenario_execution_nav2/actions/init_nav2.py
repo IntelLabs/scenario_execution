@@ -31,7 +31,7 @@ import py_trees
 
 from .nav2_common import NamespaceAwareBasicNavigator
 from scenario_execution_ros.actions.common import get_pose_stamped, NamespacedTransformListener
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class InitNav2State(Enum):
@@ -58,12 +58,12 @@ class InitNav2(BaseAction):
 
     """
 
-    def __init__(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):
+    def __init__(self, associated_actor, namespace_override: str):
         super().__init__()
-        self.initial_pose = initial_pose
-        self.base_frame_id = base_frame_id
-        self.wait_for_initial_pose = wait_for_initial_pose
-        self.use_initial_pose = use_initial_pose
+        self.initial_pose = None
+        self.base_frame_id = None
+        self.wait_for_initial_pose = None
+        self.use_initial_pose = None
         self.namespace = associated_actor["namespace"]
         self.node = None
         self.future = None
@@ -91,7 +91,7 @@ class InitNav2(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         self.tf_buffer = Buffer()
         self.tf_listener = NamespacedTransformListener(
@@ -118,14 +118,12 @@ class InitNav2(BaseAction):
                                                                    amcl_pose_qos,
                                                                    callback_group=ReentrantCallbackGroup())
 
-    def execute(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, namespace_override: str):
+    def execute(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool):
         self.initial_pose = initial_pose
         self.base_frame_id = base_frame_id
         self.wait_for_initial_pose = wait_for_initial_pose
         self.use_initial_pose = use_initial_pose
         self.namespace = associated_actor["namespace"]
-        if namespace_override:
-            self.namespace = namespace_override
 
     def update(self) -> py_trees.common.Status:
         """

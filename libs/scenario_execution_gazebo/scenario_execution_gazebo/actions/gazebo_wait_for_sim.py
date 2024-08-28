@@ -35,7 +35,7 @@ class GazeboWaitForSim(RunProcess):
     Class to wait for the simulation to become active
     """
 
-    def __init__(self, world_name: str, timeout: int):
+    def __init__(self):
         super().__init__()
         self.current_state = WaitForSimulationActionState.IDLE
 

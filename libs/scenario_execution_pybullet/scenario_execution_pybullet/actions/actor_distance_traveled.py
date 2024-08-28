@@ -22,7 +22,7 @@ from math import sqrt
 
 class ActorDistanceTraveled(BaseAction):
 
-    def __init__(self):
+    def __init__(self, associated_actor):
         super().__init__()
         self.sim_steps_per_tick = None
         self.distance_traveled = None

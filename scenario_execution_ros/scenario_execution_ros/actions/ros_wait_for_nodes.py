@@ -16,43 +16,35 @@
 
 import py_trees
 from rclpy.node import Node
-from scenario_execution.actions.base_action import BaseAction, ActionError
+from scenario_execution.actions.base_action import BaseAction
+from ros2node.api import get_node_names
 
 
-class RosTopicWaitForTopics(BaseAction):
+class RosWaitForNodes(BaseAction):
     """
-    Class to check if ROS topic are available
+    Wait for nodes to get available
     """
 
-    def __init__(self, topics: list):
+    def __init__(self, nodes: list):
         super().__init__()
-        if not isinstance(topics, list):
-            raise TypeError(f'Topics needs to be list of topics, got {type(topics)}.')
+        if not isinstance(nodes, list):
+            raise TypeError(f'Nodes needs to be list of string, got {type(nodes)}.')
         else:
-            self.topics = topics
+            self.nodes = nodes
         self.node = None
 
     def setup(self, **kwargs):
-        """
-        Setup the publisher
-        """
         try:
             self.node: Node = kwargs['node']
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise ActionError(error_message, action=self) from e
+            raise KeyError(error_message) from e
 
     def update(self) -> py_trees.common.Status:
-        """
-        Publish the msg to topic
-
-        return:
-            py_trees.common.Status if published
-        """
-        available_topics = self.node.get_topic_names_and_types()
-        available_topics = [seq[0] for seq in available_topics]
-        result = all(elem in available_topics for elem in self.topics)
+        available_nodes = get_node_names(node=self.node, include_hidden_nodes=False)
+        available_nodes = [seq[2] for seq in available_nodes]
+        result = all(elem in available_nodes for elem in self.nodes)
         if result:
             return py_trees.common.Status.SUCCESS
         else:

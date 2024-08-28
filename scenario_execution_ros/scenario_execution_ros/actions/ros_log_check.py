@@ -19,7 +19,7 @@ from rclpy.qos import QoSProfile, DurabilityPolicy, HistoryPolicy
 import rclpy
 from rcl_interfaces.msg import Log
 from py_trees.common import Status
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class RosLogCheck(BaseAction):
@@ -27,17 +27,14 @@ class RosLogCheck(BaseAction):
     Class for scanning the ros log for specific content
     """
 
-    def __init__(self, values: list, module_name: str):
+    def __init__(self):
         super().__init__()
-        if not isinstance(values, list):
-            raise TypeError(f'Value needs to be list of strings, got {type(values)}.')
-        else:
-            self.values = values
+        self.values = None
 
         self.subscriber = None
         self.node = None
         self.found = None
-        self.module_name = module_name
+        self.module_name = None
 
     def setup(self, **kwargs):
         """
@@ -48,7 +45,7 @@ class RosLogCheck(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         topic_qos = QoSProfile(
             depth=100,

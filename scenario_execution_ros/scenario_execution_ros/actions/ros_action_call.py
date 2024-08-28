@@ -24,7 +24,7 @@ from rclpy.qos import QoSProfile, DurabilityPolicy
 from rosidl_runtime_py.set_message import set_message_fields
 import py_trees  # pylint: disable=import-error
 from action_msgs.msg import GoalStatus
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class ActionCallActionState(Enum):
@@ -43,7 +43,7 @@ class RosActionCall(BaseAction):
     ros service call behavior
     """
 
-    def __init__(self, action_name: str, action_type: str, data: str, transient_local: bool = False):
+    def __init__(self, action_name: str, action_type: str, transient_local: bool = False):
         super().__init__()
         self.node = None
         self.client = None
@@ -54,7 +54,6 @@ class RosActionCall(BaseAction):
         self.action_name = action_name
         self.received_feedback = None
         self.data = None
-        self.parse_data(data)
         self.current_state = ActionCallActionState.IDLE
         self.cb_group = ReentrantCallbackGroup()
         self.transient_local = transient_local
@@ -69,7 +68,7 @@ class RosActionCall(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         datatype_in_list = self.action_type_string.split(".")
         try:
@@ -77,7 +76,7 @@ class RosActionCall(BaseAction):
                 importlib.import_module(".".join(datatype_in_list[0:-1])),
                 datatype_in_list[-1])
         except ValueError as e:
-            raise ValueError(f"Invalid action_type '{self.action_type}':") from e
+            raise ActionError(f"Invalid action_type '{self.action_type}': {e}", action=self) from e
 
         client_kwargs = {
             "callback_group": self.cb_group,
@@ -90,10 +89,7 @@ class RosActionCall(BaseAction):
 
         self.client = ActionClient(self.node, self.action_type, self.action_name, **client_kwargs)
 
-    def execute(self, action_name: str, action_type: str, data: str, transient_local: bool = False):
-        if self.action_name != action_name or self.action_type_string != action_type or self.transient_local != transient_local:
-            raise ValueError(f"Updating action_name or action_type_string not supported.")
-
+    def execute(self, data: str):
         self.parse_data(data)
         self.current_state = ActionCallActionState.IDLE
 
@@ -103,7 +99,7 @@ class RosActionCall(BaseAction):
                 trimmed_data = data.encode('utf-8').decode('unicode_escape')
                 self.data = literal_eval(trimmed_data)
             except Exception as e:  # pylint: disable=broad-except
-                raise ValueError(f"Error while parsing sevice call data:") from e
+                raise ActionError(f"Error while parsing sevice call data:", action=self) from e
 
     def update(self) -> py_trees.common.Status:
         """

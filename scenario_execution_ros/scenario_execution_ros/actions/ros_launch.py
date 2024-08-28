@@ -14,14 +14,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from scenario_execution.actions.base_action import ActionError
 from scenario_execution.actions.run_process import RunProcess
 import signal
 
 
 class RosLaunch(RunProcess):
-
-    def __init__(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):
-        super().__init__(None, wait_for_shutdown, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
 
     def execute(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):  # pylint: disable=arguments-differ
         super().execute(None, wait_for_shutdown, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
@@ -29,7 +27,7 @@ class RosLaunch(RunProcess):
         if isinstance(arguments, list):
             for arg in arguments:
                 if 'key' not in arg or 'value' not in arg:
-                    raise ValueError(f'Invalid argument: {arg}')
+                    raise ActionError(f'Invalid argument: {arg}', action=self)
                 if arg["key"] is not None:
                     self.command.append(f'{arg["key"]}:={arg["value"]}')
         self.logger.info(f'Command: {" ".join(self.command)}')

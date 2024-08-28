@@ -91,7 +91,7 @@ Then, we can write the implementation of action plugin in Python.
 
    class CustomAction(BaseAction):
 
-       def __init__(self, data: str):
+       def __init__(self):
            super().__init__()
 
        def execute(self, data: str):
@@ -105,9 +105,9 @@ Then, we can write the implementation of action plugin in Python.
 In the example, we created a custom action plugin to print a message on the
 screen. The first step is to create an action implementation, based on the class ``BaseAction``. 
 There are two methods that can be overloaded in order to receive the action arguments as defined in the osc file. 
-The first is the ``__init__()`` function which gets the argument values as they get initialized during parsing the scenario file.
-The second is the ``execute()`` function which gets the argument values as they are currently defined at the time the action gets executed.
-This allows to initialize the action and then set the latest values just before the action gets triggered.
+
+1. ``__init__()`` function which is called once for each action instance. It can consume any of the arguments defined within the scenario file. If there are long-running initialization tasks, it is good practice to execute those within ``setup()``, which is also only called once.
+2. ``execute()`` function is called when the action gets active. It receives all remaining arguments, that are not consumed within ``__init__()``. It is good practice to consume as many arguments as possible here, to allow late-resolving (e.g. receiving the latest value from variables or external methods).
 
 The action plugin ``custom_action`` only defines one parameter ``data``, so the behavior only has to accept ``data`` as an
 argument. Then, override the ``update()`` function to define how the

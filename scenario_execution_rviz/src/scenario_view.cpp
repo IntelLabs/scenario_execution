@@ -16,12 +16,17 @@
 
 #include "scenario_view.h"
 #include "indicator_widget.h"
-
+#include <QHeaderView>
+#include <QInputDialog>
 using std::placeholders::_1;
 
 namespace scenario_execution_rviz {
 
-ScenarioView::ScenarioView(QWidget *parent) : rviz_common::Panel(parent) {
+ScenarioView::ScenarioView(QWidget *parent)
+    : rviz_common::Panel(parent), mInitTimer(this) {
+  mInitTimer.setSingleShot(true);
+  connect(&mInitTimer, &QTimer::timeout, this, &ScenarioView::setupConnection);
+
   QVBoxLayout *layout = new QVBoxLayout;
 
   QFormLayout *formLayout = new QFormLayout;
@@ -51,14 +56,58 @@ ScenarioView::ScenarioView(QWidget *parent) : rviz_common::Panel(parent) {
           SLOT(handleItemCollapsed(QTreeWidgetItem *)));
   connect(mScenarioView, SIGNAL(itemExpanded(QTreeWidgetItem *)), this,
           SLOT(handleItemExpanded(QTreeWidgetItem *)));
+  connect(mScenarioView->header(), SIGNAL(sectionDoubleClicked(int)), this,
+          SLOT(onHeaderDoubleClicked(int)));
+}
+
+void ScenarioView::load(const rviz_common::Config &config) {
+  rviz_common::Panel::load(config);
+  QString topic;
+  if (config.mapGetString("snapshot_topic", &topic)) {
+
+    if (mSnapshotTopic != topic) {
+      mInitTimer.stop(); // stop init trigger
+      mSnapshotTopic = topic;
+      setupConnection();
+    }
+  }
+}
+
+void ScenarioView::save(rviz_common::Config config) const {
+  rviz_common::Panel::save(config);
+  config.mapSetValue("snapshot_topic", mSnapshotTopic);
+}
+
+void ScenarioView::onHeaderDoubleClicked(int idx) {
+  (void)idx;
+  bool ok;
+  QString text = QInputDialog::getText(this, "Configuration", "Snapshot Topic",
+                                       QLineEdit::Normal, mSnapshotTopic, &ok);
+  if (ok && !text.isEmpty() && (mSnapshotTopic != text)) {
+    mSnapshotTopic = text;
+    setupConnection();
+    Q_EMIT configChanged();
+  }
 }
 
 void ScenarioView::onInitialize() {
   _node = getDisplayContext()->getRosNodeAbstraction().lock()->get_raw_node();
+  mSnapshotTopic = "/scenario_execution/snapshots";
+  mInitTimer.start(250); // only executed if no config-load gets triggered.
+}
 
+void ScenarioView::setupConnection() {
+  if (mSnapshotTopic.isEmpty()) {
+    return;
+  }
+  if (mBehaviorTreeSubscriber) {
+    mBehaviorTreeSubscriber.reset();
+  }
+
+  qDebug() << "Subscribing to" << mSnapshotTopic;
   mBehaviorTreeSubscriber =
       _node->create_subscription<py_trees_ros_interfaces::msg::BehaviourTree>(
-          "/scenario_execution/snapshots", 10,
+          mSnapshotTopic.toStdString().c_str(), 10,
           std::bind(&ScenarioView::behaviorTreeChanged, this, _1));
 }
 

@@ -20,23 +20,23 @@ from rclpy.node import Node
 import time
 import tf2_ros
 from .common import NamespacedTransformListener
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
 import math
 
 
 class AssertTfMoving(BaseAction):
 
-    def __init__(self, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
+    def __init__(self, tf_topic_namespace: str):
         super().__init__()
-        self.frame_id = frame_id
-        self.parent_frame_id = parent_frame_id
-        self.timeout = timeout
-        self.threshold_translation = threshold_translation
-        self.threshold_rotation = threshold_rotation
-        self.wait_for_first_transform = wait_for_first_transform
+        self.frame_id = None
+        self.parent_frame_id = None
+        self.timeout = None
+        self.threshold_translation = None
+        self.threshold_rotation = None
+        self.wait_for_first_transform = None
         self.tf_topic_namespace = tf_topic_namespace
-        self.use_sim_time = use_sim_time
+        self.use_sim_time = None
         self.start_timeout = False
         self.timer = 0
         self.transforms_received = 0
@@ -51,9 +51,8 @@ class AssertTfMoving(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
-        self.feedback_message = f"Waiting for transform {self.parent_frame_id} --> {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
         self.tf_buffer = tf2_ros.Buffer()
         tf_prefix = self.tf_topic_namespace
         if not tf_prefix.startswith('/') and tf_prefix != '':
@@ -65,9 +64,7 @@ class AssertTfMoving(BaseAction):
             tf_static_topic=(tf_prefix + "/tf_static"),
         )
 
-    def execute(self, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, wait_for_first_transform: bool, tf_topic_namespace: str, use_sim_time: bool):
-        if self.tf_topic_namespace != tf_topic_namespace:
-            raise ValueError("Runtime change of argument 'tf_topic_namespace' not supported.")
+    def execute(self, frame_id: str, parent_frame_id: str, timeout: int, threshold_translation: float, threshold_rotation: float, wait_for_first_transform: bool, use_sim_time: bool):
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.timeout = timeout
@@ -75,6 +72,7 @@ class AssertTfMoving(BaseAction):
         self.threshold_rotation = threshold_rotation
         self.wait_for_first_transform = wait_for_first_transform
         self.use_sim_time = use_sim_time
+        self.feedback_message = f"Waiting for transform {self.parent_frame_id} --> {self.frame_id}"  # pylint: disable= attribute-defined-outside-init
 
     def update(self) -> py_trees.common.Status:
         now = time.time()

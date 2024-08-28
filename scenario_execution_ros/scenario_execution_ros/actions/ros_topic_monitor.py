@@ -15,7 +15,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from scenario_execution_ros.actions.conversions import get_qos_preset_profile, get_ros_message_type
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 from scenario_execution.model.types import VariableReference
 import rclpy
 import py_trees
@@ -24,10 +24,10 @@ import operator
 
 class RosTopicMonitor(BaseAction):
 
-    def __init__(self, topic_name: str, topic_type: str, member_name: str, target_variable: object, qos_profile: tuple):
+    def __init__(self, topic_name: str, topic_type: str, qos_profile: tuple):
         super().__init__(resolve_variable_reference_arguments_in_execute=False)
         self.target_variable = None
-        self.member_name = member_name
+        self.member_name = None
         self.topic_type = topic_type
         self.qos_profile = qos_profile
         self.topic_name = topic_name
@@ -43,7 +43,7 @@ class RosTopicMonitor(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         msg_type = get_ros_message_type(self.topic_type)
 
@@ -59,11 +59,9 @@ class RosTopicMonitor(BaseAction):
         )
         self.feedback_message = f"Monitoring data on {self.topic_name}"  # pylint: disable= attribute-defined-outside-init
 
-    def execute(self, topic_name: str, topic_type: str, member_name: str, target_variable: object, qos_profile: tuple):
-        if self.topic_name != topic_name or self.topic_type != topic_type or self.qos_profile != qos_profile:
-            raise ValueError("Updating topic parameters not supported.")
+    def execute(self, member_name: str, target_variable: object):
         if not isinstance(target_variable, VariableReference):
-            raise ValueError(f"'target_variable' is expected to be a variable reference.")
+            raise ActionError(f"'target_variable' is expected to be a variable reference.", action=self)
         self.target_variable = target_variable
         self.member_name = member_name
 
@@ -75,11 +73,11 @@ class RosTopicMonitor(BaseAction):
             self.target_variable.set_value(self.get_value(msg))
 
     def get_value(self, msg):
-        if self.member_name != "":
+        if self.member_name is not None and self.member_name != "":
             check_attr = operator.attrgetter(self.member_name)
             try:
                 return check_attr(msg)
             except AttributeError as e:
-                raise ValueError(f"invalid member_name '{self.member_name}'") from e
+                raise ActionError(f"invalid member_name '{self.member_name}'", action=self) from e
         else:
             return msg

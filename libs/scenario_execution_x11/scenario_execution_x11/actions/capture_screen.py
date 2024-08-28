@@ -17,6 +17,7 @@
 from enum import Enum
 import py_trees
 import os
+from scenario_execution.actions.base_action import ActionError
 from scenario_execution.actions.run_process import RunProcess
 
 
@@ -29,22 +30,23 @@ class CaptureScreenState(Enum):
 
 class CaptureScreen(RunProcess):
 
-    def __init__(self, output_filename: str, frame_rate: float):
-        super().__init__("", wait_for_shutdown=True)
+    def __init__(self):
+        super().__init__()
         self.current_state = None
         self.output_dir = "."
 
     def setup(self, **kwargs):
         if "DISPLAY" not in os.environ:
-            raise ValueError("capture_screen() requires environment variable 'DISPLAY' to be set.")
+            raise ActionError("capture_screen() requires environment variable 'DISPLAY' to be set.", action=self)
 
         if kwargs['output_dir']:
             if not os.path.exists(kwargs['output_dir']):
-                raise ValueError(
-                    f"Specified destination dir '{kwargs['output_dir']}' does not exist")
+                raise ActionError(
+                    f"Specified destination dir '{kwargs['output_dir']}' does not exist", action=self)
             self.output_dir = kwargs['output_dir']
 
     def execute(self, output_filename: str, frame_rate: float):  # pylint: disable=arguments-differ
+        super().execute(None, wait_for_shutdown=True)
         self.current_state = CaptureScreenState.IDLE
         cmd = ["ffmpeg",
                "-f", "x11grab",

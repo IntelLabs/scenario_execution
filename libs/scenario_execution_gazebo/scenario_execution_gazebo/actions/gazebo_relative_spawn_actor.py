@@ -21,6 +21,7 @@ from tf2_ros.buffer import Buffer
 from tf2_ros.transform_listener import TransformListener
 from tf2_geometry_msgs import PoseStamped
 from .gazebo_spawn_actor import GazeboSpawnActor
+from scenario_execution.actions.base_action import ActionError
 
 
 class GazeboRelativeSpawnActor(GazeboSpawnActor):
@@ -29,20 +30,17 @@ class GazeboRelativeSpawnActor(GazeboSpawnActor):
 
     """
 
-    def __init__(self, associated_actor,
-                 frame_id: str, parent_frame_id: str,
-                 distance: float, world_name: str, xacro_arguments: list,
-                 model: str):
-        super().__init__(associated_actor, None, world_name, xacro_arguments, model)
+    def __init__(self, associated_actor, xacro_arguments: list, model: str):
+        super().__init__(associated_actor, xacro_arguments, model)
         self._pose = '{}'
+        self.model = model
+        self.world_name = None
+        self.xacro_arguments = xacro_arguments
         self.tf_buffer = Buffer()
         self.tf_listener = None
 
-    def execute(self, associated_actor,  # pylint: disable=arguments-differ
-                frame_id: str, parent_frame_id: str,
-                distance: float, world_name: str, xacro_arguments: list,
-                model: str):
-        super().execute(associated_actor, None, world_name, xacro_arguments, model)
+    def execute(self, associated_actor, frame_id: str, parent_frame_id: str, distance: float, world_name: str):  # pylint: disable=arguments-differ
+        super().execute(associated_actor, None, world_name)
         self.frame_id = frame_id
         self.parent_frame_id = parent_frame_id
         self.distance = distance
@@ -97,4 +95,4 @@ class GazeboRelativeSpawnActor(GazeboSpawnActor):
                 f' w: {new_pose.pose.orientation.w} x: {new_pose.pose.orientation.x} y: {new_pose.pose.orientation.y} z: {new_pose.pose.orientation.z}' \
                 ' } }'
         except TransformException as e:
-            raise ValueError(f"No transform available ({self.parent_frame_id}->{self.frame_id})") from e
+            raise ActionError(f"No transform available ({self.parent_frame_id}->{self.frame_id})", action=self) from e
