@@ -23,8 +23,8 @@
       <xacro:if value="${hardware_type == 'gz_classic'}">
         <plugin>gazebo_ros2_control/GazeboSystem</plugin>
       </xacro:if>
-    
-    <!-- If simulating the robot in Gazebo Modern -->
+
+      <!-- If simulating the robot in Gazebo Modern -->
       <xacro:if value="${hardware_type == 'ignition'}">
         <plugin>ign_ros2_control/IgnitionSystem</plugin>
       </xacro:if>
@@ -36,7 +36,9 @@
         <param name="min">"${waist_limit_lower}"</param>
         <param name="max">"${waist_limit_upper}"</param>
       </command_interface>
-      <state_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">${waist_initial_value}</param>
+      </state_interface>
     </joint>
 
     <joint name="shoulder">
@@ -44,7 +46,9 @@
         <param name="min">"${shoulder_limit_lower}"</param>
         <param name="max">"${shoulder_limit_upper}"</param>
       </command_interface>
-      <state_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">${shoulder_initial_value}</param>
+      </state_interface>
     </joint>
 
     <joint name="elbow">
@@ -52,7 +56,9 @@
         <param name="min">"${elbow_limit_lower}"</param>
         <param name="max">"${elbow_limit_upper}"</param>
       </command_interface>
-      <state_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">${elbow_initial_value}</param>
+      </state_interface>
     </joint>
 
     <xacro:if value="${dof >= 6}">
@@ -61,7 +67,9 @@
           <param name="min">"${forearm_roll_limit_lower}"</param>
           <param name="max">"${forearm_roll_limit_upper}"</param>
         </command_interface>
-        <state_interface name="position"/>
+        <state_interface name="position">
+          <param name="initial_value">${forearm_roll_initial_value}</param>
+        </state_interface>
       </joint>
     </xacro:if>
 
@@ -70,14 +78,16 @@
         <param name="min">"${wrist_angle_limit_lower}"</param>
         <param name="max">"${wrist_angle_limit_upper}"</param>
       </command_interface>
-      <state_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">${wrist_angle_initial_value}</param>
+      </state_interface>
     </joint>
 
     <xacro:if value="${dof >= 5}">
       <joint name="wrist_rotate">
         <command_interface name="position">
           <param name="min">"${wrist_rotate_limit_lower}"</param>
-          <param name="max">"${wrist_rotate_limit_upper}"</param>
+          <param name="max">${wrist_rotate_limit_upper}</param>
         </command_interface>
         <state_interface name="position"/>
       </joint>
@@ -98,7 +108,7 @@
             <param name="max">"${-finger_limit_lower}"</param>
           </command_interface>
           <state_interface name="position">
-            <param name="initial_value">0.0195</param>
+            <param name="initial_value">${finger_initial_value}</param>
           </state_interface>
         </joint>
 
@@ -110,10 +120,10 @@
               <param name="min">"${-finger_limit_lower}"</param>
               <param name="max">"${finger_limit_lower}"</param>
             </command_interface>
-          <state_interface name="position">
-            <param name="initial_value">-0.0195</param>
-          </state_interface>
-          </joint>
+            <state_interface name="position">
+              <param name="initial_value">-${finger_initial_value}</param>
+            </state_interface>
+          </joint>  
         </xacro:if>
       </xacro:if>
     </xacro:if>
@@ -123,23 +133,20 @@
   <!-- Load the gazebo_ros2_control plugin if using Gazebo hardware -->
   <xacro:if value="${hardware_type == 'gz_classic'}">
     <gazebo>
-
       <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
         <ros>
           <namespace>/$(arg robot_name)</namespace>
         </ros>
         <robot_param>robot_description</robot_param>
         <robot_param_node>robot_state_publisher</robot_param_node>
-        <parameters>$(find arm_sim_scenario)/config/trajectory_controllers/${robot_model}_trajectory_controllers.yaml</parameters>
+        <parameters>$(find interbotix_xsarm_sim)/config/trajectory_controllers/${robot_model}_trajectory_controllers.yaml</parameters>
       </plugin>
-
     </gazebo>
-    <xacro:include filename="$(find arm_sim_scenario)/meshes/interbotix_texture.gazebo"/>
+    <xacro:include filename="$(find interbotix_common_sim)/media/materials/scripts/interbotix_texture.gazebo"/>
   </xacro:if>
 
   <xacro:if value="${hardware_type == 'ignition'}">
     <gazebo>
-
       <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
         <ros>
           <namespace>/$(arg robot_name)</namespace>
@@ -148,9 +155,10 @@
         <robot_param_node>robot_state_publisher</robot_param_node>
         <parameters>$(find arm_sim_scenario)/config/trajectory_controllers/${robot_model}_trajectory_controllers.yaml</parameters>
       </plugin>
-
     </gazebo>
     <xacro:include filename="$(find arm_sim_scenario)/meshes/interbotix_texture.gazebo"/>
   </xacro:if>
 
 </robot>
+
+

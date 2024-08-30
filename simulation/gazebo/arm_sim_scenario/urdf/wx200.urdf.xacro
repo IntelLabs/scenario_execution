@@ -16,7 +16,15 @@
   <xacro:arg name="show_gripper_fingers"            default="true"/>
   <xacro:arg name="use_world_frame"                 default="false"/>
   <xacro:arg name="external_urdf_loc"               default=""/>
-  <xacro:arg name="hardware_type"                   default="ignition"/>
+  <xacro:arg name="hardware_type"                   default="actual"/>
+
+  <!-- Initial values -->
+  <xacro:arg name="waist_initial_value"              default="0"/>
+  <xacro:arg name="shoulder_initial_value"           default="0"/>
+  <xacro:arg name="elbow_initial_value"              default="0"/>
+  <xacro:arg name="wrist_angle_initial_value"        default="0"/>
+  <xacro:arg name="wrist_rotate_initial_value"       default="0"/>
+  <xacro:arg name="finger_initial_value"             default="0"/>
 
   <xacro:property name="mesh_directory"             value="package://arm_sim_scenario/meshes/${robot_model}_meshes"/>
   <xacro:property name="urdf_loc"                   value="$(arg external_urdf_loc)"/>
@@ -27,26 +35,31 @@
   <xacro:property name="waist_limit_lower"          value="${-pi + pi_offset}"/>
   <xacro:property name="waist_limit_upper"          value="${pi - pi_offset}"/>
   <xacro:property name="waist_limit_vel"            value="${pi}"/>
+  <xacro:property name="waist_initial_value"         value="$(arg waist_initial_value)"/>
 
   <xacro:property name="shoulder_limit_effort"      value="18"/>
   <xacro:property name="shoulder_limit_lower"       value="${radians(-108)}"/>
   <xacro:property name="shoulder_limit_upper"       value="${radians(113)}"/>
   <xacro:property name="shoulder_limit_vel"         value="1"/>
+  <xacro:property name="shoulder_initial_value"      value="$(arg shoulder_initial_value)"/>
 
   <xacro:property name="elbow_limit_effort"         value="13"/>
   <xacro:property name="elbow_limit_lower"          value="${radians(-108)}"/>
   <xacro:property name="elbow_limit_upper"          value="${radians(93)}"/>
   <xacro:property name="elbow_limit_vel"            value="${pi}"/>
+  <xacro:property name="elbow_initial_value"         value="$(arg elbow_initial_value)"/>
 
   <xacro:property name="wrist_angle_limit_effort"   value="5"/>
   <xacro:property name="wrist_angle_limit_lower"    value="${radians(-100)}"/>
   <xacro:property name="wrist_angle_limit_upper"    value="${radians(123)}"/>
   <xacro:property name="wrist_angle_limit_vel"      value="${pi}"/>
+  <xacro:property name="wrist_angle_initial_value"   value="$(arg wrist_angle_initial_value)"/>
 
   <xacro:property name="wrist_rotate_limit_effort"  value="1"/>
   <xacro:property name="wrist_rotate_limit_lower"   value="${-pi + pi_offset}"/>
   <xacro:property name="wrist_rotate_limit_upper"   value="${pi - pi_offset}"/>
   <xacro:property name="wrist_rotate_limit_vel"     value="${pi}"/>
+  <xacro:property name="wrist_rotate_initial_value"  value="$(arg wrist_rotate_initial_value)"/>
 
   <xacro:property name="gripper_limit_vel"          value="${pi}"/>
 
@@ -54,6 +67,7 @@
   <xacro:property name="finger_limit_lower"         value="0.015"/>
   <xacro:property name="finger_limit_upper"         value="0.037"/>
   <xacro:property name="finger_limit_vel"           value="1"/>
+  <xacro:property name="finger_initial_value"        value="$(arg finger_initial_value)"/>
 
   <material name="interbotix_black">
     <texture filename="package://arm_sim_scenario/meshes/interbotix_black.png"/>
