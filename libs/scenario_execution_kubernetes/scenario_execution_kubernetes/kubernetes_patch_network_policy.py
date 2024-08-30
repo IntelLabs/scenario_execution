@@ -29,11 +29,12 @@ class KubernetesPatchNetworkPolicyState(Enum):
 
 class KubernetesPatchNetworkPolicy(BaseAction):
 
-    def __init__(self, namespace: str, target: str, network_enabled: bool, match_label: tuple, within_cluster: bool):
+    def __init__(self, namespace: str, target: str, ingress_enabled: bool, egress_enabled: bool, match_label: tuple, within_cluster: bool):
         super().__init__()
         self.namespace = namespace
         self.target = target
-        self.network_enabled = network_enabled
+        self.ingress_enabled = ingress_enabled
+        self.egress_enabled = egress_enabled
         self.within_cluster = within_cluster
         if not isinstance(match_label, dict) or not "key" in match_label or not "value" in match_label:
             raise ValueError("match_label expected to be key-value pair.")
@@ -53,7 +54,7 @@ class KubernetesPatchNetworkPolicy(BaseAction):
     def update(self) -> py_trees.common.Status:  # pylint: disable=too-many-return-statements
         if self.current_state == KubernetesPatchNetworkPolicyState.IDLE:
             self.current_request = self.network_client.patch_namespaced_network_policy(self.target, body=self.get_network_policy(
-                policy_name=self.target, enable=self.network_enabled, match_label=self.match_label), namespace=self.namespace, async_req=True)
+                policy_name=self.target, enable_ingress=self.ingress_enabled, enable_egress=self.egress_enabled, match_label=self.match_label), namespace=self.namespace, async_req=True)
             self.current_state = KubernetesPatchNetworkPolicyState.REQUEST_SENT
             self.feedback_message = f"Requested patching '{self.target}' in namespace '{self.namespace}'"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.RUNNING
@@ -76,14 +77,16 @@ class KubernetesPatchNetworkPolicy(BaseAction):
                 return py_trees.common.Status.FAILURE
         return py_trees.common.Status.FAILURE
 
-    def get_network_policy(self, policy_name, match_label, enable):
+    def get_network_policy(self, policy_name, match_label, enable_ingress, enable_egress):
         body = client.V1NetworkPolicy()
         body.metadata = client.V1ObjectMeta(name=f"{policy_name}")
         body.spec = client.V1NetworkPolicySpec(pod_selector=client.V1LabelSelector(match_labels={match_label["key"]: match_label["value"]}))
-        if enable:
-            body.spec.egress = [client.V1NetworkPolicyEgressRule()]
+        if enable_ingress:
             body.spec.ingress = [client.V1NetworkPolicyIngressRule()]
         else:
-            body.spec.egress = []
             body.spec.ingress = []
+        if enable_egress:
+            body.spec.egress = [client.V1NetworkPolicyEgressRule()]
+        else:
+            body.spec.egress = []
         return body
