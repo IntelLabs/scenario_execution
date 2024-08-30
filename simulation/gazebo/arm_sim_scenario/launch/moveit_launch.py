@@ -101,19 +101,19 @@ def generate_launch_description():
     ])
 
     robot_description = {'robot_description': ParameterValue(Command([
-        'xacro', ' ',xacro_file,' ',
-        'gazebo:=ignition',' ',
-        'base_link_frame:=','base_link ',
-        'use_world_frame:=','true ',
-        'robot_model:=',robot_model,' ',
-        'robot_name:=',robot_name,' ',
-        'hardware_type:=',hardware_type]), value_type=str)}
+        'xacro', ' ', xacro_file, ' ',
+        'gazebo:=ignition', ' ',
+        'base_link_frame:=', 'base_link ',
+        'use_world_frame:=', 'true ',
+        'robot_model:=', robot_model, ' ',
+        'robot_name:=', robot_name, ' ',
+        'hardware_type:=', hardware_type]), value_type=str)}
 
     robot_description_semantic = {'robot_description_semantic': ParameterValue(Command([
-        'xacro', ' ', srdf_xacro_file,' ',
-        'robot_name:=', robot_name,' ',
+        'xacro', ' ', srdf_xacro_file, ' ',
+        'robot_name:=', robot_name, ' ',
         'base_link_frame:=', 'base_link ',
-        'use_world_frame:=','true ',
+        'use_world_frame:=', 'true ',
         'hardware_type:=', hardware_type]), value_type=str)}
 
     ompl_planning_pipeline_config = {

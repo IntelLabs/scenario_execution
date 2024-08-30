@@ -15,15 +15,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
-from launch.event_handlers import OnProcessExit
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.parameter_descriptions import ParameterFile
-from ament_index_python.packages import get_package_share_directory
 from launch_ros.descriptions import ParameterValue
+from ament_index_python.packages import get_package_share_directory
+
 
 ARGUMENTS = [
     DeclareLaunchArgument('robot_model', default_value='wx200',
@@ -90,9 +89,7 @@ def generate_launch_description():
     wrist_rotate_initial_value = LaunchConfiguration('wrist_rotate_initial_value')
     finger_initial_value = LaunchConfiguration('finger_initial_value')
 
-
     pkg_arm_sim_scenario = get_package_share_directory('arm_sim_scenario')
-
 
     ros2_control_controllers_config_parameter_file = ParameterFile(
         param_file=PathJoinSubstitution([
@@ -113,17 +110,17 @@ def generate_launch_description():
         namespace=robot_name,
         parameters=[
             {'robot_description': ParameterValue(Command([
-                'xacro ',xacro_file, ' ',
-                'robot_model:=',robot_model,' ',
-                'robot_name:=',robot_name,' ',
+                'xacro ', xacro_file, ' ',
+                'robot_model:=', robot_model, ' ',
+                'robot_name:=', robot_name, ' ',
                 'use_world_frame:=', 'true ',
-                'waist_initial_value:=',waist_initial_value,' ',
-                'shoulder_initial_value:=',shoulder_initial_value,' ',
-                'elbow_initial_value:=',elbow_initial_value,' ',
-                'wrist_angle_initial_value:=',wrist_angle_initial_value,' ',
-                'wrist_rotate_initial_value:=',wrist_rotate_initial_value,' ',
-                'finger_initial_value:=',finger_initial_value,' ',
-                'hardware_type:=',hardware_type]), value_type=str)},
+                'waist_initial_value:=', waist_initial_value, ' ',
+                'shoulder_initial_value:=', shoulder_initial_value, ' ',
+                'elbow_initial_value:=', elbow_initial_value, ' ',
+                'wrist_angle_initial_value:=', wrist_angle_initial_value, ' ',
+                'wrist_rotate_initial_value:=', wrist_rotate_initial_value, ' ',
+                'finger_initial_value:=', finger_initial_value, ' ',
+                'hardware_type:=', hardware_type]), value_type=str)},
             ros2_control_controllers_config_parameter_file,
         ],
         output={'both': 'screen'},

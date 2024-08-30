@@ -81,16 +81,15 @@ def generate_launch_description():
         parameters=[
             {'use_sim_time': use_sim_time},
             {'robot_description': ParameterValue(Command([
-                'xacro ',xacro_file, ' ',
-                'robot_model:=',robot_model,' ',
-                'robot_name:=',robot_name,' ',
+                'xacro ', xacro_file, ' ',
+                'robot_model:=', robot_model, ' ',
+                'robot_name:=', robot_name, ' ',
                 'use_world_frame:=', 'true '
-                'hardware_type:=',hardware_type]), value_type=str)},
+                'hardware_type:=', hardware_type]), value_type=str)},
         ],
         namespace=robot_name,
         output={'both': 'log'},
     )
-
 
     joint_state_publisher = Node(
         condition=IfCondition(use_joint_pub),
