@@ -437,10 +437,14 @@ Patch an existing Kubernetes network policy.
      - ``string``
      - 
      - The target network policy to patch
-   * - ``network_enabled``
+   * - ``ingress_enabled``
      - ``bool``
      - 
-     - Should the network be enabled
+     - Should ingress (i.e., incoming) network traffic be enabled
+   * - ``egress_enabled``
+     - ``bool``
+     - 
+     - Should egress (i.e., outgoing) network traffic be enabled
    * - ``match_label``
      - ``key_value``
      - 
