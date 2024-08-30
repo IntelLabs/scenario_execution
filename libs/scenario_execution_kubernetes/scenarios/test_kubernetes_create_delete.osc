@@ -8,6 +8,6 @@ scenario test_kubernetes_create_from_yaml:
         kubernetes_create_from_yaml(yaml_file: "test.yaml")
         kubernetes_wait_for_pod_status(target: "test", status: kubernetes_pod_status!running)
         #kubernetes_wait_for_network_policy_status("test-network-policy", kubernetes_network_policy_status!added)
-        kubernetes_patch_network_policy(target: "test-network-policy", network_enabled: false, match_label: key_value("app", "foo"))
-        kubernetes_patch_network_policy(target: "test-network-policy", network_enabled: true, match_label: key_value("app", "foo"))
+        kubernetes_patch_network_policy(target: "test-network-policy", ingress_enabled: false, egress_enabled: false, match_label: key_value("app", "foo"))
+        kubernetes_patch_network_policy(target: "test-network-policy", ingress_enabled: true, egress_enabled: true, match_label: key_value("app", "foo"))
         kubernetes_delete(target: "test", element_type: kubernetes_element_type!pod)
