@@ -49,7 +49,7 @@ ARGUMENTS = [
                           description='robot_model type of the Interbotix Arm'),
     DeclareLaunchArgument('robot_name', default_value=LaunchConfiguration('robot_model'),
                           description='Robot name'),
-    DeclareLaunchArgument('use_rviz', default_value='false',
+    DeclareLaunchArgument('use_rviz_moveit', default_value='false',
                           choices=['true', 'false'],
                           description='launches RViz if set to `true`.'),
     DeclareLaunchArgument('use_sim_time', default_value='true',
@@ -62,7 +62,7 @@ ARGUMENTS = [
                                                               ]),
                           description='file path to the config file RViz should load.',),
     DeclareLaunchArgument('hardware_type',
-                          default_value='ignition',
+                          default_value='fake',
                           choices=['actual', 'fake', 'gz_classic', 'ignition'],
                           description='configure robot_description to use actual, fake, or simulated hardware',
                           ),
@@ -81,7 +81,7 @@ def generate_launch_description():
 
     robot_model = LaunchConfiguration('robot_model')
     robot_name = LaunchConfiguration('robot_name')
-    use_rviz = LaunchConfiguration('use_rviz')
+    use_rviz_moveit = LaunchConfiguration('use_rviz_moveit')
     rviz_config = LaunchConfiguration('rviz_config')
     rviz_frame = LaunchConfiguration('rviz_frame')
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -101,29 +101,19 @@ def generate_launch_description():
     ])
 
     robot_description = {'robot_description': ParameterValue(Command([
-        'xacro', ' ', xacro_file, ' ',
-        'gazebo:=ignition', ' ',
-        'base_link_frame:=', 'base_link', ' ',
-        'use_gripper:=', 'true', ' ',
-        'show_ar_tag:=', 'false', ' ',
-        'show_gripper_bar:=', 'true', ' ',
-        'show_gripper_fingers:=', 'true', ' ',
-        'use_world_frame:=', 'true', ' ',
-        'robot_model:=', robot_model, ' ',
-        'robot_name:=', robot_name, ' ',
-        'hardware_type:=', hardware_type]), value_type=str)}
+        'xacro', ' ',xacro_file,' ',
+        'gazebo:=ignition',' ',
+        'base_link_frame:=','base_link ',
+        'use_world_frame:=','true ',
+        'robot_model:=',robot_model,' ',
+        'robot_name:=',robot_name,' ',
+        'hardware_type:=',hardware_type]), value_type=str)}
 
     robot_description_semantic = {'robot_description_semantic': ParameterValue(Command([
-        'xacro', ' ', srdf_xacro_file, ' ',
-        'robot_name:=', robot_name, ' ',
-        'base_link_frame:=', 'base_link', ' ',
-        'use_gripper:=', 'true', ' ',
-        'show_ar_tag:=', 'false', ' ',
-        'show_gripper_bar:=', 'true', ' ',
-        'show_gripper_fingers:=', 'true', ' ',
-        'use_world_frame:=', 'true', ' ',
-        'external_urdf_loc:=', '', ' ',
-        'external_srdf_loc:=', '', ' ',
+        'xacro', ' ', srdf_xacro_file,' ',
+        'robot_name:=', robot_name,' ',
+        'base_link_frame:=', 'base_link ',
+        'use_world_frame:=','true ',
         'hardware_type:=', hardware_type]), value_type=str)}
 
     ompl_planning_pipeline_config = {
@@ -207,8 +197,7 @@ def generate_launch_description():
         parameters=[
             {
                 'planning_scene_monitor_options': {
-                    'robot_description':
-                        'robot_description',
+                    'robot_description': 'robot_description',
                     'joint_state_topic': [robot_name, '/joint_states'],
                 },
                 'use_sim_time': use_sim_time,
@@ -228,7 +217,7 @@ def generate_launch_description():
     )
 
     moveit_rviz_node = Node(
-        condition=IfCondition(use_rviz),
+        condition=IfCondition(use_rviz_moveit),
         package='rviz2',
         executable='rviz2',
         name='rviz2',

@@ -153,7 +153,7 @@
         </ros>
         <robot_param>robot_description</robot_param>
         <robot_param_node>robot_state_publisher</robot_param_node>
-        <parameters>$(find arm_sim_scenario)/config/trajectory_controllers/${robot_model}_trajectory_controllers.yaml</parameters>
+        <parameters>$(find arm_sim_scenario)/config/trajectory_controllers/${robot_model}_trajectory_controllers_ignition.yaml</parameters>
       </plugin>
     </gazebo>
     <xacro:include filename="$(find arm_sim_scenario)/meshes/interbotix_texture.gazebo"/>

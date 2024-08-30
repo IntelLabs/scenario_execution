@@ -39,7 +39,7 @@ ARGUMENTS = [
                                                               'xsarm_description.rviz',
                                                               ]),
                           description='file path to the config file RViz should load.'),
-    DeclareLaunchArgument('use_sim_time', default_value='false',
+    DeclareLaunchArgument('use_sim_time', default_value='true',
                           choices=['true', 'false'],
                           description='use_sim_time'),
     DeclareLaunchArgument('use_joint_pub',
@@ -53,12 +53,10 @@ ARGUMENTS = [
                           description='launches the joint_state_publisher GUI.',
                           ),
     DeclareLaunchArgument('hardware_type',
-                          default_value='ignition',
+                          default_value='fake',
                           choices=['actual', 'fake', 'gz_classic', 'ignition'],
                           description='configure robot_description to use actual, fake, or simulated hardware',
                           )
-
-
 ]
 
 
@@ -80,32 +78,28 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
-        output='screen',
         parameters=[
             {'use_sim_time': use_sim_time},
             {'robot_description': ParameterValue(Command([
-                'xacro', ' ', xacro_file, ' ',
-                'robot_model:=', robot_model, ' ',
-                'robot_name:=', robot_name, ' ',
-                'base_link_frame:=', 'base_link', ' ',
-                'use_gripper:=', 'true', ' ',
-                'show_ar_tag:=', 'false', ' ',
-                'show_gripper_bar:=', 'true', ' ',
-                'show_gripper_fingers:=', 'true', ' ',
-                'use_world_frame:=', 'true', ' ',
-                'hardware_type:=', hardware_type]), value_type=str)},
+                'xacro ',xacro_file, ' ',
+                'robot_model:=',robot_model,' ',
+                'robot_name:=',robot_name,' ',
+                'use_world_frame:=', 'true '
+                'hardware_type:=',hardware_type]), value_type=str)},
         ],
-        namespace=robot_name
+        namespace=robot_name,
+        output={'both': 'log'},
     )
+
 
     joint_state_publisher = Node(
         condition=IfCondition(use_joint_pub),
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
-        output='screen',
         parameters=[{'use_sim_time': use_sim_time}],
-        namespace=robot_name
+        namespace=robot_name,
+        output={'both': 'log'},
     )
 
     joint_state_publisher_gui = Node(

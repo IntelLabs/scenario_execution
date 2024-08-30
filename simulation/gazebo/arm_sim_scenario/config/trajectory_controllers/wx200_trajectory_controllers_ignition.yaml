@@ -1,13 +1,13 @@
-/$(var robot_name):
+/wx200:
   controller_manager:
     ros__parameters:
-      update_rate: 50 # Hz
+      update_rate: 1000
+      joint_state_broadcaster:
+        type: joint_state_broadcaster/JointStateBroadcaster
       arm_controller:
         type: joint_trajectory_controller/JointTrajectoryController
       gripper_controller:
         type: joint_trajectory_controller/JointTrajectoryController
-      joint_state_broadcaster:
-        type: joint_state_broadcaster/JointStateBroadcaster
   arm_controller:
     ros__parameters:
       joints:
@@ -16,12 +16,13 @@
         - elbow
         - wrist_angle
         - wrist_rotate
+      interface_name: position
       command_interfaces:
         - position
       state_interfaces:
         - position
-      state_publish_rate: 50.0 # Hz
-      action_monitor_rate: 20.0 # Hz
+      state_publish_rate: 50.0
+      action_monitor_rate: 20.0
       constraints:
         stopped_velocity_tolerance: 0.02
         goal_time: 1.0
@@ -29,6 +30,8 @@
     ros__parameters:
       joints:
         - left_finger
+        - right_finger
+      interface_name: position
       command_interfaces:
         - position
       state_interfaces:
@@ -43,3 +46,4 @@
         - wrist_rotate
         - gripper
         - left_finger
+        - right_finger

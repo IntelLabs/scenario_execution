@@ -29,35 +29,17 @@ ARGUMENTS = [
                           description='model type of the Interbotix Arm'),
     DeclareLaunchArgument('robot_name', default_value='wx200',
                           description='Robot name'),
-    DeclareLaunchArgument('use_rviz', default_value='false',
-                          choices=['true', 'false'],
-                          description='launches RViz if set to `true`.'),
     DeclareLaunchArgument('use_sim_time', default_value='true',
                           choices=['true', 'false'],
-                          description='use_sim_time'),
-    DeclareLaunchArgument('headless', default_value='False',
-                          description='Whether to execute simulation gui'),
-    DeclareLaunchArgument('hardware_type',
-                          default_value='ignition',
-                          choices=['actual', 'fake', 'gz_classic', 'ignition'],
-                          description='configure robot_description to use actual, fake, or simulated hardware',
-                          ),
-    DeclareLaunchArgument('use_joint_pub_gui',
-                          default_value='false',
-                          choices=('true', 'false'),
-                          description='launches the joint_state_publisher GUI.',
-                          ),
+                          description='use_sim_time')
 
 ]
 
 
 def generate_launch_description():
-    robot_model = LaunchConfiguration('robot_model')
+
     robot_name = LaunchConfiguration('robot_name')
-    use_rviz = LaunchConfiguration('use_rviz')
     use_sim_time = LaunchConfiguration('use_sim_time')
-    hardware_type = LaunchConfiguration('hardware_type')
-    use_joint_pub_gui = LaunchConfiguration('use_joint_pub_gui')
 
     spawn_robot_node = Node(
         package='ros_gz_sim',
@@ -69,24 +51,6 @@ def generate_launch_description():
                    '-Y', '0.0',
                    '-topic', 'wx200/robot_description'],
         output='screen'
-    )
-
-    arm_description_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare('arm_sim_scenario'),
-                'launch',
-                'arm_description_launch.py'
-            ])
-        ]),
-        launch_arguments={
-            'robot_model': robot_model,
-            'robot_name': robot_name,
-            'use_rviz': use_rviz,
-            'use_sim_time': use_sim_time,
-            'hardware_type': hardware_type,
-            'use_joint_pub_gui': use_joint_pub_gui
-        }.items(),
     )
 
     spawn_joint_state_broadcaster_node = Node(
@@ -160,5 +124,4 @@ def generate_launch_description():
     ld.add_action(load_joint_state_broadcaster_event)
     ld.add_action(load_arm_controller_event)
     ld.add_action(load_gripper_controller_event)
-    ld.add_action(arm_description_launch)
     return ld

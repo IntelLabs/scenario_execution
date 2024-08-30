@@ -21,31 +21,77 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.conditions import LaunchConfigurationEquals
+
+
+ARGUMENTS = [
+    DeclareLaunchArgument('use_rviz', default_value='false',
+                          choices=['true', 'false'],
+                          description='launches RViz if set to `true`.'),
+    DeclareLaunchArgument('hardware_type',
+                          default_value='fake',
+                          choices=['actual', 'fake', 'gz_classic', 'ignition'],
+                          description='configure robot_description to use actual, fake, or simulated hardware',
+                          ),
+    DeclareLaunchArgument('scenario',
+                          default_value=' ',
+                          description='Scenario file to execute',
+                          ),
+    DeclareLaunchArgument('scenario_execution', default_value='true',
+                          choices=['true', 'false'],
+                          description='Wether to execute scenario execution'),
+]
 
 
 def generate_launch_description():
 
     arm_sim_scenario_dir = get_package_share_directory('arm_sim_scenario')
     scenario_execution_dir = get_package_share_directory('scenario_execution_ros')
-
+    use_rviz = LaunchConfiguration('use_rviz')
+    hardware_type = LaunchConfiguration('hardware_type')
     scenario = LaunchConfiguration('scenario')
     scenario_execution = LaunchConfiguration('scenario_execution')
-    arg_scenario = DeclareLaunchArgument('scenario',
-                                         description='Scenario file to execute')
-    arg_scenario_execution = DeclareLaunchArgument(
-        'scenario_execution', default_value='True',
-        description='Wether to execute scenario execution')
 
     ignition = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'ignition_launch.py'])]),
+        condition=LaunchConfigurationEquals(
+            launch_configuration_name='hardware_type',
+            expected_value='ignition'
+        ),
     )
 
     robot = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'ignition_arm_launch.py'])]),
+        condition=LaunchConfigurationEquals(
+            launch_configuration_name='hardware_type',
+            expected_value='ignition'
+        ),
     )
 
     moveit_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'moveit_launch.py'])]),
+        launch_arguments={
+            'hardware_type': hardware_type,
+        }.items(),
+    )
+
+    arm_description = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'arm_description_launch.py'])]),
+        launch_arguments={
+            'use_rviz': use_rviz,
+            'hardware_type': hardware_type,
+        }.items()
+    )
+
+    arm_controllers = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'arm_controller_launch.py'])]),
+        launch_arguments={
+            'hardware_type': hardware_type,
+        }.items(),
+        condition=LaunchConfigurationEquals(
+            launch_configuration_name='hardware_type',
+            expected_value='fake'
+        ),
     )
 
     scenario_exec = IncludeLaunchDescription(
@@ -56,10 +102,9 @@ def generate_launch_description():
         ]
     )
 
-    ld = LaunchDescription([
-        arg_scenario,
-        arg_scenario_execution
-    ])
+    ld = LaunchDescription(ARGUMENTS)
+    ld.add_action(arm_controllers)
+    ld.add_action(arm_description)
     ld.add_action(ignition)
     ld.add_action(robot)
     ld.add_action(moveit_bringup)
