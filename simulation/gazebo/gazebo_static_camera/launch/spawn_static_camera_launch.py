@@ -13,11 +13,11 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-
+import tempfile
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, ExecuteProcess
 from launch.substitutions import LaunchConfiguration
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
 
@@ -29,6 +29,15 @@ ARGUMENTS = [
 
     DeclareLaunchArgument('world_name', default_value='default',
                           description='World name'),
+
+    DeclareLaunchArgument('update_rate', default_value='5',
+                          description='Update rate of the sensor'),
+
+    DeclareLaunchArgument('image_width', default_value='320',
+                          description='Width of camera image'),
+
+    DeclareLaunchArgument('image_height', default_value='240',
+                          description='Height of camera image'),
 ]
 
 for pose_element in ['x', 'y', 'z', 'roll', 'pitch', 'yaw']:
@@ -41,9 +50,16 @@ def generate_launch_description():
 
     camera_name = LaunchConfiguration('camera_name')
     world_name = LaunchConfiguration('world_name')
+    update_rate = LaunchConfiguration('update_rate')
+    image_width = LaunchConfiguration('image_width')
+    image_height = LaunchConfiguration('image_height')
+    camera_sdf = tempfile.NamedTemporaryFile(prefix='gazebo_static_camera_', suffix='.sdf', delete=False)
 
     x, y, z = LaunchConfiguration('x'), LaunchConfiguration('y'), LaunchConfiguration('z')
     roll, pitch, yaw = LaunchConfiguration('roll'), LaunchConfiguration('pitch'), LaunchConfiguration('yaw')
+
+    camera_sdf_xacro = ExecuteProcess(
+        cmd=['xacro', '-o', camera_sdf.name, ['update_rate:=', update_rate], ['image_width:=', image_width], ['image_height:=', image_height], PathJoinSubstitution([gazebo_static_camera_dir, 'models', 'camera.sdf.xacro'])])
 
     camera_bridge = Node(
         package='ros_gz_bridge',
@@ -80,11 +96,12 @@ def generate_launch_description():
                    '-R', roll,
                    '-P', pitch,
                    '-Y', yaw,
-                   '-file', PathJoinSubstitution([gazebo_static_camera_dir, 'models', 'camera.sdf'])],
+                   '-file', camera_sdf.name],
         output='screen'
     )
 
     ld = LaunchDescription(ARGUMENTS)
+    ld.add_action(camera_sdf_xacro)
     ld.add_action(camera_bridge)
     ld.add_action(spawn_camera)
     return ld
