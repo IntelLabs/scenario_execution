@@ -25,6 +25,10 @@ Panels:
     Name: Time
     SyncMode: 0
     SyncSource: ""
+  - Class: scenario_execution_rviz/Scenario Control
+    Name: Scenario Control
+  - Class: scenario_execution_rviz/Scenario View
+    Name: Scenario View
 Visualization Manager:
   Class: ""
   Displays:

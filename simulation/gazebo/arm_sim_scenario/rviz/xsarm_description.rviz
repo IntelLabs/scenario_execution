@@ -7,6 +7,10 @@ Panels:
       Splitter Ratio: 0.6176470518112183
     Tree Height: 503
     RobotNameSpace: ""
+  - Class: scenario_execution_rviz/Scenario Control
+    Name: Scenario Control
+  - Class: scenario_execution_rviz/Scenario View
+    Name: Scenario View
 Visualization Manager:
   Class: ""
   Displays:

@@ -1,6 +1,9 @@
 import osc.robotics
 import osc.standard.base
 
+struct joint_state_msg_conversion:
+    def generate_launch_params(in_value: string) -> list of key_value is external scenario_execution_moveit.external_methods.msg_conversion.generate_launch_params()
+
 actor robotic_arm inherits robot:
     namespace: string = ''
     joint_names: list of string

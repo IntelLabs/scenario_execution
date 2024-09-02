@@ -87,7 +87,7 @@
       <joint name="wrist_rotate">
         <command_interface name="position">
           <param name="min">"${wrist_rotate_limit_lower}"</param>
-          <param name="max">${wrist_rotate_limit_upper}</param>
+          <param name="max">"${wrist_rotate_limit_upper}"</param>
         </command_interface>
         <state_interface name="position"/>
       </joint>
@@ -139,10 +139,10 @@
         </ros>
         <robot_param>robot_description</robot_param>
         <robot_param_node>robot_state_publisher</robot_param_node>
-        <parameters>$(find interbotix_xsarm_sim)/config/trajectory_controllers/${robot_model}_trajectory_controllers.yaml</parameters>
+        <parameters>$(find arm_sim_scenario)/config/trajectory_controllers/${robot_model}_trajectory_controllers.yaml</parameters>
       </plugin>
     </gazebo>
-    <xacro:include filename="$(find interbotix_common_sim)/media/materials/scripts/interbotix_texture.gazebo"/>
+    <xacro:include filename="$(find arm_sim_scenario)/media/materials/scripts/interbotix_texture.gazebo"/>
   </xacro:if>
 
   <xacro:if value="${hardware_type == 'ignition'}">

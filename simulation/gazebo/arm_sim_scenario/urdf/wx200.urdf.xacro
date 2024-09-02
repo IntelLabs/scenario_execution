@@ -24,7 +24,7 @@
   <xacro:arg name="elbow_initial_value"              default="0"/>
   <xacro:arg name="wrist_angle_initial_value"        default="0"/>
   <xacro:arg name="wrist_rotate_initial_value"       default="0"/>
-  <xacro:arg name="finger_initial_value"             default="0"/>
+  <xacro:arg name="finger_initial_value"             default="0.0195"/>
 
   <xacro:property name="mesh_directory"             value="package://arm_sim_scenario/meshes/${robot_model}_meshes"/>
   <xacro:property name="urdf_loc"                   value="$(arg external_urdf_loc)"/>

@@ -48,27 +48,27 @@ ARGUMENTS = [
                           choices=('true', 'false'),
                           description='launches the joint_state_publisher GUI.',
                           ),
-    DeclareLaunchArgument('waist_initial_value',
+    DeclareLaunchArgument('waist',
                           default_value='0',
                           description='waist joint initial value.',
                           ),
-    DeclareLaunchArgument('shoulder_initial_value',
+    DeclareLaunchArgument('shoulder',
                           default_value='0',
                           description='shoulder joint initial value.',
                           ),
-    DeclareLaunchArgument('elbow_initial_value',
+    DeclareLaunchArgument('elbow',
                           default_value='0',
                           description='elbow joint initial value.',
                           ),
-    DeclareLaunchArgument('wrist_angle_initial_value',
+    DeclareLaunchArgument('wrist_angle',
                           default_value='0',
                           description='wrist_angle joint initial value.',
                           ),
-    DeclareLaunchArgument('wrist_rotate_initial_value',
+    DeclareLaunchArgument('wrist_rotate',
                           default_value='0',
                           description='wrist_rotate joint initial value.',
                           ),
-    DeclareLaunchArgument('finger_initial_value',
+    DeclareLaunchArgument('finger',
                           default_value='0',
                           description='gripper finger initial value.',
                           ),
@@ -82,12 +82,12 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     hardware_type = LaunchConfiguration('hardware_type')
     # Intial joint states
-    waist_initial_value = LaunchConfiguration('waist_initial_value')
-    shoulder_initial_value = LaunchConfiguration('shoulder_initial_value')
-    elbow_initial_value = LaunchConfiguration('elbow_initial_value')
-    wrist_angle_initial_value = LaunchConfiguration('wrist_angle_initial_value')
-    wrist_rotate_initial_value = LaunchConfiguration('wrist_rotate_initial_value')
-    finger_initial_value = LaunchConfiguration('finger_initial_value')
+    waist_initial_value = LaunchConfiguration('waist')
+    shoulder_initial_value = LaunchConfiguration('shoulder')
+    elbow_initial_value = LaunchConfiguration('elbow')
+    wrist_angle_initial_value = LaunchConfiguration('wrist_angle')
+    wrist_rotate_initial_value = LaunchConfiguration('wrist_rotate')
+    finger_initial_value = LaunchConfiguration('finger')
 
     pkg_arm_sim_scenario = get_package_share_directory('arm_sim_scenario')
 
