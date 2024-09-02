@@ -11,8 +11,6 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <!-- Turtlebot4 -->
-  <depend>turtlebot4_simulator</depend>
-  <depend>turtlebot4_description</depend>
   <depend>gazebo_tf_publisher</depend>
   <depend>scenario_execution</depend>
   <depend>message_modification</depend>
