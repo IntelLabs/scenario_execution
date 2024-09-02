@@ -1,12 +1,28 @@
+# Copyright (C) 2024 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Generated from OpenSCENARIO2.g4 by ANTLR 4.9.1
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
 import sys
 if sys.version_info[1] > 5:
-	from typing import TextIO
+    from typing import TextIO
 else:
-	from typing.io import TextIO
+    from typing.io import TextIO
 
 
 def serializedATN():
@@ -655,63 +671,63 @@ def serializedATN():
         return buf.getvalue()
 
 
-class OpenSCENARIO2Parser ( Parser ):
+class OpenSCENARIO2Parser (Parser):
 
     grammarFileName = "OpenSCENARIO2.g4"
 
     atn = ATNDeserializer().deserialize(serializedATN())
 
-    decisionsToDFA = [ DFA(ds, i) for i, ds in enumerate(atn.decisionToState) ]
+    decisionsToDFA = [DFA(ds, i) for i, ds in enumerate(atn.decisionToState)]
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'import'", "'.'", "'type'", "'is'", "'SI'", 
-                     "'unit'", "'of'", "','", "':'", "'factor'", "'offset'", 
-                     "'kg'", "'m'", "'s'", "'A'", "'K'", "'mol'", "'cd'", 
-                     "'rad'", "'enum'", "'='", "'!'", "'=='", "'struct'", 
-                     "'inherits'", "'actor'", "'scenario'", "'action'", 
-                     "'modifier'", "'extend'", "'global'", "'list'", "'int'", 
-                     "'uint'", "'float'", "'bool'", "'string'", "'event'", 
-                     "'if'", "'@'", "'as'", "'rise'", "'fall'", "'elapsed'", 
-                     "'every'", "'var'", "'sample'", "'with'", "'keep'", 
-                     "'default'", "'hard'", "'remove_default'", "'on'", 
-                     "'do'", "'serial'", "'one_of'", "'parallel'", "'serial_no_memory'", 
-                     "'selector'", "'selector_no_memory'", "'wait'", "'emit'", 
-                     "'call'", "'until'", "'def'", "'->'", "'expression'", 
-                     "'undefined'", "'external'", "'only'", "'cover'", "'record'", 
-                     "'range'", "'?'", "'=>'", "'or'", "'and'", "'not'", 
-                     "'!='", "'<'", "'<='", "'>'", "'>='", "'in'", "'+'", 
-                     "'-'", "'*'", "'/'", "'%'", "'it'", "'..'", "<INVALID>", 
-                     "'['", "']'", "'('", "')'" ]
+    literalNames = ["<INVALID>", "'import'", "'.'", "'type'", "'is'", "'SI'",
+                    "'unit'", "'of'", "','", "':'", "'factor'", "'offset'",
+                    "'kg'", "'m'", "'s'", "'A'", "'K'", "'mol'", "'cd'",
+                    "'rad'", "'enum'", "'='", "'!'", "'=='", "'struct'",
+                    "'inherits'", "'actor'", "'scenario'", "'action'",
+                    "'modifier'", "'extend'", "'global'", "'list'", "'int'",
+                    "'uint'", "'float'", "'bool'", "'string'", "'event'",
+                    "'if'", "'@'", "'as'", "'rise'", "'fall'", "'elapsed'",
+                    "'every'", "'var'", "'sample'", "'with'", "'keep'",
+                    "'default'", "'hard'", "'remove_default'", "'on'",
+                    "'do'", "'serial'", "'one_of'", "'parallel'", "'serial_no_memory'",
+                    "'selector'", "'selector_no_memory'", "'wait'", "'emit'",
+                    "'call'", "'until'", "'def'", "'->'", "'expression'",
+                    "'undefined'", "'external'", "'only'", "'cover'", "'record'",
+                    "'range'", "'?'", "'=>'", "'or'", "'and'", "'not'",
+                    "'!='", "'<'", "'<='", "'>'", "'>='", "'in'", "'+'",
+                    "'-'", "'*'", "'/'", "'%'", "'it'", "'..'", "<INVALID>",
+                    "'['", "']'", "'('", "')'"]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "NEWLINE", "OPEN_BRACK", "CLOSE_BRACK", "OPEN_PAREN", 
-                      "CLOSE_PAREN", "SKIP_", "BLOCK_COMMENT", "LINE_COMMENT", 
-                      "StringLiteral", "FloatLiteral", "UintLiteral", "HexUintLiteral", 
-                      "IntLiteral", "BoolLiteral", "Identifier", "INDENT", 
-                      "DEDENT" ]
+    symbolicNames = ["<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>",
+                     "NEWLINE", "OPEN_BRACK", "CLOSE_BRACK", "OPEN_PAREN",
+                     "CLOSE_PAREN", "SKIP_", "BLOCK_COMMENT", "LINE_COMMENT",
+                     "StringLiteral", "FloatLiteral", "UintLiteral", "HexUintLiteral",
+                     "IntLiteral", "BoolLiteral", "Identifier", "INDENT",
+                     "DEDENT"]
 
     RULE_osc_file = 0
     RULE_preludeStatement = 1
@@ -854,234 +870,226 @@ class OpenSCENARIO2Parser ( Parser ):
     RULE_physicalLiteral = 138
     RULE_integerLiteral = 139
 
-    ruleNames =  [ "osc_file", "preludeStatement", "importStatement", "importReference", 
-                   "structuredIdentifier", "oscDeclaration", "physicalTypeDeclaration", 
-                   "physicalTypeName", "baseUnitSpecifier", "sIBaseUnitSpecifier", 
-                   "unitDeclaration", "unitSpecifier", "unitName", "siBaseExponentList", 
-                   "siBaseExponent", "siUnitSpecifier", "siFactor", "siOffset", 
-                   "siBaseUnitName", "enumDeclaration", "enumMemberDecl", 
-                   "enumMemberValue", "enumName", "enumMemberName", "enumValueReference", 
-                   "inheritsCondition", "structDeclaration", "structInherits", 
-                   "structMemberDecl", "fieldName", "structName", "actorDeclaration", 
-                   "actorInherits", "actorMemberDecl", "actorName", "scenarioDeclaration", 
-                   "scenarioInherits", "scenarioMemberDecl", "qualifiedBehaviorName", 
-                   "behaviorName", "actionDeclaration", "actionInherits", 
-                   "modifierDeclaration", "modifierName", "typeExtension", 
-                   "enumTypeExtension", "structuredTypeExtension", "extendableTypeName", 
-                   "extensionMemberDecl", "globalParameterDeclaration", 
-                   "typeDeclarator", "nonAggregateTypeDeclarator", "aggregateTypeDeclarator", 
-                   "listTypeDeclarator", "primitiveType", "typeName", "eventDeclaration", 
-                   "eventSpecification", "eventReference", "eventFieldDecl", 
-                   "eventFieldName", "eventName", "eventPath", "eventCondition", 
-                   "riseExpression", "fallExpression", "elapsedExpression", 
-                   "everyExpression", "boolExpression", "durationExpression", 
-                   "fieldDeclaration", "parameterDeclaration", "variableDeclaration", 
-                   "sampleExpression", "defaultValue", "parameterWithDeclaration", 
-                   "parameterWithMember", "constraintDeclaration", "keepConstraintDeclaration", 
-                   "constraintQualifier", "constraintExpression", "removeDefaultDeclaration", 
-                   "parameterReference", "modifierInvocation", "behaviorExpression", 
-                   "behaviorSpecification", "onDirective", "onMember", "doDirective", 
-                   "doMember", "composition", "compositionOperator", "behaviorInvocation", 
-                   "behaviorWithDeclaration", "behaviorWithMember", "labelName", 
-                   "actorExpression", "waitDirective", "emitDirective", 
-                   "callDirective", "untilDirective", "methodInvocation", 
-                   "methodDeclaration", "returnType", "methodImplementation", 
-                   "methodQualifier", "methodName", "coverageDeclaration", 
-                   "coverDeclaration", "recordDeclaration", "coverageArgumentList", 
-                   "targetName", "expression", "ternaryOpExp", "implication", 
-                   "disjunction", "conjunction", "inversion", "relation", 
-                   "relationalOp", "sumExpression", "additiveOp", "term", 
-                   "multiplicativeOp", "factor", "postfixExp", "fieldAccess", 
-                   "primaryExp", "valueExp", "listConstructor", "rangeConstructor", 
-                   "identifierReference", "argumentListSpecification", "argumentSpecification", 
-                   "argumentName", "argumentList", "positionalArgument", 
-                   "namedArgument", "physicalLiteral", "integerLiteral" ]
+    ruleNames = ["osc_file", "preludeStatement", "importStatement", "importReference",
+                 "structuredIdentifier", "oscDeclaration", "physicalTypeDeclaration",
+                 "physicalTypeName", "baseUnitSpecifier", "sIBaseUnitSpecifier",
+                 "unitDeclaration", "unitSpecifier", "unitName", "siBaseExponentList",
+                 "siBaseExponent", "siUnitSpecifier", "siFactor", "siOffset",
+                 "siBaseUnitName", "enumDeclaration", "enumMemberDecl",
+                 "enumMemberValue", "enumName", "enumMemberName", "enumValueReference",
+                 "inheritsCondition", "structDeclaration", "structInherits",
+                 "structMemberDecl", "fieldName", "structName", "actorDeclaration",
+                 "actorInherits", "actorMemberDecl", "actorName", "scenarioDeclaration",
+                 "scenarioInherits", "scenarioMemberDecl", "qualifiedBehaviorName",
+                 "behaviorName", "actionDeclaration", "actionInherits",
+                 "modifierDeclaration", "modifierName", "typeExtension",
+                 "enumTypeExtension", "structuredTypeExtension", "extendableTypeName",
+                 "extensionMemberDecl", "globalParameterDeclaration",
+                 "typeDeclarator", "nonAggregateTypeDeclarator", "aggregateTypeDeclarator",
+                 "listTypeDeclarator", "primitiveType", "typeName", "eventDeclaration",
+                 "eventSpecification", "eventReference", "eventFieldDecl",
+                 "eventFieldName", "eventName", "eventPath", "eventCondition",
+                 "riseExpression", "fallExpression", "elapsedExpression",
+                 "everyExpression", "boolExpression", "durationExpression",
+                 "fieldDeclaration", "parameterDeclaration", "variableDeclaration",
+                 "sampleExpression", "defaultValue", "parameterWithDeclaration",
+                 "parameterWithMember", "constraintDeclaration", "keepConstraintDeclaration",
+                 "constraintQualifier", "constraintExpression", "removeDefaultDeclaration",
+                 "parameterReference", "modifierInvocation", "behaviorExpression",
+                 "behaviorSpecification", "onDirective", "onMember", "doDirective",
+                 "doMember", "composition", "compositionOperator", "behaviorInvocation",
+                 "behaviorWithDeclaration", "behaviorWithMember", "labelName",
+                 "actorExpression", "waitDirective", "emitDirective",
+                 "callDirective", "untilDirective", "methodInvocation",
+                 "methodDeclaration", "returnType", "methodImplementation",
+                 "methodQualifier", "methodName", "coverageDeclaration",
+                 "coverDeclaration", "recordDeclaration", "coverageArgumentList",
+                 "targetName", "expression", "ternaryOpExp", "implication",
+                 "disjunction", "conjunction", "inversion", "relation",
+                 "relationalOp", "sumExpression", "additiveOp", "term",
+                 "multiplicativeOp", "factor", "postfixExp", "fieldAccess",
+                 "primaryExp", "valueExp", "listConstructor", "rangeConstructor",
+                 "identifierReference", "argumentListSpecification", "argumentSpecification",
+                 "argumentName", "argumentList", "positionalArgument",
+                 "namedArgument", "physicalLiteral", "integerLiteral"]
 
     EOF = Token.EOF
-    T__0=1
-    T__1=2
-    T__2=3
-    T__3=4
-    T__4=5
-    T__5=6
-    T__6=7
-    T__7=8
-    T__8=9
-    T__9=10
-    T__10=11
-    T__11=12
-    T__12=13
-    T__13=14
-    T__14=15
-    T__15=16
-    T__16=17
-    T__17=18
-    T__18=19
-    T__19=20
-    T__20=21
-    T__21=22
-    T__22=23
-    T__23=24
-    T__24=25
-    T__25=26
-    T__26=27
-    T__27=28
-    T__28=29
-    T__29=30
-    T__30=31
-    T__31=32
-    T__32=33
-    T__33=34
-    T__34=35
-    T__35=36
-    T__36=37
-    T__37=38
-    T__38=39
-    T__39=40
-    T__40=41
-    T__41=42
-    T__42=43
-    T__43=44
-    T__44=45
-    T__45=46
-    T__46=47
-    T__47=48
-    T__48=49
-    T__49=50
-    T__50=51
-    T__51=52
-    T__52=53
-    T__53=54
-    T__54=55
-    T__55=56
-    T__56=57
-    T__57=58
-    T__58=59
-    T__59=60
-    T__60=61
-    T__61=62
-    T__62=63
-    T__63=64
-    T__64=65
-    T__65=66
-    T__66=67
-    T__67=68
-    T__68=69
-    T__69=70
-    T__70=71
-    T__71=72
-    T__72=73
-    T__73=74
-    T__74=75
-    T__75=76
-    T__76=77
-    T__77=78
-    T__78=79
-    T__79=80
-    T__80=81
-    T__81=82
-    T__82=83
-    T__83=84
-    T__84=85
-    T__85=86
-    T__86=87
-    T__87=88
-    T__88=89
-    T__89=90
-    T__90=91
-    NEWLINE=92
-    OPEN_BRACK=93
-    CLOSE_BRACK=94
-    OPEN_PAREN=95
-    CLOSE_PAREN=96
-    SKIP_=97
-    BLOCK_COMMENT=98
-    LINE_COMMENT=99
-    StringLiteral=100
-    FloatLiteral=101
-    UintLiteral=102
-    HexUintLiteral=103
-    IntLiteral=104
-    BoolLiteral=105
-    Identifier=106
-    INDENT=107
-    DEDENT=108
+    T__0 = 1
+    T__1 = 2
+    T__2 = 3
+    T__3 = 4
+    T__4 = 5
+    T__5 = 6
+    T__6 = 7
+    T__7 = 8
+    T__8 = 9
+    T__9 = 10
+    T__10 = 11
+    T__11 = 12
+    T__12 = 13
+    T__13 = 14
+    T__14 = 15
+    T__15 = 16
+    T__16 = 17
+    T__17 = 18
+    T__18 = 19
+    T__19 = 20
+    T__20 = 21
+    T__21 = 22
+    T__22 = 23
+    T__23 = 24
+    T__24 = 25
+    T__25 = 26
+    T__26 = 27
+    T__27 = 28
+    T__28 = 29
+    T__29 = 30
+    T__30 = 31
+    T__31 = 32
+    T__32 = 33
+    T__33 = 34
+    T__34 = 35
+    T__35 = 36
+    T__36 = 37
+    T__37 = 38
+    T__38 = 39
+    T__39 = 40
+    T__40 = 41
+    T__41 = 42
+    T__42 = 43
+    T__43 = 44
+    T__44 = 45
+    T__45 = 46
+    T__46 = 47
+    T__47 = 48
+    T__48 = 49
+    T__49 = 50
+    T__50 = 51
+    T__51 = 52
+    T__52 = 53
+    T__53 = 54
+    T__54 = 55
+    T__55 = 56
+    T__56 = 57
+    T__57 = 58
+    T__58 = 59
+    T__59 = 60
+    T__60 = 61
+    T__61 = 62
+    T__62 = 63
+    T__63 = 64
+    T__64 = 65
+    T__65 = 66
+    T__66 = 67
+    T__67 = 68
+    T__68 = 69
+    T__69 = 70
+    T__70 = 71
+    T__71 = 72
+    T__72 = 73
+    T__73 = 74
+    T__74 = 75
+    T__75 = 76
+    T__76 = 77
+    T__77 = 78
+    T__78 = 79
+    T__79 = 80
+    T__80 = 81
+    T__81 = 82
+    T__82 = 83
+    T__83 = 84
+    T__84 = 85
+    T__85 = 86
+    T__86 = 87
+    T__87 = 88
+    T__88 = 89
+    T__89 = 90
+    T__90 = 91
+    NEWLINE = 92
+    OPEN_BRACK = 93
+    CLOSE_BRACK = 94
+    OPEN_PAREN = 95
+    CLOSE_PAREN = 96
+    SKIP_ = 97
+    BLOCK_COMMENT = 98
+    LINE_COMMENT = 99
+    StringLiteral = 100
+    FloatLiteral = 101
+    UintLiteral = 102
+    HexUintLiteral = 103
+    IntLiteral = 104
+    BoolLiteral = 105
+    Identifier = 106
+    INDENT = 107
+    DEDENT = 108
 
-    def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
+    def __init__(self, input: TokenStream, output: TextIO = sys.stdout):
         super().__init__(input, output)
         self.checkVersion("4.9.1")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 
-
-
-
     class Osc_fileContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def EOF(self):
             return self.getToken(OpenSCENARIO2Parser.EOF, 0)
 
-        def preludeStatement(self, i:int=None):
+        def preludeStatement(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.PreludeStatementContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.PreludeStatementContext,i)
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.PreludeStatementContext, i)
 
-
-        def oscDeclaration(self, i:int=None):
+        def oscDeclaration(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.OscDeclarationContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.OscDeclarationContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.OscDeclarationContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_osc_file
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterOsc_file" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterOsc_file"):
                 listener.enterOsc_file(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitOsc_file" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitOsc_file"):
                 listener.exitOsc_file(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitOsc_file" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitOsc_file"):
                 return visitor.visitOsc_file(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def osc_file(self):
 
         localctx = OpenSCENARIO2Parser.Osc_fileContext(self, self._ctx, self.state)
         self.enterRule(localctx, 0, self.RULE_osc_file)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 283
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,0,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
+            _alt = self._interp.adaptivePredict(self._input, 0, self._ctx)
+            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                if _alt == 1:
                     self.state = 280
-                    self.preludeStatement() 
+                    self.preludeStatement()
                 self.state = 285
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,0,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input, 0, self._ctx)
 
             self.state = 289
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__2) | (1 << OpenSCENARIO2Parser.T__5) | (1 << OpenSCENARIO2Parser.T__19) | (1 << OpenSCENARIO2Parser.T__23) | (1 << OpenSCENARIO2Parser.T__25) | (1 << OpenSCENARIO2Parser.T__26) | (1 << OpenSCENARIO2Parser.T__27) | (1 << OpenSCENARIO2Parser.T__28) | (1 << OpenSCENARIO2Parser.T__29) | (1 << OpenSCENARIO2Parser.T__30))) != 0) or _la==OpenSCENARIO2Parser.NEWLINE:
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__2) | (1 << OpenSCENARIO2Parser.T__5) | (1 << OpenSCENARIO2Parser.T__19) | (1 << OpenSCENARIO2Parser.T__23) | (1 << OpenSCENARIO2Parser.T__25) | (1 << OpenSCENARIO2Parser.T__26) | (1 << OpenSCENARIO2Parser.T__27) | (1 << OpenSCENARIO2Parser.T__28) | (1 << OpenSCENARIO2Parser.T__29) | (1 << OpenSCENARIO2Parser.T__30))) != 0) or _la == OpenSCENARIO2Parser.NEWLINE:
                 self.state = 286
                 self.oscDeclaration()
                 self.state = 291
@@ -1098,37 +1106,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class PreludeStatementContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def importStatement(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ImportStatementContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ImportStatementContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_preludeStatement
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPreludeStatement" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPreludeStatement"):
                 listener.enterPreludeStatement(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPreludeStatement" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPreludeStatement"):
                 listener.exitPreludeStatement(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPreludeStatement" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPreludeStatement"):
                 return visitor.visitPreludeStatement(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def preludeStatement(self):
 
@@ -1146,17 +1149,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ImportStatementContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def importReference(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ImportReferenceContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ImportReferenceContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -1164,22 +1165,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_importStatement
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterImportStatement" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterImportStatement"):
                 listener.enterImportStatement(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitImportStatement" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitImportStatement"):
                 listener.exitImportStatement(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitImportStatement" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitImportStatement"):
                 return visitor.visitImportStatement(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def importStatement(self):
 
@@ -1214,11 +1212,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ImportReferenceContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1226,28 +1223,24 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.StringLiteral, 0)
 
         def structuredIdentifier(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructuredIdentifierContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructuredIdentifierContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_importReference
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterImportReference" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterImportReference"):
                 listener.enterImportReference(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitImportReference" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitImportReference"):
                 listener.exitImportReference(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitImportReference" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitImportReference"):
                 return visitor.visitImportReference(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def importReference(self):
 
@@ -1278,11 +1271,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class StructuredIdentifierContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1290,29 +1282,26 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.Identifier, 0)
 
         def structuredIdentifier(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructuredIdentifierContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructuredIdentifierContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_structuredIdentifier
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStructuredIdentifier" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterStructuredIdentifier"):
                 listener.enterStructuredIdentifier(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStructuredIdentifier" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitStructuredIdentifier"):
                 listener.exitStructuredIdentifier(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitStructuredIdentifier" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitStructuredIdentifier"):
                 return visitor.visitStructuredIdentifier(self)
             else:
                 return visitor.visitChildren(self)
 
-
-
-    def structuredIdentifier(self, _p:int=0):
+    def structuredIdentifier(self, _p: int = 0):
         _parentctx = self._ctx
         _parentState = self.state
         localctx = OpenSCENARIO2Parser.StructuredIdentifierContext(self, self._ctx, _parentState)
@@ -1326,9 +1315,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
             self.state = 315
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,4,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
+            _alt = self._interp.adaptivePredict(self._input, 4, self._ctx)
+            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                if _alt == 1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
@@ -1341,10 +1330,10 @@ class OpenSCENARIO2Parser ( Parser ):
                     self.state = 311
                     self.match(OpenSCENARIO2Parser.T__1)
                     self.state = 312
-                    self.match(OpenSCENARIO2Parser.Identifier) 
+                    self.match(OpenSCENARIO2Parser.Identifier)
                 self.state = 317
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,4,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input, 4, self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -1354,53 +1343,42 @@ class OpenSCENARIO2Parser ( Parser ):
             self.unrollRecursionContexts(_parentctx)
         return localctx
 
-
     class OscDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def physicalTypeDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PhysicalTypeDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PhysicalTypeDeclarationContext, 0)
 
         def unitDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitDeclarationContext, 0)
 
         def enumDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumDeclarationContext, 0)
 
         def structDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructDeclarationContext, 0)
 
         def actorDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorDeclarationContext, 0)
 
         def actionDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActionDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActionDeclarationContext, 0)
 
         def scenarioDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioDeclarationContext, 0)
 
         def modifierDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierDeclarationContext, 0)
 
         def typeExtension(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeExtensionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeExtensionContext, 0)
 
         def globalParameterDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.GlobalParameterDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.GlobalParameterDeclarationContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -1408,22 +1386,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_oscDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterOscDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterOscDeclaration"):
                 listener.enterOscDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitOscDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitOscDeclaration"):
                 listener.exitOscDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitOscDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitOscDeclaration"):
                 return visitor.visitOscDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def oscDeclaration(self):
 
@@ -1499,21 +1474,18 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class PhysicalTypeDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def physicalTypeName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PhysicalTypeNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PhysicalTypeNameContext, 0)
 
         def baseUnitSpecifier(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BaseUnitSpecifierContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BaseUnitSpecifierContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -1521,22 +1493,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_physicalTypeDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPhysicalTypeDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPhysicalTypeDeclaration"):
                 listener.enterPhysicalTypeDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPhysicalTypeDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPhysicalTypeDeclaration"):
                 listener.exitPhysicalTypeDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPhysicalTypeDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPhysicalTypeDeclaration"):
                 return visitor.visitPhysicalTypeDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def physicalTypeDeclaration(self):
 
@@ -1562,11 +1531,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class PhysicalTypeNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1576,22 +1544,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_physicalTypeName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPhysicalTypeName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPhysicalTypeName"):
                 listener.enterPhysicalTypeName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPhysicalTypeName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPhysicalTypeName"):
                 listener.exitPhysicalTypeName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPhysicalTypeName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPhysicalTypeName"):
                 return visitor.visitPhysicalTypeName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def physicalTypeName(self):
 
@@ -1609,37 +1574,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class BaseUnitSpecifierContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def sIBaseUnitSpecifier(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SIBaseUnitSpecifierContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SIBaseUnitSpecifierContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_baseUnitSpecifier
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBaseUnitSpecifier" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBaseUnitSpecifier"):
                 listener.enterBaseUnitSpecifier(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBaseUnitSpecifier" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBaseUnitSpecifier"):
                 listener.exitBaseUnitSpecifier(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBaseUnitSpecifier" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBaseUnitSpecifier"):
                 return visitor.visitBaseUnitSpecifier(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def baseUnitSpecifier(self):
 
@@ -1657,11 +1617,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class SIBaseUnitSpecifierContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1669,8 +1628,7 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def siBaseExponentList(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseExponentListContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseExponentListContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -1678,22 +1636,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_sIBaseUnitSpecifier
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSIBaseUnitSpecifier" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSIBaseUnitSpecifier"):
                 listener.enterSIBaseUnitSpecifier(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSIBaseUnitSpecifier" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSIBaseUnitSpecifier"):
                 listener.exitSIBaseUnitSpecifier(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSIBaseUnitSpecifier" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSIBaseUnitSpecifier"):
                 return visitor.visitSIBaseUnitSpecifier(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def sIBaseUnitSpecifier(self):
 
@@ -1717,25 +1672,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class UnitDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def unitName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitNameContext, 0)
 
         def physicalTypeName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PhysicalTypeNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PhysicalTypeNameContext, 0)
 
         def unitSpecifier(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitSpecifierContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitSpecifierContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -1743,22 +1694,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_unitDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterUnitDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterUnitDeclaration"):
                 listener.enterUnitDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitUnitDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitUnitDeclaration"):
                 listener.exitUnitDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitUnitDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitUnitDeclaration"):
                 return visitor.visitUnitDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def unitDeclaration(self):
 
@@ -1788,37 +1736,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class UnitSpecifierContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def siUnitSpecifier(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiUnitSpecifierContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiUnitSpecifierContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_unitSpecifier
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterUnitSpecifier" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterUnitSpecifier"):
                 listener.enterUnitSpecifier(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitUnitSpecifier" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitUnitSpecifier"):
                 listener.exitUnitSpecifier(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitUnitSpecifier" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitUnitSpecifier"):
                 return visitor.visitUnitSpecifier(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def unitSpecifier(self):
 
@@ -1836,11 +1779,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class UnitNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -1848,28 +1790,24 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.Identifier, 0)
 
         def siBaseUnitName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseUnitNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseUnitNameContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_unitName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterUnitName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterUnitName"):
                 listener.enterUnitName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitUnitName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitUnitName"):
                 listener.exitUnitName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitUnitName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitUnitName"):
                 return visitor.visitUnitName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def unitName(self):
 
@@ -1900,40 +1838,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class SiBaseExponentListContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def siBaseExponent(self, i:int=None):
+        def siBaseExponent(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.SiBaseExponentContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseExponentContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseExponentContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_siBaseExponentList
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSiBaseExponentList" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSiBaseExponentList"):
                 listener.enterSiBaseExponentList(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSiBaseExponentList" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSiBaseExponentList"):
                 listener.exitSiBaseExponentList(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSiBaseExponentList" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSiBaseExponentList"):
                 return visitor.visitSiBaseExponentList(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def siBaseExponentList(self):
 
@@ -1945,16 +1878,16 @@ class OpenSCENARIO2Parser ( Parser ):
             self.siBaseExponent()
             self.state = 365
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,7,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
+            _alt = self._interp.adaptivePredict(self._input, 7, self._ctx)
+            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                if _alt == 1:
                     self.state = 361
                     self.match(OpenSCENARIO2Parser.T__7)
                     self.state = 362
-                    self.siBaseExponent() 
+                    self.siBaseExponent()
                 self.state = 367
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,7,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input, 7, self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -1964,41 +1897,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class SiBaseExponentContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def siBaseUnitName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseUnitNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseUnitNameContext, 0)
 
         def integerLiteral(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_siBaseExponent
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSiBaseExponent" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSiBaseExponent"):
                 listener.enterSiBaseExponent(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSiBaseExponent" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSiBaseExponent"):
                 listener.exitSiBaseExponent(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSiBaseExponent" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSiBaseExponent"):
                 return visitor.visitSiBaseExponent(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def siBaseExponent(self):
 
@@ -2020,11 +1947,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class SiUnitSpecifierContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -2032,45 +1958,39 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def siBaseExponentList(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseExponentListContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiBaseExponentListContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
         def siFactor(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiFactorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiFactorContext, 0)
 
         def siOffset(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiOffsetContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SiOffsetContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_siUnitSpecifier
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSiUnitSpecifier" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSiUnitSpecifier"):
                 listener.enterSiUnitSpecifier(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSiUnitSpecifier" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSiUnitSpecifier"):
                 listener.exitSiUnitSpecifier(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSiUnitSpecifier" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSiUnitSpecifier"):
                 return visitor.visitSiUnitSpecifier(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def siUnitSpecifier(self):
 
         localctx = OpenSCENARIO2Parser.SiUnitSpecifierContext(self, self._ctx, self.state)
         self.enterRule(localctx, 30, self.RULE_siUnitSpecifier)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 372
@@ -2081,23 +2001,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.siBaseExponentList()
             self.state = 377
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,8,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 8, self._ctx)
             if la_ == 1:
                 self.state = 375
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 376
                 self.siFactor()
 
-
             self.state = 381
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__7:
+            if _la == OpenSCENARIO2Parser.T__7:
                 self.state = 379
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 380
                 self.siOffset()
-
 
             self.state = 383
             self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
@@ -2109,11 +2027,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class SiFactorContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -2121,28 +2038,24 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.FloatLiteral, 0)
 
         def integerLiteral(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_siFactor
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSiFactor" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSiFactor"):
                 listener.enterSiFactor(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSiFactor" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSiFactor"):
                 listener.exitSiFactor(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSiFactor" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSiFactor"):
                 return visitor.visitSiFactor(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def siFactor(self):
 
@@ -2176,11 +2089,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class SiOffsetContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -2188,28 +2100,24 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.FloatLiteral, 0)
 
         def integerLiteral(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_siOffset
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSiOffset" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSiOffset"):
                 listener.enterSiOffset(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSiOffset" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSiOffset"):
                 listener.exitSiOffset(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSiOffset" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSiOffset"):
                 return visitor.visitSiOffset(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def siOffset(self):
 
@@ -2243,40 +2151,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class SiBaseUnitNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_siBaseUnitName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSiBaseUnitName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSiBaseUnitName"):
                 listener.enterSiBaseUnitName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSiBaseUnitName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSiBaseUnitName"):
                 listener.exitSiBaseUnitName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSiBaseUnitName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSiBaseUnitName"):
                 return visitor.visitSiBaseUnitName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def siBaseUnitName(self):
 
         localctx = OpenSCENARIO2Parser.SiBaseUnitNameContext(self, self._ctx, self.state)
         self.enterRule(localctx, 36, self.RULE_siBaseUnitName)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 397
@@ -2294,27 +2197,24 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EnumDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def enumName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumNameContext, 0)
 
         def OPEN_BRACK(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_BRACK, 0)
 
-        def enumMemberDecl(self, i:int=None):
+        def enumMemberDecl(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.EnumMemberDeclContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberDeclContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberDeclContext, i)
 
         def CLOSE_BRACK(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_BRACK, 0)
@@ -2325,28 +2225,25 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_enumDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEnumDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEnumDeclaration"):
                 listener.enterEnumDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEnumDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEnumDeclaration"):
                 listener.exitEnumDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEnumDeclaration"):
                 return visitor.visitEnumDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def enumDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.EnumDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 38, self.RULE_enumDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 399
@@ -2362,7 +2259,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 408
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__7:
+            while _la == OpenSCENARIO2Parser.T__7:
                 self.state = 404
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 405
@@ -2383,47 +2280,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EnumMemberDeclContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def enumMemberName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberNameContext, 0)
 
         def enumMemberValue(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberValueContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberValueContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_enumMemberDecl
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEnumMemberDecl" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEnumMemberDecl"):
                 listener.enterEnumMemberDecl(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEnumMemberDecl" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEnumMemberDecl"):
                 listener.exitEnumMemberDecl(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumMemberDecl" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEnumMemberDecl"):
                 return visitor.visitEnumMemberDecl(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def enumMemberDecl(self):
 
         localctx = OpenSCENARIO2Parser.EnumMemberDeclContext(self, self._ctx, self.state)
         self.enterRule(localctx, 40, self.RULE_enumMemberDecl)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 414
@@ -2431,12 +2322,11 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 417
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__20:
+            if _la == OpenSCENARIO2Parser.T__20:
                 self.state = 415
                 self.match(OpenSCENARIO2Parser.T__20)
                 self.state = 416
                 self.enumMemberValue()
-
 
         except RecognitionException as re:
             localctx.exception = re
@@ -2446,11 +2336,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EnumMemberValueContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -2463,33 +2352,30 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_enumMemberValue
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEnumMemberValue" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEnumMemberValue"):
                 listener.enterEnumMemberValue(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEnumMemberValue" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEnumMemberValue"):
                 listener.exitEnumMemberValue(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumMemberValue" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEnumMemberValue"):
                 return visitor.visitEnumMemberValue(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def enumMemberValue(self):
 
         localctx = OpenSCENARIO2Parser.EnumMemberValueContext(self, self._ctx, self.state)
         self.enterRule(localctx, 42, self.RULE_enumMemberValue)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 419
             _la = self._input.LA(1)
-            if not(_la==OpenSCENARIO2Parser.UintLiteral or _la==OpenSCENARIO2Parser.HexUintLiteral):
+            if not(_la == OpenSCENARIO2Parser.UintLiteral or _la == OpenSCENARIO2Parser.HexUintLiteral):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -2502,11 +2388,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EnumNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -2516,22 +2401,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_enumName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEnumName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEnumName"):
                 listener.enterEnumName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEnumName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEnumName"):
                 listener.exitEnumName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEnumName"):
                 return visitor.visitEnumName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def enumName(self):
 
@@ -2549,11 +2431,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EnumMemberNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -2563,22 +2444,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_enumMemberName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEnumMemberName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEnumMemberName"):
                 listener.enterEnumMemberName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEnumMemberName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEnumMemberName"):
                 listener.exitEnumMemberName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumMemberName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEnumMemberName"):
                 return visitor.visitEnumMemberName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def enumMemberName(self):
 
@@ -2596,41 +2474,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EnumValueReferenceContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def enumName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumNameContext, 0)
 
         def enumMemberName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberNameContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_enumValueReference
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEnumValueReference" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEnumValueReference"):
                 listener.enterEnumValueReference(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEnumValueReference" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEnumValueReference"):
                 listener.exitEnumValueReference(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumValueReference" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEnumValueReference"):
                 return visitor.visitEnumValueReference(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def enumValueReference(self):
 
@@ -2652,11 +2524,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class InheritsConditionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -2664,15 +2535,13 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def fieldName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
         def enumValueReference(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumValueReferenceContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumValueReferenceContext, 0)
 
         def BoolLiteral(self):
             return self.getToken(OpenSCENARIO2Parser.BoolLiteral, 0)
@@ -2680,22 +2549,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_inheritsCondition
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterInheritsCondition" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterInheritsCondition"):
                 listener.enterInheritsCondition(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitInheritsCondition" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitInheritsCondition"):
                 listener.exitInheritsCondition(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitInheritsCondition" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitInheritsCondition"):
                 return visitor.visitInheritsCondition(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def inheritsCondition(self):
 
@@ -2733,24 +2599,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class StructDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def structName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructNameContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def structInherits(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructInheritsContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructInheritsContext, 0)
 
         def INDENT(self):
             return self.getToken(OpenSCENARIO2Parser.INDENT, 0)
@@ -2758,38 +2621,34 @@ class OpenSCENARIO2Parser ( Parser ):
         def DEDENT(self):
             return self.getToken(OpenSCENARIO2Parser.DEDENT, 0)
 
-        def structMemberDecl(self, i:int=None):
+        def structMemberDecl(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.StructMemberDeclContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.StructMemberDeclContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.StructMemberDeclContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_structDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStructDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterStructDeclaration"):
                 listener.enterStructDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStructDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitStructDeclaration"):
                 listener.exitStructDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitStructDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitStructDeclaration"):
                 return visitor.visitStructDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def structDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.StructDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 52, self.RULE_structDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 438
@@ -2799,10 +2658,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 441
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__24:
+            if _la == OpenSCENARIO2Parser.T__24:
                 self.state = 440
                 self.structInherits()
-
 
             self.state = 454
             self._errHandler.sync(self)
@@ -2814,13 +2672,13 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.match(OpenSCENARIO2Parser.NEWLINE)
                 self.state = 445
                 self.match(OpenSCENARIO2Parser.INDENT)
-                self.state = 447 
+                self.state = 447
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while True:
                     self.state = 446
                     self.structMemberDecl()
-                    self.state = 449 
+                    self.state = 449
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
                     if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__37) | (1 << OpenSCENARIO2Parser.T__45) | (1 << OpenSCENARIO2Parser.T__48) | (1 << OpenSCENARIO2Parser.T__51))) != 0) or ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & ((1 << (OpenSCENARIO2Parser.T__64 - 65)) | (1 << (OpenSCENARIO2Parser.T__70 - 65)) | (1 << (OpenSCENARIO2Parser.T__71 - 65)) | (1 << (OpenSCENARIO2Parser.Identifier - 65)))) != 0)):
@@ -2844,47 +2702,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class StructInheritsContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def structName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructNameContext, 0)
 
         def inheritsCondition(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.InheritsConditionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.InheritsConditionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_structInherits
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStructInherits" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterStructInherits"):
                 listener.enterStructInherits(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStructInherits" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitStructInherits"):
                 listener.exitStructInherits(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitStructInherits" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitStructInherits"):
                 return visitor.visitStructInherits(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def structInherits(self):
 
         localctx = OpenSCENARIO2Parser.StructInheritsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 54, self.RULE_structInherits)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 456
@@ -2894,10 +2746,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 459
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.OPEN_PAREN:
+            if _la == OpenSCENARIO2Parser.OPEN_PAREN:
                 self.state = 458
                 self.inheritsCondition()
-
 
         except RecognitionException as re:
             localctx.exception = re
@@ -2907,53 +2758,44 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class StructMemberDeclContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventDeclarationContext, 0)
 
         def fieldDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldDeclarationContext, 0)
 
         def constraintDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext, 0)
 
         def methodDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodDeclarationContext, 0)
 
         def coverageDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageDeclarationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_structMemberDecl
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStructMemberDecl" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterStructMemberDecl"):
                 listener.enterStructMemberDecl(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStructMemberDecl" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitStructMemberDecl"):
                 listener.exitStructMemberDecl(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitStructMemberDecl" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitStructMemberDecl"):
                 return visitor.visitStructMemberDecl(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def structMemberDecl(self):
 
@@ -2999,11 +2841,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class FieldNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -3013,22 +2854,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_fieldName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFieldName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterFieldName"):
                 listener.enterFieldName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFieldName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitFieldName"):
                 listener.exitFieldName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFieldName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFieldName"):
                 return visitor.visitFieldName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def fieldName(self):
 
@@ -3046,11 +2884,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class StructNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -3060,22 +2897,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_structName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStructName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterStructName"):
                 listener.enterStructName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStructName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitStructName"):
                 listener.exitStructName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitStructName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitStructName"):
                 return visitor.visitStructName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def structName(self):
 
@@ -3093,24 +2927,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ActorDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def actorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def actorInherits(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorInheritsContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorInheritsContext, 0)
 
         def INDENT(self):
             return self.getToken(OpenSCENARIO2Parser.INDENT, 0)
@@ -3118,38 +2949,34 @@ class OpenSCENARIO2Parser ( Parser ):
         def DEDENT(self):
             return self.getToken(OpenSCENARIO2Parser.DEDENT, 0)
 
-        def actorMemberDecl(self, i:int=None):
+        def actorMemberDecl(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ActorMemberDeclContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorMemberDeclContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorMemberDeclContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_actorDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterActorDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterActorDeclaration"):
                 listener.enterActorDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitActorDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitActorDeclaration"):
                 listener.exitActorDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitActorDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitActorDeclaration"):
                 return visitor.visitActorDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def actorDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.ActorDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 62, self.RULE_actorDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 472
@@ -3159,10 +2986,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 475
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__24:
+            if _la == OpenSCENARIO2Parser.T__24:
                 self.state = 474
                 self.actorInherits()
-
 
             self.state = 488
             self._errHandler.sync(self)
@@ -3174,13 +3000,13 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.match(OpenSCENARIO2Parser.NEWLINE)
                 self.state = 479
                 self.match(OpenSCENARIO2Parser.INDENT)
-                self.state = 481 
+                self.state = 481
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while True:
                     self.state = 480
                     self.actorMemberDecl()
-                    self.state = 483 
+                    self.state = 483
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
                     if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__37) | (1 << OpenSCENARIO2Parser.T__45) | (1 << OpenSCENARIO2Parser.T__48) | (1 << OpenSCENARIO2Parser.T__51))) != 0) or ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & ((1 << (OpenSCENARIO2Parser.T__64 - 65)) | (1 << (OpenSCENARIO2Parser.T__70 - 65)) | (1 << (OpenSCENARIO2Parser.T__71 - 65)) | (1 << (OpenSCENARIO2Parser.Identifier - 65)))) != 0)):
@@ -3204,47 +3030,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ActorInheritsContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def actorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext, 0)
 
         def inheritsCondition(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.InheritsConditionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.InheritsConditionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_actorInherits
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterActorInherits" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterActorInherits"):
                 listener.enterActorInherits(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitActorInherits" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitActorInherits"):
                 listener.exitActorInherits(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitActorInherits" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitActorInherits"):
                 return visitor.visitActorInherits(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def actorInherits(self):
 
         localctx = OpenSCENARIO2Parser.ActorInheritsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 64, self.RULE_actorInherits)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 490
@@ -3254,10 +3074,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 493
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.OPEN_PAREN:
+            if _la == OpenSCENARIO2Parser.OPEN_PAREN:
                 self.state = 492
                 self.inheritsCondition()
-
 
         except RecognitionException as re:
             localctx.exception = re
@@ -3267,53 +3086,44 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ActorMemberDeclContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventDeclarationContext, 0)
 
         def fieldDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldDeclarationContext, 0)
 
         def constraintDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext, 0)
 
         def methodDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodDeclarationContext, 0)
 
         def coverageDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageDeclarationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_actorMemberDecl
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterActorMemberDecl" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterActorMemberDecl"):
                 listener.enterActorMemberDecl(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitActorMemberDecl" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitActorMemberDecl"):
                 listener.exitActorMemberDecl(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitActorMemberDecl" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitActorMemberDecl"):
                 return visitor.visitActorMemberDecl(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def actorMemberDecl(self):
 
@@ -3359,11 +3169,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ActorNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -3373,22 +3182,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_actorName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterActorName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterActorName"):
                 listener.enterActorName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitActorName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitActorName"):
                 listener.exitActorName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitActorName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitActorName"):
                 return visitor.visitActorName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def actorName(self):
 
@@ -3406,24 +3212,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ScenarioDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def qualifiedBehaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def scenarioInherits(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioInheritsContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioInheritsContext, 0)
 
         def INDENT(self):
             return self.getToken(OpenSCENARIO2Parser.INDENT, 0)
@@ -3431,45 +3234,40 @@ class OpenSCENARIO2Parser ( Parser ):
         def DEDENT(self):
             return self.getToken(OpenSCENARIO2Parser.DEDENT, 0)
 
-        def scenarioMemberDecl(self, i:int=None):
+        def scenarioMemberDecl(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ScenarioMemberDeclContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioMemberDeclContext,i)
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioMemberDeclContext, i)
 
-
-        def behaviorSpecification(self, i:int=None):
+        def behaviorSpecification(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.BehaviorSpecificationContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorSpecificationContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorSpecificationContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_scenarioDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterScenarioDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterScenarioDeclaration"):
                 listener.enterScenarioDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitScenarioDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitScenarioDeclaration"):
                 listener.exitScenarioDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitScenarioDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitScenarioDeclaration"):
                 return visitor.visitScenarioDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def scenarioDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.ScenarioDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 70, self.RULE_scenarioDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 504
@@ -3479,10 +3277,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 507
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__24:
+            if _la == OpenSCENARIO2Parser.T__24:
                 self.state = 506
                 self.scenarioInherits()
-
 
             self.state = 521
             self._errHandler.sync(self)
@@ -3494,7 +3291,7 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.match(OpenSCENARIO2Parser.NEWLINE)
                 self.state = 511
                 self.match(OpenSCENARIO2Parser.INDENT)
-                self.state = 514 
+                self.state = 514
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while True:
@@ -3512,7 +3309,7 @@ class OpenSCENARIO2Parser ( Parser ):
                     else:
                         raise NoViableAltException(self)
 
-                    self.state = 516 
+                    self.state = 516
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
                     if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__37) | (1 << OpenSCENARIO2Parser.T__45) | (1 << OpenSCENARIO2Parser.T__48) | (1 << OpenSCENARIO2Parser.T__51) | (1 << OpenSCENARIO2Parser.T__52) | (1 << OpenSCENARIO2Parser.T__53))) != 0) or ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & ((1 << (OpenSCENARIO2Parser.T__64 - 65)) | (1 << (OpenSCENARIO2Parser.T__70 - 65)) | (1 << (OpenSCENARIO2Parser.T__71 - 65)) | (1 << (OpenSCENARIO2Parser.Identifier - 65)))) != 0)):
@@ -3536,47 +3333,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ScenarioInheritsContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def qualifiedBehaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext, 0)
 
         def inheritsCondition(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.InheritsConditionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.InheritsConditionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_scenarioInherits
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterScenarioInherits" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterScenarioInherits"):
                 listener.enterScenarioInherits(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitScenarioInherits" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitScenarioInherits"):
                 listener.exitScenarioInherits(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitScenarioInherits" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitScenarioInherits"):
                 return visitor.visitScenarioInherits(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def scenarioInherits(self):
 
         localctx = OpenSCENARIO2Parser.ScenarioInheritsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 72, self.RULE_scenarioInherits)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 523
@@ -3586,10 +3377,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 526
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.OPEN_PAREN:
+            if _la == OpenSCENARIO2Parser.OPEN_PAREN:
                 self.state = 525
                 self.inheritsCondition()
-
 
         except RecognitionException as re:
             localctx.exception = re
@@ -3599,57 +3389,47 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ScenarioMemberDeclContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventDeclarationContext, 0)
 
         def fieldDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldDeclarationContext, 0)
 
         def constraintDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext, 0)
 
         def methodDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodDeclarationContext, 0)
 
         def coverageDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageDeclarationContext, 0)
 
         def modifierInvocation(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierInvocationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierInvocationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_scenarioMemberDecl
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterScenarioMemberDecl" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterScenarioMemberDecl"):
                 listener.enterScenarioMemberDecl(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitScenarioMemberDecl" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitScenarioMemberDecl"):
                 listener.exitScenarioMemberDecl(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitScenarioMemberDecl" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitScenarioMemberDecl"):
                 return visitor.visitScenarioMemberDecl(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def scenarioMemberDecl(self):
 
@@ -3658,7 +3438,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 534
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,30,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 30, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 528
@@ -3695,7 +3475,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.modifierInvocation()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -3704,41 +3483,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class QualifiedBehaviorNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def behaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorNameContext, 0)
 
         def actorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_qualifiedBehaviorName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterQualifiedBehaviorName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterQualifiedBehaviorName"):
                 listener.enterQualifiedBehaviorName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitQualifiedBehaviorName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitQualifiedBehaviorName"):
                 listener.exitQualifiedBehaviorName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitQualifiedBehaviorName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitQualifiedBehaviorName"):
                 return visitor.visitQualifiedBehaviorName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def qualifiedBehaviorName(self):
 
@@ -3748,13 +3521,12 @@ class OpenSCENARIO2Parser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 539
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,31,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 31, self._ctx)
             if la_ == 1:
                 self.state = 536
                 self.actorName()
                 self.state = 537
                 self.match(OpenSCENARIO2Parser.T__1)
-
 
             self.state = 541
             self.behaviorName()
@@ -3766,11 +3538,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class BehaviorNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -3780,22 +3551,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_behaviorName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBehaviorName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBehaviorName"):
                 listener.enterBehaviorName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBehaviorName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBehaviorName"):
                 listener.exitBehaviorName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBehaviorName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBehaviorName"):
                 return visitor.visitBehaviorName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def behaviorName(self):
 
@@ -3813,24 +3581,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ActionDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def qualifiedBehaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def actionInherits(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActionInheritsContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActionInheritsContext, 0)
 
         def INDENT(self):
             return self.getToken(OpenSCENARIO2Parser.INDENT, 0)
@@ -3838,45 +3603,40 @@ class OpenSCENARIO2Parser ( Parser ):
         def DEDENT(self):
             return self.getToken(OpenSCENARIO2Parser.DEDENT, 0)
 
-        def scenarioMemberDecl(self, i:int=None):
+        def scenarioMemberDecl(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ScenarioMemberDeclContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioMemberDeclContext,i)
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioMemberDeclContext, i)
 
-
-        def behaviorSpecification(self, i:int=None):
+        def behaviorSpecification(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.BehaviorSpecificationContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorSpecificationContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorSpecificationContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_actionDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterActionDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterActionDeclaration"):
                 listener.enterActionDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitActionDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitActionDeclaration"):
                 listener.exitActionDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitActionDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitActionDeclaration"):
                 return visitor.visitActionDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def actionDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.ActionDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 80, self.RULE_actionDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 545
@@ -3886,10 +3646,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 548
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__24:
+            if _la == OpenSCENARIO2Parser.T__24:
                 self.state = 547
                 self.actionInherits()
-
 
             self.state = 562
             self._errHandler.sync(self)
@@ -3901,7 +3660,7 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.match(OpenSCENARIO2Parser.NEWLINE)
                 self.state = 552
                 self.match(OpenSCENARIO2Parser.INDENT)
-                self.state = 555 
+                self.state = 555
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while True:
@@ -3919,7 +3678,7 @@ class OpenSCENARIO2Parser ( Parser ):
                     else:
                         raise NoViableAltException(self)
 
-                    self.state = 557 
+                    self.state = 557
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
                     if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__37) | (1 << OpenSCENARIO2Parser.T__45) | (1 << OpenSCENARIO2Parser.T__48) | (1 << OpenSCENARIO2Parser.T__51) | (1 << OpenSCENARIO2Parser.T__52) | (1 << OpenSCENARIO2Parser.T__53))) != 0) or ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & ((1 << (OpenSCENARIO2Parser.T__64 - 65)) | (1 << (OpenSCENARIO2Parser.T__70 - 65)) | (1 << (OpenSCENARIO2Parser.T__71 - 65)) | (1 << (OpenSCENARIO2Parser.Identifier - 65)))) != 0)):
@@ -3943,47 +3702,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ActionInheritsContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def qualifiedBehaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext, 0)
 
         def inheritsCondition(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.InheritsConditionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.InheritsConditionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_actionInherits
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterActionInherits" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterActionInherits"):
                 listener.enterActionInherits(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitActionInherits" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitActionInherits"):
                 listener.exitActionInherits(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitActionInherits" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitActionInherits"):
                 return visitor.visitActionInherits(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def actionInherits(self):
 
         localctx = OpenSCENARIO2Parser.ActionInheritsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 82, self.RULE_actionInherits)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 564
@@ -3993,10 +3746,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 567
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.OPEN_PAREN:
+            if _la == OpenSCENARIO2Parser.OPEN_PAREN:
                 self.state = 566
                 self.inheritsCondition()
-
 
         except RecognitionException as re:
             localctx.exception = re
@@ -4006,28 +3758,24 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ModifierDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def modifierName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierNameContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def actorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext, 0)
 
         def qualifiedBehaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext, 0)
 
         def INDENT(self):
             return self.getToken(OpenSCENARIO2Parser.INDENT, 0)
@@ -4035,63 +3783,57 @@ class OpenSCENARIO2Parser ( Parser ):
         def DEDENT(self):
             return self.getToken(OpenSCENARIO2Parser.DEDENT, 0)
 
-        def scenarioMemberDecl(self, i:int=None):
+        def scenarioMemberDecl(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ScenarioMemberDeclContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioMemberDeclContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioMemberDeclContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_modifierDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterModifierDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterModifierDeclaration"):
                 listener.enterModifierDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitModifierDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitModifierDeclaration"):
                 listener.exitModifierDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitModifierDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitModifierDeclaration"):
                 return visitor.visitModifierDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def modifierDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.ModifierDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 84, self.RULE_modifierDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 569
             self.match(OpenSCENARIO2Parser.T__28)
             self.state = 573
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,37,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 37, self._ctx)
             if la_ == 1:
                 self.state = 570
                 self.actorName()
                 self.state = 571
                 self.match(OpenSCENARIO2Parser.T__1)
 
-
             self.state = 575
             self.modifierName()
             self.state = 578
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__6:
+            if _la == OpenSCENARIO2Parser.T__6:
                 self.state = 576
                 self.match(OpenSCENARIO2Parser.T__6)
                 self.state = 577
                 self.qualifiedBehaviorName()
-
 
             self.state = 591
             self._errHandler.sync(self)
@@ -4103,13 +3845,13 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.match(OpenSCENARIO2Parser.NEWLINE)
                 self.state = 582
                 self.match(OpenSCENARIO2Parser.INDENT)
-                self.state = 584 
+                self.state = 584
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while True:
                     self.state = 583
                     self.scenarioMemberDecl()
-                    self.state = 586 
+                    self.state = 586
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
                     if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__37) | (1 << OpenSCENARIO2Parser.T__45) | (1 << OpenSCENARIO2Parser.T__48) | (1 << OpenSCENARIO2Parser.T__51))) != 0) or ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & ((1 << (OpenSCENARIO2Parser.T__64 - 65)) | (1 << (OpenSCENARIO2Parser.T__70 - 65)) | (1 << (OpenSCENARIO2Parser.T__71 - 65)) | (1 << (OpenSCENARIO2Parser.Identifier - 65)))) != 0)):
@@ -4133,11 +3875,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ModifierNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -4147,22 +3888,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_modifierName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterModifierName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterModifierName"):
                 listener.enterModifierName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitModifierName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitModifierName"):
                 listener.exitModifierName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitModifierName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitModifierName"):
                 return visitor.visitModifierName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def modifierName(self):
 
@@ -4180,41 +3918,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class TypeExtensionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def enumTypeExtension(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumTypeExtensionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumTypeExtensionContext, 0)
 
         def structuredTypeExtension(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructuredTypeExtensionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructuredTypeExtensionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_typeExtension
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTypeExtension" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterTypeExtension"):
                 listener.enterTypeExtension(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTypeExtension" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitTypeExtension"):
                 listener.exitTypeExtension(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTypeExtension" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitTypeExtension"):
                 return visitor.visitTypeExtension(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def typeExtension(self):
 
@@ -4223,7 +3955,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 597
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,41,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 41, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 595
@@ -4236,7 +3968,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.structuredTypeExtension()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -4245,27 +3976,24 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EnumTypeExtensionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def enumName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumNameContext, 0)
 
         def OPEN_BRACK(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_BRACK, 0)
 
-        def enumMemberDecl(self, i:int=None):
+        def enumMemberDecl(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.EnumMemberDeclContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberDeclContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumMemberDeclContext, i)
 
         def CLOSE_BRACK(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_BRACK, 0)
@@ -4276,28 +4004,25 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_enumTypeExtension
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEnumTypeExtension" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEnumTypeExtension"):
                 listener.enterEnumTypeExtension(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEnumTypeExtension" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEnumTypeExtension"):
                 listener.exitEnumTypeExtension(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEnumTypeExtension" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEnumTypeExtension"):
                 return visitor.visitEnumTypeExtension(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def enumTypeExtension(self):
 
         localctx = OpenSCENARIO2Parser.EnumTypeExtensionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 90, self.RULE_enumTypeExtension)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 599
@@ -4313,7 +4038,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 608
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__7:
+            while _la == OpenSCENARIO2Parser.T__7:
                 self.state = 604
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 605
@@ -4334,17 +4059,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class StructuredTypeExtensionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def extendableTypeName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExtendableTypeNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExtendableTypeNameContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -4355,38 +4078,34 @@ class OpenSCENARIO2Parser ( Parser ):
         def DEDENT(self):
             return self.getToken(OpenSCENARIO2Parser.DEDENT, 0)
 
-        def extensionMemberDecl(self, i:int=None):
+        def extensionMemberDecl(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ExtensionMemberDeclContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ExtensionMemberDeclContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ExtensionMemberDeclContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_structuredTypeExtension
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterStructuredTypeExtension" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterStructuredTypeExtension"):
                 listener.enterStructuredTypeExtension(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitStructuredTypeExtension" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitStructuredTypeExtension"):
                 listener.exitStructuredTypeExtension(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitStructuredTypeExtension" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitStructuredTypeExtension"):
                 return visitor.visitStructuredTypeExtension(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def structuredTypeExtension(self):
 
         localctx = OpenSCENARIO2Parser.StructuredTypeExtensionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 92, self.RULE_structuredTypeExtension)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 614
@@ -4399,13 +4118,13 @@ class OpenSCENARIO2Parser ( Parser ):
             self.match(OpenSCENARIO2Parser.NEWLINE)
             self.state = 618
             self.match(OpenSCENARIO2Parser.INDENT)
-            self.state = 620 
+            self.state = 620
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
                 self.state = 619
                 self.extensionMemberDecl()
-                self.state = 622 
+                self.state = 622
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << OpenSCENARIO2Parser.T__37) | (1 << OpenSCENARIO2Parser.T__45) | (1 << OpenSCENARIO2Parser.T__48) | (1 << OpenSCENARIO2Parser.T__51) | (1 << OpenSCENARIO2Parser.T__52) | (1 << OpenSCENARIO2Parser.T__53))) != 0) or ((((_la - 65)) & ~0x3f) == 0 and ((1 << (_la - 65)) & ((1 << (OpenSCENARIO2Parser.T__64 - 65)) | (1 << (OpenSCENARIO2Parser.T__70 - 65)) | (1 << (OpenSCENARIO2Parser.T__71 - 65)) | (1 << (OpenSCENARIO2Parser.Identifier - 65)))) != 0)):
@@ -4421,41 +4140,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ExtendableTypeNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def typeName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeNameContext, 0)
 
         def qualifiedBehaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_extendableTypeName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterExtendableTypeName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterExtendableTypeName"):
                 listener.enterExtendableTypeName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitExtendableTypeName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitExtendableTypeName"):
                 listener.exitExtendableTypeName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitExtendableTypeName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitExtendableTypeName"):
                 return visitor.visitExtendableTypeName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def extendableTypeName(self):
 
@@ -4464,7 +4177,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 628
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,44,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 44, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 626
@@ -4477,7 +4190,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.qualifiedBehaviorName()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -4486,49 +4198,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ExtensionMemberDeclContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def structMemberDecl(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructMemberDeclContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructMemberDeclContext, 0)
 
         def actorMemberDecl(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorMemberDeclContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorMemberDeclContext, 0)
 
         def scenarioMemberDecl(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioMemberDeclContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ScenarioMemberDeclContext, 0)
 
         def behaviorSpecification(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorSpecificationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorSpecificationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_extensionMemberDecl
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterExtensionMemberDecl" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterExtensionMemberDecl"):
                 listener.enterExtensionMemberDecl(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitExtensionMemberDecl" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitExtensionMemberDecl"):
                 listener.exitExtensionMemberDecl(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitExtensionMemberDecl" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitExtensionMemberDecl"):
                 return visitor.visitExtensionMemberDecl(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def extensionMemberDecl(self):
 
@@ -4537,7 +4241,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 634
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,45,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 45, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 630
@@ -4562,7 +4266,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.behaviorSpecification()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -4571,61 +4274,53 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class GlobalParameterDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def fieldName(self, i:int=None):
+        def fieldName(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.FieldNameContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext, i)
 
         def typeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext, 0)
 
         def parameterWithDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterWithDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterWithDeclarationContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def defaultValue(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.DefaultValueContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.DefaultValueContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_globalParameterDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterGlobalParameterDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterGlobalParameterDeclaration"):
                 listener.enterGlobalParameterDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitGlobalParameterDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitGlobalParameterDeclaration"):
                 listener.exitGlobalParameterDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitGlobalParameterDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitGlobalParameterDeclaration"):
                 return visitor.visitGlobalParameterDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def globalParameterDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.GlobalParameterDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 98, self.RULE_globalParameterDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 636
@@ -4635,7 +4330,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 642
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__7:
+            while _la == OpenSCENARIO2Parser.T__7:
                 self.state = 638
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 639
@@ -4651,12 +4346,11 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 649
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__20:
+            if _la == OpenSCENARIO2Parser.T__20:
                 self.state = 647
                 self.match(OpenSCENARIO2Parser.T__20)
                 self.state = 648
                 self.defaultValue()
-
 
             self.state = 653
             self._errHandler.sync(self)
@@ -4680,41 +4374,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class TypeDeclaratorContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def nonAggregateTypeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.NonAggregateTypeDeclaratorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.NonAggregateTypeDeclaratorContext, 0)
 
         def aggregateTypeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.AggregateTypeDeclaratorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.AggregateTypeDeclaratorContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_typeDeclarator
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTypeDeclarator" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterTypeDeclarator"):
                 listener.enterTypeDeclarator(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTypeDeclarator" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitTypeDeclarator"):
                 listener.exitTypeDeclarator(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTypeDeclarator" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitTypeDeclarator"):
                 return visitor.visitTypeDeclarator(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def typeDeclarator(self):
 
@@ -4745,45 +4433,38 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class NonAggregateTypeDeclaratorContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def primitiveType(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PrimitiveTypeContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PrimitiveTypeContext, 0)
 
         def typeName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeNameContext, 0)
 
         def qualifiedBehaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.QualifiedBehaviorNameContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_nonAggregateTypeDeclarator
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterNonAggregateTypeDeclarator" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterNonAggregateTypeDeclarator"):
                 listener.enterNonAggregateTypeDeclarator(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitNonAggregateTypeDeclarator" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitNonAggregateTypeDeclarator"):
                 listener.exitNonAggregateTypeDeclarator(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitNonAggregateTypeDeclarator" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitNonAggregateTypeDeclarator"):
                 return visitor.visitNonAggregateTypeDeclarator(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def nonAggregateTypeDeclarator(self):
 
@@ -4792,7 +4473,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 662
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,50,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 50, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 659
@@ -4811,7 +4492,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.qualifiedBehaviorName()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -4820,37 +4500,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class AggregateTypeDeclaratorContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def listTypeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ListTypeDeclaratorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ListTypeDeclaratorContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_aggregateTypeDeclarator
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterAggregateTypeDeclarator" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterAggregateTypeDeclarator"):
                 listener.enterAggregateTypeDeclarator(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitAggregateTypeDeclarator" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitAggregateTypeDeclarator"):
                 listener.exitAggregateTypeDeclarator(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAggregateTypeDeclarator" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitAggregateTypeDeclarator"):
                 return visitor.visitAggregateTypeDeclarator(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def aggregateTypeDeclarator(self):
 
@@ -4868,37 +4543,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ListTypeDeclaratorContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def nonAggregateTypeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.NonAggregateTypeDeclaratorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.NonAggregateTypeDeclaratorContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_listTypeDeclarator
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterListTypeDeclarator" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterListTypeDeclarator"):
                 listener.enterListTypeDeclarator(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitListTypeDeclarator" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitListTypeDeclarator"):
                 listener.exitListTypeDeclarator(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitListTypeDeclarator" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitListTypeDeclarator"):
                 return visitor.visitListTypeDeclarator(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def listTypeDeclarator(self):
 
@@ -4920,40 +4590,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class PrimitiveTypeContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_primitiveType
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPrimitiveType" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPrimitiveType"):
                 listener.enterPrimitiveType(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPrimitiveType" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPrimitiveType"):
                 listener.exitPrimitiveType(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPrimitiveType" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPrimitiveType"):
                 return visitor.visitPrimitiveType(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def primitiveType(self):
 
         localctx = OpenSCENARIO2Parser.PrimitiveTypeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 108, self.RULE_primitiveType)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 670
@@ -4971,11 +4636,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class TypeNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -4985,22 +4649,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_typeName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTypeName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterTypeName"):
                 listener.enterTypeName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTypeName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitTypeName"):
                 listener.exitTypeName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTypeName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitTypeName"):
                 return visitor.visitTypeName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def typeName(self):
 
@@ -5018,17 +4679,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EventDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventNameContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -5037,41 +4696,36 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def argumentListSpecification(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListSpecificationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListSpecificationContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
         def eventSpecification(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_eventDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEventDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEventDeclaration"):
                 listener.enterEventDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEventDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEventDeclaration"):
                 listener.exitEventDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEventDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEventDeclaration"):
                 return visitor.visitEventDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def eventDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.EventDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 112, self.RULE_eventDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 674
@@ -5081,7 +4735,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 680
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.OPEN_PAREN:
+            if _la == OpenSCENARIO2Parser.OPEN_PAREN:
                 self.state = 676
                 self.match(OpenSCENARIO2Parser.OPEN_PAREN)
                 self.state = 677
@@ -5089,16 +4743,14 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.state = 678
                 self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
 
-
             self.state = 684
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__3:
+            if _la == OpenSCENARIO2Parser.T__3:
                 self.state = 682
                 self.match(OpenSCENARIO2Parser.T__3)
                 self.state = 683
                 self.eventSpecification()
-
 
             self.state = 686
             self.match(OpenSCENARIO2Parser.NEWLINE)
@@ -5110,51 +4762,44 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EventSpecificationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventReference(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventReferenceContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventReferenceContext, 0)
 
         def eventCondition(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventConditionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventConditionContext, 0)
 
         def eventFieldDecl(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventFieldDeclContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventFieldDeclContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_eventSpecification
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEventSpecification" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEventSpecification"):
                 listener.enterEventSpecification(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEventSpecification" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEventSpecification"):
                 listener.exitEventSpecification(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEventSpecification" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEventSpecification"):
                 return visitor.visitEventSpecification(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def eventSpecification(self):
 
         localctx = OpenSCENARIO2Parser.EventSpecificationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 114, self.RULE_eventSpecification)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.state = 697
             self._errHandler.sync(self)
@@ -5166,20 +4811,18 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.state = 694
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if _la==OpenSCENARIO2Parser.T__38 or _la==OpenSCENARIO2Parser.T__40:
+                if _la == OpenSCENARIO2Parser.T__38 or _la == OpenSCENARIO2Parser.T__40:
                     self.state = 690
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
-                    if _la==OpenSCENARIO2Parser.T__40:
+                    if _la == OpenSCENARIO2Parser.T__40:
                         self.state = 689
                         self.eventFieldDecl()
-
 
                     self.state = 692
                     self.match(OpenSCENARIO2Parser.T__38)
                     self.state = 693
                     self.eventCondition()
-
 
                 pass
             elif token in [OpenSCENARIO2Parser.T__41, OpenSCENARIO2Parser.T__42, OpenSCENARIO2Parser.T__43, OpenSCENARIO2Parser.T__44, OpenSCENARIO2Parser.T__72, OpenSCENARIO2Parser.T__77, OpenSCENARIO2Parser.T__85, OpenSCENARIO2Parser.T__89, OpenSCENARIO2Parser.OPEN_BRACK, OpenSCENARIO2Parser.OPEN_PAREN, OpenSCENARIO2Parser.StringLiteral, OpenSCENARIO2Parser.FloatLiteral, OpenSCENARIO2Parser.UintLiteral, OpenSCENARIO2Parser.HexUintLiteral, OpenSCENARIO2Parser.IntLiteral, OpenSCENARIO2Parser.BoolLiteral, OpenSCENARIO2Parser.Identifier]:
@@ -5198,37 +4841,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EventReferenceContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventPath(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventPathContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventPathContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_eventReference
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEventReference" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEventReference"):
                 listener.enterEventReference(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEventReference" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEventReference"):
                 listener.exitEventReference(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEventReference" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEventReference"):
                 return visitor.visitEventReference(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def eventReference(self):
 
@@ -5248,37 +4886,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EventFieldDeclContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventFieldName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventFieldNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventFieldNameContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_eventFieldDecl
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEventFieldDecl" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEventFieldDecl"):
                 listener.enterEventFieldDecl(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEventFieldDecl" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEventFieldDecl"):
                 listener.exitEventFieldDecl(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEventFieldDecl" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEventFieldDecl"):
                 return visitor.visitEventFieldDecl(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def eventFieldDecl(self):
 
@@ -5298,11 +4931,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EventFieldNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -5312,22 +4944,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_eventFieldName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEventFieldName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEventFieldName"):
                 listener.enterEventFieldName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEventFieldName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEventFieldName"):
                 listener.exitEventFieldName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEventFieldName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEventFieldName"):
                 return visitor.visitEventFieldName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def eventFieldName(self):
 
@@ -5345,11 +4974,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EventNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -5359,22 +4987,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_eventName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEventName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEventName"):
                 listener.enterEventName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEventName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEventName"):
                 listener.exitEventName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEventName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEventName"):
                 return visitor.visitEventName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def eventName(self):
 
@@ -5392,41 +5017,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EventPathContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventNameContext, 0)
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_eventPath
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEventPath" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEventPath"):
                 listener.enterEventPath(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEventPath" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEventPath"):
                 listener.exitEventPath(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEventPath" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEventPath"):
                 return visitor.visitEventPath(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def eventPath(self):
 
@@ -5436,13 +5055,12 @@ class OpenSCENARIO2Parser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 712
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,56,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 56, self._ctx)
             if la_ == 1:
                 self.state = 709
                 self.expression()
                 self.state = 710
                 self.match(OpenSCENARIO2Parser.T__1)
-
 
             self.state = 714
             self.eventName()
@@ -5454,53 +5072,44 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EventConditionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def boolExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BoolExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BoolExpressionContext, 0)
 
         def riseExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.RiseExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.RiseExpressionContext, 0)
 
         def fallExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FallExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FallExpressionContext, 0)
 
         def elapsedExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ElapsedExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ElapsedExpressionContext, 0)
 
         def everyExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EveryExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EveryExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_eventCondition
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEventCondition" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEventCondition"):
                 listener.enterEventCondition(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEventCondition" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEventCondition"):
                 listener.exitEventCondition(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEventCondition" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEventCondition"):
                 return visitor.visitEventCondition(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def eventCondition(self):
 
@@ -5546,11 +5155,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class RiseExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -5558,8 +5166,7 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def boolExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BoolExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BoolExpressionContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -5567,22 +5174,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_riseExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRiseExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRiseExpression"):
                 listener.enterRiseExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRiseExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRiseExpression"):
                 listener.exitRiseExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRiseExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRiseExpression"):
                 return visitor.visitRiseExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def riseExpression(self):
 
@@ -5606,11 +5210,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class FallExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -5618,8 +5221,7 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def boolExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BoolExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BoolExpressionContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -5627,22 +5229,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_fallExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFallExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterFallExpression"):
                 listener.enterFallExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFallExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitFallExpression"):
                 listener.exitFallExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFallExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFallExpression"):
                 return visitor.visitFallExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def fallExpression(self):
 
@@ -5666,11 +5265,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ElapsedExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -5678,8 +5276,7 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def durationExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.DurationExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.DurationExpressionContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -5687,22 +5284,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_elapsedExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterElapsedExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterElapsedExpression"):
                 listener.enterElapsedExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitElapsedExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitElapsedExpression"):
                 listener.exitElapsedExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitElapsedExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitElapsedExpression"):
                 return visitor.visitElapsedExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def elapsedExpression(self):
 
@@ -5726,24 +5320,22 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EveryExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-            self._Identifier = None # Token
+            self._Identifier = None  # Token
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
-        def durationExpression(self, i:int=None):
+        def durationExpression(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.DurationExpressionContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.DurationExpressionContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.DurationExpressionContext, i)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -5754,28 +5346,25 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_everyExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEveryExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEveryExpression"):
                 listener.enterEveryExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEveryExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEveryExpression"):
                 listener.exitEveryExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEveryExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEveryExpression"):
                 return visitor.visitEveryExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def everyExpression(self):
 
         localctx = OpenSCENARIO2Parser.EveryExpressionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 134, self.RULE_everyExpression)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 738
@@ -5787,22 +5376,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 746
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__7:
+            if _la == OpenSCENARIO2Parser.T__7:
                 self.state = 741
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 742
                 localctx._Identifier = self.match(OpenSCENARIO2Parser.Identifier)
-                 
+
                 offsetName = (None if localctx._Identifier is None else localctx._Identifier.text)
-                if( not (offsetName == "offset") ):
-                    print("%s must be offset" %offsetName)
+                if(not (offsetName == "offset")):
+                    print("%s must be offset" % offsetName)
                     raise NoViableAltException(self)
 
                 self.state = 744
                 self.match(OpenSCENARIO2Parser.T__8)
                 self.state = 745
                 self.durationExpression()
-
 
             self.state = 748
             self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
@@ -5814,37 +5402,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class BoolExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_boolExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBoolExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBoolExpression"):
                 listener.enterBoolExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBoolExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBoolExpression"):
                 listener.exitBoolExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBoolExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBoolExpression"):
                 return visitor.visitBoolExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def boolExpression(self):
 
@@ -5862,37 +5445,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class DurationExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_durationExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterDurationExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterDurationExpression"):
                 listener.enterDurationExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitDurationExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitDurationExpression"):
                 listener.exitDurationExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitDurationExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitDurationExpression"):
                 return visitor.visitDurationExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def durationExpression(self):
 
@@ -5910,41 +5488,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class FieldDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def parameterDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterDeclarationContext, 0)
 
         def variableDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.VariableDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.VariableDeclarationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_fieldDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFieldDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterFieldDeclaration"):
                 listener.enterFieldDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFieldDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitFieldDeclaration"):
                 listener.exitFieldDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFieldDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFieldDeclaration"):
                 return visitor.visitFieldDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def fieldDeclaration(self):
 
@@ -5975,61 +5547,53 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ParameterDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def fieldName(self, i:int=None):
+        def fieldName(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.FieldNameContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext, i)
 
         def typeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext, 0)
 
         def parameterWithDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterWithDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterWithDeclarationContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def defaultValue(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.DefaultValueContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.DefaultValueContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_parameterDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterParameterDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterParameterDeclaration"):
                 listener.enterParameterDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitParameterDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitParameterDeclaration"):
                 listener.exitParameterDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitParameterDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitParameterDeclaration"):
                 return visitor.visitParameterDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def parameterDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.ParameterDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 142, self.RULE_parameterDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 758
@@ -6037,7 +5601,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 763
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__7:
+            while _la == OpenSCENARIO2Parser.T__7:
                 self.state = 759
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 760
@@ -6053,12 +5617,11 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 770
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__20:
+            if _la == OpenSCENARIO2Parser.T__20:
                 self.state = 768
                 self.match(OpenSCENARIO2Parser.T__20)
                 self.state = 769
                 self.defaultValue()
-
 
             self.state = 774
             self._errHandler.sync(self)
@@ -6082,61 +5645,53 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class VariableDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def fieldName(self, i:int=None):
+        def fieldName(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.FieldNameContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext, i)
 
         def typeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def sampleExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SampleExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SampleExpressionContext, 0)
 
         def valueExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ValueExpContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ValueExpContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_variableDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterVariableDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterVariableDeclaration"):
                 listener.enterVariableDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitVariableDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitVariableDeclaration"):
                 listener.exitVariableDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitVariableDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitVariableDeclaration"):
                 return visitor.visitVariableDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def variableDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.VariableDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 144, self.RULE_variableDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 776
@@ -6146,7 +5701,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 782
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__7:
+            while _la == OpenSCENARIO2Parser.T__7:
                 self.state = 778
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 779
@@ -6162,7 +5717,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 792
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__20:
+            if _la == OpenSCENARIO2Parser.T__20:
                 self.state = 787
                 self.match(OpenSCENARIO2Parser.T__20)
                 self.state = 790
@@ -6179,8 +5734,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 else:
                     raise NoViableAltException(self)
 
-
-
             self.state = 794
             self.match(OpenSCENARIO2Parser.NEWLINE)
         except RecognitionException as re:
@@ -6191,11 +5744,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class SampleExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -6203,45 +5755,39 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def eventSpecification(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
         def defaultValue(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.DefaultValueContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.DefaultValueContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_sampleExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSampleExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSampleExpression"):
                 listener.enterSampleExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSampleExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSampleExpression"):
                 listener.exitSampleExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSampleExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSampleExpression"):
                 return visitor.visitSampleExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def sampleExpression(self):
 
         localctx = OpenSCENARIO2Parser.SampleExpressionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 146, self.RULE_sampleExpression)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 796
@@ -6257,12 +5803,11 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 803
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__7:
+            if _la == OpenSCENARIO2Parser.T__7:
                 self.state = 801
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 802
                 self.defaultValue()
-
 
             self.state = 805
             self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
@@ -6274,37 +5819,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class DefaultValueContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_defaultValue
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterDefaultValue" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterDefaultValue"):
                 listener.enterDefaultValue(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitDefaultValue" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitDefaultValue"):
                 listener.exitDefaultValue(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitDefaultValue" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitDefaultValue"):
                 return visitor.visitDefaultValue(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def defaultValue(self):
 
@@ -6322,11 +5862,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ParameterWithDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -6339,38 +5878,34 @@ class OpenSCENARIO2Parser ( Parser ):
         def DEDENT(self):
             return self.getToken(OpenSCENARIO2Parser.DEDENT, 0)
 
-        def parameterWithMember(self, i:int=None):
+        def parameterWithMember(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ParameterWithMemberContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterWithMemberContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterWithMemberContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_parameterWithDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterParameterWithDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterParameterWithDeclaration"):
                 listener.enterParameterWithDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitParameterWithDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitParameterWithDeclaration"):
                 listener.exitParameterWithDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitParameterWithDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitParameterWithDeclaration"):
                 return visitor.visitParameterWithDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def parameterWithDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.ParameterWithDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 150, self.RULE_parameterWithDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 809
@@ -6381,13 +5916,13 @@ class OpenSCENARIO2Parser ( Parser ):
             self.match(OpenSCENARIO2Parser.NEWLINE)
             self.state = 812
             self.match(OpenSCENARIO2Parser.INDENT)
-            self.state = 814 
+            self.state = 814
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
                 self.state = 813
                 self.parameterWithMember()
-                self.state = 816 
+                self.state = 816
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not (((((_la - 49)) & ~0x3f) == 0 and ((1 << (_la - 49)) & ((1 << (OpenSCENARIO2Parser.T__48 - 49)) | (1 << (OpenSCENARIO2Parser.T__51 - 49)) | (1 << (OpenSCENARIO2Parser.T__70 - 49)) | (1 << (OpenSCENARIO2Parser.T__71 - 49)))) != 0)):
@@ -6403,41 +5938,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ParameterWithMemberContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def constraintDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext, 0)
 
         def coverageDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageDeclarationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_parameterWithMember
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterParameterWithMember" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterParameterWithMember"):
                 listener.enterParameterWithMember(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitParameterWithMember" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitParameterWithMember"):
                 listener.exitParameterWithMember(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitParameterWithMember" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitParameterWithMember"):
                 return visitor.visitParameterWithMember(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def parameterWithMember(self):
 
@@ -6468,41 +5997,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ConstraintDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def keepConstraintDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.KeepConstraintDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.KeepConstraintDeclarationContext, 0)
 
         def removeDefaultDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.RemoveDefaultDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.RemoveDefaultDeclarationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_constraintDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterConstraintDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterConstraintDeclaration"):
                 listener.enterConstraintDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitConstraintDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitConstraintDeclaration"):
                 listener.exitConstraintDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitConstraintDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitConstraintDeclaration"):
                 return visitor.visitConstraintDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def constraintDeclaration(self):
 
@@ -6533,11 +6056,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class KeepConstraintDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -6545,8 +6067,7 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def constraintExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintExpressionContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -6555,34 +6076,30 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def constraintQualifier(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintQualifierContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintQualifierContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_keepConstraintDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterKeepConstraintDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterKeepConstraintDeclaration"):
                 listener.enterKeepConstraintDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitKeepConstraintDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitKeepConstraintDeclaration"):
                 listener.exitKeepConstraintDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitKeepConstraintDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitKeepConstraintDeclaration"):
                 return visitor.visitKeepConstraintDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def keepConstraintDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.KeepConstraintDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 156, self.RULE_keepConstraintDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 828
@@ -6592,10 +6109,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 831
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__49 or _la==OpenSCENARIO2Parser.T__50:
+            if _la == OpenSCENARIO2Parser.T__49 or _la == OpenSCENARIO2Parser.T__50:
                 self.state = 830
                 self.constraintQualifier()
-
 
             self.state = 833
             self.constraintExpression()
@@ -6611,45 +6127,40 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ConstraintQualifierContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_constraintQualifier
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterConstraintQualifier" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterConstraintQualifier"):
                 listener.enterConstraintQualifier(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitConstraintQualifier" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitConstraintQualifier"):
                 listener.exitConstraintQualifier(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitConstraintQualifier" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitConstraintQualifier"):
                 return visitor.visitConstraintQualifier(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def constraintQualifier(self):
 
         localctx = OpenSCENARIO2Parser.ConstraintQualifierContext(self, self._ctx, self.state)
         self.enterRule(localctx, 158, self.RULE_constraintQualifier)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 837
             _la = self._input.LA(1)
-            if not(_la==OpenSCENARIO2Parser.T__49 or _la==OpenSCENARIO2Parser.T__50):
+            if not(_la == OpenSCENARIO2Parser.T__49 or _la == OpenSCENARIO2Parser.T__50):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -6662,37 +6173,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ConstraintExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_constraintExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterConstraintExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterConstraintExpression"):
                 listener.enterConstraintExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitConstraintExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitConstraintExpression"):
                 listener.exitConstraintExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitConstraintExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitConstraintExpression"):
                 return visitor.visitConstraintExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def constraintExpression(self):
 
@@ -6710,11 +6216,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class RemoveDefaultDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -6722,8 +6227,7 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def parameterReference(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterReferenceContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ParameterReferenceContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -6734,22 +6238,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_removeDefaultDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRemoveDefaultDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRemoveDefaultDeclaration"):
                 listener.enterRemoveDefaultDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRemoveDefaultDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRemoveDefaultDeclaration"):
                 listener.exitRemoveDefaultDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRemoveDefaultDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRemoveDefaultDeclaration"):
                 return visitor.visitRemoveDefaultDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def removeDefaultDeclaration(self):
 
@@ -6775,41 +6276,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ParameterReferenceContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def fieldName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext, 0)
 
         def fieldAccess(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldAccessContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldAccessContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_parameterReference
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterParameterReference" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterParameterReference"):
                 listener.enterParameterReference(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitParameterReference" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitParameterReference"):
                 listener.exitParameterReference(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitParameterReference" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitParameterReference"):
                 return visitor.visitParameterReference(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def parameterReference(self):
 
@@ -6818,7 +6313,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 849
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,71,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 71, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 847
@@ -6831,7 +6326,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.fieldAccess()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -6840,17 +6334,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ModifierInvocationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def modifierName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierNameContext, 0)
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
@@ -6862,51 +6354,45 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def argumentList(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext, 0)
 
         def behaviorExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorExpressionContext, 0)
 
         def actorExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_modifierInvocation
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterModifierInvocation" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterModifierInvocation"):
                 listener.enterModifierInvocation(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitModifierInvocation" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitModifierInvocation"):
                 listener.exitModifierInvocation(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitModifierInvocation" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitModifierInvocation"):
                 return visitor.visitModifierInvocation(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def modifierInvocation(self):
 
         localctx = OpenSCENARIO2Parser.ModifierInvocationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 166, self.RULE_modifierInvocation)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 857
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,73,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 73, self._ctx)
             if la_ == 1:
                 self.state = 853
                 self._errHandler.sync(self)
-                la_ = self._interp.adaptivePredict(self._input,72,self._ctx)
+                la_ = self._interp.adaptivePredict(self._input, 72, self._ctx)
                 if la_ == 1:
                     self.state = 851
                     self.behaviorExpression()
@@ -6917,10 +6403,8 @@ class OpenSCENARIO2Parser ( Parser ):
                     self.actorExpression()
                     pass
 
-
                 self.state = 855
                 self.match(OpenSCENARIO2Parser.T__1)
-
 
             self.state = 859
             self.modifierName()
@@ -6932,7 +6416,6 @@ class OpenSCENARIO2Parser ( Parser ):
             if ((((_la - 73)) & ~0x3f) == 0 and ((1 << (_la - 73)) & ((1 << (OpenSCENARIO2Parser.T__72 - 73)) | (1 << (OpenSCENARIO2Parser.T__77 - 73)) | (1 << (OpenSCENARIO2Parser.T__85 - 73)) | (1 << (OpenSCENARIO2Parser.T__89 - 73)) | (1 << (OpenSCENARIO2Parser.OPEN_BRACK - 73)) | (1 << (OpenSCENARIO2Parser.OPEN_PAREN - 73)) | (1 << (OpenSCENARIO2Parser.StringLiteral - 73)) | (1 << (OpenSCENARIO2Parser.FloatLiteral - 73)) | (1 << (OpenSCENARIO2Parser.UintLiteral - 73)) | (1 << (OpenSCENARIO2Parser.HexUintLiteral - 73)) | (1 << (OpenSCENARIO2Parser.IntLiteral - 73)) | (1 << (OpenSCENARIO2Parser.BoolLiteral - 73)) | (1 << (OpenSCENARIO2Parser.Identifier - 73)))) != 0):
                 self.state = 861
                 self.argumentList()
-
 
             self.state = 864
             self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
@@ -6946,41 +6429,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class BehaviorExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def behaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorNameContext, 0)
 
         def actorExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_behaviorExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBehaviorExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBehaviorExpression"):
                 listener.enterBehaviorExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBehaviorExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBehaviorExpression"):
                 listener.exitBehaviorExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBehaviorExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBehaviorExpression"):
                 return visitor.visitBehaviorExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def behaviorExpression(self):
 
@@ -7002,41 +6479,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class BehaviorSpecificationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def onDirective(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.OnDirectiveContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.OnDirectiveContext, 0)
 
         def doDirective(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.DoDirectiveContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.DoDirectiveContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_behaviorSpecification
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBehaviorSpecification" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBehaviorSpecification"):
                 listener.enterBehaviorSpecification(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBehaviorSpecification" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBehaviorSpecification"):
                 listener.exitBehaviorSpecification(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBehaviorSpecification" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBehaviorSpecification"):
                 return visitor.visitBehaviorSpecification(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def behaviorSpecification(self):
 
@@ -7067,17 +6538,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class OnDirectiveContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventSpecification(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -7088,38 +6557,34 @@ class OpenSCENARIO2Parser ( Parser ):
         def DEDENT(self):
             return self.getToken(OpenSCENARIO2Parser.DEDENT, 0)
 
-        def onMember(self, i:int=None):
+        def onMember(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.OnMemberContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.OnMemberContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.OnMemberContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_onDirective
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterOnDirective" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterOnDirective"):
                 listener.enterOnDirective(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitOnDirective" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitOnDirective"):
                 listener.exitOnDirective(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitOnDirective" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitOnDirective"):
                 return visitor.visitOnDirective(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def onDirective(self):
 
         localctx = OpenSCENARIO2Parser.OnDirectiveContext(self, self._ctx, self.state)
         self.enterRule(localctx, 172, self.RULE_onDirective)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 876
@@ -7132,16 +6597,16 @@ class OpenSCENARIO2Parser ( Parser ):
             self.match(OpenSCENARIO2Parser.NEWLINE)
             self.state = 880
             self.match(OpenSCENARIO2Parser.INDENT)
-            self.state = 882 
+            self.state = 882
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
                 self.state = 881
                 self.onMember()
-                self.state = 884 
+                self.state = 884
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                if not (_la==OpenSCENARIO2Parser.T__61 or _la==OpenSCENARIO2Parser.T__62):
+                if not (_la == OpenSCENARIO2Parser.T__61 or _la == OpenSCENARIO2Parser.T__62):
                     break
 
             self.state = 886
@@ -7154,41 +6619,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class OnMemberContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def callDirective(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.CallDirectiveContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.CallDirectiveContext, 0)
 
         def emitDirective(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EmitDirectiveContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EmitDirectiveContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_onMember
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterOnMember" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterOnMember"):
                 listener.enterOnMember(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitOnMember" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitOnMember"):
                 listener.exitOnMember(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitOnMember" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitOnMember"):
                 return visitor.visitOnMember(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def onMember(self):
 
@@ -7219,37 +6678,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class DoDirectiveContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def doMember(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.DoMemberContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.DoMemberContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_doDirective
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterDoDirective" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterDoDirective"):
                 listener.enterDoDirective(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitDoDirective" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitDoDirective"):
                 listener.exitDoDirective(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitDoDirective" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitDoDirective"):
                 return visitor.visitDoDirective(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def doDirective(self):
 
@@ -7269,57 +6723,47 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class DoMemberContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def composition(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.CompositionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.CompositionContext, 0)
 
         def behaviorInvocation(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorInvocationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorInvocationContext, 0)
 
         def waitDirective(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.WaitDirectiveContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.WaitDirectiveContext, 0)
 
         def emitDirective(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EmitDirectiveContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EmitDirectiveContext, 0)
 
         def callDirective(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.CallDirectiveContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.CallDirectiveContext, 0)
 
         def labelName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.LabelNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.LabelNameContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_doMember
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterDoMember" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterDoMember"):
                 listener.enterDoMember(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitDoMember" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitDoMember"):
                 listener.exitDoMember(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitDoMember" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitDoMember"):
                 return visitor.visitDoMember(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def doMember(self):
 
@@ -7329,13 +6773,12 @@ class OpenSCENARIO2Parser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 898
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,78,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 78, self._ctx)
             if la_ == 1:
                 self.state = 895
                 self.labelName()
                 self.state = 896
                 self.match(OpenSCENARIO2Parser.T__8)
-
 
             self.state = 905
             self._errHandler.sync(self)
@@ -7371,17 +6814,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class CompositionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def compositionOperator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.CompositionOperatorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.CompositionOperatorContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -7398,46 +6839,40 @@ class OpenSCENARIO2Parser ( Parser ):
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
-        def doMember(self, i:int=None):
+        def doMember(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.DoMemberContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.DoMemberContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.DoMemberContext, i)
 
         def behaviorWithDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorWithDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorWithDeclarationContext, 0)
 
         def argumentList(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_composition
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterComposition" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterComposition"):
                 listener.enterComposition(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitComposition" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitComposition"):
                 listener.exitComposition(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitComposition" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitComposition"):
                 return visitor.visitComposition(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def composition(self):
 
         localctx = OpenSCENARIO2Parser.CompositionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 180, self.RULE_composition)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 907
@@ -7445,7 +6880,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 913
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.OPEN_PAREN:
+            if _la == OpenSCENARIO2Parser.OPEN_PAREN:
                 self.state = 908
                 self.match(OpenSCENARIO2Parser.OPEN_PAREN)
                 self.state = 910
@@ -7455,10 +6890,8 @@ class OpenSCENARIO2Parser ( Parser ):
                     self.state = 909
                     self.argumentList()
 
-
                 self.state = 912
                 self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
-
 
             self.state = 915
             self.match(OpenSCENARIO2Parser.T__8)
@@ -7466,13 +6899,13 @@ class OpenSCENARIO2Parser ( Parser ):
             self.match(OpenSCENARIO2Parser.NEWLINE)
             self.state = 917
             self.match(OpenSCENARIO2Parser.INDENT)
-            self.state = 919 
+            self.state = 919
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
                 self.state = 918
                 self.doMember()
-                self.state = 921 
+                self.state = 921
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not (((((_la - 55)) & ~0x3f) == 0 and ((1 << (_la - 55)) & ((1 << (OpenSCENARIO2Parser.T__54 - 55)) | (1 << (OpenSCENARIO2Parser.T__55 - 55)) | (1 << (OpenSCENARIO2Parser.T__56 - 55)) | (1 << (OpenSCENARIO2Parser.T__57 - 55)) | (1 << (OpenSCENARIO2Parser.T__58 - 55)) | (1 << (OpenSCENARIO2Parser.T__59 - 55)) | (1 << (OpenSCENARIO2Parser.T__60 - 55)) | (1 << (OpenSCENARIO2Parser.T__61 - 55)) | (1 << (OpenSCENARIO2Parser.T__62 - 55)) | (1 << (OpenSCENARIO2Parser.Identifier - 55)))) != 0)):
@@ -7483,10 +6916,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 925
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__47:
+            if _la == OpenSCENARIO2Parser.T__47:
                 self.state = 924
                 self.behaviorWithDeclaration()
-
 
         except RecognitionException as re:
             localctx.exception = re
@@ -7496,40 +6928,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class CompositionOperatorContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_compositionOperator
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCompositionOperator" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCompositionOperator"):
                 listener.enterCompositionOperator(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCompositionOperator" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCompositionOperator"):
                 listener.exitCompositionOperator(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCompositionOperator" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCompositionOperator"):
                 return visitor.visitCompositionOperator(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def compositionOperator(self):
 
         localctx = OpenSCENARIO2Parser.CompositionOperatorContext(self, self._ctx, self.state)
         self.enterRule(localctx, 182, self.RULE_compositionOperator)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 927
@@ -7547,17 +6974,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class BehaviorInvocationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def behaviorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorNameContext, 0)
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
@@ -7566,56 +6991,49 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
         def behaviorWithDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorWithDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorWithDeclarationContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def actorExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorExpressionContext, 0)
 
         def argumentList(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_behaviorInvocation
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBehaviorInvocation" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBehaviorInvocation"):
                 listener.enterBehaviorInvocation(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBehaviorInvocation" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBehaviorInvocation"):
                 listener.exitBehaviorInvocation(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBehaviorInvocation" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBehaviorInvocation"):
                 return visitor.visitBehaviorInvocation(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def behaviorInvocation(self):
 
         localctx = OpenSCENARIO2Parser.BehaviorInvocationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 184, self.RULE_behaviorInvocation)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 932
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,84,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 84, self._ctx)
             if la_ == 1:
                 self.state = 929
                 self.actorExpression()
                 self.state = 930
                 self.match(OpenSCENARIO2Parser.T__1)
-
 
             self.state = 934
             self.behaviorName()
@@ -7627,7 +7045,6 @@ class OpenSCENARIO2Parser ( Parser ):
             if ((((_la - 73)) & ~0x3f) == 0 and ((1 << (_la - 73)) & ((1 << (OpenSCENARIO2Parser.T__72 - 73)) | (1 << (OpenSCENARIO2Parser.T__77 - 73)) | (1 << (OpenSCENARIO2Parser.T__85 - 73)) | (1 << (OpenSCENARIO2Parser.T__89 - 73)) | (1 << (OpenSCENARIO2Parser.OPEN_BRACK - 73)) | (1 << (OpenSCENARIO2Parser.OPEN_PAREN - 73)) | (1 << (OpenSCENARIO2Parser.StringLiteral - 73)) | (1 << (OpenSCENARIO2Parser.FloatLiteral - 73)) | (1 << (OpenSCENARIO2Parser.UintLiteral - 73)) | (1 << (OpenSCENARIO2Parser.HexUintLiteral - 73)) | (1 << (OpenSCENARIO2Parser.IntLiteral - 73)) | (1 << (OpenSCENARIO2Parser.BoolLiteral - 73)) | (1 << (OpenSCENARIO2Parser.Identifier - 73)))) != 0):
                 self.state = 936
                 self.argumentList()
-
 
             self.state = 939
             self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
@@ -7653,11 +7070,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class BehaviorWithDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -7670,38 +7086,34 @@ class OpenSCENARIO2Parser ( Parser ):
         def DEDENT(self):
             return self.getToken(OpenSCENARIO2Parser.DEDENT, 0)
 
-        def behaviorWithMember(self, i:int=None):
+        def behaviorWithMember(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.BehaviorWithMemberContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorWithMemberContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.BehaviorWithMemberContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_behaviorWithDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBehaviorWithDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBehaviorWithDeclaration"):
                 listener.enterBehaviorWithDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBehaviorWithDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBehaviorWithDeclaration"):
                 listener.exitBehaviorWithDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBehaviorWithDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBehaviorWithDeclaration"):
                 return visitor.visitBehaviorWithDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def behaviorWithDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.BehaviorWithDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 186, self.RULE_behaviorWithDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 944
@@ -7712,13 +7124,13 @@ class OpenSCENARIO2Parser ( Parser ):
             self.match(OpenSCENARIO2Parser.NEWLINE)
             self.state = 947
             self.match(OpenSCENARIO2Parser.INDENT)
-            self.state = 949 
+            self.state = 949
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
                 self.state = 948
                 self.behaviorWithMember()
-                self.state = 951 
+                self.state = 951
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not (((((_la - 49)) & ~0x3f) == 0 and ((1 << (_la - 49)) & ((1 << (OpenSCENARIO2Parser.T__48 - 49)) | (1 << (OpenSCENARIO2Parser.T__51 - 49)) | (1 << (OpenSCENARIO2Parser.T__63 - 49)) | (1 << (OpenSCENARIO2Parser.Identifier - 49)))) != 0)):
@@ -7734,45 +7146,38 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class BehaviorWithMemberContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def constraintDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ConstraintDeclarationContext, 0)
 
         def modifierInvocation(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierInvocationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ModifierInvocationContext, 0)
 
         def untilDirective(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.UntilDirectiveContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.UntilDirectiveContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_behaviorWithMember
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterBehaviorWithMember" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterBehaviorWithMember"):
                 listener.enterBehaviorWithMember(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitBehaviorWithMember" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitBehaviorWithMember"):
                 listener.exitBehaviorWithMember(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitBehaviorWithMember" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitBehaviorWithMember"):
                 return visitor.visitBehaviorWithMember(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def behaviorWithMember(self):
 
@@ -7808,11 +7213,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class LabelNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -7822,22 +7226,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_labelName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterLabelName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterLabelName"):
                 listener.enterLabelName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitLabelName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitLabelName"):
                 listener.exitLabelName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitLabelName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitLabelName"):
                 return visitor.visitLabelName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def labelName(self):
 
@@ -7855,37 +7256,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ActorExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def actorName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ActorNameContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_actorExpression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterActorExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterActorExpression"):
                 listener.enterActorExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitActorExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitActorExpression"):
                 listener.exitActorExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitActorExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitActorExpression"):
                 return visitor.visitActorExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def actorExpression(self):
 
@@ -7903,17 +7299,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class WaitDirectiveContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventSpecification(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -7921,22 +7315,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_waitDirective
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterWaitDirective" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterWaitDirective"):
                 listener.enterWaitDirective(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitWaitDirective" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitWaitDirective"):
                 listener.exitWaitDirective(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitWaitDirective" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitWaitDirective"):
                 return visitor.visitWaitDirective(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def waitDirective(self):
 
@@ -7958,17 +7349,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class EmitDirectiveContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventNameContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -7977,8 +7366,7 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def argumentList(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -7986,28 +7374,25 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_emitDirective
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterEmitDirective" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterEmitDirective"):
                 listener.enterEmitDirective(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitEmitDirective" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitEmitDirective"):
                 listener.exitEmitDirective(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitEmitDirective" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitEmitDirective"):
                 return visitor.visitEmitDirective(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def emitDirective(self):
 
         localctx = OpenSCENARIO2Parser.EmitDirectiveContext(self, self._ctx, self.state)
         self.enterRule(localctx, 196, self.RULE_emitDirective)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 968
@@ -8017,14 +7402,13 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 974
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.OPEN_PAREN:
+            if _la == OpenSCENARIO2Parser.OPEN_PAREN:
                 self.state = 970
                 self.match(OpenSCENARIO2Parser.OPEN_PAREN)
                 self.state = 971
                 self.argumentList()
                 self.state = 972
                 self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
-
 
             self.state = 976
             self.match(OpenSCENARIO2Parser.NEWLINE)
@@ -8036,17 +7420,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class CallDirectiveContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def methodInvocation(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodInvocationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodInvocationContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -8054,22 +7436,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_callDirective
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCallDirective" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCallDirective"):
                 listener.enterCallDirective(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCallDirective" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCallDirective"):
                 listener.exitCallDirective(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCallDirective" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCallDirective"):
                 return visitor.visitCallDirective(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def callDirective(self):
 
@@ -8091,17 +7470,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class UntilDirectiveContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def eventSpecification(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventSpecificationContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
@@ -8109,22 +7486,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_untilDirective
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterUntilDirective" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterUntilDirective"):
                 listener.enterUntilDirective(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitUntilDirective" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitUntilDirective"):
                 listener.exitUntilDirective(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitUntilDirective" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitUntilDirective"):
                 return visitor.visitUntilDirective(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def untilDirective(self):
 
@@ -8146,17 +7520,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class MethodInvocationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def postfixExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext, 0)
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
@@ -8165,34 +7537,30 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
         def argumentList(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_methodInvocation
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterMethodInvocation" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterMethodInvocation"):
                 listener.enterMethodInvocation(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitMethodInvocation" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitMethodInvocation"):
                 listener.exitMethodInvocation(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMethodInvocation" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMethodInvocation"):
                 return visitor.visitMethodInvocation(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def methodInvocation(self):
 
         localctx = OpenSCENARIO2Parser.MethodInvocationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 202, self.RULE_methodInvocation)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 986
@@ -8206,7 +7574,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.state = 988
                 self.argumentList()
 
-
             self.state = 991
             self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
         except RecognitionException as re:
@@ -8217,17 +7584,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class MethodDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def methodName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodNameContext, 0)
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
@@ -8236,45 +7601,39 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
         def methodImplementation(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodImplementationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodImplementationContext, 0)
 
         def NEWLINE(self):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def argumentListSpecification(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListSpecificationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListSpecificationContext, 0)
 
         def returnType(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ReturnTypeContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ReturnTypeContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_methodDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterMethodDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterMethodDeclaration"):
                 listener.enterMethodDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitMethodDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitMethodDeclaration"):
                 listener.exitMethodDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMethodDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMethodDeclaration"):
                 return visitor.visitMethodDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def methodDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.MethodDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 204, self.RULE_methodDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 993
@@ -8286,22 +7645,20 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 997
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.Identifier:
+            if _la == OpenSCENARIO2Parser.Identifier:
                 self.state = 996
                 self.argumentListSpecification()
-
 
             self.state = 999
             self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
             self.state = 1002
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__65:
+            if _la == OpenSCENARIO2Parser.T__65:
                 self.state = 1000
                 self.match(OpenSCENARIO2Parser.T__65)
                 self.state = 1001
                 self.returnType()
-
 
             self.state = 1004
             self.methodImplementation()
@@ -8315,37 +7672,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ReturnTypeContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def typeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_returnType
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterReturnType" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterReturnType"):
                 listener.enterReturnType(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitReturnType" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitReturnType"):
                 listener.exitReturnType(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitReturnType" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitReturnType"):
                 return visitor.visitReturnType(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def returnType(self):
 
@@ -8363,21 +7715,18 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class MethodImplementationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def structuredIdentifier(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructuredIdentifierContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.StructuredIdentifierContext, 0)
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
@@ -8386,38 +7735,33 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
         def methodQualifier(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodQualifierContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.MethodQualifierContext, 0)
 
         def argumentList(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_methodImplementation
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterMethodImplementation" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterMethodImplementation"):
                 listener.enterMethodImplementation(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitMethodImplementation" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitMethodImplementation"):
                 listener.exitMethodImplementation(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMethodImplementation" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMethodImplementation"):
                 return visitor.visitMethodImplementation(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def methodImplementation(self):
 
         localctx = OpenSCENARIO2Parser.MethodImplementationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 208, self.RULE_methodImplementation)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1009
@@ -8425,10 +7769,9 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 1011
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__69:
+            if _la == OpenSCENARIO2Parser.T__69:
                 self.state = 1010
                 self.methodQualifier()
-
 
             self.state = 1024
             self._errHandler.sync(self)
@@ -8457,7 +7800,6 @@ class OpenSCENARIO2Parser ( Parser ):
                     self.state = 1019
                     self.argumentList()
 
-
                 self.state = 1022
                 self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
                 pass
@@ -8472,34 +7814,29 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class MethodQualifierContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_methodQualifier
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterMethodQualifier" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterMethodQualifier"):
                 listener.enterMethodQualifier(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitMethodQualifier" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitMethodQualifier"):
                 listener.exitMethodQualifier(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMethodQualifier" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMethodQualifier"):
                 return visitor.visitMethodQualifier(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def methodQualifier(self):
 
@@ -8517,11 +7854,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class MethodNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -8531,22 +7867,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_methodName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterMethodName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterMethodName"):
                 listener.enterMethodName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitMethodName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitMethodName"):
                 listener.exitMethodName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMethodName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMethodName"):
                 return visitor.visitMethodName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def methodName(self):
 
@@ -8564,41 +7897,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class CoverageDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def coverDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverDeclarationContext, 0)
 
         def recordDeclaration(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.RecordDeclarationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.RecordDeclarationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_coverageDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCoverageDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCoverageDeclaration"):
                 listener.enterCoverageDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCoverageDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCoverageDeclaration"):
                 listener.exitCoverageDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCoverageDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCoverageDeclaration"):
                 return visitor.visitCoverageDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def coverageDeclaration(self):
 
@@ -8629,11 +7956,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class CoverDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -8647,41 +7973,36 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def targetName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TargetNameContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TargetNameContext, 0)
 
-
-        def coverageArgumentList(self, i:int=None):
+        def coverageArgumentList(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.CoverageArgumentListContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageArgumentListContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageArgumentListContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_coverDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCoverDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCoverDeclaration"):
                 listener.enterCoverDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCoverDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCoverDeclaration"):
                 listener.exitCoverDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCoverDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCoverDeclaration"):
                 return visitor.visitCoverDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def coverDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.CoverDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 216, self.RULE_coverDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1034
@@ -8691,15 +8012,14 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 1037
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.Identifier:
+            if _la == OpenSCENARIO2Parser.Identifier:
                 self.state = 1036
                 self.targetName()
-
 
             self.state = 1042
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__7:
+            while _la == OpenSCENARIO2Parser.T__7:
                 self.state = 1039
                 self.coverageArgumentList()
                 self.state = 1044
@@ -8718,11 +8038,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class RecordDeclarationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -8736,41 +8055,36 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.NEWLINE, 0)
 
         def targetName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TargetNameContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TargetNameContext, 0)
 
-
-        def coverageArgumentList(self, i:int=None):
+        def coverageArgumentList(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.CoverageArgumentListContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageArgumentListContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.CoverageArgumentListContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_recordDeclaration
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRecordDeclaration" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRecordDeclaration"):
                 listener.enterRecordDeclaration(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRecordDeclaration" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRecordDeclaration"):
                 listener.exitRecordDeclaration(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRecordDeclaration" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRecordDeclaration"):
                 return visitor.visitRecordDeclaration(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def recordDeclaration(self):
 
         localctx = OpenSCENARIO2Parser.RecordDeclarationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 218, self.RULE_recordDeclaration)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1048
@@ -8780,15 +8094,14 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 1051
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.Identifier:
+            if _la == OpenSCENARIO2Parser.Identifier:
                 self.state = 1050
                 self.targetName()
-
 
             self.state = 1056
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__7:
+            while _la == OpenSCENARIO2Parser.T__7:
                 self.state = 1053
                 self.coverageArgumentList()
                 self.state = 1058
@@ -8807,174 +8120,156 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class CoverageArgumentListContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_coverageArgumentList
 
-     
-        def copyFrom(self, ctx:ParserRuleContext):
+        def copyFrom(self, ctx: ParserRuleContext):
             super().copyFrom(ctx)
-
-
 
     class CoverageEventContext(CoverageArgumentListContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def eventName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventNameContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EventNameContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCoverageEvent" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCoverageEvent"):
                 listener.enterCoverageEvent(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCoverageEvent" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCoverageEvent"):
                 listener.exitCoverageEvent(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCoverageEvent" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCoverageEvent"):
                 return visitor.visitCoverageEvent(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class CoverageEveryContext(CoverageArgumentListContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def valueExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ValueExpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ValueExpContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCoverageEvery" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCoverageEvery"):
                 listener.enterCoverageEvery(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCoverageEvery" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCoverageEvery"):
                 listener.exitCoverageEvery(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCoverageEvery" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCoverageEvery"):
                 return visitor.visitCoverageEvery(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class CoverageNameArgumentContext(CoverageArgumentListContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def namedArgument(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.NamedArgumentContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.NamedArgumentContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCoverageNameArgument" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCoverageNameArgument"):
                 listener.enterCoverageNameArgument(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCoverageNameArgument" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCoverageNameArgument"):
                 listener.exitCoverageNameArgument(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCoverageNameArgument" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCoverageNameArgument"):
                 return visitor.visitCoverageNameArgument(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class CoverageExpressionContext(CoverageArgumentListContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCoverageExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCoverageExpression"):
                 listener.enterCoverageExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCoverageExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCoverageExpression"):
                 listener.exitCoverageExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCoverageExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCoverageExpression"):
                 return visitor.visitCoverageExpression(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class CoverageRangeContext(CoverageArgumentListContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def rangeConstructor(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.RangeConstructorContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.RangeConstructorContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCoverageRange" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCoverageRange"):
                 listener.enterCoverageRange(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCoverageRange" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCoverageRange"):
                 listener.exitCoverageRange(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCoverageRange" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCoverageRange"):
                 return visitor.visitCoverageRange(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class CoverageUnitContext(CoverageArgumentListContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.CoverageArgumentListContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def unitName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitNameContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitNameContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCoverageUnit" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCoverageUnit"):
                 listener.enterCoverageUnit(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCoverageUnit" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCoverageUnit"):
                 listener.exitCoverageUnit(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCoverageUnit" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCoverageUnit"):
                 return visitor.visitCoverageUnit(self)
             else:
                 return visitor.visitChildren(self)
-
-
 
     def coverageArgumentList(self):
 
@@ -8983,7 +8278,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 1084
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,101,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 101, self._ctx)
             if la_ == 1:
                 localctx = OpenSCENARIO2Parser.CoverageExpressionContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
@@ -9058,7 +8353,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.namedArgument()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -9067,11 +8361,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class TargetNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -9081,22 +8374,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_targetName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTargetName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterTargetName"):
                 listener.enterTargetName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTargetName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitTargetName"):
                 listener.exitTargetName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTargetName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitTargetName"):
                 return visitor.visitTargetName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def targetName(self):
 
@@ -9114,41 +8404,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def implication(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ImplicationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ImplicationContext, 0)
 
         def ternaryOpExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TernaryOpExpContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TernaryOpExpContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_expression
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterExpression"):
                 listener.enterExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitExpression"):
                 listener.exitExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitExpression"):
                 return visitor.visitExpression(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def expression(self):
 
@@ -9157,7 +8441,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 1090
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,102,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 102, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 1088
@@ -9170,7 +8454,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.ternaryOpExp()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -9179,44 +8462,38 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class TernaryOpExpContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def implication(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ImplicationContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ImplicationContext, 0)
 
-
-        def expression(self, i:int=None):
+        def expression(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ExpressionContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_ternaryOpExp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTernaryOpExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterTernaryOpExp"):
                 listener.enterTernaryOpExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTernaryOpExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitTernaryOpExp"):
                 listener.exitTernaryOpExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTernaryOpExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitTernaryOpExp"):
                 return visitor.visitTernaryOpExp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def ternaryOpExp(self):
 
@@ -9242,46 +8519,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ImplicationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def disjunction(self, i:int=None):
+        def disjunction(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.DisjunctionContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.DisjunctionContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.DisjunctionContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_implication
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterImplication" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterImplication"):
                 listener.enterImplication(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitImplication" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitImplication"):
                 listener.exitImplication(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitImplication" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitImplication"):
                 return visitor.visitImplication(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def implication(self):
 
         localctx = OpenSCENARIO2Parser.ImplicationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 228, self.RULE_implication)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1098
@@ -9289,7 +8561,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 1103
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__74:
+            while _la == OpenSCENARIO2Parser.T__74:
                 self.state = 1099
                 self.match(OpenSCENARIO2Parser.T__74)
                 self.state = 1100
@@ -9306,46 +8578,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class DisjunctionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def conjunction(self, i:int=None):
+        def conjunction(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ConjunctionContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ConjunctionContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ConjunctionContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_disjunction
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterDisjunction" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterDisjunction"):
                 listener.enterDisjunction(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitDisjunction" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitDisjunction"):
                 listener.exitDisjunction(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitDisjunction" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitDisjunction"):
                 return visitor.visitDisjunction(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def disjunction(self):
 
         localctx = OpenSCENARIO2Parser.DisjunctionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 230, self.RULE_disjunction)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1106
@@ -9353,7 +8620,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 1111
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__75:
+            while _la == OpenSCENARIO2Parser.T__75:
                 self.state = 1107
                 self.match(OpenSCENARIO2Parser.T__75)
                 self.state = 1108
@@ -9370,46 +8637,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ConjunctionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def inversion(self, i:int=None):
+        def inversion(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.InversionContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.InversionContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.InversionContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_conjunction
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterConjunction" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterConjunction"):
                 listener.enterConjunction(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitConjunction" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitConjunction"):
                 listener.exitConjunction(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitConjunction" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitConjunction"):
                 return visitor.visitConjunction(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def conjunction(self):
 
         localctx = OpenSCENARIO2Parser.ConjunctionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 232, self.RULE_conjunction)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1114
@@ -9417,7 +8679,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 1119
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__76:
+            while _la == OpenSCENARIO2Parser.T__76:
                 self.state = 1115
                 self.match(OpenSCENARIO2Parser.T__76)
                 self.state = 1116
@@ -9434,41 +8696,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class InversionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def inversion(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.InversionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.InversionContext, 0)
 
         def relation(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.RelationContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.RelationContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_inversion
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterInversion" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterInversion"):
                 listener.enterInversion(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitInversion" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitInversion"):
                 listener.exitInversion(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitInversion" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitInversion"):
                 return visitor.visitInversion(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def inversion(self):
 
@@ -9501,81 +8757,72 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class RelationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_relation
 
-     
-        def copyFrom(self, ctx:ParserRuleContext):
+        def copyFrom(self, ctx: ParserRuleContext):
             super().copyFrom(ctx)
-
 
     class RelationExpContext(RelationContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.RelationContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.RelationContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def relation(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.RelationContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.RelationContext, 0)
 
         def relationalOp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.RelationalOpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.RelationalOpContext, 0)
 
         def sumExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SumExpressionContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SumExpressionContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRelationExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRelationExp"):
                 listener.enterRelationExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRelationExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRelationExp"):
                 listener.exitRelationExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRelationExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRelationExp"):
                 return visitor.visitRelationExp(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class SumExpContext(RelationContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.RelationContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.RelationContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def sumExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SumExpressionContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SumExpressionContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSumExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterSumExp"):
                 listener.enterSumExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSumExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitSumExp"):
                 listener.exitSumExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSumExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitSumExp"):
                 return visitor.visitSumExp(self)
             else:
                 return visitor.visitChildren(self)
 
-
-
-    def relation(self, _p:int=0):
+    def relation(self, _p: int = 0):
         _parentctx = self._ctx
         _parentState = self.state
         localctx = OpenSCENARIO2Parser.RelationContext(self, self._ctx, _parentState)
@@ -9593,13 +8840,14 @@ class OpenSCENARIO2Parser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
             self.state = 1136
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,107,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
+            _alt = self._interp.adaptivePredict(self._input, 107, self._ctx)
+            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                if _alt == 1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    localctx = OpenSCENARIO2Parser.RelationExpContext(self, OpenSCENARIO2Parser.RelationContext(self, _parentctx, _parentState))
+                    localctx = OpenSCENARIO2Parser.RelationExpContext(
+                        self, OpenSCENARIO2Parser.RelationContext(self, _parentctx, _parentState))
                     self.pushNewRecursionContext(localctx, _startState, self.RULE_relation)
                     self.state = 1130
                     if not self.precpred(self._ctx, 1):
@@ -9608,10 +8856,10 @@ class OpenSCENARIO2Parser ( Parser ):
                     self.state = 1131
                     self.relationalOp()
                     self.state = 1132
-                    self.sumExpression(0) 
+                    self.sumExpression(0)
                 self.state = 1138
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,107,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input, 107, self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -9621,40 +8869,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.unrollRecursionContexts(_parentctx)
         return localctx
 
-
     class RelationalOpContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_relationalOp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRelationalOp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRelationalOp"):
                 listener.enterRelationalOp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRelationalOp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRelationalOp"):
                 listener.exitRelationalOp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRelationalOp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRelationalOp"):
                 return visitor.visitRelationalOp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def relationalOp(self):
 
         localctx = OpenSCENARIO2Parser.RelationalOpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 238, self.RULE_relationalOp)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1139
@@ -9672,81 +8915,72 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class SumExpressionContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_sumExpression
 
-     
-        def copyFrom(self, ctx:ParserRuleContext):
+        def copyFrom(self, ctx: ParserRuleContext):
             super().copyFrom(ctx)
-
 
     class TermExpContext(SumExpressionContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.SumExpressionContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.SumExpressionContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def term(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TermContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TermContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTermExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterTermExp"):
                 listener.enterTermExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTermExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitTermExp"):
                 listener.exitTermExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTermExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitTermExp"):
                 return visitor.visitTermExp(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class AdditiveExpContext(SumExpressionContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.SumExpressionContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.SumExpressionContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def sumExpression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.SumExpressionContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.SumExpressionContext, 0)
 
         def additiveOp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.AdditiveOpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.AdditiveOpContext, 0)
 
         def term(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TermContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TermContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterAdditiveExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterAdditiveExp"):
                 listener.enterAdditiveExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitAdditiveExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitAdditiveExp"):
                 listener.exitAdditiveExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAdditiveExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitAdditiveExp"):
                 return visitor.visitAdditiveExp(self)
             else:
                 return visitor.visitChildren(self)
 
-
-
-    def sumExpression(self, _p:int=0):
+    def sumExpression(self, _p: int = 0):
         _parentctx = self._ctx
         _parentState = self.state
         localctx = OpenSCENARIO2Parser.SumExpressionContext(self, self._ctx, _parentState)
@@ -9764,13 +8998,14 @@ class OpenSCENARIO2Parser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
             self.state = 1150
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,108,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
+            _alt = self._interp.adaptivePredict(self._input, 108, self._ctx)
+            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                if _alt == 1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    localctx = OpenSCENARIO2Parser.AdditiveExpContext(self, OpenSCENARIO2Parser.SumExpressionContext(self, _parentctx, _parentState))
+                    localctx = OpenSCENARIO2Parser.AdditiveExpContext(
+                        self, OpenSCENARIO2Parser.SumExpressionContext(self, _parentctx, _parentState))
                     self.pushNewRecursionContext(localctx, _startState, self.RULE_sumExpression)
                     self.state = 1144
                     if not self.precpred(self._ctx, 1):
@@ -9779,10 +9014,10 @@ class OpenSCENARIO2Parser ( Parser ):
                     self.state = 1145
                     self.additiveOp()
                     self.state = 1146
-                    self.term(0) 
+                    self.term(0)
                 self.state = 1152
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,108,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input, 108, self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -9792,45 +9027,40 @@ class OpenSCENARIO2Parser ( Parser ):
             self.unrollRecursionContexts(_parentctx)
         return localctx
 
-
     class AdditiveOpContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_additiveOp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterAdditiveOp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterAdditiveOp"):
                 listener.enterAdditiveOp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitAdditiveOp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitAdditiveOp"):
                 listener.exitAdditiveOp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAdditiveOp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitAdditiveOp"):
                 return visitor.visitAdditiveOp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def additiveOp(self):
 
         localctx = OpenSCENARIO2Parser.AdditiveOpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 242, self.RULE_additiveOp)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1153
             _la = self._input.LA(1)
-            if not(_la==OpenSCENARIO2Parser.T__84 or _la==OpenSCENARIO2Parser.T__85):
+            if not(_la == OpenSCENARIO2Parser.T__84 or _la == OpenSCENARIO2Parser.T__85):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
@@ -9843,81 +9073,72 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class TermContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_term
 
-     
-        def copyFrom(self, ctx:ParserRuleContext):
+        def copyFrom(self, ctx: ParserRuleContext):
             super().copyFrom(ctx)
-
 
     class MultiplicativeExpContext(TermContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.TermContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.TermContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def term(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TermContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TermContext, 0)
 
         def multiplicativeOp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.MultiplicativeOpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.MultiplicativeOpContext, 0)
 
         def factor(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FactorContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FactorContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterMultiplicativeExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterMultiplicativeExp"):
                 listener.enterMultiplicativeExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitMultiplicativeExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitMultiplicativeExp"):
                 listener.exitMultiplicativeExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMultiplicativeExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMultiplicativeExp"):
                 return visitor.visitMultiplicativeExp(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class FactorExpContext(TermContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.TermContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.TermContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def factor(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FactorContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FactorContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFactorExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterFactorExp"):
                 listener.enterFactorExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFactorExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitFactorExp"):
                 listener.exitFactorExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFactorExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFactorExp"):
                 return visitor.visitFactorExp(self)
             else:
                 return visitor.visitChildren(self)
 
-
-
-    def term(self, _p:int=0):
+    def term(self, _p: int = 0):
         _parentctx = self._ctx
         _parentState = self.state
         localctx = OpenSCENARIO2Parser.TermContext(self, self._ctx, _parentState)
@@ -9935,13 +9156,14 @@ class OpenSCENARIO2Parser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
             self.state = 1164
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,109,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
+            _alt = self._interp.adaptivePredict(self._input, 109, self._ctx)
+            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                if _alt == 1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    localctx = OpenSCENARIO2Parser.MultiplicativeExpContext(self, OpenSCENARIO2Parser.TermContext(self, _parentctx, _parentState))
+                    localctx = OpenSCENARIO2Parser.MultiplicativeExpContext(
+                        self, OpenSCENARIO2Parser.TermContext(self, _parentctx, _parentState))
                     self.pushNewRecursionContext(localctx, _startState, self.RULE_term)
                     self.state = 1158
                     if not self.precpred(self._ctx, 1):
@@ -9950,10 +9172,10 @@ class OpenSCENARIO2Parser ( Parser ):
                     self.state = 1159
                     self.multiplicativeOp()
                     self.state = 1160
-                    self.factor() 
+                    self.factor()
                 self.state = 1166
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,109,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input, 109, self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -9963,40 +9185,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.unrollRecursionContexts(_parentctx)
         return localctx
 
-
     class MultiplicativeOpContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_multiplicativeOp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterMultiplicativeOp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterMultiplicativeOp"):
                 listener.enterMultiplicativeOp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitMultiplicativeOp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitMultiplicativeOp"):
                 listener.exitMultiplicativeOp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitMultiplicativeOp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitMultiplicativeOp"):
                 return visitor.visitMultiplicativeOp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def multiplicativeOp(self):
 
         localctx = OpenSCENARIO2Parser.MultiplicativeOpContext(self, self._ctx, self.state)
         self.enterRule(localctx, 246, self.RULE_multiplicativeOp)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1167
@@ -10014,41 +9231,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class FactorContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def postfixExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext, 0)
 
         def factor(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FactorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FactorContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_factor
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFactor" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterFactor"):
                 listener.enterFactor(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFactor" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitFactor"):
                 listener.exitFactor(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFactor" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFactor"):
                 return visitor.visitFactor(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def factor(self):
 
@@ -10081,213 +9292,204 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class PostfixExpContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
-
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_postfixExp
 
-     
-        def copyFrom(self, ctx:ParserRuleContext):
+        def copyFrom(self, ctx: ParserRuleContext):
             super().copyFrom(ctx)
-
 
     class PrimaryExpressionContext(PostfixExpContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.PostfixExpContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.PostfixExpContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def primaryExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PrimaryExpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PrimaryExpContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPrimaryExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPrimaryExpression"):
                 listener.enterPrimaryExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPrimaryExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPrimaryExpression"):
                 listener.exitPrimaryExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPrimaryExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPrimaryExpression"):
                 return visitor.visitPrimaryExpression(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class CastExpressionContext(PostfixExpContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.PostfixExpContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.PostfixExpContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def postfixExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext, 0)
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
+
         def typeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCastExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterCastExpression"):
                 listener.enterCastExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCastExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitCastExpression"):
                 listener.exitCastExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCastExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitCastExpression"):
                 return visitor.visitCastExpression(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class FunctionApplicationExpressionContext(PostfixExpContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.PostfixExpContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.PostfixExpContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def postfixExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext, 0)
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
+
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
+
         def argumentList(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentListContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFunctionApplicationExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterFunctionApplicationExpression"):
                 listener.enterFunctionApplicationExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFunctionApplicationExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitFunctionApplicationExpression"):
                 listener.exitFunctionApplicationExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFunctionApplicationExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFunctionApplicationExpression"):
                 return visitor.visitFunctionApplicationExpression(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class FieldAccessExpressionContext(PostfixExpContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.PostfixExpContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.PostfixExpContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def postfixExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext, 0)
 
         def fieldName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext, 0)
 
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFieldAccessExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterFieldAccessExpression"):
                 listener.enterFieldAccessExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFieldAccessExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitFieldAccessExpression"):
                 listener.exitFieldAccessExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFieldAccessExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFieldAccessExpression"):
                 return visitor.visitFieldAccessExpression(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class ElementAccessExpressionContext(PostfixExpContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.PostfixExpContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.PostfixExpContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def postfixExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext, 0)
 
         def OPEN_BRACK(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_BRACK, 0)
+
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def CLOSE_BRACK(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_BRACK, 0)
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterElementAccessExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterElementAccessExpression"):
                 listener.enterElementAccessExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitElementAccessExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitElementAccessExpression"):
                 listener.exitElementAccessExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitElementAccessExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitElementAccessExpression"):
                 return visitor.visitElementAccessExpression(self)
             else:
                 return visitor.visitChildren(self)
 
-
     class TypeTestExpressionContext(PostfixExpContext):
 
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a OpenSCENARIO2Parser.PostfixExpContext
+        def __init__(self, parser, ctx: ParserRuleContext):  # actually a OpenSCENARIO2Parser.PostfixExpContext
             super().__init__(parser)
             self.copyFrom(ctx)
 
         def postfixExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext, 0)
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
+
         def typeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext,0)
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTypeTestExpression" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterTypeTestExpression"):
                 listener.enterTypeTestExpression(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTypeTestExpression" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitTypeTestExpression"):
                 listener.exitTypeTestExpression(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTypeTestExpression" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitTypeTestExpression"):
                 return visitor.visitTypeTestExpression(self)
             else:
                 return visitor.visitChildren(self)
 
-
-
-    def postfixExp(self, _p:int=0):
+    def postfixExp(self, _p: int = 0):
         _parentctx = self._ctx
         _parentState = self.state
         localctx = OpenSCENARIO2Parser.PostfixExpContext(self, self._ctx, _parentState)
         _prevctx = localctx
         _startState = 250
         self.enterRecursionRule(localctx, 250, self.RULE_postfixExp, _p)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             localctx = OpenSCENARIO2Parser.PrimaryExpressionContext(self, localctx)
@@ -10299,17 +9501,18 @@ class OpenSCENARIO2Parser ( Parser ):
             self._ctx.stop = self._input.LT(-1)
             self.state = 1207
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,113,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
+            _alt = self._interp.adaptivePredict(self._input, 113, self._ctx)
+            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                if _alt == 1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
                     self.state = 1205
                     self._errHandler.sync(self)
-                    la_ = self._interp.adaptivePredict(self._input,112,self._ctx)
+                    la_ = self._interp.adaptivePredict(self._input, 112, self._ctx)
                     if la_ == 1:
-                        localctx = OpenSCENARIO2Parser.CastExpressionContext(self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
+                        localctx = OpenSCENARIO2Parser.CastExpressionContext(
+                            self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_postfixExp)
                         self.state = 1177
                         if not self.precpred(self._ctx, 5):
@@ -10328,7 +9531,8 @@ class OpenSCENARIO2Parser ( Parser ):
                         pass
 
                     elif la_ == 2:
-                        localctx = OpenSCENARIO2Parser.TypeTestExpressionContext(self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
+                        localctx = OpenSCENARIO2Parser.TypeTestExpressionContext(
+                            self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_postfixExp)
                         self.state = 1184
                         if not self.precpred(self._ctx, 4):
@@ -10347,7 +9551,8 @@ class OpenSCENARIO2Parser ( Parser ):
                         pass
 
                     elif la_ == 3:
-                        localctx = OpenSCENARIO2Parser.ElementAccessExpressionContext(self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
+                        localctx = OpenSCENARIO2Parser.ElementAccessExpressionContext(
+                            self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_postfixExp)
                         self.state = 1191
                         if not self.precpred(self._ctx, 3):
@@ -10362,7 +9567,8 @@ class OpenSCENARIO2Parser ( Parser ):
                         pass
 
                     elif la_ == 4:
-                        localctx = OpenSCENARIO2Parser.FunctionApplicationExpressionContext(self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
+                        localctx = OpenSCENARIO2Parser.FunctionApplicationExpressionContext(
+                            self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_postfixExp)
                         self.state = 1196
                         if not self.precpred(self._ctx, 2):
@@ -10377,13 +9583,13 @@ class OpenSCENARIO2Parser ( Parser ):
                             self.state = 1198
                             self.argumentList()
 
-
                         self.state = 1201
                         self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
                         pass
 
                     elif la_ == 5:
-                        localctx = OpenSCENARIO2Parser.FieldAccessExpressionContext(self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
+                        localctx = OpenSCENARIO2Parser.FieldAccessExpressionContext(
+                            self, OpenSCENARIO2Parser.PostfixExpContext(self, _parentctx, _parentState))
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_postfixExp)
                         self.state = 1202
                         if not self.precpred(self._ctx, 1):
@@ -10395,10 +9601,9 @@ class OpenSCENARIO2Parser ( Parser ):
                         self.fieldName()
                         pass
 
-             
                 self.state = 1209
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,113,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input, 113, self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -10408,41 +9613,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.unrollRecursionContexts(_parentctx)
         return localctx
 
-
     class FieldAccessContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def postfixExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PostfixExpContext, 0)
 
         def fieldName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_fieldAccess
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterFieldAccess" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterFieldAccess"):
                 listener.enterFieldAccess(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitFieldAccess" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitFieldAccess"):
                 listener.exitFieldAccess(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitFieldAccess" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitFieldAccess"):
                 return visitor.visitFieldAccess(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def fieldAccess(self):
 
@@ -10464,17 +9663,15 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class PrimaryExpContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def valueExp(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ValueExpContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ValueExpContext, 0)
 
         def Identifier(self):
             return self.getToken(OpenSCENARIO2Parser.Identifier, 0)
@@ -10483,8 +9680,7 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -10492,22 +9688,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_primaryExp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPrimaryExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPrimaryExp"):
                 listener.enterPrimaryExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPrimaryExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPrimaryExp"):
                 listener.exitPrimaryExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPrimaryExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPrimaryExp"):
                 return visitor.visitPrimaryExp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def primaryExp(self):
 
@@ -10516,7 +9709,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 1221
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,114,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 114, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 1214
@@ -10545,7 +9738,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.match(OpenSCENARIO2Parser.CLOSE_PAREN)
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -10554,24 +9746,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ValueExpContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def physicalLiteral(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.PhysicalLiteralContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.PhysicalLiteralContext, 0)
 
         def FloatLiteral(self):
             return self.getToken(OpenSCENARIO2Parser.FloatLiteral, 0)
 
         def integerLiteral(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext, 0)
 
         def BoolLiteral(self):
             return self.getToken(OpenSCENARIO2Parser.BoolLiteral, 0)
@@ -10580,40 +9769,33 @@ class OpenSCENARIO2Parser ( Parser ):
             return self.getToken(OpenSCENARIO2Parser.StringLiteral, 0)
 
         def identifierReference(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.IdentifierReferenceContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.IdentifierReferenceContext, 0)
 
         def enumValueReference(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumValueReferenceContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.EnumValueReferenceContext, 0)
 
         def listConstructor(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ListConstructorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ListConstructorContext, 0)
 
         def rangeConstructor(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.RangeConstructorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.RangeConstructorContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_valueExp
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterValueExp" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterValueExp"):
                 listener.enterValueExp(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitValueExp" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitValueExp"):
                 listener.exitValueExp(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitValueExp" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitValueExp"):
                 return visitor.visitValueExp(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def valueExp(self):
 
@@ -10622,7 +9804,7 @@ class OpenSCENARIO2Parser ( Parser ):
         try:
             self.state = 1232
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,115,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 115, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 1223
@@ -10677,7 +9859,6 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.rangeConstructor()
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -10686,23 +9867,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ListConstructorContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def OPEN_BRACK(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_BRACK, 0)
 
-        def expression(self, i:int=None):
+        def expression(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ExpressionContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, i)
 
         def CLOSE_BRACK(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_BRACK, 0)
@@ -10710,28 +9889,25 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_listConstructor
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterListConstructor" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterListConstructor"):
                 listener.enterListConstructor(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitListConstructor" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitListConstructor"):
                 listener.exitListConstructor(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitListConstructor" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitListConstructor"):
                 return visitor.visitListConstructor(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def listConstructor(self):
 
         localctx = OpenSCENARIO2Parser.ListConstructorContext(self, self._ctx, self.state)
         self.enterRule(localctx, 258, self.RULE_listConstructor)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1234
@@ -10741,7 +9917,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 1240
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__7:
+            while _la == OpenSCENARIO2Parser.T__7:
                 self.state = 1236
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 1237
@@ -10760,23 +9936,21 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class RangeConstructorContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def OPEN_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.OPEN_PAREN, 0)
 
-        def expression(self, i:int=None):
+        def expression(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ExpressionContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, i)
 
         def CLOSE_PAREN(self):
             return self.getToken(OpenSCENARIO2Parser.CLOSE_PAREN, 0)
@@ -10790,22 +9964,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_rangeConstructor
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterRangeConstructor" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterRangeConstructor"):
                 listener.enterRangeConstructor(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitRangeConstructor" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitRangeConstructor"):
                 listener.exitRangeConstructor(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitRangeConstructor" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitRangeConstructor"):
                 return visitor.visitRangeConstructor(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def rangeConstructor(self):
 
@@ -10854,40 +10025,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class IdentifierReferenceContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def fieldName(self, i:int=None):
+        def fieldName(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.FieldNameContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.FieldNameContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_identifierReference
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterIdentifierReference" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterIdentifierReference"):
                 listener.enterIdentifierReference(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitIdentifierReference" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitIdentifierReference"):
                 listener.exitIdentifierReference(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitIdentifierReference" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitIdentifierReference"):
                 return visitor.visitIdentifierReference(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def identifierReference(self):
 
@@ -10897,16 +10063,16 @@ class OpenSCENARIO2Parser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 1265
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,118,self._ctx)
-            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                if _alt==1:
+            _alt = self._interp.adaptivePredict(self._input, 118, self._ctx)
+            while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                if _alt == 1:
                     self.state = 1260
                     self.fieldName()
                     self.state = 1261
-                    self.match(OpenSCENARIO2Parser.T__1) 
+                    self.match(OpenSCENARIO2Parser.T__1)
                 self.state = 1267
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,118,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input, 118, self._ctx)
 
             self.state = 1268
             self.fieldName()
@@ -10918,46 +10084,41 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ArgumentListSpecificationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def argumentSpecification(self, i:int=None):
+        def argumentSpecification(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.ArgumentSpecificationContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentSpecificationContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentSpecificationContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_argumentListSpecification
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterArgumentListSpecification" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterArgumentListSpecification"):
                 listener.enterArgumentListSpecification(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitArgumentListSpecification" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitArgumentListSpecification"):
                 listener.exitArgumentListSpecification(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitArgumentListSpecification" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitArgumentListSpecification"):
                 return visitor.visitArgumentListSpecification(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def argumentListSpecification(self):
 
         localctx = OpenSCENARIO2Parser.ArgumentListSpecificationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 264, self.RULE_argumentListSpecification)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1270
@@ -10965,7 +10126,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 1275
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while _la==OpenSCENARIO2Parser.T__7:
+            while _la == OpenSCENARIO2Parser.T__7:
                 self.state = 1271
                 self.match(OpenSCENARIO2Parser.T__7)
                 self.state = 1272
@@ -10982,51 +10143,44 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ArgumentSpecificationContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def argumentName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentNameContext, 0)
 
         def typeDeclarator(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.TypeDeclaratorContext, 0)
 
         def defaultValue(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.DefaultValueContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.DefaultValueContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_argumentSpecification
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterArgumentSpecification" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterArgumentSpecification"):
                 listener.enterArgumentSpecification(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitArgumentSpecification" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitArgumentSpecification"):
                 listener.exitArgumentSpecification(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitArgumentSpecification" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitArgumentSpecification"):
                 return visitor.visitArgumentSpecification(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def argumentSpecification(self):
 
         localctx = OpenSCENARIO2Parser.ArgumentSpecificationContext(self, self._ctx, self.state)
         self.enterRule(localctx, 266, self.RULE_argumentSpecification)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1278
@@ -11038,12 +10192,11 @@ class OpenSCENARIO2Parser ( Parser ):
             self.state = 1283
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==OpenSCENARIO2Parser.T__20:
+            if _la == OpenSCENARIO2Parser.T__20:
                 self.state = 1281
                 self.match(OpenSCENARIO2Parser.T__20)
                 self.state = 1282
                 self.defaultValue()
-
 
         except RecognitionException as re:
             localctx.exception = re
@@ -11053,11 +10206,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ArgumentNameContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -11067,22 +10219,19 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_argumentName
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterArgumentName" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterArgumentName"):
                 listener.enterArgumentName(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitArgumentName" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitArgumentName"):
                 listener.exitArgumentName(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitArgumentName" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitArgumentName"):
                 return visitor.visitArgumentName(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def argumentName(self):
 
@@ -11100,78 +10249,72 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class ArgumentListContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def positionalArgument(self, i:int=None):
+        def positionalArgument(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.PositionalArgumentContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.PositionalArgumentContext,i)
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.PositionalArgumentContext, i)
 
-
-        def namedArgument(self, i:int=None):
+        def namedArgument(self, i: int = None):
             if i is None:
                 return self.getTypedRuleContexts(OpenSCENARIO2Parser.NamedArgumentContext)
             else:
-                return self.getTypedRuleContext(OpenSCENARIO2Parser.NamedArgumentContext,i)
-
+                return self.getTypedRuleContext(OpenSCENARIO2Parser.NamedArgumentContext, i)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_argumentList
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterArgumentList" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterArgumentList"):
                 listener.enterArgumentList(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitArgumentList" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitArgumentList"):
                 listener.exitArgumentList(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitArgumentList" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitArgumentList"):
                 return visitor.visitArgumentList(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def argumentList(self):
 
         localctx = OpenSCENARIO2Parser.ArgumentListContext(self, self._ctx, self.state)
         self.enterRule(localctx, 270, self.RULE_argumentList)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.state = 1310
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,124,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input, 124, self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 1287
                 self.positionalArgument()
                 self.state = 1292
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,121,self._ctx)
-                while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
-                    if _alt==1:
+                _alt = self._interp.adaptivePredict(self._input, 121, self._ctx)
+                while _alt != 2 and _alt != ATN.INVALID_ALT_NUMBER:
+                    if _alt == 1:
                         self.state = 1288
                         self.match(OpenSCENARIO2Parser.T__7)
                         self.state = 1289
-                        self.positionalArgument() 
+                        self.positionalArgument()
                     self.state = 1294
                     self._errHandler.sync(self)
-                    _alt = self._interp.adaptivePredict(self._input,121,self._ctx)
+                    _alt = self._interp.adaptivePredict(self._input, 121, self._ctx)
 
                 self.state = 1299
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                while _la==OpenSCENARIO2Parser.T__7:
+                while _la == OpenSCENARIO2Parser.T__7:
                     self.state = 1295
                     self.match(OpenSCENARIO2Parser.T__7)
                     self.state = 1296
@@ -11189,7 +10332,7 @@ class OpenSCENARIO2Parser ( Parser ):
                 self.state = 1307
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                while _la==OpenSCENARIO2Parser.T__7:
+                while _la == OpenSCENARIO2Parser.T__7:
                     self.state = 1303
                     self.match(OpenSCENARIO2Parser.T__7)
                     self.state = 1304
@@ -11200,7 +10343,6 @@ class OpenSCENARIO2Parser ( Parser ):
 
                 pass
 
-
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -11209,37 +10351,32 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class PositionalArgumentContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_positionalArgument
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPositionalArgument" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPositionalArgument"):
                 listener.enterPositionalArgument(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPositionalArgument" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPositionalArgument"):
                 listener.exitPositionalArgument(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPositionalArgument" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPositionalArgument"):
                 return visitor.visitPositionalArgument(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def positionalArgument(self):
 
@@ -11257,41 +10394,35 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class NamedArgumentContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def argumentName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ArgumentNameContext, 0)
 
         def expression(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.ExpressionContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_namedArgument
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterNamedArgument" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterNamedArgument"):
                 listener.enterNamedArgument(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitNamedArgument" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitNamedArgument"):
                 listener.exitNamedArgument(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitNamedArgument" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitNamedArgument"):
                 return visitor.visitNamedArgument(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def namedArgument(self):
 
@@ -11313,44 +10444,38 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class PhysicalLiteralContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
         def unitName(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitNameContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.UnitNameContext, 0)
 
         def FloatLiteral(self):
             return self.getToken(OpenSCENARIO2Parser.FloatLiteral, 0)
 
         def integerLiteral(self):
-            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext,0)
-
+            return self.getTypedRuleContext(OpenSCENARIO2Parser.IntegerLiteralContext, 0)
 
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_physicalLiteral
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterPhysicalLiteral" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterPhysicalLiteral"):
                 listener.enterPhysicalLiteral(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitPhysicalLiteral" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitPhysicalLiteral"):
                 listener.exitPhysicalLiteral(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitPhysicalLiteral" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitPhysicalLiteral"):
                 return visitor.visitPhysicalLiteral(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def physicalLiteral(self):
 
@@ -11382,11 +10507,10 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
     class IntegerLiteralContext(ParserRuleContext):
         __slots__ = 'parser'
 
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+        def __init__(self, parser, parent: ParserRuleContext = None, invokingState: int = -1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
@@ -11402,28 +10526,25 @@ class OpenSCENARIO2Parser ( Parser ):
         def getRuleIndex(self):
             return OpenSCENARIO2Parser.RULE_integerLiteral
 
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterIntegerLiteral" ):
+        def enterRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "enterIntegerLiteral"):
                 listener.enterIntegerLiteral(self)
 
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitIntegerLiteral" ):
+        def exitRule(self, listener: ParseTreeListener):
+            if hasattr(listener, "exitIntegerLiteral"):
                 listener.exitIntegerLiteral(self)
 
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitIntegerLiteral" ):
+        def accept(self, visitor: ParseTreeVisitor):
+            if hasattr(visitor, "visitIntegerLiteral"):
                 return visitor.visitIntegerLiteral(self)
             else:
                 return visitor.visitChildren(self)
-
-
-
 
     def integerLiteral(self):
 
         localctx = OpenSCENARIO2Parser.IntegerLiteralContext(self, self._ctx, self.state)
         self.enterRule(localctx, 278, self.RULE_integerLiteral)
-        self._la = 0 # Token type
+        self._la = 0  # Token type
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 1324
@@ -11441,9 +10562,7 @@ class OpenSCENARIO2Parser ( Parser ):
             self.exitRule()
         return localctx
 
-
-
-    def sempred(self, localctx:RuleContext, ruleIndex:int, predIndex:int):
+    def sempred(self, localctx: RuleContext, ruleIndex: int, predIndex: int):
         if self._predicates == None:
             self._predicates = dict()
         self._predicates[4] = self.structuredIdentifier_sempred
@@ -11457,47 +10576,34 @@ class OpenSCENARIO2Parser ( Parser ):
         else:
             return pred(localctx, predIndex)
 
-    def structuredIdentifier_sempred(self, localctx:StructuredIdentifierContext, predIndex:int):
-            if predIndex == 0:
-                return self.precpred(self._ctx, 1)
-         
+    def structuredIdentifier_sempred(self, localctx: StructuredIdentifierContext, predIndex: int):
+        if predIndex == 0:
+            return self.precpred(self._ctx, 1)
 
-    def relation_sempred(self, localctx:RelationContext, predIndex:int):
-            if predIndex == 1:
-                return self.precpred(self._ctx, 1)
-         
+    def relation_sempred(self, localctx: RelationContext, predIndex: int):
+        if predIndex == 1:
+            return self.precpred(self._ctx, 1)
 
-    def sumExpression_sempred(self, localctx:SumExpressionContext, predIndex:int):
-            if predIndex == 2:
-                return self.precpred(self._ctx, 1)
-         
+    def sumExpression_sempred(self, localctx: SumExpressionContext, predIndex: int):
+        if predIndex == 2:
+            return self.precpred(self._ctx, 1)
 
-    def term_sempred(self, localctx:TermContext, predIndex:int):
-            if predIndex == 3:
-                return self.precpred(self._ctx, 1)
-         
+    def term_sempred(self, localctx: TermContext, predIndex: int):
+        if predIndex == 3:
+            return self.precpred(self._ctx, 1)
 
-    def postfixExp_sempred(self, localctx:PostfixExpContext, predIndex:int):
-            if predIndex == 4:
-                return self.precpred(self._ctx, 5)
-         
+    def postfixExp_sempred(self, localctx: PostfixExpContext, predIndex: int):
+        if predIndex == 4:
+            return self.precpred(self._ctx, 5)
 
-            if predIndex == 5:
-                return self.precpred(self._ctx, 4)
-         
+        if predIndex == 5:
+            return self.precpred(self._ctx, 4)
 
-            if predIndex == 6:
-                return self.precpred(self._ctx, 3)
-         
+        if predIndex == 6:
+            return self.precpred(self._ctx, 3)
 
-            if predIndex == 7:
-                return self.precpred(self._ctx, 2)
-         
+        if predIndex == 7:
+            return self.precpred(self._ctx, 2)
 
-            if predIndex == 8:
-                return self.precpred(self._ctx, 1)
-         
-
-
-
-
+        if predIndex == 8:
+            return self.precpred(self._ctx, 1)

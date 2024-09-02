@@ -19,7 +19,7 @@ from rclpy.node import Node
 from lifecycle_msgs.srv import GetState
 from lifecycle_msgs.msg import TransitionEvent
 from scenario_execution_ros.actions.conversions import get_qos_preset_profile
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 from enum import Enum
 from queue import Queue
 from collections import deque
@@ -36,14 +36,14 @@ class AssertLifecycleStateState(Enum):
 
 class AssertLifecycleState(BaseAction):
 
-    def __init__(self, node_name: str, state_sequence: list, allow_initial_skip: bool, fail_on_unexpected: bool, keep_running: bool):
+    def __init__(self, node_name: str, state_sequence: list):
         super().__init__()
         self.current_state = AssertLifecycleStateState.IDLE
         self.node_name = node_name
         self.state_sequence = state_sequence
-        self.allow_initial_skip = allow_initial_skip
-        self.fail_on_unexpected = fail_on_unexpected
-        self.keep_running = keep_running
+        self.allow_initial_skip = None
+        self.fail_on_unexpected = None
+        self.keep_running = None
         self.node = None
         self.subscription = None
         self.initial_states_skipped = False
@@ -56,7 +56,7 @@ class AssertLifecycleState(BaseAction):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         topic_transition_event_name = "/" + self.node_name + "/transition_event"
         self.subscription = self.node.create_subscription(
@@ -65,17 +65,14 @@ class AssertLifecycleState(BaseAction):
         service_get_state_name = "/" + self.node_name + "/get_state"
         self.client = self.node.create_client(GetState, service_get_state_name)
 
-    def execute(self, node_name: str, state_sequence: list, allow_initial_skip: bool, fail_on_unexpected: bool, keep_running: bool):
-        if self.node_name != node_name or self.state_sequence != state_sequence:
-            raise ValueError("Runtime change of arguments 'name', 'state_sequence not supported.")
-
+    def execute(self, allow_initial_skip: bool, fail_on_unexpected: bool, keep_running: bool):
         if all(isinstance(state, tuple) and len(state) == 2 for state in self.state_sequence):
             self.state_sequence = [state[0] for state in self.state_sequence]
         else:
             allowed_states = ['unconfigured', 'inactive', 'active', 'finalized']
             for value in self.state_sequence:
                 if value not in allowed_states:
-                    raise ValueError("The specified state_sequence is not valid")
+                    raise ActionError("The specified state_sequence is not valid", action=self)
         self.state_sequence = deque(self.state_sequence)
         self.allow_initial_skip = allow_initial_skip
         self.fail_on_unexpected = fail_on_unexpected

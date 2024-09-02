@@ -16,11 +16,13 @@
 
 import py_trees
 from scenario_execution.model.types import ParameterDeclaration, ScenarioDeclaration
+from scenario_execution.model.error import OSC2Error
+import inspect
 
 
 class BaseAction(py_trees.behaviour.Behaviour):
 
-    # subclasses might implement __init__() with the same arguments as defined in osc
+    # subclasses might implement __init__() with osc2 arguments as required
     # CAUTION: __init__() only gets the initial parameter values. In case variables get modified during scenario execution,
     #          the latest values are available in execute() only.
     def __init__(self, resolve_variable_reference_arguments_in_execute=True):
@@ -28,9 +30,16 @@ class BaseAction(py_trees.behaviour.Behaviour):
         self.logger = None
         self.blackboard = None
         self.resolve_variable_reference_arguments_in_execute = resolve_variable_reference_arguments_in_execute
+
+        execute_method = getattr(self, "execute", None)
+        if execute_method is not None and callable(execute_method):
+            self.execute_method = execute_method
+            self.execute_skip_args = inspect.getfullargspec(getattr(self, "__init__", None)).args
+        else:
+            self.execute_method = None
         super().__init__(self.__class__.__name__)
 
-    # Subclasses might implement execute() with the same arguments as defined in osc.
+    # Subclasses might implement execute() with the osc2 arguments that are not used within __init__().
     # def execute(self):
 
     # Subclasses might override shutdown() in order to cleanup on scenario shutdown.
@@ -42,13 +51,12 @@ class BaseAction(py_trees.behaviour.Behaviour):
     #############
 
     def initialise(self):
-        execute_method = getattr(self, "execute", None)
-        if execute_method is not None and callable(execute_method):
-
+        if self.execute_method is not None:
             if self.resolve_variable_reference_arguments_in_execute:
-                final_args = self._model.get_resolved_value(self.get_blackboard_client())
+                final_args = self._model.get_resolved_value(self.get_blackboard_client(), skip_keys=self.execute_skip_args)
             else:
-                final_args = self._model.get_resolved_value_with_variable_references(self.get_blackboard_client())
+                final_args = self._model.get_resolved_value_with_variable_references(
+                    self.get_blackboard_client(), skip_keys=self.execute_skip_args)
 
             if self._model.actor:
                 final_args["associated_actor"] = self._model.actor.get_resolved_value(self.get_blackboard_client())
@@ -78,7 +86,7 @@ class BaseAction(py_trees.behaviour.Behaviour):
 
     def register_access_to_associated_actor_variable(self, variable_name):
         if not self._model.actor:
-            raise ValueError("Model does not have 'actor'.")
+            raise ActionError("Model does not have 'actor'.", action=self)
         blackboard = self.get_blackboard_client()
         model_blackboard_name = self._model.actor.get_fully_qualified_var_name(include_scenario=False)
         model_blackboard_name += "/" + variable_name
@@ -94,3 +102,11 @@ class BaseAction(py_trees.behaviour.Behaviour):
         model_blackboard_name = self.register_access_to_associated_actor_variable(variable_name)
         self.logger.debug(f"Get variable '{model_blackboard_name}'")
         return getattr(self.get_blackboard_client(), model_blackboard_name)
+
+
+class ActionError(OSC2Error):
+
+    def __init__(self, msg: str, action: BaseAction, *args) -> None:
+        if action is not None:
+            ctx = action._model.get_ctx()
+        super().__init__(msg, ctx, *args)

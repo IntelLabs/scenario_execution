@@ -16,7 +16,7 @@
 
 import py_trees
 from py_trees.common import Status
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
 class Log(BaseAction):
@@ -38,7 +38,7 @@ class Log(BaseAction):
         if not self.published:
             self.published = True
             if not self.msg:
-                raise ValueError("log(): Empty message.")
+                raise ActionError("log(): Empty message.", action=self)
             self.logger.info(f"{self.msg}")
 
         return Status.SUCCESS

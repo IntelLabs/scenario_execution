@@ -23,6 +23,7 @@ from std_msgs.msg import String
 from rclpy.qos import QoSProfile, QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
 from rclpy.node import Node
 import py_trees
+from scenario_execution.actions.base_action import ActionError
 from scenario_execution.actions.run_process import RunProcess
 from .utils import SpawnUtils
 
@@ -44,7 +45,7 @@ class GazeboSpawnActor(RunProcess):
 
     """
 
-    def __init__(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):
+    def __init__(self, associated_actor, xacro_arguments: list, model: str):
         """
         init
         """
@@ -68,7 +69,7 @@ class GazeboSpawnActor(RunProcess):
         except KeyError as e:
             error_message = "didn't find 'node' in setup's kwargs [{}][{}]".format(
                 self.name, self.__class__.__name__)
-            raise KeyError(error_message) from e
+            raise ActionError(error_message, action=self) from e
 
         self.utils = SpawnUtils(logger=self.logger)
 
@@ -88,12 +89,10 @@ class GazeboSpawnActor(RunProcess):
                 self.entity_model, self.entity_name, self.xacro_arguments)
 
             if not self.sdf:
-                raise ValueError(f'Invalid model specified ({self.entity_model})')
+                raise ActionError(f'Invalid model specified ({self.entity_model})', action=self)
             self.current_state = SpawnActionState.MODEL_AVAILABLE
 
-    def execute(self, associated_actor, spawn_pose: list, world_name: str, xacro_arguments: list, model: str):  # pylint: disable=arguments-differ
-        if self.entity_model != model or set(self.xacro_arguments) != set(xacro_arguments):
-            raise ValueError("Runtime change of model not supported.")
+    def execute(self, associated_actor, spawn_pose: list, world_name: str):  # pylint: disable=arguments-differ
         self.spawn_pose = spawn_pose
         self.world_name = world_name
 
@@ -175,7 +174,7 @@ class GazeboSpawnActor(RunProcess):
                 f' w: {quaternion[0]} x: {quaternion[1]} y: {quaternion[2]} z: {quaternion[3]}' \
                 ' } }'
         except KeyError as e:
-            raise ValueError("Could not get values") from e
+            raise ActionError("Could not get values", action=self) from e
         return pose
 
     def set_command(self, command):

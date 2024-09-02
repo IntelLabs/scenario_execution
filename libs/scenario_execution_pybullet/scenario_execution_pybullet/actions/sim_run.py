@@ -15,14 +15,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import py_trees
-from scenario_execution.actions.base_action import BaseAction
+from scenario_execution.actions.base_action import BaseAction, ActionError
 import pybullet as p
 import math
 
 
 class SimRun(BaseAction):
 
-    def __init__(self):
+    def __init__(self, associated_actor):
         super().__init__()
         self.sim_steps_per_tick = 0
 
@@ -30,10 +30,10 @@ class SimRun(BaseAction):
         try:
             tick_period: float = kwargs['tick_period']
         except KeyError as e:
-            raise KeyError("didn't find 'tick_period' in setup's kwargs") from e
+            raise ActionError("didn't find 'tick_period' in setup's kwargs", action=self) from e
         if not math.isclose(240 % tick_period, 0., abs_tol=1e-4):
-            raise ValueError(
-                f"Scenario Execution Tick Period of {tick_period} is not compatible with PyBullet stepping. Please set step-duration to be a multiple of 1/240s")
+            raise ActionError(
+                f"Scenario Execution Tick Period of {tick_period} is not compatible with PyBullet stepping. Please set step-duration to be a multiple of 1/240s", action=self)
         self.sim_steps_per_tick = round(240 * tick_period)
         self.logger.info(f"Forward simulation by {self.sim_steps_per_tick} step per scenario tick.")
 

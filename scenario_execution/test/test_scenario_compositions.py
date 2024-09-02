@@ -164,7 +164,7 @@ scenario test:
         self.assertEqual(self.logger.logs_info[0], "B")
         self.assertEqual(self.logger.logs_info[1], "B")
 
-    def test_selector_no_memory(self):
+    def test_selector_no_memory_second_false(self):
         scenario_content = """
 import osc.helpers
 

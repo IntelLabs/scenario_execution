@@ -394,7 +394,9 @@ class StructuredDeclaration(Declaration):
                 names.append(child.name)
         return list(set(names))
 
-    def get_resolved_value(self, blackboard=None):
+    def get_resolved_value(self, blackboard=None, skip_keys=None):
+        if skip_keys is None:
+            skip_keys = []
         params = {}
 
         # set values defined in base type
@@ -406,6 +408,8 @@ class StructuredDeclaration(Declaration):
         param_keys = list(params.keys())
         for child in self.get_children():
             if isinstance(child, ParameterDeclaration):
+                if child.name in skip_keys:
+                    continue
                 # set from parameter
                 param_type, _ = child.get_type()
 
@@ -433,17 +437,22 @@ class StructuredDeclaration(Declaration):
                 if named:
                     raise OSC2ParsingError(
                         msg=f'Positional argument after named argument not allowed.', context=child.get_ctx())
-                params[param_keys[pos]] = child.get_resolved_value(blackboard)
+                if param_keys[pos] not in skip_keys:
+                    params[param_keys[pos]] = child.get_resolved_value(blackboard)
                 pos += 1
             elif isinstance(child, NamedArgument):
                 named = True
-                params[child.name] = child.get_resolved_value(blackboard)
+                if child.name not in skip_keys:
+                    params[child.name] = child.get_resolved_value(blackboard)
             elif isinstance(child, KeepConstraintDeclaration):
                 tmp = child.get_resolved_value(blackboard)
                 merge_nested_dicts(params, tmp, key_must_exist=False)
             elif isinstance(child, MethodDeclaration):
-                params[child.name] = child.get_resolved_value(blackboard)
-
+                if child.name not in skip_keys:
+                    params[child.name] = child.get_resolved_value(blackboard)
+        for k in skip_keys:
+            if k in params:
+                del params[k]
         return params
 
     def get_type(self):
@@ -1513,7 +1522,9 @@ class BehaviorInvocation(StructuredDeclaration):
     def get_type(self):
         return self.behavior, False
 
-    def get_resolved_value_with_variable_references(self, blackboard):
+    def get_resolved_value_with_variable_references(self, blackboard, skip_keys=None):
+        if skip_keys is None:
+            skip_keys = []
         params = self.get_resolved_value(blackboard)
 
         pos = 0
@@ -1521,12 +1532,16 @@ class BehaviorInvocation(StructuredDeclaration):
         for child in self.get_children():
             if isinstance(child, PositionalArgument):
                 if isinstance(child.get_child(0), IdentifierReference):
-                    params[param_keys[pos]] = child.get_child(0).get_blackboard_reference(blackboard)
+                    if param_keys[pos] not in skip_keys:
+                        params[param_keys[pos]] = child.get_child(0).get_blackboard_reference(blackboard)
                 pos += 1
             elif isinstance(child, NamedArgument):
                 if isinstance(child.get_child(0), IdentifierReference):
-                    params[child.name] = child.get_child(0).get_blackboard_reference(blackboard)
-
+                    if child.name not in skip_keys:
+                        params[child.name] = child.get_child(0).get_blackboard_reference(blackboard)
+        for k in skip_keys:
+            if k in params:
+                del params[k]
         return params
 
 
@@ -1836,7 +1851,7 @@ class BinaryExpression(ModelExpression):
         return type_string
 
     def get_resolved_value(self, blackboard=None):
-        return visit_expression(self, blackboard).eval()
+        return visit_expression(self, blackboard).eval(blackboard)
 
 
 class UnaryExpression(ModelExpression):
@@ -1904,7 +1919,7 @@ class LogicalExpression(ModelExpression):
         return "bool"
 
     def get_resolved_value(self, blackboard=None):
-        return visit_expression(self, blackboard).eval()
+        return visit_expression(self, blackboard).eval(blackboard)
 
 
 class RelationExpression(ModelExpression):
@@ -1931,7 +1946,7 @@ class RelationExpression(ModelExpression):
         return "bool"
 
     def get_resolved_value(self, blackboard=None):
-        return visit_expression(self, blackboard).eval()
+        return visit_expression(self, blackboard).eval(blackboard)
 
 
 class ListExpression(ModelExpression):
@@ -2272,20 +2287,22 @@ class Expression(object):
         self.right = right
         self.operator = operator
 
-    def resolve(self, param):
+    def resolve(self, param, blackboard):
         if isinstance(param, Expression):
-            return param.eval()
+            return param.eval(blackboard)
         elif isinstance(param, VariableReference):
             return param.get_value()
+        elif isinstance(param, FunctionApplicationExpression):
+            return param.get_resolved_value(blackboard)
         else:
             return param
 
-    def eval(self):
-        left = self.resolve(self.left)
+    def eval(self, blackboard):
+        left = self.resolve(self.left, blackboard)
         if self.right is None:
             return self.operator(left)
         else:
-            right = self.resolve(self.right)
+            right = self.resolve(self.right, blackboard)
             return self.operator(left, right)
 
 
@@ -2339,6 +2356,8 @@ def visit_expression(node, blackboard):
                     args[idx] = var_def
                 else:
                     args[idx] = child.get_resolved_value(blackboard)
+            elif isinstance(child, FunctionApplicationExpression):
+                args[idx] = child
             else:
                 args[idx] = child.get_resolved_value(blackboard)
         idx += 1

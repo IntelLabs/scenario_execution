@@ -43,7 +43,7 @@ class KubernetesWaitForNetworkPolicyStatus(BaseAction):
         self.k8s_client = client.api_client.ApiClient()
         self.network_client = client.NetworkingV1Api(self.k8s_client)
 
-    def execute(self, target: str, status: tuple, namespace: str, within_cluster: bool):
+    def execute(self):
         self.monitoring_thread = threading.Thread(target=self.watch_network, daemon=True)
         self.monitoring_thread.start()
 

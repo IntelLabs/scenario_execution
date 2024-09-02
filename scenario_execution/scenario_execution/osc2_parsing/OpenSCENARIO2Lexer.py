@@ -1,3 +1,19 @@
+# Copyright (C) 2024 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions
+# and limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Generated from OpenSCENARIO2.g4 by ANTLR 4.9.1
 from antlr4 import *
 from io import StringIO
@@ -13,7 +29,6 @@ module_path = __name__[:-5]
 language_name = __name__.split('.')[-1]
 language_name = language_name[:-5]  # Remove Lexer from name
 LanguageParser = getattr(importlib.import_module('{}Parser'.format(module_path)), '{}Parser'.format(language_name))
-
 
 
 def serializedATN():
@@ -425,7 +440,7 @@ class OpenSCENARIO2Lexer(Lexer):
 
     atn = ATNDeserializer().deserialize(serializedATN())
 
-    decisionsToDFA = [ DFA(ds, i) for i, ds in enumerate(atn.decisionToState) ]
+    decisionsToDFA = [DFA(ds, i) for i, ds in enumerate(atn.decisionToState)]
 
     T__0 = 1
     T__1 = 2
@@ -534,66 +549,64 @@ class OpenSCENARIO2Lexer(Lexer):
     BoolLiteral = 105
     Identifier = 106
 
-    channelNames = [ u"DEFAULT_TOKEN_CHANNEL", u"HIDDEN" ]
+    channelNames = [u"DEFAULT_TOKEN_CHANNEL", u"HIDDEN"]
 
-    modeNames = [ "DEFAULT_MODE" ]
+    modeNames = ["DEFAULT_MODE"]
 
-    literalNames = [ "<INVALID>",
-            "'import'", "'.'", "'type'", "'is'", "'SI'", "'unit'", "'of'", 
-            "','", "':'", "'factor'", "'offset'", "'kg'", "'m'", "'s'", 
-            "'A'", "'K'", "'mol'", "'cd'", "'rad'", "'enum'", "'='", "'!'", 
-            "'=='", "'struct'", "'inherits'", "'actor'", "'scenario'", "'action'", 
-            "'modifier'", "'extend'", "'global'", "'list'", "'int'", "'uint'", 
-            "'float'", "'bool'", "'string'", "'event'", "'if'", "'@'", "'as'", 
-            "'rise'", "'fall'", "'elapsed'", "'every'", "'var'", "'sample'", 
-            "'with'", "'keep'", "'default'", "'hard'", "'remove_default'", 
-            "'on'", "'do'", "'serial'", "'one_of'", "'parallel'", "'serial_no_memory'", 
-            "'selector'", "'selector_no_memory'", "'wait'", "'emit'", "'call'", 
-            "'until'", "'def'", "'->'", "'expression'", "'undefined'", "'external'", 
-            "'only'", "'cover'", "'record'", "'range'", "'?'", "'=>'", "'or'", 
-            "'and'", "'not'", "'!='", "'<'", "'<='", "'>'", "'>='", "'in'", 
-            "'+'", "'-'", "'*'", "'/'", "'%'", "'it'", "'..'", "'['", "']'", 
-            "'('", "')'" ]
+    literalNames = ["<INVALID>",
+                    "'import'", "'.'", "'type'", "'is'", "'SI'", "'unit'", "'of'",
+                    "','", "':'", "'factor'", "'offset'", "'kg'", "'m'", "'s'",
+                    "'A'", "'K'", "'mol'", "'cd'", "'rad'", "'enum'", "'='", "'!'",
+                    "'=='", "'struct'", "'inherits'", "'actor'", "'scenario'", "'action'",
+                    "'modifier'", "'extend'", "'global'", "'list'", "'int'", "'uint'",
+                    "'float'", "'bool'", "'string'", "'event'", "'if'", "'@'", "'as'",
+                    "'rise'", "'fall'", "'elapsed'", "'every'", "'var'", "'sample'",
+                    "'with'", "'keep'", "'default'", "'hard'", "'remove_default'",
+                    "'on'", "'do'", "'serial'", "'one_of'", "'parallel'", "'serial_no_memory'",
+                    "'selector'", "'selector_no_memory'", "'wait'", "'emit'", "'call'",
+                    "'until'", "'def'", "'->'", "'expression'", "'undefined'", "'external'",
+                    "'only'", "'cover'", "'record'", "'range'", "'?'", "'=>'", "'or'",
+                    "'and'", "'not'", "'!='", "'<'", "'<='", "'>'", "'>='", "'in'",
+                    "'+'", "'-'", "'*'", "'/'", "'%'", "'it'", "'..'", "'['", "']'",
+                    "'('", "')'"]
 
-    symbolicNames = [ "<INVALID>",
-            "NEWLINE", "OPEN_BRACK", "CLOSE_BRACK", "OPEN_PAREN", "CLOSE_PAREN", 
-            "SKIP_", "BLOCK_COMMENT", "LINE_COMMENT", "StringLiteral", "FloatLiteral", 
-            "UintLiteral", "HexUintLiteral", "IntLiteral", "BoolLiteral", 
-            "Identifier" ]
+    symbolicNames = ["<INVALID>",
+                     "NEWLINE", "OPEN_BRACK", "CLOSE_BRACK", "OPEN_PAREN", "CLOSE_PAREN",
+                     "SKIP_", "BLOCK_COMMENT", "LINE_COMMENT", "StringLiteral", "FloatLiteral",
+                     "UintLiteral", "HexUintLiteral", "IntLiteral", "BoolLiteral",
+                     "Identifier"]
 
-    ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", 
-                  "T__7", "T__8", "T__9", "T__10", "T__11", "T__12", "T__13", 
-                  "T__14", "T__15", "T__16", "T__17", "T__18", "T__19", 
-                  "T__20", "T__21", "T__22", "T__23", "T__24", "T__25", 
-                  "T__26", "T__27", "T__28", "T__29", "T__30", "T__31", 
-                  "T__32", "T__33", "T__34", "T__35", "T__36", "T__37", 
-                  "T__38", "T__39", "T__40", "T__41", "T__42", "T__43", 
-                  "T__44", "T__45", "T__46", "T__47", "T__48", "T__49", 
-                  "T__50", "T__51", "T__52", "T__53", "T__54", "T__55", 
-                  "T__56", "T__57", "T__58", "T__59", "T__60", "T__61", 
-                  "T__62", "T__63", "T__64", "T__65", "T__66", "T__67", 
-                  "T__68", "T__69", "T__70", "T__71", "T__72", "T__73", 
-                  "T__74", "T__75", "T__76", "T__77", "T__78", "T__79", 
-                  "T__80", "T__81", "T__82", "T__83", "T__84", "T__85", 
-                  "T__86", "T__87", "T__88", "T__89", "T__90", "NEWLINE", 
-                  "OPEN_BRACK", "CLOSE_BRACK", "OPEN_PAREN", "CLOSE_PAREN", 
-                  "SKIP_", "SPACES", "LINE_JOINING", "RN", "BLOCK_COMMENT", 
-                  "LINE_COMMENT", "StringLiteral", "Shortstring", "ShortstringElem", 
-                  "ShortstringChar", "Longstring", "LongstringElem", "LongstringChar", 
-                  "StringEscapeSeq", "FloatLiteral", "UintLiteral", "HexUintLiteral", 
-                  "IntLiteral", "BoolLiteral", "Identifier", "NonVerticalLineChar", 
-                  "Digit", "HexDigit" ]
+    ruleNames = ["T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6",
+                 "T__7", "T__8", "T__9", "T__10", "T__11", "T__12", "T__13",
+                 "T__14", "T__15", "T__16", "T__17", "T__18", "T__19",
+                 "T__20", "T__21", "T__22", "T__23", "T__24", "T__25",
+                 "T__26", "T__27", "T__28", "T__29", "T__30", "T__31",
+                 "T__32", "T__33", "T__34", "T__35", "T__36", "T__37",
+                 "T__38", "T__39", "T__40", "T__41", "T__42", "T__43",
+                 "T__44", "T__45", "T__46", "T__47", "T__48", "T__49",
+                 "T__50", "T__51", "T__52", "T__53", "T__54", "T__55",
+                 "T__56", "T__57", "T__58", "T__59", "T__60", "T__61",
+                 "T__62", "T__63", "T__64", "T__65", "T__66", "T__67",
+                 "T__68", "T__69", "T__70", "T__71", "T__72", "T__73",
+                 "T__74", "T__75", "T__76", "T__77", "T__78", "T__79",
+                 "T__80", "T__81", "T__82", "T__83", "T__84", "T__85",
+                 "T__86", "T__87", "T__88", "T__89", "T__90", "NEWLINE",
+                 "OPEN_BRACK", "CLOSE_BRACK", "OPEN_PAREN", "CLOSE_PAREN",
+                 "SKIP_", "SPACES", "LINE_JOINING", "RN", "BLOCK_COMMENT",
+                 "LINE_COMMENT", "StringLiteral", "Shortstring", "ShortstringElem",
+                 "ShortstringChar", "Longstring", "LongstringElem", "LongstringChar",
+                 "StringEscapeSeq", "FloatLiteral", "UintLiteral", "HexUintLiteral",
+                 "IntLiteral", "BoolLiteral", "Identifier", "NonVerticalLineChar",
+                 "Digit", "HexDigit"]
 
     grammarFileName = "OpenSCENARIO2.g4"
 
-    def __init__(self, input=None, output:TextIO = sys.stdout):
+    def __init__(self, input=None, output: TextIO = sys.stdout):
         super().__init__(input, output)
         self.checkVersion("4.9.1")
         self._interp = LexerATNSimulator(self, self.atn, self.decisionsToDFA, PredictionContextCache())
         self._actions = None
         self._predicates = None
-
-
 
     @property
     def tokens(self):
@@ -648,7 +661,7 @@ class OpenSCENARIO2Lexer(Lexer):
 
     def nextToken(self):
         if self._input.LA(1) == Token.EOF and self.indents:
-            for i in range(len(self.tokens)-1,-1,-1):
+            for i in range(len(self.tokens)-1, -1, -1):
                 if self.tokens[i].type == Token.EOF:
                     self.tokens.pop(i)
             self.emitToken(self.commonToken(LanguageParser.NEWLINE, '\n'))
@@ -684,16 +697,14 @@ class OpenSCENARIO2Lexer(Lexer):
     def atStartOfInput(self):
         return Lexer.column.fget(self) == 0 and Lexer.line.fget(self) == 1
 
-
-
-    def action(self, localctx:RuleContext, ruleIndex:int, actionIndex:int):
+    def action(self, localctx: RuleContext, ruleIndex: int, actionIndex: int):
         if self._actions is None:
             actions = dict()
-            actions[91] = self.NEWLINE_action 
-            actions[92] = self.OPEN_BRACK_action 
-            actions[93] = self.CLOSE_BRACK_action 
-            actions[94] = self.OPEN_PAREN_action 
-            actions[95] = self.CLOSE_PAREN_action 
+            actions[91] = self.NEWLINE_action
+            actions[92] = self.OPEN_BRACK_action
+            actions[93] = self.CLOSE_BRACK_action
+            actions[94] = self.OPEN_PAREN_action
+            actions[95] = self.CLOSE_PAREN_action
             self._actions = actions
         action = self._actions.get(ruleIndex, None)
         if action is not None:
@@ -701,8 +712,7 @@ class OpenSCENARIO2Lexer(Lexer):
         else:
             raise Exception("No registered action for:" + str(ruleIndex))
 
-
-    def NEWLINE_action(self, localctx:RuleContext , actionIndex:int):
+    def NEWLINE_action(self, localctx: RuleContext, actionIndex: int):
         if actionIndex == 0:
 
             tempt = Lexer.text.fget(self)
@@ -738,30 +748,24 @@ class OpenSCENARIO2Lexer(Lexer):
                     while self.indents and self.indents[-1] > indent:
                         self.emitToken(self.createDedent())
                         self.indents.pop()
-                
-     
 
-    def OPEN_BRACK_action(self, localctx:RuleContext , actionIndex:int):
+    def OPEN_BRACK_action(self, localctx: RuleContext, actionIndex: int):
         if actionIndex == 1:
             self.opened += 1
-     
 
-    def CLOSE_BRACK_action(self, localctx:RuleContext , actionIndex:int):
+    def CLOSE_BRACK_action(self, localctx: RuleContext, actionIndex: int):
         if actionIndex == 2:
             self.opened -= 1
-     
 
-    def OPEN_PAREN_action(self, localctx:RuleContext , actionIndex:int):
+    def OPEN_PAREN_action(self, localctx: RuleContext, actionIndex: int):
         if actionIndex == 3:
             self.opened += 1
-     
 
-    def CLOSE_PAREN_action(self, localctx:RuleContext , actionIndex:int):
+    def CLOSE_PAREN_action(self, localctx: RuleContext, actionIndex: int):
         if actionIndex == 4:
             self.opened -= 1
-     
 
-    def sempred(self, localctx:RuleContext, ruleIndex:int, predIndex:int):
+    def sempred(self, localctx: RuleContext, ruleIndex: int, predIndex: int):
         if self._predicates is None:
             preds = dict()
             preds[91] = self.NEWLINE_sempred
@@ -772,9 +776,6 @@ class OpenSCENARIO2Lexer(Lexer):
         else:
             raise Exception("No registered predicate for:" + str(ruleIndex))
 
-    def NEWLINE_sempred(self, localctx:RuleContext, predIndex:int):
-            if predIndex == 0:
-                return self.atStartOfInput()
-         
-
-
+    def NEWLINE_sempred(self, localctx: RuleContext, predIndex: int):
+        if predIndex == 0:
+            return self.atStartOfInput()

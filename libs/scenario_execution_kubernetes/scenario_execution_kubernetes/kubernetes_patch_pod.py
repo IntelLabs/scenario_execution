@@ -20,13 +20,14 @@ from .kubernetes_base_action import KubernetesBaseAction
 
 class KubernetesPatchPod(KubernetesBaseAction):
 
-    def __init__(self, namespace: str, target: str, body: str, within_cluster: bool):
-        super().__init__(namespace, within_cluster)
-        self.target = target
+    def __init__(self, within_cluster: bool):
+        super().__init__(within_cluster)
+        self.namespace = None
+        self.target = None
         self.body = None
 
-    def execute(self, namespace: str, target: str, body: str, within_cluster: bool):  # pylint: disable=arguments-differ
-        super().execute(namespace, within_cluster)
+    def execute(self, namespace: str, target: str, body: str):  # pylint: disable=arguments-differ
+        super().execute(namespace)
         self.target = target
         trimmed_data = body.encode('utf-8').decode('unicode_escape')
         try:

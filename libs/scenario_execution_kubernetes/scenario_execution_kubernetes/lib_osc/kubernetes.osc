@@ -36,7 +36,8 @@ action kubernetes_delete inherits kubernetes_base_action:
 action kubernetes_patch_network_policy inherits kubernetes_base_action:
     # patch an existing network policy
     target: string                              # network-policy to patch
-    network_enabled: bool                       # should the network be enabled?
+    ingress_enabled: bool                       # should incoming network traffic be enabled?
+    egress_enabled: bool                        # should outgoing network traffic be enabled?
     match_label: key_value   
 
 action kubernetes_patch_pod inherits kubernetes_base_action:
