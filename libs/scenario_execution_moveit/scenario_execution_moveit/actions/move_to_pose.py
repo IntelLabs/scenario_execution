@@ -111,10 +111,6 @@ class MoveToPose(BaseAction):
                 return result
             else:
                 self.feedback_message = "Motion to pose in progress..."  # pylint: disable= attribute-defined-outside-init
-                if not self.future_called:
-                    future = self.moveit2.get_execution_future()
-                    future.add_done_callback(self.future_done_callback)
-                    self.future_called = True
                 return result
         # Handle idle state
         if self.current_state == MoveIt2State.IDLE:
@@ -125,20 +121,24 @@ class MoveToPose(BaseAction):
                 self.execute = True
                 return result
             else:
-                if self.goal_status is None or self.goal_status == GoalStatus.STATUS_UNKNOWN:
-                    self.logger.debug(f"Goal aborted by the controller {self.log_moveit_error(self.last_error_code)}. Retrying...")
-                    self.feedback_message = f"Goal aborted by the controller {self.log_moveit_error(self.last_error_code)}. Retrying..."   # pylint: disable= attribute-defined-outside-init
-                    self.execute = False
-                    self.future_called = False
-                    self.goal_status = None
-                    return result
-                if self.goal_status == GoalStatus.STATUS_SUCCEEDED:
-                    self.logger.info("Motion to pose successful.")
-                    self.feedback_message = "Motion to pose successful."  # pylint: disable= attribute-defined-outside-init
-                    return py_trees.common.Status.SUCCESS
-                else:
-                    self.logger.info(f"Motion move to pose failed.")
-                    return py_trees.common.Status.FAILURE
+                if not self.future_called:
+                    future = self.moveit2.get_execution_future()
+                    future.add_done_callback(self.future_done_callback)
+                    self.future_called = True
+                if self.goal_status is not None:
+                    if self.goal_status == GoalStatus.STATUS_SUCCEEDED:
+                        self.logger.info("Motion to pose successful.")
+                        self.feedback_message = "Motion to pose successful."  # pylint: disable= attribute-defined-outside-init
+                        return py_trees.common.Status.SUCCESS
+                    elif self.goal_status == GoalStatus.STATUS_CANCELED:
+                        self.feedback_message = f"Goal canceled."   # pylint: disable= attribute-defined-outside-init
+                        return py_trees.common.Status.FAILURE
+                    elif self.goal_status == GoalStatus.STATUS_ABORTED:
+                        self.feedback_message = f"Goal aborted."   # pylint: disable= attribute-defined-outside-init
+                        return py_trees.common.Status.FAILURE
+                    else:
+                        self.feedback_message = f"Goal status unknown."   # pylint: disable= attribute-defined-outside-init
+                        return py_trees.common.Status.FAILURE
         if self.execution_start_time is None:
             self.execution_start_time = time.time()
         if self.check_timeout(self.execution_start_time):
