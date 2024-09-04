@@ -101,7 +101,8 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_camera_transform',
-        arguments=['--x', x, '--y', y, '--z', z, '--roll', roll, '--pitch', pitch, '--yaw', yaw, '--frame-id', '/map', '--child-frame-id', camera_name],
+        arguments=['--x', x, '--y', y, '--z', z, '--roll', roll, '--pitch', pitch,
+                   '--yaw', yaw, '--frame-id', '/map', '--child-frame-id', camera_name],
         remappings=[('/tf_static', 'tf_static')],
     )
 
@@ -109,7 +110,8 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_camera_transform_2',
-        arguments=['--x', '0', '--y', '0', '--z', '0', '--roll', "-1.57", '--pitch', "0", '--yaw', "-1.57", '--frame-id', camera_name, '--child-frame-id', [camera_name, '_optical_frame']],
+        arguments=['--x', '0', '--y', '0', '--z', '0', '--roll', "-1.57", '--pitch', "0", '--yaw',
+                   "-1.57", '--frame-id', camera_name, '--child-frame-id', [camera_name, '_optical_frame']],
         remappings=[('/tf_static', 'tf_static')],
     )
 

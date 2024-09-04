@@ -21,7 +21,6 @@ from rclpy.node import Node
 import py_trees
 from py_trees.common import Status
 from visualization_msgs.msg import Marker
-from geometry_msgs.msg import PoseStamped
 
 from tf2_ros.buffer import Buffer
 from tf2_ros import TransformException  # pylint: disable= no-name-in-module
@@ -88,7 +87,7 @@ class TfCloseTo(BaseAction):
                 self.name, self.__class__.__name__
             )
             raise ActionError(error_message, action=self) from e
-        
+
         self.reference_point = (float(self.reference_point['x']), float(self.reference_point['y']))
         self.feedback_message = f"Waiting for transform map --> base_link"  # pylint: disable= attribute-defined-outside-init
         self.tf_buffer = Buffer()
