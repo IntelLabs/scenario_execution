@@ -88,6 +88,8 @@ class TfCloseTo(BaseAction):
                 self.name, self.__class__.__name__
             )
             raise ActionError(error_message, action=self) from e
+        
+        self.reference_point = (float(self.reference_point['x']), float(self.reference_point['y']))
         self.feedback_message = f"Waiting for transform map --> base_link"  # pylint: disable= attribute-defined-outside-init
         self.tf_buffer = Buffer()
         tf_prefix = self.namespace
@@ -110,8 +112,8 @@ class TfCloseTo(BaseAction):
         marker.color.r = 0.5
         marker.color.g = 0.5
         marker.color.b = 0.5
-        marker.pose.position.x = self.reference_point['x']
-        marker.pose.position.y = self.reference_point['y']
+        marker.pose.position.x = self.reference_point[0]
+        marker.pose.position.y = self.reference_point[1]
         marker.pose.position.z = 0.0
         self.marker_id = self.marker_handler.add_marker(marker)
 
@@ -119,11 +121,11 @@ class TfCloseTo(BaseAction):
         """
         Check if the subscriber already received the right msg while ticking
         """
-        robot_pose, success = self.get_robot_pose_from_tf()
+        translation, success = self.get_translation_from_tf()
         if not success:
             self.feedback_message = f"the pose of {self.robot_frame_id} could not be retrieved from tf"  # pylint: disable= attribute-defined-outside-init
             return Status.RUNNING
-        dist = self.euclidean_dist(robot_pose.pose.position)
+        dist = self.euclidean_dist(translation)
         marker = self.marker_handler.get_marker(self.marker_id)
         self.success = dist <= self.threshold
         if self.success:
@@ -141,43 +143,18 @@ class TfCloseTo(BaseAction):
             self.marker_handler.update_marker(self.marker_id, marker)
             return Status.RUNNING
 
-    def get_robot_pose_from_tf(self):
-        '''
-        function to get pose of the robot (i.e., the base_link frame) with
-        respect to the map frame via tf
-
-        returns:
-            pose: pose of the robot in the map frame
-        '''
-        pose = PoseStamped()
-        when = self.node.get_clock().now()
-        if self.sim:
-            when = rclpy.time.Time()
+    def get_translation_from_tf(self):
+        t = None
         try:
-            t = self.tf_buffer.lookup_transform(
-                'map',
-                self.robot_frame_id,
-                when,
-                timeout=rclpy.duration.Duration(seconds=1.0),
-            )
+            t = self.tf_buffer.lookup_transform('map', self.robot_frame_id, rclpy.time.Time())
             self.feedback_message = f"Transform map -> base_link got available."  # pylint: disable= attribute-defined-outside-init
-        except TransformException as ex:
+        except TransformException as e:
             self.feedback_message = f"Could not transform map to base_link"  # pylint: disable= attribute-defined-outside-init
             self.node.get_logger().warn(
-                f'Could not transform map to base_link at time {when}: {ex}')
-            return pose, False
+                f'Could not transform map to base_link: {e}')
+            return None, False
 
-        pose.header = t.header
-        pose.header.frame_id = 'map'
-
-        pose.pose.position.x = t.transform.translation.x
-        pose.pose.position.y = t.transform.translation.y
-        pose.pose.orientation.x = t.transform.rotation.x
-        pose.pose.orientation.y = t.transform.rotation.y
-        pose.pose.orientation.z = t.transform.rotation.z
-        pose.pose.orientation.w = t.transform.rotation.w
-
-        return pose, True
+        return t.transform.translation, True
 
     def euclidean_dist(self, pos):
         '''
@@ -189,7 +166,7 @@ class TfCloseTo(BaseAction):
         return:
             Euclidean distance in float
         '''
-        return sqrt((self.reference_point['x'] - pos.x) ** 2 + (self.reference_point['y'] - pos.y) ** 2)
+        return sqrt((self.reference_point[0] - pos.x) ** 2 + (self.reference_point[1] - pos.y) ** 2)
 
     def shutdown(self):
         self.marker_handler.remove_markers([self.marker_id])
