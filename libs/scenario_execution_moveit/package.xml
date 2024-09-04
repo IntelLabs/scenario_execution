@@ -9,8 +9,7 @@
   <license file="../LICENSE">Apache-2.0</license>
 
   <depend>scenario_execution_ros</depend>
-
-  <exec_depend>scenario_execution_moveit_interface</exec_depend>
+  <exec_depend>joint_to_pose</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>pymoveit2</exec_depend>
   <exec_depend>moveit_msgs</exec_depend>

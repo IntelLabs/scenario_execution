@@ -3,7 +3,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionServer, GoalResponse
 from rclpy.action.client import GoalStatus
-from scenario_execution_moveit_interface.action import MoveToJointPose
+from joint_to_pose.action import JointToPose
 from rclpy.action.server import ServerGoalHandle
 from pymoveit2 import MoveIt2State
 from scenario_execution_moveit.moveit_common import MoveIt2Interface
@@ -29,7 +29,7 @@ class MoveToJointPoseNode(Node):
 
         self.move_to_joint_pose_server_ = ActionServer(
             self, 
-            MoveToJointPose, 
+            JointToPose, 
             "move_to_joint_pose",
             goal_callback=self.goal_callback,
             execute_callback=self.execute_callback,
@@ -37,7 +37,7 @@ class MoveToJointPoseNode(Node):
         )
         self.get_logger().info("Action server move to joint pose has been started.")
 
-    def goal_callback(self, goal_request: MoveToJointPose.Goal):
+    def goal_callback(self, goal_request: JointToPose.Goal):
         self.get_logger().info("Received a goal request")
         current_state = self.moveit2.query_state()
         if current_state == MoveIt2State.EXECUTING:
@@ -49,7 +49,7 @@ class MoveToJointPoseNode(Node):
     def execute_callback(self, goal_handle: ServerGoalHandle):
         target = goal_handle.request.joint_positions
         self.get_logger().info(f"Executing the goal...{target}")
-        result = MoveToJointPose.Result()
+        result = JointToPose.Result()
         self.moveit2.move_to_configuration(target)
         timeout = 1
         start_time = time.time()

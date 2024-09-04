@@ -1,9 +1,0 @@
-# Goal
-float64[5] joint_positions # Array of 5 joint positions
-
----
-# Result
-int64 error_code
-
----
-# Feedback
