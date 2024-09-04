@@ -50,6 +50,10 @@ setup(
         'scenario_execution.osc_libraries': [
             'moveit = '
             'scenario_execution_moveit.get_osc_library:get_moveit_library',
+        ],
+        'console_scripts': [
+
+            "move_to_joint_pose_server = scenario_execution_moveit.action_server:main"
         ]
     },
 )
