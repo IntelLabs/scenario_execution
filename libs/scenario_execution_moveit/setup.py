@@ -53,7 +53,7 @@ setup(
         ],
         'console_scripts': [
 
-            "move_to_joint_pose_server = scenario_execution_moveit.action_server:main"
+            "move_to_joint_pose_server = scenario_execution_moveit.move_to_joint_pose_action_server:main"
         ]
     },
 )

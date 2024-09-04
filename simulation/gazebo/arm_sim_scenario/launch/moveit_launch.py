@@ -71,7 +71,10 @@ ARGUMENTS = [
                               'defines the fixed frame parameter in RViz. Note that if `use_world_frame` is '
                               '`false`, this parameter should be changed to a frame that exists.'
                           ),
-                          )
+                          ),
+    DeclareLaunchArgument('use_movie_to_joint_pose_action_server', default_value='true',
+                          choices=['true', 'false'],
+                          description='launches movie to joint pose action server'),
 ]
 
 
@@ -86,6 +89,7 @@ def generate_launch_description():
     rviz_frame = LaunchConfiguration('rviz_frame')
     use_sim_time = LaunchConfiguration('use_sim_time')
     hardware_type = LaunchConfiguration('hardware_type')
+    use_movie_to_joint_pose_action_server = LaunchConfiguration('use_movie_to_joint_pose_action_server')
 
     xacro_file = PathJoinSubstitution([pkg_arm_sim_scenario,
                                        'urdf',
@@ -236,7 +240,16 @@ def generate_launch_description():
         output={'both': 'log'},
     )
 
+    movie_to_joint_pose_action_server = Node(
+        condition=IfCondition(use_movie_to_joint_pose_action_server),
+        package='scenario_execution_moveit',
+        executable='move_to_joint_pose_server',
+        name='move_to_joint_pose_server',
+        output={'both': 'log'},
+    )
+
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(move_group_node)
     ld.add_action(moveit_rviz_node)
+    ld.add_action(movie_to_joint_pose_action_server)
     return ld

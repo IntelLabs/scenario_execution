@@ -34,12 +34,15 @@ ARGUMENTS = [
                           description='configure robot_description to use actual, fake, or simulated hardware',
                           ),
     DeclareLaunchArgument('scenario',
-                          default_value=' ',
+                          default_value='',
                           description='Scenario file to execute',
                           ),
     DeclareLaunchArgument('scenario_execution', default_value='true',
                           choices=['true', 'false'],
                           description='Wether to execute scenario execution'),
+    DeclareLaunchArgument('use_moveit', default_value='true',
+                          choices=['true', 'false'],
+                          description='Wether to launch moveit'),
 ]
 
 
@@ -51,6 +54,7 @@ def generate_launch_description():
     hardware_type = LaunchConfiguration('hardware_type')
     scenario = LaunchConfiguration('scenario')
     scenario_execution = LaunchConfiguration('scenario_execution')
+    use_moveit = LaunchConfiguration('use_moveit')
 
     ignition = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'ignition_launch.py'])]),
@@ -70,6 +74,10 @@ def generate_launch_description():
 
     moveit_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'moveit_launch.py'])]),
+        condition=LaunchConfigurationEquals(
+            launch_configuration_name='use_moveit',
+            expected_value='true'
+        ),
         launch_arguments={
             'hardware_type': hardware_type,
         }.items(),
