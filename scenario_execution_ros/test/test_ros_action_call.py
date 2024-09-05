@@ -17,6 +17,7 @@
 import os
 import unittest
 import rclpy
+import tempfile
 import py_trees
 from rclpy.action import ActionServer, CancelResponse, GoalResponse
 from rclpy.action.server import GoalEvent
@@ -118,6 +119,26 @@ scenario test:
         action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}')
 """
         self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
+    def test_success_success_on_acceptance(self):
+        self.tmp_file1 = tempfile.NamedTemporaryFile()
+        self.tmp_file2 = tempfile.NamedTemporaryFile()
+        scenario_content = """
+import osc.helpers
+import osc.ros
+
+scenario test:
+    timeout(10s)
+    do serial:
+        wait elapsed(1s)
+        run_process('touch """ + self.tmp_file1.name + """')
+        action_call(action_name: "/test_action", action_type: "example_interfaces.action.Fibonacci", data: '{\\"order\\": 3}', success_on_acceptance: true)
+        run_process('touch """ + self.tmp_file2.name + """')
+"""
+        self.execute(scenario_content)
+        diff = os.path.getmtime(self.tmp_file2.name) - os.path.getmtime(self.tmp_file1.name)
+        self.assertLessEqual(diff, 2)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
     def test_goal_not_accepted(self):
