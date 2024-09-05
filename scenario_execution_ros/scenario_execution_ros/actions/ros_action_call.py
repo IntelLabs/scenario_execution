@@ -34,8 +34,9 @@ class ActionCallActionState(Enum):
     IDLE = 1
     ACTION_SERVER_AVAILABLE = 2
     ACTION_CALLED = 3
-    DONE = 4
-    ERROR = 5
+    ACTION_ACCEPTED = 4
+    DONE = 5
+    ERROR = 6
 
 
 class RosActionCall(BaseAction):
@@ -43,7 +44,7 @@ class RosActionCall(BaseAction):
     ros service call behavior
     """
 
-    def __init__(self, action_name: str, action_type: str, transient_local: bool = False):
+    def __init__(self, action_name: str, action_type: str, success_on_acceptance: bool = False, transient_local: bool = False):
         super().__init__()
         self.node = None
         self.client = None
@@ -56,6 +57,7 @@ class RosActionCall(BaseAction):
         self.data = None
         self.current_state = ActionCallActionState.IDLE
         self.cb_group = ReentrantCallbackGroup()
+        self.success_on_acceptance = success_on_acceptance
         self.transient_local = transient_local
 
     def setup(self, **kwargs):
@@ -120,6 +122,10 @@ class RosActionCall(BaseAction):
             result = py_trees.common.Status.RUNNING
         elif self.current_state == ActionCallActionState.ACTION_CALLED:
             result = py_trees.common.Status.RUNNING
+        elif self.current_state == ActionCallActionState.ACTION_ACCEPTED:
+            if self.success_on_acceptance:
+                return py_trees.common.Status.SUCCESS
+            result = py_trees.common.Status.RUNNING
         elif self.current_state == ActionCallActionState.DONE:
             result = py_trees.common.Status.SUCCESS
         else:
@@ -144,6 +150,7 @@ class RosActionCall(BaseAction):
             self.feedback_message = f"Goal rejected."  # pylint: disable= attribute-defined-outside-init
             self.current_state = ActionCallActionState.ERROR
             return
+        self.current_state = ActionCallActionState.ACTION_ACCEPTED
         self.feedback_message = f"Goal accepted."  # pylint: disable= attribute-defined-outside-init
         get_result_future = self.goal_handle.get_result_async()
         get_result_future.add_done_callback(self.get_result_callback)
@@ -154,7 +161,7 @@ class RosActionCall(BaseAction):
         """
         status = future.result().status
         self.logger.debug(f"Received state {status}")
-        if self.current_state == ActionCallActionState.ACTION_CALLED:
+        if self.current_state == ActionCallActionState.ACTION_ACCEPTED:
             if status == GoalStatus.STATUS_SUCCEEDED:
                 self.current_state = ActionCallActionState.DONE
                 self.goal_handle = None
@@ -167,7 +174,8 @@ class RosActionCall(BaseAction):
                 self.feedback_message = f"Goal aborted."   # pylint: disable= attribute-defined-outside-init
                 self.goal_handle = None
         else:
-            self.current_state = ActionCallActionState.ERROR
+            if not self.success_on_acceptance:
+                self.current_state = ActionCallActionState.ERROR
 
     def shutdown(self):
         if self.goal_handle:
@@ -177,7 +185,7 @@ class RosActionCall(BaseAction):
         feedback_message = None
         if current_state == ActionCallActionState.IDLE:
             feedback_message = f"Waiting for action server {self.action_name}"
-        elif current_state == ActionCallActionState.ACTION_CALLED:
+        elif current_state == ActionCallActionState.ACTION_ACCEPTED:
             if self.received_feedback is not None:
                 feedback_message = f"Current: {self.received_feedback}"
             else:
