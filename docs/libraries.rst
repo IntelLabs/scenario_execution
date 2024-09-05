@@ -653,6 +653,10 @@ Use nav2 to navigate through poses.
      - ``string``
      - ``navigate_through_poses``
      - Action name
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     -  succeed on goal acceptance
 
 ``differential_drive_robot.nav_to_pose()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -680,7 +684,10 @@ Use nav2 to navigate to goal pose.
      - ``string``
      - ``navigate_to_pose``
      - Action name
-
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     -  succeed on goal acceptance
 
 OS
 --
@@ -759,6 +766,10 @@ Call a ROS action and wait for the result.
      - ``string``
      - 
      - Call content (e.g. ``{\"order\": 3}``)
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     -  succeed on goal acceptance
 
 ``assert_lifecycle_state()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
