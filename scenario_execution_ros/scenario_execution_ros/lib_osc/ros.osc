@@ -36,6 +36,7 @@ action action_call:
     action_name: string                  # name of the action to connect to
     action_type: string                  # class of the message type
     data: string                         # call content
+    success_on_acceptance: bool = false  # succeed on goal acceptance
     transient_local: bool = false
 
 action assert_lifecycle_state:
