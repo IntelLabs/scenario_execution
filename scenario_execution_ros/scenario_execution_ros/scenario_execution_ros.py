@@ -19,7 +19,7 @@ import sys
 import rclpy  # pylint: disable=import-error
 import py_trees_ros  # pylint: disable=import-error
 from py_trees_ros_interfaces.srv import OpenSnapshotStream
-from scenario_execution import ScenarioExecution
+from scenario_execution import ScenarioExecution, ShutdownHandler
 from .logging_ros import RosLogger
 from .marker_handler import MarkerHandler
 
@@ -119,7 +119,10 @@ class ROSScenarioExecution(ScenarioExecution):
                     self.on_scenario_shutdown(False, "Aborted")
 
                 if self.shutdown_task is not None and self.shutdown_task.done():
-                    break
+                    shutdown_handler = ShutdownHandler.get_instance()
+                    if shutdown_handler.is_done():
+                        self.logger.info("Shutting down finished.")
+                        break
         except Exception as e:  # pylint: disable=broad-except
             self.on_scenario_shutdown(False, "Run failed", f"{e}")
         finally:
@@ -128,7 +131,6 @@ class ROSScenarioExecution(ScenarioExecution):
     def shutdown(self):
         self.logger.info("Shutting down...")
         self.behaviour_tree.shutdown()
-        self.logger.info("Shutting down finished.")
 
     def on_scenario_shutdown(self, result, failure_message="", failure_output=""):
         if self.shutdown_requested:
