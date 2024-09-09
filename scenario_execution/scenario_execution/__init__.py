@@ -17,7 +17,7 @@
 from . import actions
 from . import utils
 from . import model
-from scenario_execution.scenario_execution_base import ScenarioExecution
+from scenario_execution.scenario_execution_base import ScenarioExecution, ShutdownHandler
 from scenario_execution.utils.logging import BaseLogger, Logger
 
 __all__ = [
@@ -26,5 +26,6 @@ __all__ = [
     'model',
     'BaseLogger',
     "Logger",
-    'ScenarioExecution'
+    'ScenarioExecution',
+    'ShutdownHandler'
 ]

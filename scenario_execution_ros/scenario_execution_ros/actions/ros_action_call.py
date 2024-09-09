@@ -25,6 +25,7 @@ from rosidl_runtime_py.set_message import set_message_fields
 import py_trees  # pylint: disable=import-error
 from action_msgs.msg import GoalStatus
 from scenario_execution.actions.base_action import BaseAction, ActionError
+from scenario_execution import ShutdownHandler
 
 
 class ActionCallActionState(Enum):
@@ -152,8 +153,9 @@ class RosActionCall(BaseAction):
             return
         self.current_state = ActionCallActionState.ACTION_ACCEPTED
         self.feedback_message = f"Goal accepted."  # pylint: disable= attribute-defined-outside-init
-        get_result_future = self.goal_handle.get_result_async()
-        get_result_future.add_done_callback(self.get_result_callback)
+        if not self.success_on_acceptance:
+            get_result_future = self.goal_handle.get_result_async()
+            get_result_future.add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future):
         """
@@ -179,7 +181,9 @@ class RosActionCall(BaseAction):
 
     def shutdown(self):
         if self.goal_handle:
-            self.goal_handle.cancel_goal()
+            future = self.goal_handle.cancel_goal_async()
+            shutdown_handler = ShutdownHandler.get_instance()
+            shutdown_handler.add_future(future)
 
     def get_feedback_message(self, current_state):
         feedback_message = None
