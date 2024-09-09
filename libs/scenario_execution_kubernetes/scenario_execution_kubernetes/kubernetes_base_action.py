@@ -53,7 +53,6 @@ class KubernetesBaseAction(BaseAction):
             self.current_state = KubernetesBaseActionState.REQUEST_SENT
             return py_trees.common.Status.RUNNING
         elif self.current_state == KubernetesBaseActionState.REQUEST_SENT:
-            success = True
             if self.current_request.ready():
                 if not self.current_request.successful():
                     try:
@@ -64,11 +63,10 @@ class KubernetesBaseAction(BaseAction):
                         if "message" in body:
                             message = f", message: '{body['message']}'"
                         self.feedback_message = f"Failure! Reason: {e.reason} {message}"  # pylint: disable= attribute-defined-outside-init
-                    success = False
-            if success:
+                    return py_trees.common.Status.FAILURE
                 return py_trees.common.Status.SUCCESS
             else:
-                return py_trees.common.Status.FAILURE
+                return py_trees.common.Status.RUNNING
         return py_trees.common.Status.FAILURE
 
     def kubernetes_call(self):
