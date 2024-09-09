@@ -29,6 +29,24 @@ from xml.sax.saxutils import escape  # nosec B406 # escape is only used on an in
 from timeit import default_timer as timer
 
 
+class ShutdownHandler:
+    _instance = None
+
+    def __init__(self):
+        self.futures = []
+
+    def get_instance():  # pylint: disable=no-method-argument
+        if ShutdownHandler._instance is None:
+            ShutdownHandler._instance = ShutdownHandler()
+        return ShutdownHandler._instance
+
+    def add_future(self, future):
+        self.futures.append(future)
+
+    def is_done(self):
+        return all(fut.done() for fut in self.futures)
+
+
 @dataclass
 class ScenarioResult:
     name: str
