@@ -130,25 +130,27 @@ class KubernetesDelete(BaseAction):
             else:
                 return py_trees.common.Status.RUNNING
         elif self.current_state == KubernetesDeleteActionState.WAIT_FOR_DELETION:
-            if self.current_request.successful():
-                current_elements = []
-                for i in self.current_request.get().items:
-                    current_elements.append(i.metadata.name)
-                if self.target not in current_elements:
-                    self.feedback_message = f"successfully deleted '{self.target}' from namespace '{self.namespace}'."  # pylint: disable= attribute-defined-outside-init
-                    return py_trees.common.Status.SUCCESS
+            if self.current_request.ready():
+                if self.current_request.successful():
+                    current_elements = []
+                    for i in self.current_request.get().items:
+                        current_elements.append(i.metadata.name)
+                    if self.target not in current_elements:
+                        self.feedback_message = f"successfully deleted '{self.target}' from namespace '{self.namespace}'."  # pylint: disable= attribute-defined-outside-init
+                        return py_trees.common.Status.SUCCESS
+                    else:
+                        self.feedback_message = f"Waiting for deletion of '{self.target}' in namespace '{self.namespace}'."  # pylint: disable= attribute-defined-outside-init
+                        if self.element_type == KubernetesElementType.POD:
+                            self.current_request = self.client.list_namespaced_pod(
+                                namespace=self.namespace, async_req=True)
+                        elif self.element_type == KubernetesElementType.NETWORK_POLICY:
+                            self.current_request = self.network_client.list_namespaced_network_policy(
+                                namespace=self.namespace, async_req=True)
+                        return py_trees.common.Status.RUNNING
                 else:
-                    self.feedback_message = f"Waiting for deletion of '{self.target}' in namespace '{self.namespace}'."  # pylint: disable= attribute-defined-outside-init
-                    if self.element_type == KubernetesElementType.POD:
-                        self.current_request = self.client.list_namespaced_pod(
-                            namespace=self.namespace, async_req=True)
-                    elif self.element_type == KubernetesElementType.NETWORK_POLICY:
-                        self.current_request = self.network_client.list_namespaced_network_policy(
-                            namespace=self.namespace, async_req=True)
-                    return py_trees.common.Status.RUNNING
+                    self.feedback_message = f"Error while deleting '{self.target}' in namespace '{self.namespace}'."  # pylint: disable= attribute-defined-outside-init
             else:
-                self.feedback_message = f"Error while deleting '{self.target}' in namespace '{self.namespace}'."  # pylint: disable= attribute-defined-outside-init
-                return py_trees.common.Status.FAILURE
+                return py_trees.common.Status.RUNNING
 
         else:
             self.feedback_message = f"Error while requesting list of current elements of type {self.element_type_str} (after deletion request)."  # pylint: disable= attribute-defined-outside-init
