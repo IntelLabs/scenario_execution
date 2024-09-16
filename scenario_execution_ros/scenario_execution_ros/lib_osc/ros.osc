@@ -70,6 +70,21 @@ action assert_topic_latency:
     wait_for_first_message: bool = true  # start measuring with the first received message
     topic_type: string                   # class of message type, only required when wait_for_first_message is set to false (e.g. std_msgs.msg.String)
 
+action bag_play:
+    # play back a ros bag
+    source: string                       # path to rosbag directory, either absolute or relative to scenario-file directory
+    topics: list of string               # topics to publish, if empty all topics are published
+    publish_clock: bool = false          # wether to publish to /clock
+    publish_clock_rate: float = 1.0      # if publish_clock is true, publish to /clock at the specified frequency in Hz, to act as a ROS Time Source.
+
+action bag_record:
+    # Record a ros bag, stored in output_dir defined by command-line parameter (default: '.')
+    topics: list of string               # topics to records, if empty all topics are recorded
+    timestamp_suffix: bool = true        # add a timestamp suffix to output directory name
+    hidden_topics: bool = false          # whether to record hidden topics
+    storage: string = ''                 # storage type to use (empty string: use default)
+    use_sim_time: bool = false           # use simulation time for message timestamps by subscribing to the /clock topic
+
 action check_data:
     # Compare received topic messages using the given comparison_operator, against the specified value. Either the whole message gets compared or a member defined by member_name.
     topic_name: string                   # name of the topic to connect to
@@ -99,14 +114,6 @@ action log_check:
     # Check the ROS log for specific output
     module_name: string = ''             # If specified, a matching message must also match the module name
     values: list of string               # string to check for. If found, action succeeds
-
-action record_bag:
-    # Record a dataset, stored in output_dir defined by command-line parameter (default: '.')
-    topics: list of topics               # Topics to records, if empty all topics are recorded
-    timestamp_suffix: bool = true        # Add a timestamp suffix to output directory name
-    hidden_topics: bool = false          # whether to record hidden topics
-    storage: string = ''                 # storage type to use (empty string: use default)
-    use_sim_time: bool = false           # use simulation time for message timestamps by subscribing to the /clock topic
 
 action ros_launch:
     # Execute a ros launch file
