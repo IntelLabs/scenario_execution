@@ -62,6 +62,7 @@ class RunProcess(BaseAction):
                 return py_trees.common.Status.FAILURE
 
             self.feedback_message = f"Executing '{self.command}'"  # pylint: disable= attribute-defined-outside-init
+            self.logger.debug(f"Executing '{self.command}'")
             self.on_executed()
 
             def log_output(out, log_fct, buffer):

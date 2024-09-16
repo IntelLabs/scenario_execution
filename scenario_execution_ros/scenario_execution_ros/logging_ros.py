@@ -30,6 +30,8 @@ class RosLogger(BaseLogger):
 
     def __init__(self, name: str, debug=False):
         super().__init__(name, debug)
+        if debug:
+            rclpy.logging.set_logger_level(name, rclpy.logging.LoggingSeverity.DEBUG)
         self.logger = rclpy.logging.get_logger(name)
 
     def info(self, msg: str):
