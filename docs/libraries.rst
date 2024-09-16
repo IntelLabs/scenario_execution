@@ -894,6 +894,76 @@ Check the latency of the specified topic (in system time). If the check with ``c
      - Class of message type, only required when 'wait_for_first_message' is set to false (e.g. ``std_msgs.msg.String``)
 
 
+``bag_play()``
+^^^^^^^^^^^^^^^
+
+Play back a ROS bag.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``source``
+     - ``string``
+     - 
+     - path to ROS bag directory, either absolute or relative to scenario-file directory
+   * - ``topics``
+     - ``list of string``
+     - 
+     - topics to publish, if empty all topics are published
+   * - ``publish_clock``
+     - ``bool``
+     - ``false``
+     - wether to publish to /clock
+   * - ``publish_clock_rate``
+     - ``float``
+     - ``1.0``
+     - if ``publish_clock`` is true, publish to ``/clock`` at the specified frequency in Hz, to act as a ROS Time Source.
+
+
+``bag_record()``
+^^^^^^^^^^^^^^^^
+
+Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: ``.``). If ``topics`` is specified, this action waits for all topics to be subscribed until it returns with success otherwise it immediately returns. The recording is active until the end of the scenario.
+
+A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree. When replaying the bag-file, this allows to visualize the current state of the scenario in RViz, using the ``scenario_execution_rviz`` plugin.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``topics``
+     - ``list of string``
+     - 
+     - List of topics to capture
+   * - ``timestamp_suffix``
+     - ``bool``
+     - ``true``
+     - Add a timestamp suffix to output directory name
+   * - ``hidden_topics``
+     - ``bool``
+     - ``false``
+     - Whether to record hidden topics
+   * - ``storage``
+     - ``string``
+     - ``''``
+     - Storage type to use (empty string: use ROS bag record default)
+   * - ``use_sim_time``
+     - ``bool``
+     - ``false``
+     - Use simulation time for message timestamps by subscribing to the /clock topic
+
+
 ``check_data()``
 ^^^^^^^^^^^^^^^^
 
@@ -1074,43 +1144,6 @@ Wait for specific output in ROS log (i.e. ``/rosout`` topic). If any of the entr
      - ``list of string``
      - 
      - list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
-
-``record_bag()``
-^^^^^^^^^^^^^^^^
-
-Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: '.').
-
-A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree. When replaying the bag-file, this allows to visualize the current state of the scenario in RViz, using the ``scenario_execution_rviz`` plugin.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``topics``
-     - ``list of string``
-     - 
-     - List of topics to capture
-   * - ``timestamp_suffix``
-     - ``bool``
-     - ``true``
-     - Add a timestamp suffix to output directory name
-   * - ``hidden_topics``
-     - ``bool``
-     - ``false``
-     - Whether to record hidden topics
-   * - ``storage``
-     - ``string``
-     - ``''``
-     - Storage type to use (empty string: use ROS bag record default)
-   * - ``use_sim_time``
-     - ``bool``
-     - ``false``
-     - Use simulation time for message timestamps by subscribing to the /clock topic
 
 ``ros_launch()``
 ^^^^^^^^^^^^^^^^
