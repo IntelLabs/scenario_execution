@@ -23,7 +23,7 @@ If you use Scenario Execution for Robotics in your scientific work, please cite 
 
 ```bibtex
 @Article{Pasch2024,
-  author = {Pasch Frederik and Mirus, Florian and Zhang, Yongzhou and Scholl, Kay-Ulrich},
+  author = {Pasch, Frederik and Mirus, Florian and Zhang, Yongzhou and Scholl, Kay-Ulrich},
   title = {Scenario Execution for Robotics: A generic, backend-agnostic library for running reproducible robotics experiments and tests},
   journal = {Computing Research Repository (CoRR)},
   year = {2024},
