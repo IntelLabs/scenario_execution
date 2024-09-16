@@ -1015,6 +1015,55 @@ Compare received topic messages using the given ``comparison_operator``, against
      - ``true``
      - start checking with the first received message after action execution. If false, the check is executed on the last received message.
 
+
+``check_data_external()``
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Compare received topic messages using an external python function ``function_name`` defined in python file ``file_path`` relative to the scenario-file.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``topic_name``
+     - ``string``
+     - 
+     - Name of the topic to connect to
+   * - ``topic_type``
+     - ``string``
+     - 
+     - Class of the message type (e.g. ``std_msgs.msg.String``)
+   * - ``qos_profile``
+     - ``qos_preset_profiles``
+     - ``qos_preset_profiles!system_default``
+     - QoS Preset Profile for the subscriber
+   * - ``file_path``
+     - ``string``
+     - 
+     - Path to python file containing the external check function
+   * - ``function_name``
+     - ``string``
+     - 
+     - python function to be called. The function is expected to have the signature: ``def function_name(msg) -> bool``
+   * - ``fail_if_no_data``
+     - ``bool``
+     - ``false``
+     - return failure if there is no data yet
+   * - ``fail_if_bad_comparison``
+     - ``bool``
+     - ``true``
+     - return failure if comparison failed
+   * - ``wait_for_first_message``
+     - ``bool``
+     - ``true``
+     - start checking with the first received message after action execution. If false, the check is executed on the last received message.
+
+
 ``differential_drive_robot.odometry_distance_traveled()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -31,6 +31,7 @@ setup(
         ('share/' + PACKAGE_NAME, ['package.xml']),
         (os.path.join('share', PACKAGE_NAME, 'scenarios'), glob('scenarios/*.osc')),
         (os.path.join('share', PACKAGE_NAME, 'scenarios', 'test'), glob('scenarios/test/*osc')),
+        (os.path.join('share', PACKAGE_NAME, 'scenarios', 'test'), glob('scenarios/test/*py')),
         (os.path.join('share', PACKAGE_NAME, 'launch'), glob('launch/*launch.py'))
     ],
     install_requires=[
@@ -56,6 +57,7 @@ setup(
             'bag_play = scenario_execution_ros.actions.ros_bag_play:RosBagPlay',
             'bag_record = scenario_execution_ros.actions.ros_bag_record:RosBagRecord',
             'check_data = scenario_execution_ros.actions.ros_topic_check_data:RosTopicCheckData',
+            'check_data_external = scenario_execution_ros.actions.ros_topic_check_data_external:RosTopicCheckDataExternal',
             'differential_drive_robot.odometry_distance_traveled = scenario_execution_ros.actions.odometry_distance_traveled:OdometryDistanceTraveled',
             'differential_drive_robot.tf_close_to = scenario_execution_ros.actions.tf_close_to:TfCloseTo',
             'log_check = scenario_execution_ros.actions.ros_log_check:RosLogCheck',
