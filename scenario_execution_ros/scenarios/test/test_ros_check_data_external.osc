@@ -1,0 +1,11 @@
+import osc.helpers
+import osc.ros
+    
+scenario test:
+    timeout(10s)
+    do serial:
+        check_data_external(
+            topic_name: '/foo',
+            topic_type: 'std_msgs.msg.String',
+            file_path: 'test_ros_check_data_external.py',
+            function_name: 'check_msg')

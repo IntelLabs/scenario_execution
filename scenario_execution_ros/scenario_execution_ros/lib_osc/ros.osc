@@ -82,6 +82,17 @@ action check_data:
     fail_if_bad_comparison: bool = false # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
     wait_for_first_message: bool = true  # start checking with the first received message after action execution. If false, the check is executed on the last received message
 
+action check_data_external:
+    # Compare received topic messages using an external python function.
+    topic_name: string                   # name of the topic to connect to
+    topic_type: string                   # class of the message type (e.g. std_msgs.msg.String)
+    qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
+    file_path: string                    # path to python file containing the external check function
+    function_name: string                # python function to be called. The function is expected to have the signature: 'def function_name(msg) -> bool'
+    fail_if_no_data: bool = false        # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if there is no data on action execution
+    fail_if_bad_comparison: bool = false # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
+    wait_for_first_message: bool = true  # start checking with the first received message after action execution. If false, the check is executed on the last received message
+
 action differential_drive_robot.odometry_distance_traveled:
     # Wait until a defined distance was traveled, based on odometry
     distance: length                     # traveled distance at which the action succeeds.
