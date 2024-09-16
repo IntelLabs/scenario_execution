@@ -19,9 +19,9 @@ Please find the documentation [here](https://intellabs.github.io/scenario_execut
 
 ## How to cite
 
-If you use Scenario Execution for Robotics in your scientific work, please cite our paper [Scenario Execution for Robotics: A generic, backend-agnostic library for running reproducible robotics experiments and tests]{https://arxiv.org/pdf/2409.07080}
+If you use Scenario Execution for Robotics in your scientific work, please cite our paper [Scenario Execution for Robotics: A generic, backend-agnostic library for running reproducible robotics experiments and tests](https://arxiv.org/pdf/2409.07080)
 
-```
+```bibtex
 @Article{Pasch2024,
   author = {Pasch Frederik and Mirus, Florian and Zhang, Yongzhou and Scholl, Kay-Ulrich},
   title = {Scenario Execution for Robotics: A generic, backend-agnostic library for running reproducible robotics experiments and tests},
