@@ -17,7 +17,7 @@ title: "Scenario Execution for Robotics"
 date-released: "2024-03-05"
 url: "https://github.com/intellabs/scenario_execution"
 preferred-citation:
-  type: unpublished
+  type: article
   authors:
     - family-names: "Pasch"
       given-names: "Frederik"
@@ -33,4 +33,4 @@ preferred-citation:
       orcid: "https://orcid.org/0000-0001-6337-1798"
   title: "Scenario Execution for Robotics: A generic, backend-agnostic library for running reproducible robotics experiments and tests"
   year: 2024
-  notes: "Submitted for publication, currently under review"
+  url: "https://arxiv.org/abs/2409.07080"
