@@ -1,0 +1,26 @@
+import osc.standard.base
+import osc.robotics
+
+enum move_group_type: [
+  arm,
+  gripper
+]
+
+actor arm inherits robot:
+    namespace: string = ''
+    arm_joints: list of string
+    gripper_joints: list of string
+    arm_group: string
+    gripper_group: string
+
+action arm.move_to_joint_pose:
+    # Nav2 to navigate to goal pose.
+    goal_pose: list of string                     # end effector pose to move to
+    move_group: move_group_type
+    plan_only: bool = false
+    replan: bool = false
+    tolerance: float = 0.1
+    max_velocity_scaling_factor: float = 0.1
+    namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
+    action_topic: string = 'move_action' # Name of action
+    success_on_acceptance: bool = false  # succeed on goal acceptance

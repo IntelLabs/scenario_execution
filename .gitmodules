@@ -1,3 +1,7 @@
 [submodule "dependencies/py_trees_ros"]
 	path = dependencies/py_trees_ros
 	url = https://github.com/splintered-reality/py_trees_ros.git
+[submodule "dependencies/moveit_resources"]
+	path = dependencies/moveit_resources
+	url = https://github.com/moveit/moveit_resources
+	branch = humble
