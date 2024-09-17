@@ -37,7 +37,7 @@ class RosTopicCheckDataExternal(BaseAction):
                  file_path: str,
                  function_name: str):
         super().__init__()
-        self.check_data = None
+        self.check_function = None
         self.topic_name = topic_name
         self.topic_type = topic_type
         self.qos_profile = qos_profile
@@ -81,7 +81,7 @@ class RosTopicCheckDataExternal(BaseAction):
         spec.loader.exec_module(module)
 
         try:
-            self.check_data = getattr(module, self.function_name)
+            self.check_function = getattr(module, self.function_name)
         except AttributeError as e:
             raise ActionError(f"Check function '{self.function_name}' not found in file '{self.file_path}'.", action=self) from e
 
@@ -101,10 +101,9 @@ class RosTopicCheckDataExternal(BaseAction):
         self.fail_if_no_data = fail_if_no_data
         self.fail_if_bad_comparison = fail_if_bad_comparison
         self.wait_for_first_message = wait_for_first_message
-        if wait_for_first_message:
-            self.found = False
-        else:
-            self.found = self.check_data(self.last_msg)
+        self.found = None
+        if not wait_for_first_message:
+            self.check_data(self.last_msg)
             if self.found is True:
                 self.feedback_message = f"Found expected value in previously received message."  # pylint: disable= attribute-defined-outside-init
 
@@ -119,11 +118,17 @@ class RosTopicCheckDataExternal(BaseAction):
 
     def _callback(self, msg):
         self.last_msg = msg
-        self.found = self.check_data(msg)
+        self.check_data(msg)
         if self.found is True:
             self.feedback_message = f"Found expected value in received message."
         else:
             self.feedback_message = f"Received message does not contain expected value."
+
+    def check_data(self, msg):
+        if msg is None:
+            return
+
+        self.found = self.check_function(msg)
 
     def set_expected_value(self, expected_value_string):
         if not isinstance(expected_value_string, str):

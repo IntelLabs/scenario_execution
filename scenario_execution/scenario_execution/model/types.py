@@ -968,16 +968,6 @@ class ParameterDeclaration(Parameter):
         else:
             return visitor.visit_children(self)
 
-    def get_fully_qualified_var_name(self, include_scenario):
-        name = self.name
-        parent = self.get_parent()
-        while parent and not isinstance(parent, ScenarioDeclaration):
-            name = parent.name + "/" + name
-            parent = parent.get_parent()
-        if include_scenario and parent and parent.name:
-            name = parent.name + "/" + name
-        return name
-
 
 class ParameterReference(ModelElement):
 
@@ -1276,6 +1266,14 @@ class VariableDeclaration(Parameter):
             return visitor.visit_variable_declaration(self)
         else:
             return visitor.visit_children(self)
+
+    def get_fully_qualified_var_name(self):
+        name = self.name
+        parent = self.get_parent()
+        while parent:
+            name = parent.name + "/" + name
+            parent = parent.get_parent()
+        return name
 
 
 class KeepConstraintDeclaration(Declaration):
@@ -2245,20 +2243,29 @@ class IdentifierReference(ModelElement):
             return self.ref.get_type_string()
 
     def get_blackboard_reference(self, blackboard):
-        if not isinstance(self.ref, list) or len(self.ref) == 0:
-            raise ValueError("Variable Reference only supported if reference is list with at least one element")
-        if not isinstance(self.ref[0], ParameterDeclaration):
-            raise ValueError("Variable Reference only supported if reference is part of a parameter declaration")
-        fqn = self.ref[0].get_fully_qualified_var_name(include_scenario=False)
-        if blackboard is None:
-            raise ValueError("Variable Reference found, but no blackboard client available.")
-        for sub_elem in self.ref[1:]:
-            fqn += "/" + sub_elem.name
+        if isinstance(self.ref, list):
+            if len(self.ref) == 0:
+                raise ValueError("Variable Reference only supported if reference is list with at least one element")
+            if not isinstance(self.ref[0], ParameterDeclaration):
+                raise ValueError("Variable Reference only supported if reference is part of a parameter declaration")
+            fqn = self.ref[0].get_qualified_name()
+            var_found = False
+            for elem in self.ref[1:]:
+                if isinstance(elem, VariableDeclaration):
+                    var_found = True
+                fqn += "/" + elem.name
+            if not var_found:
+                raise ValueError(f"No variable found in '{fqn}.")
+        elif isinstance(self.ref, VariableDeclaration):
+            fqn = self.ref.get_fully_qualified_var_name()
+        else:
+            raise ValueError(f"Only references to VariableDeclaration supported, not '{type(self.ref).__name__}'.")
+
         blackboard.register_key(fqn, access=py_trees.common.Access.WRITE)
         return VariableReference(blackboard, fqn)
 
     def get_variable_reference(self, blackboard):
-        if isinstance(self.ref, list) and any(isinstance(x, VariableDeclaration) for x in self.ref):
+        if (isinstance(self.ref, list) and any(isinstance(x, VariableDeclaration) for x in self.ref)) or isinstance(self.ref, VariableDeclaration):
             return self.get_blackboard_reference(blackboard)
         else:
             return None

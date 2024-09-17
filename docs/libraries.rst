@@ -285,6 +285,47 @@ Be depressed, always fail.
 The tickling never ends...
 
 
+
+``decrement()``
+^^^^^^^^^^^^^^^
+
+Decrement the value of a variable.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target_variable``
+     - ``variable``
+     -
+     - Variable to decrement
+
+
+``increment()``
+^^^^^^^^^^^^^^^
+
+Increment the value of a variable.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target_variable``
+     - ``variable``
+     -
+     - Variable to increment
+
+
 ``log()``
 ^^^^^^^^^
 
