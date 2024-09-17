@@ -14,8 +14,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
-
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
@@ -37,7 +35,6 @@ def generate_launch_description():
     arg_scenario_execution = DeclareLaunchArgument(
         'scenario_execution', default_value='True',
         description='Wether to execute scenario execution')
-
 
     scenario_exec = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([scenario_execution_dir, 'launch', 'scenario_launch.py'])]),
