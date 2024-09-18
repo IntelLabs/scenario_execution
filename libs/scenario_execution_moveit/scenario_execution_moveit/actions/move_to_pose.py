@@ -17,8 +17,7 @@
 from rclpy.duration import Duration
 from scenario_execution_ros.actions.ros_action_call import RosActionCall, ActionCallActionState
 from moveit_msgs.action import MoveGroup
-from moveit_msgs.msg import MotionPlanRequest, Constraints, PlanningOptions
-from moveit_msgs.msg import Constraints, PositionConstraint, OrientationConstraint, BoundingVolume
+from moveit_msgs.msg import MotionPlanRequest, PlanningOptions, Constraints, PositionConstraint, OrientationConstraint, BoundingVolume
 from geometry_msgs.msg import PoseStamped
 from shape_msgs.msg import SolidPrimitive
 
