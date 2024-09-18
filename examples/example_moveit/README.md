@@ -1,6 +1,6 @@
 # Example Moveit
 
-To run the Example Moveit 2 Scenario, first build the `arm_sim_scenario` package:
+To run the Example [moveit2](https://moveit.picknik.ai/main/index.html)  Scenario.
 
 Update submodule
 
@@ -11,7 +11,7 @@ git submodule update --init
 Install dependencies
 
 ```bash
-rosdep install  --from-paths simulation/gazebo/arm_sim_scenario --ignore-src
+rosdep install  --from-paths . --ignore-src
 ```
 
 build packages

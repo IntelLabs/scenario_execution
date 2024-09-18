@@ -16,13 +16,12 @@ scenario example_moveit:
             goal_pose: ['-2.82', '+1.01', '-2.40', '-1.46', '0.57', '2.47', '0.0'],
             move_group: move_group_type!arm
         )
-        wait elapsed(3s)
         manipulator.move_to_joint_pose(
             goal_pose: ['0.035'],
             move_group: move_group_type!gripper
         )
-        wait elapsed(3s)
         manipulator.move_to_pose(
             goal_pose: ['0.25', '0.0', '1.0', '0.0', '0.0', '0.0', '1.0']
         )
         wait elapsed(5s)
+        emit end

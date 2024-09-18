@@ -13,6 +13,7 @@
   <!-- moveit2 -->
   <depend>moveit</depend>
   <depend>scenario_execution</depend>
+  <depend>scenario_execution_moveit</depend>
   <depend>moveit_resources</depend>
   <depend>controller_manager</depend>
   <depend>ompl</depend>
