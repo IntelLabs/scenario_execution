@@ -38,6 +38,7 @@ setup(
     entry_points={
         'scenario_execution.actions': [
             'arm.move_to_joint_pose = scenario_execution_moveit.actions.move_to_joint_pose:MoveToJointPose',
+            'arm.move_to_pose = scenario_execution_moveit.actions.move_to_pose:MoveToPose',
         ],
         'scenario_execution.osc_libraries': [
             'moveit = '

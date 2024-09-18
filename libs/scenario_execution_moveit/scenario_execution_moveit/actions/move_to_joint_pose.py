@@ -22,7 +22,7 @@ from moveit_msgs.msg import MotionPlanRequest, Constraints, JointConstraint, Pla
 
 class MoveToJointPose(RosActionCall):
     """
-    Class to move to a pose
+    Class to move to a joint pose
     """
 
     def __init__(self, associated_actor, action_topic: str, namespace_override: str, success_on_acceptance: bool) -> None:
