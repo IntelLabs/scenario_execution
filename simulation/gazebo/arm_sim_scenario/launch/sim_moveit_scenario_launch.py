@@ -18,23 +18,62 @@ from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, LaunchConfigurationEquals
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
 
+ARGUMENTS = [
+    DeclareLaunchArgument('use_rviz', default_value='false',
+                          choices=['true', 'false'],
+                          description='launches RViz if set to `true`.'),
+    DeclareLaunchArgument('ros2_control_hardware_type',
+                          default_value='mock_components',
+                          choices=['ignition', 'mock_components'],
+                          description='ROS2 control hardware interface type to use for the launch file',
+                          ),
+    DeclareLaunchArgument('scenario',
+                          default_value='',
+                          description='Scenario file to execute',
+                          ),
+    DeclareLaunchArgument('scenario_execution', default_value='true',
+                          choices=['true', 'false'],
+                          description='Wether to execute scenario execution'),
+]
+
+
 def generate_launch_description():
 
-    panda_moveit_config_dir = get_package_share_directory('moveit_resources_panda_moveit_config')
+    arm_sim_scenario_dir = get_package_share_directory('arm_sim_scenario')
     scenario_execution_dir = get_package_share_directory('scenario_execution_ros')
 
+    use_rviz = LaunchConfiguration('use_rviz')
+    ros2_control_hardware_type = LaunchConfiguration('ros2_control_hardware_type')
     scenario = LaunchConfiguration('scenario')
     scenario_execution = LaunchConfiguration('scenario_execution')
-    arg_scenario = DeclareLaunchArgument('scenario',
-                                         description='Scenario file to execute')
-    arg_scenario_execution = DeclareLaunchArgument(
-        'scenario_execution', default_value='True',
-        description='Wether to execute scenario execution')
+
+    moveit_bringup = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'moveit_launch.py'])]),
+        launch_arguments={
+            'arg_ros2_control_hardware_type': ros2_control_hardware_type,
+        }.items(),
+    )
+
+    arm_description = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'arm_description_launch.py'])]),
+        launch_arguments={
+            'use_rviz': use_rviz,
+            'arg_ros2_control_hardware_type': ros2_control_hardware_type,
+        }.items()
+    )
+
+    controller_manager = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'controller_manager_launch.py'])]),
+        condition=LaunchConfigurationEquals(
+            launch_configuration_name='arg_ros2_control_hardware_type',
+            expected_value='mock_components'
+        ),
+    )
 
     scenario_exec = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([scenario_execution_dir, 'launch', 'scenario_launch.py'])]),
@@ -44,15 +83,9 @@ def generate_launch_description():
         ]
     )
 
-    panda_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([panda_moveit_config_dir, 'launch', 'demo.launch.py'])]),
-    )
-
-    ld = LaunchDescription([
-        arg_scenario,
-        arg_scenario_execution,
-    ])
-
-    ld.add_action(panda_launch)
+    ld = LaunchDescription(ARGUMENTS)
+    ld.add_action(moveit_bringup)
+    ld.add_action(arm_description)
+    ld.add_action(controller_manager)
     ld.add_action(scenario_exec)
     return ld
