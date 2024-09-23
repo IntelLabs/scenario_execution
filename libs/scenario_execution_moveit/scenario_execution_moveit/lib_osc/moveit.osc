@@ -20,7 +20,7 @@ action arm.move_to_joint_pose:
     move_group: move_group_type
     plan_only: bool = false
     replan: bool = false
-    tolerance: float = 0.1
+    tolerance: float = 0.001
     max_velocity_scaling_factor: float = 0.1
     namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
     action_topic: string = 'move_action' # Name of action
@@ -31,7 +31,7 @@ action arm.move_to_pose:
     goal_pose: list of string         # end effector pose to move to [x, y, z, quatx, quaty, quatz, w]
     plan_only: bool = false
     replan: bool = false
-    tolerance: float = 0.1
+    tolerance: float = 0.001
     max_velocity_scaling_factor: float = 0.1
     namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
     action_topic: string = 'move_action' # Name of action
