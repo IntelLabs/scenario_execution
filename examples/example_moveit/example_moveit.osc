@@ -19,7 +19,7 @@ scenario example_moveit:
             )
         open_gripper: serial:
             manipulator.move_to_joint_pose(
-                goal_pose: ['0.035'],
+                goal_pose: ['0.04'],
                 move_group: move_group_type!gripper
             )
         move_to_pose: serial:
@@ -28,7 +28,7 @@ scenario example_moveit:
             )
         close_gripper: serial:
             manipulator.move_to_joint_pose(
-                goal_pose: ['0.0'],
+                goal_pose: ['0.01'],
                 move_group: move_group_type!gripper
             )
         wait elapsed(1s)

@@ -2,35 +2,42 @@
 
 To run the Example [moveit2](https://moveit.picknik.ai/main/index.html)  Scenario.
 
-Update submodule
+#### 1. Update Submodules
 
 ```bash
 git submodule update --init
 ```
 
-Install dependencies
+#### 2. Install Dependencies
 
 ```bash
-rosdep install  --from-paths . --ignore-src
+rosdep install --from-paths . --ignore-src
 ```
 
-build packages
+#### 3. Build Packages
 
 ```bash
 colcon build --packages-up-to arm_sim_scenario
 ```
 
-Source the workspace:
+#### 4. Source the Workspace
 
 ```bash
 source install/setup.bash
 ```
 
-Now, run the following command to launch the scenario:
+#### 5. Launch the Simulation
+
+##### a. Full Simulation
 
 ```bash
 ros2 launch arm_sim_scenario sim_moveit_scenario_launch.py scenario:=examples/example_moveit/example_moveit.osc
 ```
 
+##### b.Visualization Only
+
+```bash
+ros2 launch arm_sim_scenario sim_moveit_scenario_launch.py scenario:=examples/example_moveit/example_moveit.osc ros2_control_hardware_type:=mock_components use_rviz:=true
+```
 
 For a more detailed understanding of the code structure and scenario implementation please refer to the [tutorial documentation](https://intellabs.github.io/scenario_execution/tutorials.html).

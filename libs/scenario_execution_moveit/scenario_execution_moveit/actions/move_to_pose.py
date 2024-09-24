@@ -74,9 +74,7 @@ class MoveToPose(RosActionCall):
 
         # Assign the bounding volume to the position constraint
         position_constraint.constraint_region = bounding_volume
-
-        # Optionally, set tolerances for weight and target position constraint
-        position_constraint.weight = 1.0  # Importance of this constraint
+        position_constraint.weight = 1.0
 
         # Create OrientationConstraint
         orientation_constraint = OrientationConstraint()
@@ -86,7 +84,7 @@ class MoveToPose(RosActionCall):
         orientation_constraint.absolute_x_axis_tolerance = self.tolerance  # Tolerances for orientation
         orientation_constraint.absolute_y_axis_tolerance = self.tolerance
         orientation_constraint.absolute_z_axis_tolerance = self.tolerance
-        orientation_constraint.weight = 1.0  # Importance of this constraint
+        orientation_constraint.weight = 1.0
 
         # Create the Constraints object and add both position and orientation constraints
         goal_constraints = Constraints()

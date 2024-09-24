@@ -29,7 +29,7 @@ ARGUMENTS = [
     DeclareLaunchArgument('ros2_control_hardware_type', default_value='mock_components',
                           choices=['ignition', 'mock_components'],
                           description='ROS2 control hardware interface type to use for the launch file'),
-    DeclareLaunchArgument('use_sim_time', default_value='false',
+    DeclareLaunchArgument('use_sim_time', default_value='true',
                           choices=['true', 'false'],
                           description='use_sim_time'),
     DeclareLaunchArgument('virtual_joint_child_name', default_value='panda_link0',
@@ -49,10 +49,10 @@ ARGUMENTS = [
 
 
 def generate_launch_description():
-    pkg_moveit_resources_panda_moveit_config = get_package_share_directory('moveit_resources_panda_moveit_config')
-    xacro_file = PathJoinSubstitution([pkg_moveit_resources_panda_moveit_config,
-                                       'config',
-                                       'panda.urdf.xacro'])
+    pkg_arm_sim_scenario = get_package_share_directory('arm_sim_scenario')
+    xacro_file = PathJoinSubstitution([pkg_arm_sim_scenario,
+                                       'urdf',
+                                       'arm.urdf.xacro'])
     ros2_control_hardware_type = LaunchConfiguration('ros2_control_hardware_type')
     virtual_joint_child_name = LaunchConfiguration('virtual_joint_child_name')
     virtual_joint_parent_frame = LaunchConfiguration('virtual_joint_parent_frame')
@@ -66,7 +66,7 @@ def generate_launch_description():
         name="robot_state_publisher",
         output="both",
         parameters=[
-            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+            {'use_sim_time': use_sim_time},
             {'robot_description': ParameterValue(Command([
                 'xacro', ' ', xacro_file, ' ',
                 'ros2_control_hardware_type:=', ros2_control_hardware_type]), value_type=str)},
@@ -80,6 +80,14 @@ def generate_launch_description():
         name="static_transform_publisher",
         output="log",
         arguments=["0.0", "0.0", "0.0", "0.0", "0.0", "0.0", virtual_joint_parent_frame, virtual_joint_child_name],
+    )
+
+    joint_state_publisher = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+        parameters=[{'use_sim_time': use_sim_time}],
+        output={'both': 'log'},
     )
 
     rviz_node = Node(
@@ -99,6 +107,7 @@ def generate_launch_description():
     # Define LaunchDescription variable
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(robot_state_publisher)
+    ld.add_action(joint_state_publisher)
     ld.add_action(static_tf_node)
     ld.add_action(rviz_node)
     return ld

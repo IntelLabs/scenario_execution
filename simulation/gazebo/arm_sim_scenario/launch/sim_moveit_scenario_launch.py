@@ -28,7 +28,7 @@ ARGUMENTS = [
                           choices=['true', 'false'],
                           description='launches RViz if set to `true`.'),
     DeclareLaunchArgument('ros2_control_hardware_type',
-                          default_value='mock_components',
+                          default_value='ignition',
                           choices=['ignition', 'mock_components'],
                           description='ROS2 control hardware interface type to use for the launch file',
                           ),
@@ -39,6 +39,8 @@ ARGUMENTS = [
     DeclareLaunchArgument('scenario_execution', default_value='true',
                           choices=['true', 'false'],
                           description='Wether to execute scenario execution'),
+    DeclareLaunchArgument('use_sim_time', default_value='true',
+                          choices=['true', 'false'],)
 ]
 
 
@@ -46,7 +48,7 @@ def generate_launch_description():
 
     arm_sim_scenario_dir = get_package_share_directory('arm_sim_scenario')
     scenario_execution_dir = get_package_share_directory('scenario_execution_ros')
-
+    use_sim_time = LaunchConfiguration('use_sim_time')
     use_rviz = LaunchConfiguration('use_rviz')
     ros2_control_hardware_type = LaunchConfiguration('ros2_control_hardware_type')
     scenario = LaunchConfiguration('scenario')
@@ -56,6 +58,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'moveit_launch.py'])]),
         launch_arguments={
             'arg_ros2_control_hardware_type': ros2_control_hardware_type,
+            'use_sim_time': use_sim_time,
         }.items(),
     )
 
@@ -64,6 +67,7 @@ def generate_launch_description():
         launch_arguments={
             'use_rviz': use_rviz,
             'arg_ros2_control_hardware_type': ros2_control_hardware_type,
+            'use_sim_time': use_sim_time,
         }.items()
     )
 
@@ -73,6 +77,17 @@ def generate_launch_description():
             launch_configuration_name='arg_ros2_control_hardware_type',
             expected_value='mock_components'
         ),
+    )
+
+    ignition = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'ignition_launch.py'])]),
+        condition=LaunchConfigurationEquals(
+            launch_configuration_name='arg_ros2_control_hardware_type',
+            expected_value='ignition'
+        ),
+        launch_arguments={
+            'use_sim_time': use_sim_time,
+        }.items()
     )
 
     scenario_exec = IncludeLaunchDescription(
@@ -87,5 +102,6 @@ def generate_launch_description():
     ld.add_action(moveit_bringup)
     ld.add_action(arm_description)
     ld.add_action(controller_manager)
+    ld.add_action(ignition)
     ld.add_action(scenario_exec)
     return ld
