@@ -965,6 +965,10 @@ Play back a ROS bag.
      - ``float``
      - ``1.0``
      - if ``publish_clock`` is true, publish to ``/clock`` at the specified frequency in Hz, to act as a ROS Time Source.
+   * - ``start_offset``
+     - ``float``
+     - ``0.0``
+     - start the playback this many seconds into the bag file
 
 
 ``bag_record()``
