@@ -15,7 +15,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import py_trees
-from scenario_execution.model.types import ParameterDeclaration, ScenarioDeclaration
 from scenario_execution.model.error import OSC2Error
 import inspect
 
@@ -55,8 +54,11 @@ class BaseAction(py_trees.behaviour.Behaviour):
             if self.resolve_variable_reference_arguments_in_execute:
                 final_args = self._model.get_resolved_value(self.get_blackboard_client(), skip_keys=self.execute_skip_args)
             else:
-                final_args = self._model.get_resolved_value_with_variable_references(
-                    self.get_blackboard_client(), skip_keys=self.execute_skip_args)
+                try:
+                    final_args = self._model.get_resolved_value_with_variable_references(
+                        self.get_blackboard_client(), skip_keys=self.execute_skip_args)
+                except ValueError as e:
+                    raise ActionError(f"Error initializing action: {e}", action=self) from e
 
             if self._model.actor:
                 final_args["associated_actor"] = self._model.actor.get_resolved_value(self.get_blackboard_client())
@@ -71,24 +73,14 @@ class BaseAction(py_trees.behaviour.Behaviour):
     def get_blackboard_client(self):
         if self.blackboard:
             return self.blackboard
-
-        def get_blackboard_namespace(node: ParameterDeclaration):
-            parent = node.get_parent()
-            while parent is not None and not isinstance(parent, ScenarioDeclaration):
-                parent = parent.get_parent()
-            if parent:
-                return parent.name
-            else:
-                return None
-
-        self.blackboard = self.attach_blackboard_client(name=self.name, namespace=get_blackboard_namespace(self._model))
+        self.blackboard = self.attach_blackboard_client(name=self.name)
         return self.blackboard
 
     def register_access_to_associated_actor_variable(self, variable_name):
         if not self._model.actor:
             raise ActionError("Model does not have 'actor'.", action=self)
         blackboard = self.get_blackboard_client()
-        model_blackboard_name = self._model.actor.get_fully_qualified_var_name(include_scenario=False)
+        model_blackboard_name = self._model.actor.get_qualified_name()
         model_blackboard_name += "/" + variable_name
         blackboard.register_key(model_blackboard_name, access=py_trees.common.Access.WRITE)
         return model_blackboard_name

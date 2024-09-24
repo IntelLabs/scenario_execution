@@ -18,7 +18,7 @@
 
 import operator
 import importlib
-from rclpy.qos import QoSPresetProfiles
+from rclpy.qos import QoSPresetProfiles, ReliabilityPolicy
 
 
 def get_ros_message_type(message_type_string):
@@ -46,6 +46,10 @@ def get_qos_preset_profile(qos_profile):
         return QoSPresetProfiles.SERVICE_DEFAULT.value  # pylint: disable=no-member
     elif qos_profile[0] == 'system_default':
         return QoSPresetProfiles.SYSTEM_DEFAULT.value
+    elif qos_profile[0] == 'system_default_reliable':
+        profile = QoSPresetProfiles.SYSTEM_DEFAULT.value
+        profile.reliability = ReliabilityPolicy.RELIABLE
+        return profile
     else:
         raise ValueError(f"Invalid qos_profile: {qos_profile}")
 

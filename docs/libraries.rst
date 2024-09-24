@@ -285,6 +285,47 @@ Be depressed, always fail.
 The tickling never ends...
 
 
+
+``decrement()``
+^^^^^^^^^^^^^^^
+
+Decrement the value of a variable.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target_variable``
+     - ``variable``
+     -
+     - Variable to decrement
+
+
+``increment()``
+^^^^^^^^^^^^^^^
+
+Increment the value of a variable.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target_variable``
+     - ``variable``
+     -
+     - Variable to increment
+
+
 ``log()``
 ^^^^^^^^^
 
@@ -924,6 +965,10 @@ Play back a ROS bag.
      - ``float``
      - ``1.0``
      - if ``publish_clock`` is true, publish to ``/clock`` at the specified frequency in Hz, to act as a ROS Time Source.
+   * - ``start_offset``
+     - ``float``
+     - ``0.0``
+     - start the playback this many seconds into the bag file
 
 
 ``bag_record()``
