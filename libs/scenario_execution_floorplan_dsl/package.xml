@@ -11,7 +11,6 @@
   <depend>scenario_execution</depend>
   <depend>scenario_execution_gazebo</depend>
 
-  <exec_depend>docker</exec_depend>
   <exec_depend>py_trees</exec_depend>
   <exec_depend>python3-docker</exec_depend>
 
