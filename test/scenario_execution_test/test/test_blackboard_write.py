@@ -44,6 +44,8 @@ class TestCheckData(unittest.TestCase):
 
     def test_success(self):
         scenario_content = """
+import osc.helpers
+
 action store_action:
     file_path: string
     value: string
@@ -55,11 +57,13 @@ action test_actor.set_value:
     value: string
 
 scenario test_scenario:
+    timeout(3s)
     foo: test_actor
 
     do serial:
         foo.set_value("two")
         store_action('""" + self.tmp_file.name + """', foo.test)
+        wait foo.test == "two"
 """
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution.process_results())

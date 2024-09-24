@@ -61,7 +61,7 @@ scenario test_scenario:
     do parallel:
         serial:
             wait elapsed(0.2s)
-            set_blackboard_var("current/val", 2)
+            set_blackboard_var("test_scenario/current/val", 2)
             wait elapsed(10s)
         serial:
             wait current.val * 2 + 4 - 4 / 2 == 6
@@ -88,7 +88,7 @@ scenario test_scenario:
     do parallel:
         serial:
             wait elapsed(0.2s)
-            set_blackboard_var("current/val", true)
+            set_blackboard_var("test_scenario/current/val", true)
             wait elapsed(0.2s)
         serial:
             wait current.val and not current.val2

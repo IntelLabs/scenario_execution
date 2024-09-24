@@ -86,9 +86,8 @@ class RosTopicCheckData(BaseAction):
         self.fail_if_no_data = fail_if_no_data
         self.fail_if_bad_comparison = fail_if_bad_comparison
         self.wait_for_first_message = wait_for_first_message
-        if wait_for_first_message:
-            self.found = False
-        else:
+        self.found = None
+        if not wait_for_first_message:
             self.check_data(self.last_msg)
             if self.found is True:
                 self.feedback_message = f"Found expected value in previously received message."  # pylint: disable= attribute-defined-outside-init
