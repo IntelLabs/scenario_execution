@@ -35,7 +35,7 @@ class RosBagPlay(RunProcess):
             raise ActionError("input_dir not defined.", action=self)
         self.input_dir = kwargs['input_dir']
 
-    def execute(self, source: str, topics: list, publish_clock: bool, publish_clock_rate: float):  # pylint: disable=arguments-differ,arguments-renamed
+    def execute(self, source: str, topics: list, publish_clock: bool, publish_clock_rate: float, start_offset: float):  # pylint: disable=arguments-differ,arguments-renamed
         super().execute(wait_for_shutdown=True)
         self.source = source
         bag_dir = ''
@@ -46,9 +46,11 @@ class RosBagPlay(RunProcess):
         if not os.path.exists(bag_dir):
             raise ActionError(f"Specified rosbag directory '{bag_dir}' does not exist", action=self)
 
-        self.command = ["ros2", "bag", "play"]
+        self.command = ["ros2", "bag", "play", "--disable-keyboard-controls"]
         if publish_clock:
             self.command.extend(["--clock", str(publish_clock_rate)])
+        if start_offset:
+            self.command.extend(["--start-offset", str(start_offset)])
         if topics:
             topics_string = " ".join(topics)
             self.command.append(f"--topics '{topics_string}'")
