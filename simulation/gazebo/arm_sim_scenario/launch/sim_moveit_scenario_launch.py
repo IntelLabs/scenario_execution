@@ -73,10 +73,9 @@ def generate_launch_description():
 
     controller_manager = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'controller_manager_launch.py'])]),
-        condition=LaunchConfigurationEquals(
-            launch_configuration_name='arg_ros2_control_hardware_type',
-            expected_value='mock_components'
-        ),
+        launch_arguments={
+            'arg_ros2_control_hardware_type': ros2_control_hardware_type,
+        }.items()
     )
 
     ignition = IncludeLaunchDescription(

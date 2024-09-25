@@ -17,9 +17,8 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, Shutdown, RegisterEventHandler
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, Shutdown
 from launch.substitutions import LaunchConfiguration
-from launch.event_handlers import OnProcessExit
 from launch_ros.actions import Node
 
 ARGUMENTS = [
@@ -56,78 +55,29 @@ def generate_launch_description():
     )
 
     spawn_robot_node = Node(
-        package='ros_ign_gazebo',
-        executable='create',
-        arguments=['-name', 'panda',
-                   '-x', '0.0',
-                   '-y', '0.0',
-                   '-z', '0.0',
-                   '-Y', '0.0',
-                   '-topic', 'robot_description',
-                   "allow-renaming", "true",
-                   "--ros-args", '--log-level', 'warn'],
-        output={'both': 'log'},
-    )
-
-    clock_bridge = Node(package='ros_gz_bridge', executable='parameter_bridge',
-                        name='clock_bridge',
-                        output='screen',
-                        arguments=[
-                            '/clock' + '@rosgraph_msgs/msg/Clock' + '[ignition.msgs.Clock'
-                        ])
-
-    spawn_joint_state_broadcaster_node = Node(
-        name='joint_state_broadcaster_spawner',
-        package='controller_manager',
-        executable='spawner',
+        package="ros_gz_sim",
+        executable="create",
+        output="screen",
         arguments=[
-            '-c',
-            'controller_manager',
-            'joint_state_broadcaster',
+            "-topic",
+            "robot_description",
+            "-name",
+            "panda",
+            "-allow-renaming",
+            "true",
         ],
-        parameters=[{
-            'use_sim_time': use_sim_time,
-        }],
     )
 
-    arm_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["panda_arm_controller", "-c", "/controller_manager"],
-    )
-
-    gripper_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["panda_hand_controller", "-c", "/controller_manager"],
-    )
-
-    load_joint_state_broadcaster_event = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=spawn_robot_node,
-            on_exit=[spawn_joint_state_broadcaster_node]
-        )
-    )
-
-    load_arm_controller_event = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=spawn_joint_state_broadcaster_node,
-            on_exit=[arm_controller_spawner]
-        )
-    )
-
-    load_gripper_controller_event = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=spawn_joint_state_broadcaster_node,
-            on_exit=[gripper_controller_spawner]
-        )
+    # Clock Bridge
+    clock_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        arguments=["/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock"],
+        output="screen",
     )
 
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(ignition_gazebo)
     ld.add_action(clock_bridge)
     ld.add_action(spawn_robot_node)
-    ld.add_action(load_joint_state_broadcaster_event)
-    ld.add_action(load_arm_controller_event)
-    ld.add_action(load_gripper_controller_event)
     return ld

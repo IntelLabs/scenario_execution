@@ -20,7 +20,9 @@
   <depend>moveit_planners_chomp</depend>
   <depend>gripper_controllers</depend>
   <depend>joint_trajectory_controller</depend>
-  
+  <depend>ros2_control</depend>
+  <depend>ros_gz_bridge</depend>
+  <depend>ros_gz_sim</depend>
   
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

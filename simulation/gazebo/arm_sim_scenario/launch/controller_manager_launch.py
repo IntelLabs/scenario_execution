@@ -18,9 +18,10 @@
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, ExecuteProcess
 from launch.substitutions.launch_configuration import LaunchConfiguration
 from launch_ros.actions import Node
+from launch.conditions import LaunchConfigurationNotEquals
 import os
 
 ARGUMENTS = [
@@ -28,6 +29,9 @@ ARGUMENTS = [
                           description='arm_group_controller name'),
     DeclareLaunchArgument('gripper_group_controller', default_value='panda_hand_controller',
                           description='gripper_group_controller name'),
+    DeclareLaunchArgument('ros2_control_hardware_type', default_value='mock_components',
+                          choices=['ignition', 'mock_components'],
+                          description='ROS2 control hardware interface type to use for the launch file'),
 ]
 
 
@@ -51,34 +55,51 @@ def generate_launch_description():
             ("/controller_manager/robot_description", "/robot_description"),
         ],
         output="screen",
+        condition=LaunchConfigurationNotEquals(
+            "ros2_control_hardware_type", "ignition"
+        ),
     )
 
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
+    joint_state_broadcaster = ExecuteProcess(
+        cmd=[
+            "ros2",
+            "control",
+            "load_controller",
+            "--set-state",
+            "active",
             "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
         ],
+        output="screen",
     )
 
-    arm_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[arm_group_controller, "-c", "/controller_manager"],
+    arm_controller_spawner = ExecuteProcess(
+        cmd=[
+            "ros2",
+            "control",
+            "load_controller",
+            "--set-state",
+            "active",
+            arm_group_controller,
+        ],
+        output="screen",
     )
 
-    gripper_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[gripper_group_controller, "-c", "/controller_manager"],
+    gripper_controller_spawner = ExecuteProcess(
+        cmd=[
+            "ros2",
+            "control",
+            "load_controller",
+            "--set-state",
+            "active",
+            gripper_group_controller
+        ],
+        output="screen",
     )
 
     # Define LaunchDescription variable
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(ros2_control_node)
-    ld.add_action(joint_state_broadcaster_spawner)
+    ld.add_action(joint_state_broadcaster)
     ld.add_action(arm_controller_spawner)
     ld.add_action(gripper_controller_spawner)
     return ld
