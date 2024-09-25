@@ -34,7 +34,6 @@ ARGUMENTS = [
 def generate_launch_description():
 
     world = LaunchConfiguration('world')
-    use_sim_time = LaunchConfiguration('use_sim_time')
     pkg_moveit_resources_panda_description = get_package_share_directory('moveit_resources_panda_description')
 
     env = {'GZ_SIM_SYSTEM_PLUGIN_PATH':
