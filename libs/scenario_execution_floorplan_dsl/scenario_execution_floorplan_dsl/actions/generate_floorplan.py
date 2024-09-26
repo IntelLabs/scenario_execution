@@ -15,19 +15,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-from enum import Enum
 
 import py_trees
 from scenario_execution.actions.base_action import BaseAction, ActionError
 
 import docker
 import tempfile
-
-
-class GenerateFloorplanStatus(Enum):
-    IDLE = 1
-    DOCKER_RUNNING = 2
-    DONE = 3
+import tarfile
 
 
 class GenerateFloorplan(BaseAction):
@@ -35,13 +29,12 @@ class GenerateFloorplan(BaseAction):
         super().__init__()
         self.file_path = file_path
         self.tmp_dir = None
-        self.container = None
         self.client = None
         self.floorplan_name = None
-        self.current_state = GenerateFloorplanStatus.IDLE
+        self.floorplan_tarball = None
 
     def setup(self, **kwargs):
-        self.tmp_dir = tempfile.TemporaryDirectory()
+        self.tmp_dir = tempfile.TemporaryDirectory(delete=None)
         self.output_dir = self.tmp_dir.name
         # self.output_dir = tempfile.mkdtemp() # for testing: does not remove directory afterwards
 
@@ -56,54 +49,66 @@ class GenerateFloorplan(BaseAction):
             raise ActionError(f"Required docker image '{image_name}' does not exist.", action=self)
 
         # check files
+        self.input_dir = os.path.abspath(input_dir)
         if not os.path.isabs(self.file_path):
-            self.file_path = os.path.join(input_dir, self.file_path)
+            self.file_path = os.path.join(os.path.abspath(input_dir), self.file_path)
         if not os.path.isfile(self.file_path):
             raise ActionError(f"Floorplan file {self.file_path} not found.", action=self)
         self.floorplan_name = os.path.splitext(os.path.basename(self.file_path))[0]
+        srcname = os.path.basename(self.file_path)
+        self.floorplan_tarball = tempfile.NamedTemporaryFile(suffix=".tar")
+        with tarfile.open(self.floorplan_tarball.name, mode='w') as input_tar:
+            input_tar.add(self.file_path, arcname=os.path.basename(self.file_path))
 
     def update(self) -> py_trees.common.Status:
-        if self.current_state == GenerateFloorplanStatus.IDLE:
-            model_dir = os.path.dirname(os.path.abspath(self.file_path))
-            try:
-                self.container = self.client.containers.run("floorplan:latest",
-                                                            command="blender --background --python exsce_floorplan/exsce_floorplan.py --python-use-system-env -- ../models/" +
-                                                            os.path.basename(self.file_path),
-                                                            detach=True,
-                                                            remove=True,
-                                                            user=os.getuid(),
-                                                            group_add=[os.getgid()],
-                                                            volumes={
-                                                                model_dir: {
-                                                                    "bind": "/usr/src/app/models",
-                                                                    "mode": "ro"},
-                                                                self.output_dir: {
-                                                                    "bind": "/usr/src/app/output",
-                                                                    "mode": "rw"},
-                                                            })
-            except docker.errors.APIError as e:
-                self.feedback_message = f"Generating meshes failed: {e}"  # pylint: disable= attribute-defined-outside-init
-                return py_trees.common.Status.FAILURE
-            self.current_state = GenerateFloorplanStatus.DOCKER_RUNNING
-            self.feedback_message = f"Generating meshes..."  # pylint: disable= attribute-defined-outside-init
-            return py_trees.common.Status.RUNNING
-        elif self.current_state == GenerateFloorplanStatus.DOCKER_RUNNING:
-            self.container.reload()
-            if self.container:
-                res = self.container.status
-            if res in ["removing", "exited"]:
-                output_path = os.path.join(self.output_dir, self.floorplan_name)
-                mesh_file = os.path.join(output_path, "mesh", self.floorplan_name + ".stl")
-                map_file = os.path.join(output_path, "map", self.floorplan_name + ".yaml")
-                if os.path.isfile(mesh_file) and os.path.isfile(map_file):
-                    self.feedback_message = f"Meshes generated."  # pylint: disable= attribute-defined-outside-init
-                    self.set_associated_actor_variable("generated_floorplan_mesh_path", mesh_file)
-                    self.set_associated_actor_variable("generated_floorplan_map_path", map_file)
-                    self.current_state = GenerateFloorplanStatus.DONE
-                    return py_trees.common.Status.SUCCESS
-                else:
-                    self.logger.error(f"Did not find required files: mesh: {mesh_file}, map: {map_file}")
-                    return py_trees.common.Status.FAILURE
-            return py_trees.common.Status.RUNNING
-
-        return py_trees.common.Status.FAILURE
+        self.feedback_message = f"Generating meshes..."  # pylint: disable= attribute-defined-outside-init
+        try:
+            container = self.client.containers.run("floorplan:latest",
+                                                        command=f'/bin/sh -c "sleep 60"',
+                                                        detach=True,
+                                                        remove=True,
+                                                        user=os.getuid(),
+                                                        group_add=[os.getgid()])
+            with open(self.floorplan_tarball.name, 'rb') as f:
+                container.put_archive('/usr/src/app/models/', f.read())
+            # TODO: exec_run currently blocks until finished.
+            exit_code, output = container.exec_run(
+                f'blender --background --python exsce_floorplan/exsce_floorplan.py --python-use-system-env -- ../models/{os.path.basename(self.file_path)}')
+        except docker.errors.APIError as e:
+            self.feedback_message = f"Generating meshes failed: {e}"  # pylint: disable= attribute-defined-outside-init
+            return py_trees.common.Status.FAILURE
+        if exit_code != 0:
+            self.feedback_message = f"Error during generation: output: {output.decode()}"  # pylint: disable= attribute-defined-outside-init
+            return py_trees.common.Status.FAILURE
+        result_data, _ = container.get_archive('/usr/src/app/output/')
+        output_tar = tempfile.NamedTemporaryFile(suffix=".tar")
+        with open(output_tar.name, 'wb') as f:
+            for chunk in result_data:
+                f.write(chunk)
+        with tarfile.open(output_tar.name, 'r:') as tar:
+            tar.extractall(self.output_dir)
+        output_path = os.path.join(self.output_dir, "output", self.floorplan_name)
+        mesh_file = os.path.join(output_path, "mesh", self.floorplan_name + ".stl")
+        map_file = os.path.join(output_path, "map", self.floorplan_name + ".yaml")
+        if os.path.isfile(mesh_file) and os.path.isfile(map_file):
+            self.feedback_message = f"Meshes generated."  # pylint: disable= attribute-defined-outside-init
+            self.set_associated_actor_variable("generated_floorplan_mesh_path", mesh_file)
+            self.set_associated_actor_variable("generated_floorplan_map_path", map_file)
+            self.set_associated_actor_variable("goal_poses", [
+                [{'position': {'x': 4.3, 'y': 9.8, 'z': 0}, 'orientation': {'roll': 0, 'pitch': 0, 'yaw': 0}}, {'position': {'x': 4.3, 'y': 0.7, 'z': 0}, 'orientation': {'roll': 0, 'pitch': 0, 'yaw': 0}}],
+                [{'position': {'x': 4.3, 'y': 0.7, 'z': 0}, 'orientation': {'roll': 0, 'pitch': 0, 'yaw': 0}}, {'position': {'x': 4.3, 'y': 9.8, 'z': 0}, 'orientation': {'roll': 0, 'pitch': 0, 'yaw': 0}}]
+            ])
+            # self.set_associated_actor_variable("goal_poses", [{'position': {'x': 4.3, 'y': 9.8, 'z': 0}, 'orientation': {'roll': 0, 'pitch': 0, 'yaw': 0}}, {'position': {'x': 4.3, 'y': 0.7, 'z': 0}, 'orientation': {'roll': 0, 'pitch': 0, 'yaw': 0}}, {'position': {'x': 0.7, 'y': 0.7, 'z': 0}, 'orientation': {'roll': 0, 'pitch': 0, 'yaw': 0}}])
+                                                              
+                                                              
+        # robot.init_nav2(initial_pose: pose_3d(position: position_3d(x: 0.7m, y: 9.8m)))
+        # robot.nav_through_poses([
+        #     pose_3d(position_3d(x: 4.3m, y: 9.8m)),
+        #     pose_3d(position_3d(x: 4.3m, y: 0.7m)),
+        #     pose_3d(position_3d(x: 0.7m, y: 0.7m))
+            
+            
+            return py_trees.common.Status.SUCCESS
+        else:
+            self.logger.error(f"Did not find required files: mesh: {mesh_file}, map: {map_file}")
+            return py_trees.common.Status.FAILURE

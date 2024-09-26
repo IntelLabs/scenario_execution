@@ -5,6 +5,7 @@ actor floorplan_generator:
     var generated_floorplan_mesh_path: string
     var generated_floorplan_map_path: string
     var generated_gazebo_world_path: string
+    var goal_poses: list of pose_3d
 
 action floorplan_generator.generate_floorplan:
     file_path: string

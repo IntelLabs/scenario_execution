@@ -40,7 +40,7 @@ class GenerateGazeboWorld(BaseAction):
             self.sdf_template = os.path.join(input_dir, self.sdf_template)
         if not os.path.isfile(self.sdf_template):
             raise ActionError(f"SDF Template {self.sdf_template} not found.", action=self)
-        self.tmp_file = tempfile.NamedTemporaryFile(suffix=".sdf")  # for testing, do not delete temp file: delete=False
+        self.tmp_file = tempfile.NamedTemporaryFile(suffix=".sdf", delete=False)  # for testing, do not delete temp file: delete=False
 
     def execute(self, associated_actor, arguments: list):
         self.arguments_string = ""

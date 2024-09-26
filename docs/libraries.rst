@@ -1089,6 +1089,10 @@ Execute a ROS launch file.
      - ``list of key_value``
      -
      - ROS arguments (get forwarded as key:=value pairs)
+   * - ``replace_relative_paths_in_args``
+     - ``bool``
+     - ``false``
+     - If true, all relative paths in argument values (starting with ``./`` or ``../``) are replaced by absolute paths relative to the scenario file. Example: ``./config.rviz`` becomes ``/<full_path_to_osc_file>/config.rviz``.
    * - ``wait_for_shutdown``
      - ``bool``
      - ``true``
@@ -1290,7 +1294,7 @@ The library contains actions to interact with the X11 window system. Import it w
 ``capture_screen()``
 ^^^^^^^^^^^^^^^^^^^^
 
-Capture the screen content within a video.
+Capture the screen content within a video. The action requires ``ffmpeg`` to be installed.
 
 .. list-table:: 
    :widths: 15 15 5 65

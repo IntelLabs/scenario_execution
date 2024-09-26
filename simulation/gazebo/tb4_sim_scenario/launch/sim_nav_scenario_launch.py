@@ -41,6 +41,15 @@ def generate_launch_description():
     arg_scenario_execution = DeclareLaunchArgument(
         'scenario_execution', default_value='True',
         description='Wether to execute scenario execution')
+    rviz_config_file = LaunchConfiguration('rviz_config_file')
+    arg_rviz_config_file = DeclareLaunchArgument('rviz_config_file', default_value=os.path.join(tb4_sim_scenario_dir, 'config', 'tb4_sim_scenario.rviz'),
+        description='Full path to map yaml file to load')
+    map = LaunchConfiguration('map')
+    arg_map = DeclareLaunchArgument('map', default_value=os.path.join(tb4_sim_scenario_dir, 'maps', 'maze.yaml'),
+        description='Full path to map yaml file to load')
+    world = LaunchConfiguration('world')
+    arg_world_cmd = DeclareLaunchArgument('world', default_value=os.path.join(tb4_sim_scenario_dir, 'worlds', 'maze.sdf'),
+        description='Full path to world model file to load')
     world_name = LaunchConfiguration('world_name')
     arg_world_name = DeclareLaunchArgument('world_name', default_value='default',
                                            description='Name of Simulation World')
@@ -53,12 +62,12 @@ def generate_launch_description():
     simulation = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([nav2_minimal_tb4_sim_dir, 'launch', 'simulation.launch.py'])]),
         launch_arguments={
-            'world': [PathJoinSubstitution([tb4_sim_scenario_dir, 'worlds', 'maze.sdf'])],
+            'world': world,
             'x_pose': x,
             'y_pose': y,
             'z_pose': z,
             'yaw': yaw,
-            'rviz_config_file': [PathJoinSubstitution([tb4_sim_scenario_dir, 'config', 'tb4_sim_scenario.rviz'])],
+            'rviz_config_file': rviz_config_file,
         }.items()
     )
 
@@ -67,7 +76,7 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': 'True',
             'params_file': params_file,
-            'map': [PathJoinSubstitution([tb4_sim_scenario_dir, 'maps', 'maze.yaml'])],
+            'map': map,
         }.items()
     )
 
@@ -93,6 +102,9 @@ def generate_launch_description():
     ld = LaunchDescription([
         arg_scenario,
         arg_scenario_execution,
+        arg_rviz_config_file,
+        arg_map,
+        arg_world_cmd,
         arg_world_name,
         arg_params_file
     ])
