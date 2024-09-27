@@ -23,12 +23,12 @@ from scenario_execution.osc2_parsing.OpenSCENARIO2Parser import OpenSCENARIO2Par
 from scenario_execution.osc2_parsing.OpenSCENARIO2Lexer import OpenSCENARIO2Lexer
 from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.model.model_builder import ModelBuilder
-from scenario_execution.model.types import print_tree, ScenarioDeclaration, ParameterDeclaration, StringLiteral, FloatLiteral, BoolLiteral, IntegerLiteral, PhysicalTypeDeclaration, PhysicalLiteral, StructDeclaration, FunctionApplicationExpression, IdentifierReference, NamedArgument, PositionalArgument
+from scenario_execution.model.types import print_tree, ScenarioDeclaration, ParameterDeclaration, StringLiteral, FloatLiteral, BoolLiteral, IntegerLiteral, PhysicalTypeDeclaration, PhysicalLiteral, StructDeclaration, FunctionApplicationExpression, IdentifierReference, NamedArgument, PositionalArgument, Type
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.model.model_resolver import resolve_internal_model
 from scenario_execution.model.model_blackboard import create_py_tree_blackboard
 import py_trees
-
+import copy
 
 class OpenScenario2Parser(object):
     """ Helper class for parsing openscenario 2 files """
@@ -92,57 +92,113 @@ class OpenScenario2Parser(object):
                                 self.set_override_value(child_def, override_value)
                             except ValueError as e:
                                 raise ValueError(f"{parameter.name} {e}") from e
+                    if param_keys:
+                        raise ValueError(f"Scenario Parameter Overrides contain unknown parameter(s): {', '.join(param_keys)}")
                                 
             if len(keys) > 0:
-                raise ValueError(f"Scenario Parameter Overrides contain unknown scenario(s): {', '.join(keys)}")
+                raise ValueError(f"Scenario Parameter Overrides contain unknown scenario(s): {', '.join(keys)}")         
         return model
 
 
     def set_override_value_function_application(self, parameter, override_value):
-        idx = 0
+        first = True
         struct_keys = list(override_value.keys())
         pos = 0
+        ref = None
         for child in parameter.get_children():
-            if idx == 0:
+            if first:
+                first = False
                 if not isinstance(child, IdentifierReference):
                     raise ValueError(f"Expected IdentifierReference, got {child}")
                 ref = child.ref
-            else:
-                arg_name = None
-                if isinstance(child, NamedArgument):
-                    arg_name = child.name
-                elif isinstance(child, PositionalArgument):
-                    arg_name = ref.get_child(pos).name
-                    pos += 1
+                continue
+            
+            arg_name = None
+            if isinstance(child, NamedArgument):
+                arg_name = child.name
+            elif isinstance(child, PositionalArgument):
+                arg_name = ref.get_child(pos).name
+                pos += 1
                 
-                if arg_name:
-                    struct_keys.remove(arg_name)
-                    child_app = child.get_only_child()
+            if arg_name not in struct_keys:
+                continue
+            
+            if arg_name:
+                struct_keys.remove(arg_name)
+                child_app = child.get_only_child()
+                try:
+                    self.set_override_value(child_app, override_value[arg_name])
+                except ValueError as e:
+                    raise ValueError(f"{arg_name}: {e}") from e                    
+            
+        if struct_keys:
+            # create arguments, if not yet specified
+            if ref is not None:
+                self.create_override_value_function_application(parameter, ref, struct_keys, override_value)
+    
+    def create_override_value_function_application(self, function_application, type_def, struct_keys, override_value):
+        for param in type_def.get_children():
+            if param.name in struct_keys:
+                struct_keys.remove(param.name)
+                arg = NamedArgument(param.name)
+                function_application.set_children(arg)
+                val = param.get_value_child()
+                    
+                # elif isinstance(param, PhysicalLiteral):
+                if isinstance(val, (BoolLiteral, FloatLiteral, IntegerLiteral, FloatLiteral, StringLiteral)):
+                    literal = copy.deepcopy(val)
                     try:
-                        self.set_override_value(child_app, override_value[arg_name])
+                        literal.value = self.check_and_convert_override_value_literal_type(val, override_value[param.name])
                     except ValueError as e:
-                        raise ValueError(f"{arg_name}: {e}") from e                    
-            idx += 1
+                        raise ValueError(f"{param.name} {e}") from e
+                    arg.set_children(literal)
+                elif isinstance(val, PhysicalLiteral):
+                    literal = copy.deepcopy(val)
+                    val_literal = literal.find_first_child_of_type((FloatLiteral, IntegerLiteral))
+                    if isinstance(val_literal, FloatLiteral) and isinstance(override_value[param.name], (int, float)):
+                        val_literal.value = float(override_value[param.name])
+                    elif isinstance(val_literal, IntegerLiteral) and isinstance(override_value[param.name], int):
+                        val_literal.value = override_value[param.name]
+                    else:
+                        raise ValueError(f"Invalid physical literal.")
+                    arg.set_children(literal)
+                elif val is None and isinstance(override_value[param.name], dict):
+                    funct_app = FunctionApplicationExpression(param.name)
+                    arg.set_children(funct_app)
+                    
+                    type_def = param.find_first_child_of_type(Type).type_def
+                    funct_app.set_children(IdentifierReference(ref=type_def))
+                    
+                    self.create_override_value_function_application(funct_app, type_def, list(override_value[param.name].keys()), override_value[param.name])
+                else:
+                    raise ValueError(f"Parameter {param.name} does not match override {override_value[param.name]}")
+        
         if struct_keys:
             raise ValueError(f"Unknown override values found: {', '.join(struct_keys)}")
-    
-    def set_override_value(self, param, override_value):
-        if isinstance(param, FunctionApplicationExpression):
-            self.set_override_value_function_application(param, override_value)
-        elif isinstance(param, StringLiteral):
-            param.value = str(override_value)
-        elif isinstance(param, BoolLiteral):
+        
+    def check_and_convert_override_value_literal_type(self, param, override_value):
+        if isinstance(param, BoolLiteral):
             if not isinstance(override_value, (bool)):
                 raise ValueError(f"bool expected, found {type(override_value).__name__}")
-            param.value = override_value
+            return override_value
         elif isinstance(param, FloatLiteral):
             if not isinstance(override_value, (int, float)):
                 raise ValueError(f"float or int expected, found {type(override_value).__name__}")
-            param.value = override_value
+            return float(override_value)
         elif isinstance(param, IntegerLiteral):
             if not isinstance(override_value, int):
                 raise ValueError(f"integer expected, found {type(override_value).__name__}")
-            param.value = override_value
+            return override_value
+        elif isinstance(param, StringLiteral):
+            return str(override_value)
+        else:
+            raise ValueError("Unknown value literal")
+        
+    def set_override_value(self, param, override_value):
+        if isinstance(param, FunctionApplicationExpression):
+            self.set_override_value_function_application(param, override_value)
+        elif isinstance(param, (StringLiteral, FloatLiteral, BoolLiteral, IntegerLiteral)):
+            param.value = self.check_and_convert_override_value_literal_type(param, override_value)
         elif isinstance(param, PhysicalLiteral):
             literal = param.find_first_child_of_type((FloatLiteral, IntegerLiteral))
             if isinstance(literal, FloatLiteral) and isinstance(override_value, (int, float)):
@@ -152,7 +208,7 @@ class OpenScenario2Parser(object):
             else:
                 raise ValueError(f"Invalid physical literal.")
         else:
-            raise ValueError(f"(AS)")
+            raise ValueError(f"Unknown override type (supported: FunctionApplicationExpression, Base and Physical Literals): {param}")
         
     def parse_file(self, file: str, log_model: bool = False, error_prefix=""):
         """ Execute the parsing """
