@@ -29,6 +29,7 @@ from xml.sax.saxutils import escape  # nosec B406 # escape is only used on an in
 from timeit import default_timer as timer
 import yaml
 
+
 class ShutdownHandler:
     _instance = None
 
@@ -90,7 +91,7 @@ class ScenarioExecution(object):
                  render_dot=False,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_period: float = 0.1,
-                 scenario_parameter_file = None,
+                 scenario_parameter_file=None,
                  logger=None) -> None:
 
         def signal_handler(sig, frame):
@@ -134,7 +135,7 @@ class ScenarioExecution(object):
         self.shutdown_requested = False
         self.results = []
         self.scenario_parameter_overrides = None
-        
+
         if scenario_parameter_file:
             with open(scenario_parameter_file) as stream:
                 try:
@@ -377,7 +378,8 @@ class ScenarioExecution(object):
         parser.add_argument('-n', '--dry-run', action='store_true', help='Parse and resolve scenario, but do not execute')
         parser.add_argument('--dot', action='store_true', help='Render dot trees of resulting py-tree')
         parser.add_argument('-s', '--step-duration', type=float, help='Duration between the behavior tree step executions', default=0.1)
-        parser.add_argument('--scenario-parameter-file', type=str, help='File specifying scenario parameter. These will override default values.')
+        parser.add_argument('--scenario-parameter-file', type=str,
+                            help='File specifying scenario parameter. These will override default values.')
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
         args, _ = parser.parse_known_args(args)
         return args
