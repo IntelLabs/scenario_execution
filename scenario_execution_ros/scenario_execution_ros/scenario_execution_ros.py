@@ -76,6 +76,7 @@ class ROSScenarioExecution(ScenarioExecution):
                          output_dir=output_dir,
                          dry_run=self.dry_run,
                          render_dot=self.render_dot,
+                         scenario_parameter_file=args.scenario_parameter_file,
                          logger=self.logger)
 
     def setup_behaviour_tree(self, tree):

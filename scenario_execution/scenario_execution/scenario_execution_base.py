@@ -27,7 +27,7 @@ from scenario_execution.model.model_file_loader import ModelFileLoader
 from dataclasses import dataclass
 from xml.sax.saxutils import escape  # nosec B406 # escape is only used on an internally generated error string
 from timeit import default_timer as timer
-
+import yaml
 
 class ShutdownHandler:
     _instance = None
@@ -90,6 +90,7 @@ class ScenarioExecution(object):
                  render_dot=False,
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_period: float = 0.1,
+                 scenario_parameter_file = None,
                  logger=None) -> None:
 
         def signal_handler(sig, frame):
@@ -132,6 +133,14 @@ class ScenarioExecution(object):
         self.last_snapshot_visitor = None
         self.shutdown_requested = False
         self.results = []
+        self.scenario_parameter_overrides = None
+        
+        if scenario_parameter_file:
+            with open(scenario_parameter_file) as stream:
+                try:
+                    self.scenario_parameter_overrides = yaml.safe_load(stream)
+                except yaml.YAMLError as e:
+                    raise ValueError(f"Unable to parse yaml file '{scenario_parameter_file}': {e}")
 
     def setup(self, scenario: py_trees.behaviour.Behaviour, **kwargs) -> bool:
         """
@@ -227,7 +236,7 @@ class ScenarioExecution(object):
                                            processing_time=datetime.now() - start))
             return False
         try:
-            self.tree = parser.process_file(self.scenario_file, self.log_model, self.debug)
+            self.tree = parser.process_file(self.scenario_file, self.log_model, self.debug, self.scenario_parameter_overrides)
         except Exception as e:  # pylint: disable=broad-except
             self.add_result(ScenarioResult(name=f'Parsing of {self.scenario_file}',
                                            result=False,
@@ -368,6 +377,7 @@ class ScenarioExecution(object):
         parser.add_argument('-n', '--dry-run', action='store_true', help='Parse and resolve scenario, but do not execute')
         parser.add_argument('--dot', action='store_true', help='Render dot trees of resulting py-tree')
         parser.add_argument('-s', '--step-duration', type=float, help='Duration between the behavior tree step executions', default=0.1)
+        parser.add_argument('--scenario-parameter-file', type=str, help='File specifying scenario parameter. These will override default values.')
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
         args, _ = parser.parse_known_args(args)
         return args
@@ -386,7 +396,8 @@ def main():
                                                output_dir=args.output_dir,
                                                dry_run=args.dry_run,
                                                render_dot=args.dot,
-                                               tick_period=args.step_duration)
+                                               tick_period=args.step_duration,
+                                               scenario_parameter_file=args.scenario_parameter_file)
     except ValueError as e:
         print(f"Error while initializing: {e}")
         sys.exit(1)

@@ -23,7 +23,7 @@ from scenario_execution.osc2_parsing.OpenSCENARIO2Parser import OpenSCENARIO2Par
 from scenario_execution.osc2_parsing.OpenSCENARIO2Lexer import OpenSCENARIO2Lexer
 from scenario_execution.model.error import OSC2ParsingError
 from scenario_execution.model.model_builder import ModelBuilder
-from scenario_execution.model.types import print_tree, ScenarioDeclaration
+from scenario_execution.model.types import print_tree, ScenarioDeclaration, ParameterDeclaration, StringLiteral, FloatLiteral, BoolLiteral, IntegerLiteral, PhysicalTypeDeclaration, PhysicalLiteral, StructDeclaration, FunctionApplicationExpression, IdentifierReference, NamedArgument, PositionalArgument
 from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.model.model_resolver import resolve_internal_model
 from scenario_execution.model.model_blackboard import create_py_tree_blackboard
@@ -37,13 +37,13 @@ class OpenScenario2Parser(object):
         self.logger = logger
         self.parsed_files = []
 
-    def process_file(self, file, log_model: bool = False, debug: bool = False):
+    def process_file(self, file, log_model: bool = False, debug: bool = False, scenario_parameter_overrides: dict = None):
         """ Convenience method to execute the parsing and print out tree """
 
         parsed_model = self.parse_file(file, log_model)
 
         tree = py_trees.composites.Sequence(name="", memory=True)
-        model = self.create_internal_model(parsed_model, tree, file, log_model, debug)
+        model = self.create_internal_model(parsed_model, tree, file, log_model, debug, scenario_parameter_overrides)
 
         if len(model.find_children_of_type(ScenarioDeclaration)) == 0:
             raise ValueError("No scenario defined.")
@@ -70,11 +70,90 @@ class OpenScenario2Parser(object):
             print_tree(model, self.logger)
         return model
 
-    def create_internal_model(self, parsed_model, tree, file_name: str, log_model: bool = False, debug: bool = False):
+    def create_internal_model(self, parsed_model, tree, file_name: str, log_model: bool = False, debug: bool = False, scenario_parameter_overrides: dict = None):
         model = self.load_internal_model(parsed_model, file_name, log_model, debug)
         resolve_internal_model(model, tree, self.logger, log_model)
+        
+        # override parameter with externally defined ones
+        if scenario_parameter_overrides:
+            keys = list(scenario_parameter_overrides.keys())
+            for scenario in model.find_children_of_type(ScenarioDeclaration):
+                if scenario.name in keys:
+                    keys.remove(scenario.name)
+                    if scenario_parameter_overrides[scenario.name] is None:
+                        continue
+                    param_keys = list(scenario_parameter_overrides[scenario.name].keys())
+                    for parameter in scenario.find_children_of_type(ParameterDeclaration):
+                        if parameter.name in param_keys:
+                            param_keys.remove(parameter.name)
+                            override_value = scenario_parameter_overrides[scenario.name][parameter.name]
+                            child_def = parameter.get_value_child()
+                            try:
+                                self.set_override_value(child_def, override_value)
+                            except ValueError as e:
+                                raise ValueError(f"{parameter.name} {e}") from e
+                                
+            if len(keys) > 0:
+                raise ValueError(f"Scenario Parameter Overrides contain unknown scenario(s): {', '.join(keys)}")
         return model
 
+
+    def set_override_value_function_application(self, parameter, override_value):
+        idx = 0
+        struct_keys = list(override_value.keys())
+        pos = 0
+        for child in parameter.get_children():
+            if idx == 0:
+                if not isinstance(child, IdentifierReference):
+                    raise ValueError(f"Expected IdentifierReference, got {child}")
+                ref = child.ref
+            else:
+                arg_name = None
+                if isinstance(child, NamedArgument):
+                    arg_name = child.name
+                elif isinstance(child, PositionalArgument):
+                    arg_name = ref.get_child(pos).name
+                    pos += 1
+                
+                if arg_name:
+                    struct_keys.remove(arg_name)
+                    child_app = child.get_only_child()
+                    try:
+                        self.set_override_value(child_app, override_value[arg_name])
+                    except ValueError as e:
+                        raise ValueError(f"{arg_name}: {e}") from e                    
+            idx += 1
+        if struct_keys:
+            raise ValueError(f"Unknown override values found: {', '.join(struct_keys)}")
+    
+    def set_override_value(self, param, override_value):
+        if isinstance(param, FunctionApplicationExpression):
+            self.set_override_value_function_application(param, override_value)
+        elif isinstance(param, StringLiteral):
+            param.value = str(override_value)
+        elif isinstance(param, BoolLiteral):
+            if not isinstance(override_value, (bool)):
+                raise ValueError(f"bool expected, found {type(override_value).__name__}")
+            param.value = override_value
+        elif isinstance(param, FloatLiteral):
+            if not isinstance(override_value, (int, float)):
+                raise ValueError(f"float or int expected, found {type(override_value).__name__}")
+            param.value = override_value
+        elif isinstance(param, IntegerLiteral):
+            if not isinstance(override_value, int):
+                raise ValueError(f"integer expected, found {type(override_value).__name__}")
+            param.value = override_value
+        elif isinstance(param, PhysicalLiteral):
+            literal = param.find_first_child_of_type((FloatLiteral, IntegerLiteral))
+            if isinstance(literal, FloatLiteral) and isinstance(override_value, (int, float)):
+                literal.value = float(override_value)
+            elif isinstance(literal, IntegerLiteral) and isinstance(override_value, int):
+                literal.value = override_value
+            else:
+                raise ValueError(f"Invalid physical literal.")
+        else:
+            raise ValueError(f"(AS)")
+        
     def parse_file(self, file: str, log_model: bool = False, error_prefix=""):
         """ Execute the parsing """
         if file in self.parsed_files:  # skip already parsed/imported files
