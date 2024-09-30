@@ -78,7 +78,6 @@ class OpenScenario2Parser(object):
         # override parameter with externally defined ones
         if scenario_parameter_overrides:
             self.apply_parameter_overrides(model, scenario_parameter_overrides)
-        # print_tree(model, self.logger)
         return model
 
     def apply_parameter_overrides(self, model, scenario_parameter_overrides):
@@ -312,7 +311,6 @@ class OpenScenario2Parser(object):
                 literal.value = override_value
             else:
                 raise ValueError(f"Invalid physical literal.")
-        # TODO
         else:
             raise ValueError(
                 f"Unknown override type (supported: FunctionApplicationExpression, BaseLiteral, PhysicalLiteral, ListExpression) {param}")
