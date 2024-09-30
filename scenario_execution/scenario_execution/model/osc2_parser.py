@@ -94,51 +94,59 @@ class OpenScenario2Parser(object):
                         param_keys.remove(parameter.name)
                         override_value = scenario_parameter_overrides[scenario.name][parameter.name]
                         child_def = parameter.get_value_child()
-                        if child_def is not None:
-                            try:
-                                self.set_override_value(child_def, override_value)
-                            except ValueError as e:
-                                raise ValueError(f"{parameter.name} {e}") from e
-                        else:
-                            type_def = parameter.find_first_child_of_type(Type).type_def
-                            if isinstance(type_def, str):
-                                parameter.set_children(self.create_base_literal(type_def, override_value))
-                            elif isinstance(type_def, PhysicalTypeDeclaration):
-                                if not isinstance(override_value, (int, float)):
-                                    raise ValueError(f"{parameter.name} expected int, float, got {type(override_value).__name__}")
-                                unit = None
-                                if type_def.name == 'length':
-                                    unit = type_def.resolve("m")
-                                elif type_def.name == 'time':
-                                    unit = type_def.resolve("s")
-                                elif type_def.name == 'speed':
-                                    unit = type_def.resolve("mps")
-                                elif type_def.name == 'acceleration':
-                                    unit = type_def.resolve("mpss")
-                                elif type_def.name == 'jerk':
-                                    unit = type_def.resolve("mpspsps")
-                                elif type_def.name == 'angle':
-                                    unit = type_def.resolve("rad")
-                                elif type_def.name == 'angular_rate':
-                                    unit = type_def.resolve("radps")
-                                elif type_def.name == 'angular_acceleration':
-                                    unit = type_def.resolve("radpsps")
-                                elif type_def.name == 'mass':
-                                    unit = type_def.resolve("kg")
-                                if unit is None:
-                                    raise ValueError(f"{parameter.name} Could not find unit for {type_def.name}")
-                                physical_literal = PhysicalLiteral(unit, override_value)
-                                physical_literal.set_children(FloatLiteral(override_value))
-                                parameter.set_children(physical_literal)
-                            elif isinstance(type_def, StructDeclaration):
-                                funct_app = FunctionApplicationExpression(type_def.name)
-                                parameter.set_children(funct_app)
-                                funct_app.set_children(IdentifierReference(ref=type_def))
-                                self.create_override_value_function_application(
-                                    funct_app, type_def, list(override_value.keys()), override_value)
+                        param_type, is_list = parameter.get_type()
+                        try:
+                            if is_list:
+                                if child_def is None:
+                                    child_def = ListExpression()
+                                    parameter.set_children(child_def)                              
+                                self.set_override_value_list_entries(child_def, param_type, override_value)
                             else:
-                                raise ValueError(
-                                    f"Parameter {parameter.name} type not supported (supported: StructDeclaration, Basic and Physical Literal): {type_def}")
+                                if child_def is not None:
+                                    self.set_override_value(child_def, override_value)
+                                else:
+                                    type_def = parameter.find_first_child_of_type(Type).type_def
+                                    if isinstance(type_def, str):
+                                        parameter.set_children(self.create_base_literal(type_def, override_value))
+                                    elif isinstance(type_def, PhysicalTypeDeclaration):
+                                        if not isinstance(override_value, (int, float)):
+                                            raise ValueError(f"{parameter.name} expected int, float, got {type(override_value).__name__}")
+                                        unit = None
+                                        if type_def.name == 'length':
+                                            unit = type_def.resolve("m")
+                                        elif type_def.name == 'time':
+                                            unit = type_def.resolve("s")
+                                        elif type_def.name == 'speed':
+                                            unit = type_def.resolve("mps")
+                                        elif type_def.name == 'acceleration':
+                                            unit = type_def.resolve("mpss")
+                                        elif type_def.name == 'jerk':
+                                            unit = type_def.resolve("mpspsps")
+                                        elif type_def.name == 'angle':
+                                            unit = type_def.resolve("rad")
+                                        elif type_def.name == 'angular_rate':
+                                            unit = type_def.resolve("radps")
+                                        elif type_def.name == 'angular_acceleration':
+                                            unit = type_def.resolve("radpsps")
+                                        elif type_def.name == 'mass':
+                                            unit = type_def.resolve("kg")
+                                        if unit is None:
+                                            raise ValueError(f"{parameter.name} Could not find unit for {type_def.name}")
+                                        physical_literal = PhysicalLiteral(unit, override_value)
+                                        physical_literal.set_children(FloatLiteral(override_value))
+                                        parameter.set_children(physical_literal)
+                                    elif isinstance(type_def, StructDeclaration):
+                                        funct_app = FunctionApplicationExpression(type_def.name)
+                                        parameter.set_children(funct_app)
+                                        funct_app.set_children(IdentifierReference(ref=type_def))
+                                        self.create_override_value_function_application(
+                                            funct_app, type_def, list(override_value.keys()), override_value)
+                                    else:
+                                        raise ValueError(
+                                            f"Type not supported (supported: StructDeclaration, Basic and Physical Literal): {type_def}")
+                                        
+                        except ValueError as e:
+                            raise ValueError(f"{parameter.name} {e}") from e
                 if param_keys:
                     raise ValueError(f"Scenario Parameter Overrides contain unknown parameter(s): {', '.join(param_keys)}")
         if keys:
@@ -191,9 +199,13 @@ class OpenScenario2Parser(object):
             if arg_name:
                 struct_keys.remove(arg_name)
                 child_app = child.get_only_child()
-                param_type = ref.get_named_child(arg_name).get_type()
+                param_type, is_list = ref.get_named_child(arg_name).get_type()
+                override_value_arg = override_value[arg_name]
                 try:
-                    self.set_override_value(child_app, override_value[arg_name])
+                    if is_list:
+                        self.set_override_value_list_entries(child_app, param_type, override_value_arg)       
+                    else:
+                        self.set_override_value(child_app, override_value_arg)
                 except ValueError as e:
                     raise ValueError(f"{arg_name}: {e}") from e
 
@@ -202,44 +214,67 @@ class OpenScenario2Parser(object):
             if ref is not None:
                 self.create_override_value_function_application(parameter, ref, struct_keys, override_value)
 
-    def create_override_value_function_application(self, function_application, type_def, struct_keys, override_value):
+    def set_override_value_list_entries(self, parameter, param_type, override_value):
+        parameter.delete_all_children()
+        if not isinstance(override_value, list):
+            raise ValueError(f"Expected list, got {type(override_value).__name__}")
+        if isinstance(param_type, str):
+            for param_override_val_entry in override_value:
+                parameter.set_children(self.create_base_literal(param_type.removeprefix('listof'), param_override_val_entry))
+        elif isinstance(param_type, StructDeclaration):                   
+            for param_override_val_entry in override_value:
+                if not isinstance(param_override_val_entry, dict):
+                    raise ValueError(f"Expected dict, got {type(param_override_val_entry).__name__}")
+                funct_app = FunctionApplicationExpression(param_type.name)
+                parameter.set_children(funct_app)
+                funct_app.set_children(IdentifierReference(ref=param_type))
+                self.create_override_value_function_application(
+                    funct_app, param_type, list(param_override_val_entry.keys()), param_override_val_entry)
+        
+    def create_override_value_function_application(self, parameter, type_def, struct_keys, override_value):
         for param in type_def.get_children():
             if param.name in struct_keys:
                 struct_keys.remove(param.name)
                 arg = NamedArgument(param.name)
-                function_application.set_children(arg)
+                parameter.set_children(arg)
                 val = param.get_value_child()
-
-                # elif isinstance(param, PhysicalLiteral):
-                if isinstance(val, (BoolLiteral, FloatLiteral, IntegerLiteral, FloatLiteral, StringLiteral)):
-                    literal = copy.deepcopy(val)
-                    try:
-                        literal.value = self.check_and_convert_override_value_literal_type(val, override_value[param.name])
-                    except ValueError as e:
-                        raise ValueError(f"{param.name} {e}") from e
-                    arg.set_children(literal)
-                elif isinstance(val, PhysicalLiteral):
-                    literal = copy.deepcopy(val)
-                    val_literal = literal.find_first_child_of_type((FloatLiteral, IntegerLiteral))
-                    if isinstance(val_literal, FloatLiteral) and isinstance(override_value[param.name], (int, float)):
-                        val_literal.value = float(override_value[param.name])
-                    elif isinstance(val_literal, IntegerLiteral) and isinstance(override_value[param.name], int):
-                        val_literal.value = override_value[param.name]
+                param_type, is_list =param.get_type()
+                param_override_val = override_value[param.name]
+                
+                try:
+                    if is_list:
+                        list_expr = ListExpression()
+                        arg.set_children(list_expr)
+                        self.set_override_value_list_entries(list_expr, param_type, param_override_val)
                     else:
-                        raise ValueError(f"Invalid physical literal.")
-                    arg.set_children(literal)
-                elif val is None and isinstance(override_value[param.name], dict):
-                    funct_app = FunctionApplicationExpression(param.name)
-                    arg.set_children(funct_app)
+                        if isinstance(val, (BoolLiteral, FloatLiteral, IntegerLiteral, FloatLiteral, StringLiteral)):
+                            literal = copy.deepcopy(val)
+                            literal.value = self.check_and_convert_override_value_literal_type(val, param_override_val)
+                            arg.set_children(literal)
+                        elif isinstance(val, PhysicalLiteral):
+                            literal = copy.deepcopy(val)
+                            val_literal = literal.find_first_child_of_type((FloatLiteral, IntegerLiteral))
+                            if isinstance(val_literal, FloatLiteral) and isinstance(param_override_val, (int, float)):
+                                val_literal.value = float(param_override_val)
+                            elif isinstance(val_literal, IntegerLiteral) and isinstance(param_override_val, int):
+                                val_literal.value = param_override_val
+                            else:
+                                raise ValueError(f"Invalid physical literal.")
+                            arg.set_children(literal)
+                        elif val is None and isinstance(param_override_val, dict):
+                            funct_app = FunctionApplicationExpression(param.name)
+                            arg.set_children(funct_app)
 
-                    type_def = param.find_first_child_of_type(Type).type_def
-                    funct_app.set_children(IdentifierReference(ref=type_def))
+                            type_def = param.find_first_child_of_type(Type).type_def
+                            funct_app.set_children(IdentifierReference(ref=type_def))
 
-                    self.create_override_value_function_application(funct_app, type_def, list(
-                        override_value[param.name].keys()), override_value[param.name])
-                else:
-                    raise ValueError(f"Parameter {param.name} does not match override {override_value[param.name]}")
+                            self.create_override_value_function_application(funct_app, type_def, list(
+                                param_override_val.keys()), param_override_val)
+                        else:
+                            raise ValueError(f"Parameter {param.name} does not match override {param_override_val}")
 
+                except ValueError as e:
+                    raise ValueError(f"{param.name} {e}") from e
         if struct_keys:
             raise ValueError(f"Unknown override values found: {', '.join(struct_keys)}")
 
@@ -274,8 +309,9 @@ class OpenScenario2Parser(object):
                 literal.value = override_value
             else:
                 raise ValueError(f"Invalid physical literal.")
+        # TODO
         else:
-            raise ValueError(f"Unknown override type (supported: FunctionApplicationExpression) {param}")
+            raise ValueError(f"Unknown override type (supported: FunctionApplicationExpression, BaseLiteral, PhysicalLiteral, ListExpression) {param}")
 
     def parse_file(self, file: str, log_model: bool = False, error_prefix=""):
         """ Execute the parsing """
