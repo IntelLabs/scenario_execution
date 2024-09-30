@@ -55,7 +55,7 @@ def resolve_control_config_path(context):
         return resolved_path
     except ValueError:
         raise RuntimeError(f"Invalid control_config file path format: '{control_config_str}'. "
-                           f"Expected '<package_name>/path/to/control.yaml)'.")
+                           f"Expected '<package_name>/path/to/control.yaml)'.") from ValueError
 
 
 def create_robot_state_publisher_node(context):
