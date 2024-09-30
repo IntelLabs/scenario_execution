@@ -16,10 +16,11 @@
 # @author Roni Kreinin (rkreinin@clearpathrobotics.com)
 
 
+import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import Command, PathJoinSubstitution
 from launch.substitutions.launch_configuration import LaunchConfiguration
 
@@ -37,16 +38,33 @@ ARGUMENTS = [
                           description='Robot name'),
     DeclareLaunchArgument('namespace', default_value=LaunchConfiguration('robot_name'),
                           description='Robot namespace'),
+    DeclareLaunchArgument(
+        'control_config',
+        default_value='irobot_create_control/config/control.yaml',
+        description='Path to the control YAML file <package_name>/path/to/control.yaml)'
+    )
 ]
 
 
-def generate_launch_description():
+def resolve_control_config_path(context):
+    control_config_str = LaunchConfiguration('control_config').perform(context)
+    try:
+        package_name, relative_path = control_config_str.split('/', 1)
+        package_share_path = get_package_share_directory(package_name)
+        resolved_path = os.path.join(package_share_path, relative_path)
+        return resolved_path
+    except ValueError:
+        raise RuntimeError(f"Invalid control_config file path format: '{control_config_str}'. "
+                           f"Expected '<package_name>/path/to/control.yaml)'.")
+
+
+def create_robot_state_publisher_node(context):
+    control_config = resolve_control_config_path(context)
     pkg_tb4_sim_scenario = get_package_share_directory('tb4_sim_scenario')
     xacro_file = PathJoinSubstitution([pkg_tb4_sim_scenario,
                                        'urdf',
                                        'turtlebot4.urdf.xacro'])
     namespace = LaunchConfiguration('namespace')
-
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -57,13 +75,20 @@ def generate_launch_description():
             {'robot_description': ParameterValue(Command([
                 'xacro', ' ', xacro_file, ' ',
                 'gazebo:=ignition', ' ',
-                'namespace:=', namespace]), value_type=str)},
+                'namespace:=', namespace, ' ',
+                'control_config:=', control_config]), value_type=str)},
         ],
         remappings=[
             ('/tf', 'tf'),
             ('/tf_static', 'tf_static')
         ]
     )
+    return [robot_state_publisher]
+
+
+def generate_launch_description():
+
+    robot_state_publisher = OpaqueFunction(function=create_robot_state_publisher_node)
 
     joint_state_publisher = Node(
         package='joint_state_publisher',
