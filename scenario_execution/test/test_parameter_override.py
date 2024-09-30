@@ -145,8 +145,7 @@ scenario test:
 
     def test_physical_literal_base(self):
         scenario_content = """
-action log:
-    msg: string
+import osc.helpers
 
 scenario test:
     test_float: length = 1.0m
@@ -494,10 +493,9 @@ scenario test:
             }}}
         self.assertRaises(ValueError, self.execute, scenario_content, override_parameters)
 
-    def test_struct_no_init_overload_sub_sub_struct_member_physical_literal(self):
+    def test_struct_no_init_overload_sub_sub_struct_member_physical_literal_test(self):
         scenario_content = """
-action log:
-    msg: string
+import osc.helpers
 
 struct sub_sub_struct:
     test_sub_sub_float: length = 0.0m
@@ -727,7 +725,7 @@ scenario test:
         self.execute(scenario_content, override_parameters)
         self.assertEqual(self.logger.logs_info[1], "42.0")
 
-    def test_physical_literal_empty_invalid_override(self):
+    def test_physical_literal_empty_invalid_override_test(self):
         scenario_content = """
 import osc.helpers
 
