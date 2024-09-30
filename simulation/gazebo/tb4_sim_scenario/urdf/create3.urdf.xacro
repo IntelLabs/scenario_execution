@@ -35,7 +35,7 @@ SPDX-License-Identifier: Apache-2.0 -->
   <xacro:arg name="namespace"                    default=""/>
 
   <!-- Controller config -->
-  <xacro:arg name="control_config"       default="package://irobot_create_control/config/control.yaml" />
+  <xacro:arg name="control_config"               default="package://irobot_create_control/config/control.yaml" />
 
   <!-- Mechanical properties -->
   <xacro:property name="body_z_offset"           value="${-2.5*cm2m}" />

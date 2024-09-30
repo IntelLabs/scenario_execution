@@ -20,7 +20,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import Command, PathJoinSubstitution
 from launch.substitutions.launch_configuration import LaunchConfiguration
 
@@ -40,31 +40,20 @@ ARGUMENTS = [
                           description='Robot namespace'),
     DeclareLaunchArgument(
         'control_config',
-        default_value='irobot_create_control/config/control.yaml',
-        description='Path to the control YAML file <package_name>/path/to/control.yaml)'
+        default_value=os.path.join(get_package_share_directory("irobot_create_control"), 'config', 'control.yaml'),
+        description='Path to the control YAML file.'
     )
 ]
 
 
-def resolve_control_config_path(context):
-    control_config_str = LaunchConfiguration('control_config').perform(context)
-    try:
-        package_name, relative_path = control_config_str.split('/', 1)
-        package_share_path = get_package_share_directory(package_name)
-        resolved_path = os.path.join(package_share_path, relative_path)
-        return resolved_path
-    except ValueError:
-        raise RuntimeError(f"Invalid control_config file path format: '{control_config_str}'. "
-                           f"Expected '<package_name>/path/to/control.yaml)'.") from ValueError
-
-
-def create_robot_state_publisher_node(context):
-    control_config = resolve_control_config_path(context)
+def generate_launch_description():
     pkg_tb4_sim_scenario = get_package_share_directory('tb4_sim_scenario')
     xacro_file = PathJoinSubstitution([pkg_tb4_sim_scenario,
                                        'urdf',
                                        'turtlebot4.urdf.xacro'])
     namespace = LaunchConfiguration('namespace')
+    control_config = LaunchConfiguration('control_config')
+
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -83,12 +72,6 @@ def create_robot_state_publisher_node(context):
             ('/tf_static', 'tf_static')
         ]
     )
-    return [robot_state_publisher]
-
-
-def generate_launch_description():
-
-    robot_state_publisher = OpaqueFunction(function=create_robot_state_publisher_node)
 
     joint_state_publisher = Node(
         package='joint_state_publisher',
