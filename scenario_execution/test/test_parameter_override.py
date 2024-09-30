@@ -740,3 +740,266 @@ scenario test:
             "my_val": "invalid"
         }}
         self.assertRaises(ValueError, self.execute, scenario_content, override_parameters)
+
+    def test_physical_literal_empty_invalid_override(self):
+        scenario_content = """
+action log:
+    msg: string
+    
+scenario test:
+    var my_val: float
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": 3.14
+        }}
+        self.assertRaises(ValueError, self.execute, scenario_content, override_parameters)
+
+    def test_physical_literal_empty_invalid_override(self):
+        scenario_content = """
+action log:
+    msg: string
+
+actor bla
+ 
+scenario test:
+    my_val: bla
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": 3.14
+        }}
+        self.assertRaises(ValueError, self.execute, scenario_content, override_parameters)
+
+
+    def test_struct_funct_app_no_val(self):
+        scenario_content = """
+action log:
+    msg: string
+    
+struct base_struct:
+    test_float: float = 0.0
+ 
+scenario test:
+    my_val: base_struct = base_struct()
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": {
+                "test_float": 4.2
+            }
+        }}
+        self.execute(scenario_content, override_parameters)
+        self.assertEqual(self.logger.logs_info[1], "{'test_float': 4.2}")
+
+
+    def test_list_struct(self):
+        scenario_content = """
+action log:
+    msg: string
+
+struct test_struct:
+    test_int: int = 0
+    test_float: float = 0.0
+ 
+scenario test:
+    my_val: list of test_struct = [test_struct(1, 1.0)]
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": [
+                {"test_int": 3, "test_float": 3.22 },
+                {"test_int": 4, "test_float": 4.22 }
+            ]
+        }}
+        self.execute(scenario_content, override_parameters)
+        self.assertEqual(self.logger.logs_info[1], "[{'test_int': 3, 'test_float': 3.22}, {'test_int': 4, 'test_float': 4.22}]")
+
+
+    def test_list_struct_invalid_override(self):
+        scenario_content = """
+action log:
+    msg: string
+
+struct test_struct:
+    test_int: int = 0
+    test_float: float = 0.0
+ 
+scenario test:
+    my_val: list of test_struct = [test_struct(1, 1.0)]
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": [
+                {"test_int": 3, "test_float": 3.22 },
+                {"test_int": 4, "UNKNOWN": 4.22 }
+            ]
+        }}
+        self.assertRaises(ValueError, self.execute, scenario_content, override_parameters)
+
+
+    def test_list_struct_empty(self):
+        scenario_content = """
+action log:
+    msg: string
+
+struct test_struct:
+    test_int: int = 0
+    test_float: float = 0.0
+ 
+scenario test:
+    my_val: list of test_struct
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": [
+                {"test_int": 3, "test_float": 3.22 },
+                {"test_int": 4, "test_float": 4.22 }
+            ]
+        }}
+        self.execute(scenario_content, override_parameters)
+        self.assertEqual(self.logger.logs_info[1], "[{'test_int': 3, 'test_float': 3.22}, {'test_int': 4, 'test_float': 4.22}]")
+
+
+    def test_list_base(self):
+        scenario_content = """
+action log:
+    msg: string
+ 
+scenario test:
+    my_val: list of float = [ 1.0, 1.1, 1.2 ]
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": [ 4.0, 4.1 ]
+        }}
+        self.execute(scenario_content, override_parameters)
+        self.assertEqual(self.logger.logs_info[1], "[4.0, 4.1]")
+
+
+    def test_list_base_empty(self):
+        scenario_content = """
+action log:
+    msg: string
+ 
+scenario test:
+    my_val: list of float
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": [ 4.0, 4.1 ]
+        }}
+        self.execute(scenario_content, override_parameters)
+        self.assertEqual(self.logger.logs_info[1], "[4.0, 4.1]")
+
+
+    def test_list_base_empty_invalid_sub_entry(self):
+        scenario_content = """
+action log:
+    msg: string
+ 
+scenario test:
+    my_val: list of float
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": [ 4.0, 'bla' ]
+        }}
+        self.assertRaises(ValueError, self.execute, scenario_content, override_parameters)
+
+
+    def test_list_base_empty_invalid_override(self):
+        scenario_content = """
+action log:
+    msg: string
+ 
+scenario test:
+    my_val: list of float
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": { 'invalid': 'val' }
+        }}
+        self.assertRaises(ValueError, self.execute, scenario_content, override_parameters)
+
+    def test_list_struct_list_param_empty(self):
+        scenario_content = """
+action log:
+    msg: string
+
+struct test_struct:
+    test_int: int = 0
+    test_list: list of float
+ 
+scenario test:
+    my_val: test_struct = test_struct(9, [ 9.1, 9.2, 9.3])
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": {
+                "test_int": 42,
+                "test_list": [ 4.0, 4.1 ]
+            }
+        }}
+        self.execute(scenario_content, override_parameters)
+        print(self.logger.logs_info)
+        self.assertEqual(self.logger.logs_info[1], "{'test_int': 42, 'test_list': [4.0, 4.1]}")
+
+    def test_list_struct_list_param_set(self):
+        scenario_content = """
+action log:
+    msg: string
+
+struct test_struct:
+    test_int: int = 0
+    test_list: list of float = [0.0]
+ 
+scenario test:
+    my_val: test_struct = test_struct()
+    do serial: 
+        log(my_val)
+"""
+        override_parameters = {"test": {
+            "my_val": {
+                "test_int": 42,
+                "test_list": [ 4.0, 4.1 ]
+            }
+        }}
+        self.execute(scenario_content, override_parameters)
+        print(self.logger.logs_info)
+        self.assertEqual(self.logger.logs_info[1], "{'test_int': 42, 'test_list': [4.0, 4.1]}")
+
+
+#     def test_list_struct_with_list(self):
+#         scenario_content = """
+# action log:
+#     msg: string
+
+# struct test_struct:
+#     test_int: int = 0
+#     test_list: list of float
+ 
+# scenario test:
+#     my_val: list of test_struct
+#     do serial: 
+#         log(my_val)
+# """
+#         override_parameters = {"test": {
+#             "my_val": [
+#                 {"test_int": 3, "test_list": 3.22 },
+#                 {"test_int": 4, "test_list": 4.22 }
+#             ]
+#         }}
+#         self.execute(scenario_content, override_parameters)
+#         self.assertEqual(self.logger.logs_info[1], "[{'test_int': 3, 'test_float': 3.22}, {'test_int': 4, 'test_float': 4.22}]")

@@ -165,6 +165,8 @@ class OpenScenario2Parser(object):
 
     def set_override_value_function_application(self, parameter, override_value):
         first = True
+        if not isinstance(override_value, dict):
+            raise ValueError(f"Expected dict as override value, got {type(override_value).__name__}")
         struct_keys = list(override_value.keys())
         pos = 0
         ref = None
@@ -189,6 +191,7 @@ class OpenScenario2Parser(object):
             if arg_name:
                 struct_keys.remove(arg_name)
                 child_app = child.get_only_child()
+                param_type = ref.get_named_child(arg_name).get_type()
                 try:
                     self.set_override_value(child_app, override_value[arg_name])
                 except ValueError as e:
