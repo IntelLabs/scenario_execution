@@ -960,7 +960,7 @@ Play back a ROS bag.
    * - ``publish_clock``
      - ``bool``
      - ``false``
-     - wether to publish to /clock
+     - whether to publish to /clock
    * - ``publish_clock_rate``
      - ``float``
      - ``1.0``

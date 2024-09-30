@@ -25,6 +25,8 @@ Runtime Parameters
      - Parse and resolve scenario, but do not execute
    * - ``-o OUTPUT_DIR`` ``--output-dir OUTPUT_DIR``
      - Directory for output (e.g. test results)
+   * - ``--scenario_parameter_file YAML_FILE``
+     - Parameter definition used to override default scenario parameter definitions. See `Override scenario parameters`_ for details.
    * - ``-t`` ``--live-tree``
      - (For debugging) Show current state of py tree
 
@@ -239,3 +241,36 @@ The return code of ``scenario_batch_execution`` is ``0`` if all tested scenarios
          
 .. note::
    ``scenario_batch_execution`` creates a junit xml compatible file that can easily be integrated into a CI pipeline. An example can be found here: :repo_link:`.github/workflows/test_build.yml`
+
+.. _override_scenario_parameters:
+
+Override scenario parameters
+----------------------------
+
+To override scenario parameters, specify the required parameters within a yaml file and use the command-line parameter ``--scenario-parameter-file``.
+
+Let's look at the following example scenario ``my_scenario.osc`` with the parameter ``my_param``. 
+
+.. code-block::
+
+    import osc.helpers
+
+    scenario my_scenario:
+        my_param: string = "default value"
+        do serial:
+            log(my_param)
+
+To override the parameter, the following yaml file ``overrides.yaml`` can be used.
+
+.. code-block:: yaml
+
+   my_scenario:
+     my_param: "my_val"
+
+The following command executes the scenario with the defined override.
+
+.. code-block:: bash
+
+   ros2 run scenario_execution_ros scenario_launch_ros --scenario-parameter-file overrides.yaml my_scenario.osc 
+
+If physical literals (e.g. ``length``) get overridden, the values are expected in SI-units.

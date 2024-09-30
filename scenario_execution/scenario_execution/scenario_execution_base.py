@@ -141,7 +141,7 @@ class ScenarioExecution(object):
                 try:
                     self.scenario_parameter_overrides = yaml.safe_load(stream)
                 except yaml.YAMLError as e:
-                    raise ValueError(f"Unable to parse yaml file '{scenario_parameter_file}': {e}")
+                    raise ValueError(f"Unable to parse yaml file '{scenario_parameter_file}': {e}") from e
 
     def setup(self, scenario: py_trees.behaviour.Behaviour, **kwargs) -> bool:
         """
