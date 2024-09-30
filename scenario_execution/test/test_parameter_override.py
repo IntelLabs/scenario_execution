@@ -143,7 +143,7 @@ scenario test:
             "UNKNOWN": "test"}}
         self.assertRaises(ValueError, self.execute, scenario_content, override_parameters)
 
-    def test_physical_literal(self):
+    def test_physical_literal_base(self):
         scenario_content = """
 action log:
     msg: string
@@ -524,7 +524,7 @@ scenario test:
         self.execute(scenario_content, override_parameters)
         self.assertEqual(self.logger.logs_info[1], "{'test_sub_struct': {'test_sub_sub_struct': {'test_sub_sub_float': 42.0}}}")
 
-    def test_struct_no_init_overload_sub_sub_struct_member_physical_literal(self):
+    def test_struct_no_init_overload_sub_sub_struct_member_physical_literal_invalid(self):
         scenario_content = """
 action log:
     msg: string
@@ -741,7 +741,7 @@ scenario test:
         }}
         self.assertRaises(ValueError, self.execute, scenario_content, override_parameters)
 
-    def test_physical_literal_empty_invalid_override(self):
+    def test_physical_literal_empty_override(self):
         scenario_content = """
 action log:
     msg: string
@@ -993,7 +993,7 @@ scenario test:
         self.execute(scenario_content, override_parameters)
         self.assertEqual(self.logger.logs_info[1], "{'test_int': 42, 'test_list': [4.0, 4.1]}")
 
-    def test_list_struct_empty(self):
+    def test_list_struct_empty_test(self):
         scenario_content = """
 action log:
     msg: string
