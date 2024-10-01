@@ -44,6 +44,7 @@ class ROSScenarioExecution(ScenarioExecution):
         output_dir = args.output_dir
         self.dry_run = args.dry_run
         self.render_dot = args.dot
+        self.scenario_parameter_file = args.scenario_parameter_file
 
         # override commandline by ros parameters
         self.node.declare_parameter('debug', False)
@@ -53,6 +54,7 @@ class ROSScenarioExecution(ScenarioExecution):
         self.node.declare_parameter('scenario', "")
         self.node.declare_parameter('dry_run', False)
         self.node.declare_parameter('dot', False)
+        self.node.declare_parameter('scenario_parameter_file', "")
 
         if self.node.get_parameter('debug').value:
             debug = self.node.get_parameter('debug').value
@@ -68,6 +70,8 @@ class ROSScenarioExecution(ScenarioExecution):
             self.dry_run = self.node.get_parameter('dry_run').value
         if self.node.get_parameter('dot').value:
             self.render_dot = self.node.get_parameter('dot').value
+        if self.node.get_parameter('scenario_parameter_file').value:
+            self.scenario_parameter_file = self.node.get_parameter('scenario_parameter_file').value
         self.logger = RosLogger('scenario_execution_ros', debug)
         super().__init__(debug=debug,
                          log_model=log_model,
@@ -76,6 +80,7 @@ class ROSScenarioExecution(ScenarioExecution):
                          output_dir=output_dir,
                          dry_run=self.dry_run,
                          render_dot=self.render_dot,
+                         scenario_parameter_file=self.scenario_parameter_file,
                          logger=self.logger)
 
     def setup_behaviour_tree(self, tree):
