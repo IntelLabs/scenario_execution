@@ -34,6 +34,9 @@ SPDX-License-Identifier: Apache-2.0 -->
   <!-- Namespace -->
   <xacro:arg name="namespace"                    default=""/>
 
+  <!-- Controller config -->
+  <xacro:arg name="control_config"               default="package://irobot_create_control/config/control.yaml" />
+
   <!-- Mechanical properties -->
   <xacro:property name="body_z_offset"           value="${-2.5*cm2m}" />
   <xacro:property name="body_collision_z_offset" value="${1*cm2m}" />
@@ -137,7 +140,7 @@ SPDX-License-Identifier: Apache-2.0 -->
   <xacro:if value="${'$(arg gazebo)' == 'classic'}">
     <gazebo>
       <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
-        <parameters>$(find irobot_create_control)/config/control.yaml</parameters>
+        <parameters>$(arg control_config)</parameters>
         <ros>
           <remapping>~/odom:=odom</remapping>
           <remapping>/tf:=tf</remapping>
@@ -152,7 +155,7 @@ SPDX-License-Identifier: Apache-2.0 -->
   <xacro:if value="${'$(arg gazebo)' == 'ignition'}">
     <gazebo>
       <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
-        <parameters>$(find irobot_create_control)/config/control.yaml</parameters>
+        <parameters>$(arg control_config)</parameters>
         <ros>
           <remapping>~/odom:=odom</remapping>
           <remapping>/tf:=tf</remapping>
