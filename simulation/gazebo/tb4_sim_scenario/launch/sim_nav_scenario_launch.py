@@ -42,7 +42,7 @@ def generate_launch_description():
     world_name = LaunchConfiguration('world_name')
     arg_world_name = DeclareLaunchArgument('world_name', default_value='default',
                                            description='Name of Simulation World')
-    map = LaunchConfiguration('map')
+    map_conf = LaunchConfiguration('map')
     arg_map = DeclareLaunchArgument('map', default_value=os.path.join(tb4_sim_scenario_dir, 'maps', 'maze.yaml'),
                                     description='Full path to map yaml file to load')
 
@@ -60,7 +60,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'nav2_launch.py'])]),
         launch_arguments={
             'use_sim_time': 'True',
-            'map_yaml': map,
+            'map_yaml': map_conf,
         }.items()
     )
 
