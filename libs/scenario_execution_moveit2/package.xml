@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>scenario_execution_moveit</name>
+  <name>scenario_execution_moveit2</name>
   <version>1.2.0</version>
-  <description>Scenario Execution library for moveit</description>
+  <description>Scenario Execution library for moveit2</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../../LICENSE">Apache-2.0</license>

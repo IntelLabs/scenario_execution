@@ -3,7 +3,7 @@
 <package format="3">
   <name>arm_sim_scenario</name>
   <version>1.2.0</version>
-  <description>Moveit Arm Simulation Scenario Execution</description>
+  <description>Moveit2 Arm Simulation Scenario Execution</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license file="../../../LICENSE">Apache-2.0</license>
@@ -13,7 +13,7 @@
   <!-- moveit2 -->
   <depend>moveit</depend>
   <depend>scenario_execution</depend>
-  <depend>scenario_execution_moveit</depend>
+  <depend>scenario_execution_moveit2</depend>
   <depend>moveit_resources</depend>
   <depend>controller_manager</depend>
   <depend>ompl</depend>

@@ -16,4 +16,4 @@
 
 
 def get_osc_library():
-    return 'scenario_execution_moveit', 'moveit.osc'
+    return 'scenario_execution_moveit2', 'moveit2.osc'

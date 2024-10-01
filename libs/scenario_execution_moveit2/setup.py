@@ -16,7 +16,7 @@
 
 from setuptools import find_namespace_packages, setup
 
-PACKAGE_NAME = 'scenario_execution_moveit'
+PACKAGE_NAME = 'scenario_execution_moveit2'
 
 setup(
     name=PACKAGE_NAME,
@@ -31,18 +31,18 @@ setup(
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='Scenario Execution library for moveit',
+    description='Scenario Execution library for moveit2',
     license='Apache License 2.0',
     tests_require=['pytest'],
     include_package_data=True,
     entry_points={
         'scenario_execution.actions': [
-            'arm.move_to_joint_pose = scenario_execution_moveit.actions.move_to_joint_pose:MoveToJointPose',
-            'arm.move_to_pose = scenario_execution_moveit.actions.move_to_pose:MoveToPose',
+            'arm.move_to_joint_pose = scenario_execution_moveit2.actions.move_to_joint_pose:MoveToJointPose',
+            'arm.move_to_pose = scenario_execution_moveit2.actions.move_to_pose:MoveToPose',
         ],
         'scenario_execution.osc_libraries': [
-            'moveit = '
-            'scenario_execution_moveit.get_osc_library:get_osc_library',
+            'moveit2 = '
+            'scenario_execution_moveit2.get_osc_library:get_osc_library',
         ]
     },
 )

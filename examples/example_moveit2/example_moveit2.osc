@@ -1,8 +1,8 @@
 import osc.helpers
 import osc.ros
-import osc.moveit
+import osc.moveit2
 
-scenario example_moveit:
+scenario example_moveit2:
     timeout(60s)
     manipulator: arm with:
         keep(it.arm_joints == ['panda_joint1','panda_joint2','panda_joint3','panda_joint4','panda_joint5','panda_joint6','panda_joint7'])
