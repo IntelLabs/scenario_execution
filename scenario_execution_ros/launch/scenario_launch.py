@@ -33,6 +33,7 @@ def generate_launch_description():
     scenario_execution = LaunchConfiguration('scenario_execution')
     scenario_status = LaunchConfiguration('scenario_status')
     output_dir = LaunchConfiguration('output_dir')
+    scenario_parameter_file = LaunchConfiguration('scenario_parameter_file')
 
     return LaunchDescription([
         DeclareLaunchArgument('scenario', description='Scenario file to execute'),
@@ -48,6 +49,7 @@ def generate_launch_description():
         DeclareLaunchArgument('log_level', default_value='info',
                               description='Log level for scenario execution'),
         DeclareLaunchArgument('output_dir', description='Output directory', default_value=''),
+        DeclareLaunchArgument('scenario_parameter_file', description='Yaml file specifying scenario parameter overrides', default_value=''),
 
         Node(
             condition=IfCondition(scenario_execution),
@@ -63,7 +65,8 @@ def generate_launch_description():
                 'live_tree': live_tree,
                 'log_model': log_model,
                 'output_dir': output_dir,
-                'scenario': scenario
+                'scenario': scenario,
+                'scenario_parameter_file': scenario_parameter_file
             }],
             on_exit=Shutdown()),
 

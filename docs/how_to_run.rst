@@ -243,23 +243,29 @@ Override scenario parameters
 
 To override scenario parameters, specify the required parameters within a yaml file and use the command-line parameter ``--scenario-parameter-file``.
 
-Let's look at the following example scenario ``my_scenario.osc`` with the parameter ``my_param``. 
+Let's look at the following example scenario ``my_scenario.osc`` with the parameter ``my_base_param`` and ``my_struct_param``. 
 
 .. code-block::
 
     import osc.helpers
 
     scenario my_scenario:
-        my_param: string = "default value"
+        my_base_param: string = "default value"
+        my_struct_param: position_3d
         do serial:
-            log(my_param)
+            log(my_base_param)
+            log(my_struct_param)
 
 To override the parameter, the following yaml file ``overrides.yaml`` can be used.
 
 .. code-block:: yaml
 
    my_scenario:
-     my_param: "my_val"
+     my_base_param: "my_val"
+     my_struct_param:
+       x: 1.0
+       y: 2.0
+       z: 0.0
 
 The following command executes the scenario with the defined override.
 
