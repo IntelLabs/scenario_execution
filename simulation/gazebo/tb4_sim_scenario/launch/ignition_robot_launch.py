@@ -39,7 +39,8 @@ ARGUMENTS = [
                           description='Turtlebot4 Model'),
     DeclareLaunchArgument('namespace', default_value='',
                           description='Robot namespace'),
-    DeclareLaunchArgument('spawn', default_value='True',
+    DeclareLaunchArgument('spawn', default_value='true',
+                          choices=['true', 'false'],
                           description='Whether to spawn the turlebot'),
 ]
 
