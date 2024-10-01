@@ -37,7 +37,8 @@ def generate_launch_description():
     arg_scenario = DeclareLaunchArgument('scenario',
                                          description='Scenario file to execute')
     arg_scenario_execution = DeclareLaunchArgument(
-        'scenario_execution', default_value='True',
+        'scenario_execution', default_value='true',
+        choices=['true', 'false'],
         description='Whether to execute scenario execution')
     world_name = LaunchConfiguration('world_name')
     arg_world_name = DeclareLaunchArgument('world_name', default_value='default',
@@ -59,7 +60,7 @@ def generate_launch_description():
     nav2_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'nav2_launch.py'])]),
         launch_arguments={
-            'use_sim_time': 'True',
+            'use_sim_time': 'true',
             'map_yaml': map_conf,
         }.items()
     )

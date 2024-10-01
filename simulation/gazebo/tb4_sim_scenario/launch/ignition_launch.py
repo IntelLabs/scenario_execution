@@ -57,7 +57,8 @@ def generate_launch_description():
         DeclareLaunchArgument('world', default_value=os.path.join(pkg_tb4_sim_scenario, 'worlds', 'maze.sdf'),
                               description='Simulation World File'),
 
-        DeclareLaunchArgument('headless', default_value='False',
+        DeclareLaunchArgument('headless', default_value='false',
+                              choices=['true', 'false'],
                               description='Whether to execute simulation gui'),
     ]
 
