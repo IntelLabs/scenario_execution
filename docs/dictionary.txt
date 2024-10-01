@@ -33,3 +33,4 @@ png
 svg
 Kubernetes
 yaml
+absolutized
