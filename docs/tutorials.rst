@@ -249,7 +249,7 @@ Then, run:
 
 .. code-block:: bash
 
-   ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_nav2/example_nav2.osc headless:=False slam:=True
+   ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_nav2/example_nav2.osc headless:=false slam:=True
 
 and you should see something like this
 

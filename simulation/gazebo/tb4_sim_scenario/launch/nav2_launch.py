@@ -43,11 +43,9 @@ def generate_launch_description():
                               choices=['standard', 'lite'],
                               description='Turtlebot4 Model'),
 
-        DeclareLaunchArgument('nav2', default_value='True',
+        DeclareLaunchArgument('nav2', default_value='true',
+                              choices=['true', 'false'],
                               description='Set "False" to skip nav2 startup.'),
-
-        DeclareLaunchArgument('headless', default_value='True',
-                              description='Start Igniton GUI or not'),
 
         DeclareLaunchArgument('map_yaml', default_value=os.path.join(pkg_tb4_sim_scenario, 'maps', 'maze.yaml'),
                               description='map yaml file'),
@@ -68,10 +66,10 @@ def generate_launch_description():
         condition=IfCondition(nav2),
         launch_arguments={
             'map': map_yaml,
-            'use_sim_time': 'True',
+            'use_sim_time': 'true',
             'use_composition': 'False',
             'params_file': PathJoinSubstitution([pkg_tb4_sim_scenario, 'params', 'nav2_params.yaml']),
-            'autostart': 'True'}.items()
+            'autostart': 'true'}.items()
     )
 
     # Create launch description
