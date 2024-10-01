@@ -1,5 +1,6 @@
 # Software License Agreement (BSD License)
 #
+# Copyright (c) 2024 Intel Labs
 # Copyright (c) 2015 Daniel Stonier
 # All rights reserved.
 #
@@ -29,6 +30,8 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+#
+# SPDX-License-Identifier: BSD-3-Clause
 
 import typing
 
@@ -38,15 +41,15 @@ import rcl_interfaces.msg as rcl_interfaces_msgs
 import rclpy
 
 from py_trees_ros import blackboard
-from py_trees_ros import conversions
 from py_trees_ros import exceptions
 from py_trees_ros import utilities
 from py_trees_ros import visitors
-from py_trees_ros.trees import BehaviourTree as BehaviourTreeRos
-from py_trees_ros_trees import SnapshotStream
+
+from py_trees_ros.trees import BehaviourTree
+from py_trees_ros.trees import SnapshotStream
 
 
-class BehaviourTree(BehaviourTreeRos):
+class BehaviourTreeKwargs(BehaviourTree):
     """
     Extend the :class:`py_trees_ros.trees.BehaviourTree` class with a required feature that is not yet available
     as a release.
@@ -198,7 +201,8 @@ class BehaviourTree(BehaviourTreeRos):
         # Behaviours
         ########################################
         try:
-            super().setup(
+            py_trees.trees.BehaviourTree.setup(
+                self,
                 timeout=setup_timeout,
                 visitor=visitor,
                 node=self.node,
