@@ -45,7 +45,7 @@ class DebugLogger(BaseLogger):
         self.logs.append(msg)
 
 
-class TestCheckFileExists(unittest.TestCase):
+class TestOsPath(unittest.TestCase):
     # pylint: disable=missing-function-docstring,missing-class-docstring
 
     def setUp(self) -> None:
