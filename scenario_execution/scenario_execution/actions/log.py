@@ -37,7 +37,7 @@ class Log(BaseAction):
         """
         if not self.published:
             self.published = True
-            if not self.msg:
+            if self.msg is None:
                 raise ActionError("log(): Empty message.", action=self)
             self.logger.info(f"{self.msg}")
 

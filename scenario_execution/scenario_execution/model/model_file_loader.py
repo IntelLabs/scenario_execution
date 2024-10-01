@@ -26,7 +26,7 @@ class ModelFileLoader(object):
     def __init__(self, logger) -> None:
         self.logger = logger
 
-    def process_file(self, file_name, log_tree: bool = False, debug: bool = False):
+    def process_file(self, file_name, log_tree: bool = False, debug: bool = False, _=None):
         model = self.load_file(file_name, log_tree)
         tree = py_trees.composites.Sequence(name="", memory=True)
         resolve_internal_model(model, tree, self.logger, log_tree)
