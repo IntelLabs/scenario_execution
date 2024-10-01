@@ -267,4 +267,4 @@ The following command executes the scenario with the defined override.
 
    ros2 run scenario_execution_ros scenario_execution_ros --scenario-parameter-file overrides.yaml my_scenario.osc 
 
-If physical literals (e.g. ``length``) get overridden, the values are expected in SI-units.
+If physical literals get overridden, the values are expected in SI base units: For example specify value in meter (e.g. ``42.0``) for ``length``; specify value in seconds for ``time``.
