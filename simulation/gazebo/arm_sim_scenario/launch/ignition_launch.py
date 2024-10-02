@@ -23,7 +23,7 @@ from launch_ros.actions import Node
 
 ARGUMENTS = [
     DeclareLaunchArgument('world', default_value=os.path.join(get_package_share_directory(
-        'tb4_sim_scenario'), 'worlds', 'maze.sdf'),
+        'arm_sim_scenario'), 'worlds', 'maze.sdf'),
         description='Simulation World File'),
     DeclareLaunchArgument('use_sim_time', default_value='true',
                           choices=['true', 'false'],
