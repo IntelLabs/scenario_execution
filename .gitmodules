@@ -1,4 +1,0 @@
-[submodule "dependencies/moveit_resources"]
-	path = dependencies/moveit_resources
-	url = https://github.com/moveit/moveit_resources
-	branch = humble
