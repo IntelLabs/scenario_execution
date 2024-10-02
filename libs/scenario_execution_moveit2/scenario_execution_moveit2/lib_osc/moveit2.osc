@@ -30,7 +30,7 @@ action arm.move_to_joint_pose:
     move_group: move_group_type          # move group type (arm, gripper)
     plan_only: bool = false              # if true, the action returns an executable plan in the response but does not attempt execution
     replan: bool = true                  # if true, replan if plan becomes invalidated during execution
-    tolerance: float = 0.001             # tolerance bettwen actual state and start and final state
+    tolerance: float = 0.001             # the acceptable range of variation around both the start and goal positions.
     max_velocity_scaling_factor: float = 0.1 # Scaling factors for optionally reducing the maximum joint velocities
     namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
     action_topic: string = 'move_action' # Name of action
@@ -41,7 +41,7 @@ action arm.move_to_pose:
     goal_pose: list of string            # end effector pose to move to [x, y, z, quatx, quaty, quatz, w]
     plan_only: bool = false              # if true, the action returns an executable plan in the response but does not attempt execution
     replan: bool = true                  # if true, replan if plan becomes invalidated during execution
-    tolerance: float = 0.001             # tolerance bettwen actual state and start and final state
+    tolerance: float = 0.001             # the acceptable range of variation around both the start and goal positions.
     max_velocity_scaling_factor: float = 0.1 # Scaling factors for optionally reducing the maximum joint velocities
     namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
     action_topic: string = 'move_action' # Name of action

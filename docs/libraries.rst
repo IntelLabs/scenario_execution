@@ -26,6 +26,8 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
      - ROS Library (provided with :repo_link:`scenario_execution_ros`)
    * - ``osc.x11``
      - X11 Library (provided with :repo_link:`libs/scenario_execution_x11`)
+   * - ``osc.moveit2``
+     - ROS Moveit2  manipulation stack Library (provided with :repo_link:`libs/scenario_execution_moveit2`)
 
 Additional features can be implemented by defining your own library.
 
@@ -1436,3 +1438,143 @@ Capture the screen content within a video.
      - ``float``
      - ``25.0``
      - Frame-rate of the resulting video
+
+Moveit2
+-------
+
+The library contains actions to interact with the `Moveit2 <https://moveit.picknik.ai/main/index.html>`__ manipulation stack. Import it with ``import osc.moveit2``. It is provided by the package :repo_link:`libs/scenario_execution_moveit2`.
+
+``arm``
+^^^^^^^^
+An articulated arm actor inheriting from the more general ``robot`` actor
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - `` ' ' ``
+     - Namespace for the arm
+   * - ``arm_joints``
+     - ``list of string``
+     -
+     - List of joint names for the arm joints
+   * - ``gripper_joints``
+     - ``list of string``
+     -
+     - List of joint names for the gripper joints
+   * - ``arm_group``
+     - ``bool``
+     - ``false``
+     - Name of the move group controlling the arm joints
+   * - ``gripper_group``
+     - ``string``
+     - 
+     - Name of the move group controlling the gripper joints
+   * - ``end_effector``
+     - ``string``
+     -
+     - Name of the end effector component (e.g., hand or tool)
+   * - ``base_link``
+     - ``string``
+     -
+     - Name of the robot's base link for reference in kinematics
+
+``arm.move_to_joint_pose()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use Moveit2 to move the arm joints to specified joint positions.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_pose``
+     - ``list of string``
+     -
+     - List joint positions to move to
+   * - ``move_group``
+     - ``move_group_type``
+     -
+     - Move group type. Allowed [arm, gripper] (eg. [move_group_type!arm, move_group_type!gripper])
+   * - ``plan_only``
+     - ``bool``
+     - ``false``
+     - If true, the action returns an executable plan in the response but does not attempt execution
+   * - ``replan``
+     - ``bool``
+     - ``true``
+     - If true, replan if plan becomes invalidated during execution
+   * - ``tolerance``
+     - ``float``
+     - ``0.001``
+     - The acceptable range of variation around both the start and goal positions.
+   * - ``max_velocity_scaling_factor``
+     - ``float``
+     - ``false``
+     - Scaling factors for optionally reducing the maximum joint velocities
+   * - ``namespace_override``
+     - ``string``
+     - ``false``
+     - if set, it's used as namespace (instead of the associated actor's name)
+   * - ``action_topic``
+     - ``string``
+     - ``move_action``
+     - Action name
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     - Succeed on goal acceptance
+
+``arm.move_to_pose``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use moveit2 to move the end-effector to specified position
+
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_pose``
+     - ``list of string``
+     -
+     - end effector pose to move to [x, y, z, quatx, quaty, quatz, w]
+   * - ``plan_only``
+     - ``bool``
+     - ``false``
+     - If true, the action returns an executable plan in the response but does not attempt execution
+   * - ``replan``
+     - ``bool``
+     - ``true``
+     - If true, replan if plan becomes invalidated during execution
+   * - ``tolerance``
+     - ``float``
+     - ``0.001``
+     - The acceptable range of variation around both the start and goal positions.
+   * - ``max_velocity_scaling_factor``
+     - ``float``
+     - ``false``
+     - Scaling factors for optionally reducing the maximum joint velocities
+   * - ``namespace_override``
+     - ``string``
+     - ``false``
+     - if set, it's used as namespace (instead of the associated actor's name)
+   * - ``action_topic``
+     - ``string``
+     - ``move_action``
+     - Action name
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     - Succeed on goal acceptance
