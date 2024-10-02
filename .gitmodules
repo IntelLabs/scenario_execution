@@ -1,6 +1,3 @@
-[submodule "dependencies/py_trees_ros"]
-	path = dependencies/py_trees_ros
-	url = https://github.com/splintered-reality/py_trees_ros.git
 [submodule "dependencies/nav2_minimal_turtlebot_simulation"]
 	path = dependencies/nav2_minimal_turtlebot_simulation
 	url = https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation.git
