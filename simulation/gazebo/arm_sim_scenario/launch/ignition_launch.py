@@ -26,7 +26,7 @@ ARGUMENTS = [
     DeclareLaunchArgument(
         'world',
         default_value=os.path.join(
-            get_package_share_directory('tb4_sim_scenario'), 'worlds', 'maze.sdf'),
+            get_package_share_directory('arm_sim_scenario'), 'worlds', 'maze.sdf'),
         description='Simulation World File'
     ),
     DeclareLaunchArgument(
