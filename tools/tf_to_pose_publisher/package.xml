@@ -6,7 +6,7 @@
   <description>Publish a tf transform to a pose topic</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
-  <license file="../../LICENSE">Apache-2.0</license>
+  <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>geometry_msgs</depend>
