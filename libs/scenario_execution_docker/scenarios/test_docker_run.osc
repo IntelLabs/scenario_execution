@@ -1,0 +1,10 @@
+import osc.docker
+import osc.helpers
+
+scenario test_docker_run:
+    timeout(15s)
+    do serial:
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true,remove: true, volumes: ['/srv/nfs4/:/data'])
+        # docker_run(image: 'ubuntu', command: 'echo hello world', volumes: ['/srv/nfs4/:/data'])
+        # docker_run(image: 'ubuntu', command: 'sleep 10', volumes: ['/srv/nfs4/:/data'])
+        emit end

@@ -1,0 +1,11 @@
+action docker_run:
+    # run a docker container
+    image: string                   # the image to run
+    command: string                 # the command to run in the container
+    #environment: list of string     # Environment variables to set inside the container, i.e., a list of strings in the format ["SOMEVARIABLE=xxx"].
+    #hostname: string                # Optional hostname for the container
+    #privileged: bool = false        # Give extended privileges to this container
+    detach: bool = false            # Run container in the background
+    remove: bool = false            # Remove the container when it as finished running
+    stream: bool = true             # If true and detach is false, return a log generator instead of a string. Ignored if detach is true.
+    volumes: list of string         # A list of strings which each one of its elements specifies a mount volume: ['/home/user1/:/mnt/vol2','/var/www:/mnt/vol1']
