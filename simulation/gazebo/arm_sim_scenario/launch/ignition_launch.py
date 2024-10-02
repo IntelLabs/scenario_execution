@@ -61,7 +61,7 @@ def generate_launch_description():
             "-topic",
             "robot_description",
             "-name",
-            "panda",
+            "arm",
             "-allow-renaming",
             "true",
         ],

@@ -14,14 +14,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess
 from launch.substitutions.launch_configuration import LaunchConfiguration
+from launch.substitutions import PathJoinSubstitution
 from launch.conditions import LaunchConfigurationNotEquals
 from launch_ros.actions import Node
-import os
+from launch_ros.substitutions import FindPackageShare
 
 ARGUMENTS = [
     DeclareLaunchArgument('arm_group_controller', default_value='panda_arm_controller',
@@ -31,19 +30,21 @@ ARGUMENTS = [
     DeclareLaunchArgument('ros2_control_hardware_type', default_value='mock_components',
                           choices=['ignition', 'mock_components'],
                           description='ROS2 control hardware interface type to use for the launch file'),
+    DeclareLaunchArgument('ros2_control_config_pkg', default_value='moveit_resources_panda_moveit_config',
+                          description='ROS2 control config pkg (file should be inside the config dir of pkg/config/ros2_controllers.yam)')
 ]
 
 
 def generate_launch_description():
 
-    pkg_moveit_resources_panda_moveit_config = get_package_share_directory('moveit_resources_panda_moveit_config')
+    pkg_controller_config = FindPackageShare(LaunchConfiguration('ros2_control_config_pkg'))
     arm_group_controller = LaunchConfiguration('arm_group_controller')
     gripper_group_controller = LaunchConfiguration('gripper_group_controller')
 
-    ros2_controllers_path = os.path.join(
-        pkg_moveit_resources_panda_moveit_config,
+    ros2_controllers_path = PathJoinSubstitution([
+        pkg_controller_config,
         "config",
-        "ros2_controllers.yaml",
+        "ros2_controllers.yaml"]
     )
 
     ros2_control_node = Node(

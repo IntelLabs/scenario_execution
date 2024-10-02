@@ -40,7 +40,7 @@ def generate_launch_description():
     moveit_config_builder = MoveItConfigsBuilder("moveit_resources_panda")
 
     moveit_config_builder._MoveItConfigsBuilder__urdf_package = pkg_arm_sim_scenario  # pylint: disable=W0212
-    moveit_config_builder._MoveItConfigsBuilder__urdf_file_path = Path("urdf/arm.urdf.xacro")  # pylint: disable=W0212
+    moveit_config_builder._MoveItConfigsBuilder__urdf_file_path = Path("config/panda.urdf.xacro")  # pylint: disable=W0212
 
     moveit_config = (
         moveit_config_builder

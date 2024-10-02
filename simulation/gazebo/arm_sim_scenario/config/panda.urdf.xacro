@@ -332,6 +332,6 @@
         <child link="ground_plane_box" />
         <origin xyz="0 0 -0.25" rpy="0 0 0" />
     </joint>
-    <xacro:include filename="$(find arm_sim_scenario)/urdf/control.urdf.xacro" />
+    <xacro:include filename="$(find arm_sim_scenario)/config/control.urdf.xacro" />
     <xacro:panda_ros2_control name="PandaFakeSystem" initial_positions_file="$(find moveit_resources_panda_moveit_config)/config/initial_positions.yaml" ros2_control_hardware_type="$(arg ros2_control_hardware_type)"/>
 </robot>

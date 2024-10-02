@@ -23,6 +23,7 @@ from launch.substitutions.launch_configuration import LaunchConfiguration
 from launch.conditions import IfCondition
 from launch_ros.actions import Node
 from launch_ros.descriptions import ParameterValue
+from launch_ros.substitutions import FindPackageShare
 
 ARGUMENTS = [
     DeclareLaunchArgument('ros2_control_hardware_type', default_value='mock_components',
@@ -44,14 +45,19 @@ ARGUMENTS = [
                                                               'arm.rviz',
                                                               ]),
                           description='file path to the config file RViz should load.',),
+    DeclareLaunchArgument('urdf_pkg', default_value='arm_sim_scenario',
+                          description='Package where URDF/Xacro file is located (file should be inside the config dir of pkg/config/robot_name.urdf.xacro)'),
+    DeclareLaunchArgument('urdf', default_value='panda.urdf.xacro',
+                          description='Name of URDF/Xacro file')
 ]
 
 
 def generate_launch_description():
-    pkg_arm_sim_scenario = get_package_share_directory('arm_sim_scenario')
-    xacro_file = PathJoinSubstitution([pkg_arm_sim_scenario,
-                                       'urdf',
-                                       'arm.urdf.xacro'])
+
+    pkg_urdf = FindPackageShare(LaunchConfiguration('urdf_pkg'))
+    xacro_file = PathJoinSubstitution([pkg_urdf,
+                                       'config',
+                                       LaunchConfiguration('urdf')])
     ros2_control_hardware_type = LaunchConfiguration('ros2_control_hardware_type')
     virtual_joint_child_name = LaunchConfiguration('virtual_joint_child_name')
     virtual_joint_parent_frame = LaunchConfiguration('virtual_joint_parent_frame')
