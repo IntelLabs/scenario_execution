@@ -23,7 +23,7 @@ PACKAGE_NAME = 'scenario_execution_nav2_test'
 
 setup(
     name=PACKAGE_NAME,
-    version='1.3.0',
+    version='1.2.0',
     packages=find_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',

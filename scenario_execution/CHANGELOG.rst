@@ -2,7 +2,7 @@
 Changelog for package scenario_execution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.3.0 (2024-10-02)
+1.2.0 (2024-10-02)
 ------------------
 * Commandline parameters
 * Add increment, decrement action, fix check

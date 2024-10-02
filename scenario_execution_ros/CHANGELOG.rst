@@ -2,7 +2,7 @@
 Changelog for package scenario_execution_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.3.0 (2024-10-02)
+1.2.0 (2024-10-02)
 ------------------
 * check_data_external: add action to check with custom python function
 * rename record_bag to bag_record, add bag_play
