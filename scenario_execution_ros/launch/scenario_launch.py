@@ -31,7 +31,6 @@ def generate_launch_description():
     log_model = LaunchConfiguration('log_model')
     log_level = LaunchConfiguration('log_level')
     scenario_execution = LaunchConfiguration('scenario_execution')
-    scenario_status = LaunchConfiguration('scenario_status')
     output_dir = LaunchConfiguration('output_dir')
     scenario_parameter_file = LaunchConfiguration('scenario_parameter_file')
 
@@ -44,8 +43,6 @@ def generate_launch_description():
                               description='log parsed model'),
         DeclareLaunchArgument('scenario_execution', default_value='True',
                               description='Wether to execute scenario execution'),
-        DeclareLaunchArgument('scenario_status', default_value='False',
-                              description='Wether to execute scenario status'),
         DeclareLaunchArgument('log_level', default_value='info',
                               description='Log level for scenario execution'),
         DeclareLaunchArgument('output_dir', description='Output directory', default_value=''),
@@ -70,21 +67,9 @@ def generate_launch_description():
             }],
             on_exit=Shutdown()),
 
-        Node(
-            condition=IfCondition(scenario_status),
-            package='scenario_status',
-            executable='scenario_status_node',
-            name='scenario_status_node',
-            parameters=[{
-                'scenario_status_topic': '/scenario_status',
-
-            }],
-            output='screen'
-        ),
-
         # Parse log for message on how to execute scenario separately
         LogInfo(
             condition=UnlessCondition(scenario_execution),
             msg=["Skipping: ros2 launch scenario_execution_ros scenario_launch.py scenario:=",
-                 scenario, ' log_model:=', log_model, ' live_tree:=', live_tree, ' debug:=', debug]),
+                 scenario, ' log_model:=', log_model, ' live_tree:=', live_tree, ' debug:=', debug, ' output_dir:=', output_dir, ' scenario_parameter_file:=', scenario_parameter_file]),
     ])
