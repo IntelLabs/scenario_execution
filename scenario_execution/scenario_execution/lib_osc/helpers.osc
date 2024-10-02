@@ -9,6 +9,14 @@ enum signal: [
     sigterm = 15
 ]
 
+action increment:
+    # Increment the value of a variable
+    target_variable: string              # variable to increment
+
+action decrement:
+    # Decrement the value of a variable
+    target_variable: string              # variable to decrement
+
 action log:
     # Print out a message
     msg: string                          # Message to print

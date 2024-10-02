@@ -39,11 +39,15 @@ def generate_launch_description():
     arg_scenario = DeclareLaunchArgument('scenario',
                                          description='Scenario file to execute')
     arg_scenario_execution = DeclareLaunchArgument(
-        'scenario_execution', default_value='True',
-        description='Wether to execute scenario execution')
+        'scenario_execution', default_value='true',
+        choices=['true', 'false'],
+        description='Whether to execute scenario execution')
     world_name = LaunchConfiguration('world_name')
     arg_world_name = DeclareLaunchArgument('world_name', default_value='default',
                                            description='Name of Simulation World')
+    map_conf = LaunchConfiguration('map')
+    arg_map = DeclareLaunchArgument('map', default_value=os.path.join(tb4_sim_scenario_dir, 'maps', 'maze.yaml'),
+                                    description='Full path to map yaml file to load')
     params_file = LaunchConfiguration('params_file')
     arg_params_file = DeclareLaunchArgument('params_file', default_value=PathJoinSubstitution([nav2_bringup_dir, 'params', 'nav2_params.yaml']),
                                             description='nav2 parameter file')
@@ -67,7 +71,7 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': 'True',
             'params_file': params_file,
-            'map': [PathJoinSubstitution([tb4_sim_scenario_dir, 'maps', 'maze.yaml'])],
+            'map': map_conf,
         }.items()
     )
 
@@ -94,7 +98,8 @@ def generate_launch_description():
         arg_scenario,
         arg_scenario_execution,
         arg_world_name,
-        arg_params_file
+        arg_params_file,
+        arg_map
     ])
 
     for pose_element in ['x', 'y', 'z', 'yaw']:

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>scenario_execution_py_trees_ros</name>
+  <version>1.2.0</version>
+  <description>Fixes in py-trees-ros not yet release</description>
+  <author email="scenario-execution@intel.com">Intel Labs</author>
+  <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
+  <license>BSD-3-Clause</license>
+
+  <exec_depend>py_trees_ros</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

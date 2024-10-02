@@ -26,6 +26,10 @@ jobs:
         shell: bash
         run: |
           source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          git clone https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation.git
+          cd nav2_minimal_turtlebot_simulation
+          git checkout f4eefd049359b3f0becabd7a0870005f4140ec08
+          cd ..
           colcon build --continue-on-error
           source install/setup.bash
       - name: Cache Build

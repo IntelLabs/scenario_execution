@@ -285,6 +285,47 @@ Be depressed, always fail.
 The tickling never ends...
 
 
+
+``decrement()``
+^^^^^^^^^^^^^^^
+
+Decrement the value of a variable.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target_variable``
+     - ``variable``
+     -
+     - Variable to decrement
+
+
+``increment()``
+^^^^^^^^^^^^^^^
+
+Increment the value of a variable.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target_variable``
+     - ``variable``
+     -
+     - Variable to increment
+
+
 ``log()``
 ^^^^^^^^^
 
@@ -694,6 +735,24 @@ OS
 
 The library contains actions to interact with the operating system. Import it with ``import osc.os``. It is provided by the package :repo_link:`libs/scenario_execution_os`.
 
+External Methods
+^^^^^^^^^^^^^^^^
+
+.. list-table:: 
+   :widths: 30 70
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - External Method
+     - Description
+   * - ``abspath(path: string)``
+     - Return a normalized absolutized version of the path-name ``path``.
+   * - ``basename(p: string)``
+     - Return the base name of path-name ``p``.
+   * - ``dirname(p: string)``
+     - Return the directory name of path-name ``p``.
+
+
 ``check_file_exists()``
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -894,6 +953,80 @@ Check the latency of the specified topic (in system time). If the check with ``c
      - Class of message type, only required when 'wait_for_first_message' is set to false (e.g. ``std_msgs.msg.String``)
 
 
+``bag_play()``
+^^^^^^^^^^^^^^^
+
+Play back a ROS bag.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``source``
+     - ``string``
+     - 
+     - path to ROS bag directory, either absolute or relative to scenario-file directory
+   * - ``topics``
+     - ``list of string``
+     - 
+     - topics to publish, if empty all topics are published
+   * - ``publish_clock``
+     - ``bool``
+     - ``false``
+     - whether to publish to /clock
+   * - ``publish_clock_rate``
+     - ``float``
+     - ``1.0``
+     - if ``publish_clock`` is true, publish to ``/clock`` at the specified frequency in Hz, to act as a ROS Time Source.
+   * - ``start_offset``
+     - ``float``
+     - ``0.0``
+     - start the playback this many seconds into the bag file
+
+
+``bag_record()``
+^^^^^^^^^^^^^^^^
+
+Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: ``.``). If ``topics`` is specified, this action waits for all topics to be subscribed until it returns with success otherwise it immediately returns. The recording is active until the end of the scenario.
+
+A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree. When replaying the bag-file, this allows to visualize the current state of the scenario in RViz, using the ``scenario_execution_rviz`` plugin.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``topics``
+     - ``list of string``
+     - 
+     - List of topics to capture
+   * - ``timestamp_suffix``
+     - ``bool``
+     - ``true``
+     - Add a timestamp suffix to output directory name
+   * - ``hidden_topics``
+     - ``bool``
+     - ``false``
+     - Whether to record hidden topics
+   * - ``storage``
+     - ``string``
+     - ``''``
+     - Storage type to use (empty string: use ROS bag record default)
+   * - ``use_sim_time``
+     - ``bool``
+     - ``false``
+     - Use simulation time for message timestamps by subscribing to the /clock topic
+
+
 ``check_data()``
 ^^^^^^^^^^^^^^^^
 
@@ -944,6 +1077,55 @@ Compare received topic messages using the given ``comparison_operator``, against
      - ``bool``
      - ``true``
      - start checking with the first received message after action execution. If false, the check is executed on the last received message.
+
+
+``check_data_external()``
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Compare received topic messages using an external python function ``function_name`` defined in python file ``file_path`` relative to the scenario-file.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``topic_name``
+     - ``string``
+     - 
+     - Name of the topic to connect to
+   * - ``topic_type``
+     - ``string``
+     - 
+     - Class of the message type (e.g. ``std_msgs.msg.String``)
+   * - ``qos_profile``
+     - ``qos_preset_profiles``
+     - ``qos_preset_profiles!system_default``
+     - QoS Preset Profile for the subscriber
+   * - ``file_path``
+     - ``string``
+     - 
+     - Path to python file containing the external check function
+   * - ``function_name``
+     - ``string``
+     - 
+     - python function to be called. The function is expected to have the signature: ``def function_name(msg) -> bool``
+   * - ``fail_if_no_data``
+     - ``bool``
+     - ``false``
+     - return failure if there is no data yet
+   * - ``fail_if_bad_comparison``
+     - ``bool``
+     - ``true``
+     - return failure if comparison failed
+   * - ``wait_for_first_message``
+     - ``bool``
+     - ``true``
+     - start checking with the first received message after action execution. If false, the check is executed on the last received message.
+
 
 ``differential_drive_robot.odometry_distance_traveled()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1025,43 +1207,6 @@ Wait for specific output in ROS log (i.e. ``/rosout`` topic). If any of the entr
      - ``list of string``
      - 
      - list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
-
-``record_bag()``
-^^^^^^^^^^^^^^^^
-
-Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: '.').
-
-A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree. When replaying the bag-file, this allows to visualize the current state of the scenario in RViz, using the ``scenario_execution_rviz`` plugin.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``topics``
-     - ``list of string``
-     - 
-     - List of topics to capture
-   * - ``timestamp_suffix``
-     - ``bool``
-     - ``true``
-     - Add a timestamp suffix to output directory name
-   * - ``hidden_topics``
-     - ``bool``
-     - ``false``
-     - Whether to record hidden topics
-   * - ``storage``
-     - ``string``
-     - ``''``
-     - Storage type to use (empty string: use ROS bag record default)
-   * - ``use_sim_time``
-     - ``bool``
-     - ``false``
-     - Use simulation time for message timestamps by subscribing to the /clock topic
 
 ``ros_launch()``
 ^^^^^^^^^^^^^^^^
