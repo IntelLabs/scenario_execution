@@ -1,3 +1,0 @@
-[submodule "dependencies/nav2_minimal_turtlebot_simulation"]
-	path = dependencies/nav2_minimal_turtlebot_simulation
-	url = https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation.git
