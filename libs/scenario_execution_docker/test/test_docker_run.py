@@ -42,14 +42,28 @@ class TestCheckFileExists(unittest.TestCase):
         self.scenario_execution.tree = self.tree
         self.scenario_execution.run()
 
-    def test_success(self):
+    def test_success_stream(self):
         self.parse("""
 import osc.docker
+import osc.helpers
 
 scenario test:
     timeout(10s)
     do serial:
         docker_run(image: 'ubuntu', command: 'echo hello world')
+        emit end
 """)
         self.assertTrue(self.scenario_execution.process_results())
 
+    def test_success_detach(self):
+        self.parse("""
+import osc.docker
+import osc.helpers
+
+scenario test:
+    timeout(10s)
+    do serial:
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true)
+        emit end
+""")
+        self.assertTrue(self.scenario_execution.process_results())
