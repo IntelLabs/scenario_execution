@@ -21,27 +21,43 @@ from launch.actions import DeclareLaunchArgument, ExecuteProcess, Shutdown
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
+# Define Launch Arguments
 ARGUMENTS = [
-    DeclareLaunchArgument('world', default_value=os.path.join(get_package_share_directory(
-        'arm_sim_scenario'), 'worlds', 'maze.sdf'),
-        description='Simulation World File'),
-    DeclareLaunchArgument('use_sim_time', default_value='true',
-                          choices=['true', 'false'],
-                          description='use_sim_time'),
+    DeclareLaunchArgument(
+        'world',
+        default_value=os.path.join(
+            get_package_share_directory('tb4_sim_scenario'), 'worlds', 'maze.sdf'),
+        description='Simulation World File'
+    ),
+    DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='true',
+        choices=['true', 'false'],
+        description='Use simulation time'
+    ),
+    DeclareLaunchArgument(
+        'resource_package_path',
+        default_value=os.path.dirname(get_package_share_directory('moveit_resources_panda_description')),
+        description='Directory containing Ignition resources'
+    ),
 ]
 
 
 def generate_launch_description():
-
+    # Launch Configurations
     world = LaunchConfiguration('world')
-    pkg_moveit_resources_panda_description = get_package_share_directory('moveit_resources_panda_description')
+    resource_package_path = LaunchConfiguration('resource_package_path')
 
-    env = {'GZ_SIM_SYSTEM_PLUGIN_PATH':
-           ':'.join([os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', default=''),
-                     os.environ.get('LD_LIBRARY_PATH', default='')]),
-           'IGN_GAZEBO_RESOURCE_PATH': os.path.dirname(pkg_moveit_resources_panda_description)}
+    # Set environment variables
+    env = {
+        'GZ_SIM_SYSTEM_PLUGIN_PATH': ':'.join([
+            os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', ''),
+            os.environ.get('LD_LIBRARY_PATH', '')
+        ]),
+        'IGN_GAZEBO_RESOURCE_PATH': resource_package_path
+    }
 
-    # Ignition gazebo
+    # Ignition Gazebo Launch
     ignition_gazebo = ExecuteProcess(
         cmd=['ign', 'gazebo', world, '-r', '-v', '4'],
         output='screen',
@@ -53,21 +69,19 @@ def generate_launch_description():
         emulate_tty=True
     )
 
+    # Spawn Robot Node
     spawn_robot_node = Node(
         package="ros_gz_sim",
         executable="create",
         output="screen",
         arguments=[
-            "-topic",
-            "robot_description",
-            "-name",
-            "arm",
-            "-allow-renaming",
-            "true",
+            "-topic", "robot_description",
+            "-name", "arm",
+            "-allow-renaming", "true",
         ],
     )
 
-    # Clock Bridge
+    # Clock Bridge Node
     clock_bridge = Node(
         package="ros_gz_bridge",
         executable="parameter_bridge",
@@ -75,8 +89,10 @@ def generate_launch_description():
         output="screen",
     )
 
+    # Create and Return Launch Description
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(ignition_gazebo)
     ld.add_action(clock_bridge)
     ld.add_action(spawn_robot_node)
+
     return ld
