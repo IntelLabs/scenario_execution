@@ -737,6 +737,24 @@ OS
 
 The library contains actions to interact with the operating system. Import it with ``import osc.os``. It is provided by the package :repo_link:`libs/scenario_execution_os`.
 
+External Methods
+^^^^^^^^^^^^^^^^
+
+.. list-table:: 
+   :widths: 30 70
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - External Method
+     - Description
+   * - ``abspath(path: string)``
+     - Return a normalized absolutized version of the path-name ``path``.
+   * - ``basename(p: string)``
+     - Return the base name of path-name ``p``.
+   * - ``dirname(p: string)``
+     - Return the directory name of path-name ``p``.
+
+
 ``check_file_exists()``
 ^^^^^^^^^^^^^^^^^^^^^^^
 

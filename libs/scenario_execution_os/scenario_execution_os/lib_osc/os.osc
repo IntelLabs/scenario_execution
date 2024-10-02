@@ -1,5 +1,3 @@
-import osc.standard.base
-
 action check_file_exists:
     # report success if a file exists
     file_name: string  # file to check
@@ -7,3 +5,8 @@ action check_file_exists:
 action check_file_not_exists:
     # report success if a file does not exist
     file_name: string  # file to check
+
+struct os:
+    def abspath(path: string) -> string is external os.path.abspath()
+    def basename(p: string) -> string is external os.path.basename()
+    def dirname(p: string) -> string is external os.path.dirname()
