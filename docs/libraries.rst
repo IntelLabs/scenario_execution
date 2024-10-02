@@ -1525,7 +1525,7 @@ Use Moveit2 to move the arm joints to specified joint positions.
    * - ``move_group``
      - ``move_group_type``
      -
-     - Move group type. Allowed [arm, gripper] (eg. [move_group_type!arm, move_group_type!gripper])
+     - Move group type. Allowed [arm, gripper] (e.g. ``[move_group_type!arm, move_group_type!gripper]``)
    * - ``plan_only``
      - ``bool``
      - ``false``
@@ -1567,7 +1567,7 @@ Use moveit2 to move the end-effector to specified position
    * - ``goal_pose``
      - ``list of string``
      -
-     - end effector pose to move to [x, y, z, quatx, quaty, quatz, w]
+     - end effector pose to move to ``[x, y, z, quatx, quaty, quatz, w]``
    * - ``plan_only``
      - ``bool``
      - ``false``
