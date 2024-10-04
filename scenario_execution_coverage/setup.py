@@ -18,7 +18,7 @@ from glob import glob
 import os
 from setuptools import find_packages, setup
 
-PACKAGE_NAME = 'scenario_coverage'
+PACKAGE_NAME = 'scenario_execution_coverage'
 
 setup(
     name=PACKAGE_NAME,
@@ -38,13 +38,13 @@ setup(
     zip_safe=True,
     maintainer='Intel Labs',
     maintainer_email='scenario-execution@intel.com',
-    description='Robotics Scenario Execution',
+    description='Robotics Scenario Execution Coverage',
     license='Apache License 2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'scenario_variation = scenario_coverage.scenario_variation:main',
-            'scenario_batch_execution = scenario_coverage.scenario_batch_execution:main',
+            'scenario_variation = scenario_execution_coverage.scenario_variation:main',
+            'scenario_batch_execution = scenario_execution_coverage.scenario_batch_execution:main',
         ],
     },
 )

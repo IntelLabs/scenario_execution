@@ -1,9 +1,9 @@
 # Example Scenario Variation
 
-To run the Example Scenario Variation with scenario, first build Packages `scenario_execution` and `scenario_coverage`:
+To run the Example Scenario Variation with scenario, first build Packages `scenario_execution` and `scenario_execution_coverage`:
 
 ```bash
-colcon build --packages-up-to scenario_execution && colcon build --packages-up-to scenario_coverage
+colcon build --packages-up-to scenario_execution && colcon build --packages-up-to scenario_execution_coverage
 ```
 
 Source the workspace:
