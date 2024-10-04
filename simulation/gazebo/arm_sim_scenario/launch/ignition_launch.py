@@ -17,44 +17,38 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, Shutdown
-from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable, Shutdown, ExecuteProcess
+from launch.substitutions import LaunchConfiguration, EnvironmentVariable
 from launch_ros.actions import Node
 
 # Define Launch Arguments
 ARGUMENTS = [
     DeclareLaunchArgument(
         'world',
-        default_value=os.path.join(
-            get_package_share_directory('arm_sim_scenario'), 'worlds', 'maze.sdf'),
+        default_value="empty.sdf",
         description='Simulation World File'
-    ),
-    DeclareLaunchArgument(
-        'use_sim_time',
-        default_value='true',
-        choices=['true', 'false'],
-        description='Use simulation time'
-    ),
-    DeclareLaunchArgument(
-        'resource_package_path',
-        default_value=os.path.dirname(get_package_share_directory('moveit_resources_panda_description')),
-        description='Directory containing Ignition resources'
-    ),
+    )
 ]
 
 
 def generate_launch_description():
-    # Launch Configurations
+
     world = LaunchConfiguration('world')
-    resource_package_path = LaunchConfiguration('resource_package_path')
 
     # Set environment variables
+    ign_gazebo_resource_path = SetEnvironmentVariable(
+        name='IGN_GAZEBO_RESOURCE_PATH',
+        value=[
+            EnvironmentVariable('IGN_GAZEBO_RESOURCE_PATH', default_value=os.path.dirname(
+                get_package_share_directory('moveit_resources_panda_description')))
+        ]
+    )
+
     env = {
         'GZ_SIM_SYSTEM_PLUGIN_PATH': ':'.join([
             os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', ''),
             os.environ.get('LD_LIBRARY_PATH', '')
         ]),
-        'IGN_GAZEBO_RESOURCE_PATH': resource_package_path
     }
 
     # Ignition Gazebo Launch
@@ -91,6 +85,7 @@ def generate_launch_description():
 
     # Create and Return Launch Description
     ld = LaunchDescription(ARGUMENTS)
+    ld.add_action(ign_gazebo_resource_path)
     ld.add_action(ignition_gazebo)
     ld.add_action(clock_bridge)
     ld.add_action(spawn_robot_node)
