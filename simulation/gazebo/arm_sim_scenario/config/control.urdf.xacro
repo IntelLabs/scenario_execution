@@ -71,7 +71,6 @@
         <joint name="panda_finger_joint2">
             <param name="mimic">panda_finger_joint1</param>
             <param name="multiplier">1</param>
-            <command_interface name="position"/>
             <state_interface name="position">
               <param name="initial_value">0.01</param>
             </state_interface>
@@ -82,7 +81,7 @@
 
     <xacro:if value="${ros2_control_hardware_type == 'ignition'}">
       <gazebo>
-        <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+        <plugin filename="libgz_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
           <robot_param>robot_description</robot_param>
           <robot_param_node>robot_state_publisher</robot_param_node>
           <parameters>$(find moveit_resources_panda_moveit_config)/config/ros2_controllers.yaml</parameters>
