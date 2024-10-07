@@ -1532,7 +1532,7 @@ Use MoveIt2 to move the arm joints to specified joint positions, utilizing `Move
    * - ``plan_only``
      - ``bool``
      - ``false``
-     - If true, the action returns an executable plan in the response but does not attempt execution
+     - If true, the plan is calculated but not executed. The calculated plan can be visualized in rviz.
    * - ``replan``
      - ``bool``
      - ``true``
@@ -1574,7 +1574,7 @@ Use MoveIt2 to move the end-effector to a specified pose, utilizing `MoveGroup a
    * - ``plan_only``
      - ``bool``
      - ``false``
-     - If true, the action returns an executable plan in the response but does not attempt execution
+     - If true, the plan is calculated but not executed. The calculated plan can be visualized in rviz.
    * - ``replan``
      - ``bool``
      - ``true``
