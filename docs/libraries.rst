@@ -1462,8 +1462,11 @@ Moveit2
 
 The library contains actions to interact with the `Moveit2 <https://moveit.picknik.ai/main/index.html>`__ manipulation stack. Import it with ``import osc.moveit2``. It is provided by the package :repo_link:`libs/scenario_execution_moveit2`.
 
+Actors
+^^^^^^
+
 ``arm``
-^^^^^^^^
+^^^^^^^
 An articulated arm actor inheriting from the more general ``robot`` actor
 
 .. list-table:: 
@@ -1505,9 +1508,9 @@ An articulated arm actor inheriting from the more general ``robot`` actor
      - Name of the robot's base link for reference in kinematics
 
 ``arm.move_to_joint_pose()``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Use Moveit2 to move the arm joints to specified joint positions.
+Use MoveIt2 to move the arm joints to specified joint positions, utilizing `MoveGroup action <https://docs.ros.org/en/noetic/api/moveit_msgs/html/action/MoveGroup.html>`__ from the move_group node () by specifying target joint values.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -1540,7 +1543,7 @@ Use Moveit2 to move the arm joints to specified joint positions.
      - The acceptable range of variation around both the start and goal positions.
    * - ``max_velocity_scaling_factor``
      - ``float``
-     - ``false``
+     - ``0.1``
      - Scaling factors for optionally reducing the maximum joint velocities
    * - ``namespace_override``
      - ``string``
@@ -1556,16 +1559,16 @@ Use Moveit2 to move the arm joints to specified joint positions.
      - Succeed on goal acceptance
 
 ``arm.move_to_pose``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
-Use moveit2 to move the end-effector to specified position
+Use MoveIt2 to move the end-effector to a specified pose, utilizing `MoveGroup action <https://docs.ros.org/en/noetic/api/moveit_msgs/html/action/MoveGroup.html>`__ from the move_group node by specifying the desired end-effector position and orientation.
 
    * - Parameter
      - Type
      - Default
      - Description
    * - ``goal_pose``
-     - ``list of string``
+     - ``pose_3d``
      -
      - end effector pose to move to ``[x, y, z, quatx, quaty, quatz, w]``
    * - ``plan_only``
@@ -1582,7 +1585,7 @@ Use moveit2 to move the end-effector to specified position
      - The acceptable range of variation around both the start and goal positions.
    * - ``max_velocity_scaling_factor``
      - ``float``
-     - ``false``
+     - ``0.1``
      - Scaling factors for optionally reducing the maximum joint velocities
    * - ``namespace_override``
      - ``string``

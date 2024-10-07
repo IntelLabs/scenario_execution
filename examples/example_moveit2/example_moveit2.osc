@@ -18,7 +18,7 @@ scenario example_moveit2:
                 goal_pose: ['0.04'],
                 move_group: move_group_type!gripper)
         move_to_pose: manipulator.move_to_pose(
-                goal_pose: ['0.25', '0.0', '1.0', '0.0', '0.0', '0.0', '1.0'])
+                goal_pose: pose_3d(position_3d(x: 0.25, y: 0.0, z: 1.0)))
         close_gripper: manipulator.move_to_joint_pose(
                 goal_pose: ['0.01'],
                 move_group: move_group_type!gripper)

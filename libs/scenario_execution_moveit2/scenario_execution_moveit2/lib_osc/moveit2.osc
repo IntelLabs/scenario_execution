@@ -38,7 +38,7 @@ action arm.move_to_joint_pose:
 
 action arm.move_to_pose:
     # Use moveit2 to move the end-effector to specified position
-    goal_pose: list of string            # end effector pose to move to [x, y, z, quatx, quaty, quatz, w]
+    goal_pose: pose_3d                   # end effector pose to move to
     plan_only: bool = false              # if true, the action returns an executable plan in the response but does not attempt execution
     replan: bool = true                  # if true, replan if plan becomes invalidated during execution
     tolerance: float = 0.001             # the acceptable range of variation around both the start and goal positions.
