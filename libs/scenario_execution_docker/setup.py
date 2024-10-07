@@ -39,6 +39,7 @@ setup(
     entry_points={
         'scenario_execution.actions': [
             'docker_run = scenario_execution_docker.actions.docker_run:DockerRun',
+            'docker_exec = scenario_execution_docker.actions.docker_exec:DockerExec',
         ],
         'scenario_execution.osc_libraries': [
             'docker = '
