@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>scenario_coverage</name>
+  <name>scenario_execution_coverage</name>
   <version>1.2.0</version>
   <description>Robotics Scenario Execution Coverage Tools</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
-  <license file="../LICENSE">Apache-2.0</license>
+  <license>Apache-2.0</license>
 
   <exec_depend>scenario_execution</exec_depend>
   <test_depend>python3-pexpect</test_depend>
