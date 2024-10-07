@@ -315,7 +315,7 @@ Create Scenarios with Variations
 --------------------------------
 In this example, we'll demonstrate how to generate and run multiple scenarios using only one scenario definition.
 
-For this we'll use the  :repo_link:`scenario_coverage/scenario_coverage/scenario_variation`. to save the intermediate scenario models in ``.sce`` extension file and then use :repo_link:`scenario_coverage/scenario_coverage/scenario_batch_execution` to execute each generated scenario.
+For this we'll use the  :repo_link:`scenario_execution_coverage/scenario_execution_coverage/scenario_variation`. to save the intermediate scenario models in ``.sce`` extension file and then use :repo_link:`scenario_execution_coverage/scenario_execution_coverage/scenario_batch_execution` to execute each generated scenario.
 
 The scenario file looks as follows:
 
@@ -332,14 +332,14 @@ The scenario file looks as follows:
 Here, a simple scenario variation example using log action plugin is created and two messages ``foo`` and
 ``bar`` using the array syntax are passed.
 
-As this is not a concrete scenario, ``scenario_execution`` won't be able to execute it. Instead we'll use ``scenario_variation`` from the ``scenario_coverage`` package to generate all variations and save them to intermediate scenario model files with ``.sce`` extension.
+As this is not a concrete scenario, ``scenario_execution`` won't be able to execute it. Instead we'll use ``scenario_variation`` from the ``scenario_execution_coverage`` package to generate all variations and save them to intermediate scenario model files with ``.sce`` extension.
 Afterwards we could either use ``scenario_execution`` to run each created scenario manually or make use of ``scenario_batch_execution`` which reads all scenarios within a directory and executes them one after the other.
 
-Now, lets try to run this scenario. To do this, first build Packages ``scenario_execution`` and ``scenario_coverage``:
+Now, lets try to run this scenario. To do this, first build Packages ``scenario_execution`` and ``scenario_execution_coverage``:
 
 .. code-block::
 
-    colcon build --packages-up-to scenario_execution_ros && colcon build --packages-up-to scenario_coverage
+    colcon build --packages-up-to scenario_execution_ros && colcon build --packages-up-to scenario_execution_coverage
 
 
 * Now, create intermediate scenarios with ``.sce`` extension using the command:
