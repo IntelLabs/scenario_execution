@@ -1,0 +1,11 @@
+import osc.docker
+import osc.helpers
+
+scenario test_docker_exec:
+    timeout(15s)
+    do parallel:
+        docker_run(image: 'ubuntu', command: 'sleep 10', detach: true, container_name: 'sleeping_beauty', remove: true, volumes: ['/srv/nfs4/:/data'])
+        serial: 
+            docker_exec(container: 'sleeping_beauty', command: 'echo hello world')
+            docker_exec(container: 'sleeping_beauty', command: 'ls /data')
+            emit end
