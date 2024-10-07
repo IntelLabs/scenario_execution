@@ -33,12 +33,13 @@ class DockerRun(BaseAction):
     Run a container
     """
 
-    def __init__(self, image: str, command: str, detach: bool,
-                 environment: list, privileged: bool,
+    def __init__(self, image: str, command: str, container_name: str,
+                 detach: bool, environment: list, privileged: bool,
                  remove: bool, stream: bool,  volumes: list):
         super().__init__()
         self.image = image
         self.command = command
+        self.container_name = container_name
         self.detach = detach
         self.environment = environment
         self.privileged = privileged
@@ -64,6 +65,7 @@ class DockerRun(BaseAction):
                                                             command=self.command,
                                                             detach=self.detach,
                                                             environment=self.environment,
+                                                            name=self.container_name,
                                                             privileged=self.privileged,
                                                             stream=self.stream,
                                                             remove=self.remove,
