@@ -303,7 +303,7 @@
         <child link="random" />
         </joint>
     <link name="random"/>
-    <!--
+    
     <link name="ground_plane_box">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -327,6 +327,6 @@
         <child link="ground_plane_box" />
         <origin xyz="0 0 -0.25" rpy="0 0 0" />
     </joint>
-     -->
+    
     <xacro:include filename="$(find arm_sim_scenario)/config/control.urdf.xacro" />
 </robot>
