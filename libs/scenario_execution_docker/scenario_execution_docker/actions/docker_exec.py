@@ -14,12 +14,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
 from enum import Enum
 
 import docker
 import py_trees
-from scenario_execution.actions.base_action import BaseAction, ActionError
+from scenario_execution.actions.base_action import BaseAction
 
 
 class ExecutionStatus(Enum):
