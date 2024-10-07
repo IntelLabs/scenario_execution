@@ -97,4 +97,4 @@ class DockerRun(BaseAction):
         elif self.current_state == ContainerStatus.DONE:
             self.feedback_message = f"Docker container {self.image} finished cleanly"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.SUCCESS
-        return py_trees.common.Status.FAILURE
+        return py_trees.common.Status.RUNNING
