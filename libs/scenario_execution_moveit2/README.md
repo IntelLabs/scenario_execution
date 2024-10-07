@@ -1,4 +1,4 @@
-# Scenario Execution Library for moveit2
+# Scenario Execution Library for moveIt2
 
 The `scenario_execution_moveit2` package provides actions to interact with the [moveit2](https://moveit.picknik.ai/main/index.html) manipulation stack.
 

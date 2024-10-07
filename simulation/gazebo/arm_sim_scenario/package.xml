@@ -3,7 +3,7 @@
 <package format="3">
   <name>arm_sim_scenario</name>
   <version>1.2.0</version>
-  <description>Moveit2 Arm Simulation Scenario Execution</description>
+  <description>MoveIt2 Arm Simulation Scenario Execution</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license>Apache-2.0</license>

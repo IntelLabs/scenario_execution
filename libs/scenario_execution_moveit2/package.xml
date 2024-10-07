@@ -3,7 +3,7 @@
 <package format="3">
   <name>scenario_execution_moveit2</name>
   <version>1.2.0</version>
-  <description>Scenario Execution library for moveit2</description>
+  <description>Scenario Execution library for moveIt2</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license>Apache-2.0</license>

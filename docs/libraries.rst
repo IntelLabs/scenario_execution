@@ -1466,7 +1466,7 @@ Actors
 ^^^^^^
 
 ``arm``
-^^^^^^^
+"""""""
 An articulated arm actor inheriting from the more general ``robot`` actor
 
 .. list-table:: 
@@ -1510,7 +1510,7 @@ An articulated arm actor inheriting from the more general ``robot`` actor
 ``arm.move_to_joint_pose()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Use MoveIt2 to move the arm joints to specified joint positions, utilizing `MoveGroup action <https://docs.ros.org/en/noetic/api/moveit_msgs/html/action/MoveGroup.html>`__ from the move_group node () by specifying target joint values.
+Use MoveIt2 to move the arm joints to specified joint positions, utilizing `MoveGroup action <https://github.com/moveit/moveit_msgs/blob/master/action/MoveGroup.action>`__ from the move_group node by specifying target joint values.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -1561,7 +1561,7 @@ Use MoveIt2 to move the arm joints to specified joint positions, utilizing `Move
 ``arm.move_to_pose``
 ^^^^^^^^^^^^^^^^^^^^
 
-Use MoveIt2 to move the end-effector to a specified pose, utilizing `MoveGroup action <https://docs.ros.org/en/noetic/api/moveit_msgs/html/action/MoveGroup.html>`__ from the move_group node by specifying the desired end-effector position and orientation.
+Use MoveIt2 to move the end-effector to a specified pose, utilizing `MoveGroup action <https://github.com/moveit/moveit_msgs/blob/master/action/MoveGroup.action>`__ from the move_group node by specifying the desired end-effector position and orientation.
 
    * - Parameter
      - Type
