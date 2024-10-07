@@ -81,8 +81,7 @@ class DockerRun(BaseAction):
                 try:
                     log = next(self.container)
                     self.feedback_message = f"Running container {self.image} with output {log}"  # pylint: disable= attribute-defined-outside-init
-                    return py_trees.common.Status.RUNNING
-                except StopIteration as e:
+                except StopIteration:
                     self.current_state = ContainerStatus.DONE
                     self.feedback_message = f"Docker container {self.image} finished cleanly"  # pylint: disable= attribute-defined-outside-init
                     return py_trees.common.Status.SUCCESS
@@ -95,7 +94,6 @@ class DockerRun(BaseAction):
                         self.current_state = ContainerStatus.DONE
                         self.feedback_message = f"Docker container {self.image} finished cleanly"  # pylint: disable= attribute-defined-outside-init
                         return py_trees.common.Status.SUCCESS
-                    return py_trees.common.Status.RUNNING
         elif self.current_state == ContainerStatus.DONE:
             self.feedback_message = f"Docker container {self.image} finished cleanly"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.SUCCESS
