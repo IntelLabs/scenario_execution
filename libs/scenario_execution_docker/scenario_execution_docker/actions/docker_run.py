@@ -103,3 +103,9 @@ class DockerRun(BaseAction):
             self.feedback_message = f"Docker container {self.image} finished cleanly"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.RUNNING
+
+    def shutdown(self):
+        if self.container is None:
+            return
+
+        self.container.stop(timeout=0)
