@@ -5,6 +5,7 @@ action docker_run:
     container_name: string          # the name for this container
     detach: bool = false            # Run container in the background
     environment: list of string     # Environment variables to set inside the container, i.e., a list of strings in the format ["SOMEVARIABLE=xxx"].
+    network: string                 # Name of the network this container will be connected to at creation time
     privileged: bool = false        # Give extended privileges to this container
     remove: bool = false            # Remove the container when it as finished running
     stream: bool = true             # If true and detach is false, return a log generator instead of a string. Ignored if detach is true.

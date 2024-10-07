@@ -34,14 +34,15 @@ class DockerRun(BaseAction):
     """
 
     def __init__(self, image: str, command: str, container_name: str,
-                 detach: bool, environment: list, privileged: bool,
-                 remove: bool, stream: bool,  volumes: list):
+                 detach: bool, environment: list, network: str,
+                 privileged: bool, remove: bool, stream: bool,  volumes: list):
         super().__init__()
         self.image = image
         self.command = command
         self.container_name = container_name
         self.detach = detach
         self.environment = environment
+        self.network = network
         self.privileged = privileged
         self.remove = remove
         self.stream = stream
@@ -61,17 +62,19 @@ class DockerRun(BaseAction):
     def update(self) -> py_trees.common.Status:
         if self.current_state == ContainerStatus.IDLE:
             try:
-                self.container = self.client.containers.run(self.image,
-                                                            command=self.command,
-                                                            detach=self.detach,
-                                                            environment=self.environment,
-                                                            name=self.container_name,
-                                                            privileged=self.privileged,
-                                                            stream=self.stream,
-                                                            remove=self.remove,
-                                                            user=os.getuid(),
-                                                            group_add=[os.getgid()],
-                                                            volumes=self.volumes)
+                self.container = self.client.containers.run(
+                    self.image,
+                    command=self.command,
+                    detach=self.detach,
+                    environment=self.environment,
+                    name=self.container_name,
+                    network=self.network,
+                    privileged=self.privileged,
+                    stream=self.stream,
+                    remove=self.remove,
+                    user=os.getuid(),
+                    group_add=[os.getgid()],
+                    volumes=self.volumes)
             except docker.errors.APIError as e:
                 self.feedback_message = f"Docker run failed: {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE
