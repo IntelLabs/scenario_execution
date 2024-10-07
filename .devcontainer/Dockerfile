@@ -41,11 +41,7 @@ RUN --mount=type=bind,target=/tmp_setup export DEBIAN_FRONTEND=noninteractive &&
     xargs -a /tmp_setup/deb_requirements.txt apt-get install -y --no-install-recommends && \
     xargs -a /tmp_setup/libs/scenario_execution_kubernetes/deb_requirements.txt apt-get install -y --no-install-recommends && \
     rosdep update --rosdistro="${ROS_DISTRO}" && \
-    for d in /tmp_setup/*; do \
-        [[ ! -d  "$d" ]] && continue; \
-        [[ "$(basename $d)" =~ ^(install|build|log)$ ]] && continue; \
-        rosdep install --rosdistro="${ROS_DISTRO}" --from-paths "$d" --ignore-src -r -y; \
-    done && \
+    rosdep install --rosdistro="${ROS_DISTRO}" --from-paths /tmp_setup --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
 
 ##############################################################################

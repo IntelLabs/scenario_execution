@@ -69,6 +69,6 @@ source install/setup.bash
 To launch a scenario with ROS2:
 
 ```bash
-ros2 launch scenario_execution_ros scenario_launch.py scenario:=examples/example_scenario/hello_world.osc live_tree:=True
+ros2 run scenario_execution_ros scenario_execution_ros examples/example_scenario/hello_world.osc -t
 ```
 
