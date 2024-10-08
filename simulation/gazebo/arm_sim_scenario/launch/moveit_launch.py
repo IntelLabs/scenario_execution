@@ -17,7 +17,8 @@
 from pathlib import Path
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.conditions import IfCondition
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from moveit_configs_utils import MoveItConfigsBuilder
@@ -29,6 +30,15 @@ ARGUMENTS = [
     DeclareLaunchArgument('use_sim_time', default_value='true',
                           choices=['true', 'false'],
                           description='use_sim_time'),
+    DeclareLaunchArgument('use_rviz', default_value='false',
+                          choices=['true', 'false'],
+                          description='launches RViz if set to `true`.'),
+    DeclareLaunchArgument('rviz_config',
+                          default_value=PathJoinSubstitution([get_package_share_directory('arm_sim_scenario'),
+                                                              'config',
+                                                              'arm.rviz',
+                                                              ])
+                          )
 ]
 
 
@@ -36,6 +46,8 @@ def generate_launch_description():
     pkg_arm_sim_scenario = get_package_share_directory('arm_sim_scenario')
     ros2_control_hardware_type = LaunchConfiguration('ros2_control_hardware_type')
     use_sim_time = LaunchConfiguration('use_sim_time')
+    rviz_config = LaunchConfiguration('rviz_config')
+    use_rviz = LaunchConfiguration('use_rviz')
 
     moveit_config_builder = MoveItConfigsBuilder("moveit_resources_panda")
 
@@ -67,6 +79,22 @@ def generate_launch_description():
         arguments=["--ros-args", "--log-level", "info"],
     )
 
+    rviz_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="log",
+        arguments=["-d", rviz_config],
+        parameters=[
+            moveit_config.robot_description,
+            moveit_config.robot_description_semantic,
+            moveit_config.planning_pipelines,
+            moveit_config.robot_description_kinematics,
+        ],
+        condition=IfCondition(use_rviz),
+    )
+
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(move_group_node)
+    ld.add_action(rviz_node)
     return ld

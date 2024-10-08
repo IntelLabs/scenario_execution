@@ -57,6 +57,7 @@ def generate_launch_description():
     moveit_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'moveit_launch.py'])]),
         launch_arguments={
+            'use_rviz': use_rviz,
             'arg_ros2_control_hardware_type': ros2_control_hardware_type,
             'use_sim_time': use_sim_time,
         }.items(),
@@ -65,7 +66,6 @@ def generate_launch_description():
     arm_description = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'arm_description_launch.py'])]),
         launch_arguments={
-            'use_rviz': use_rviz,
             'arg_ros2_control_hardware_type': ros2_control_hardware_type,
             'use_sim_time': use_sim_time,
         }.items()

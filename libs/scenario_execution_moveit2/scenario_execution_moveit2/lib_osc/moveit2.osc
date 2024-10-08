@@ -11,6 +11,7 @@ enum move_group_type: [
 ###########
 
 actor arm inherits robot:
+    #  An articulated arm actor inheriting from the more general robot actor
     namespace: string = ''                # Namespace for the arm
     arm_joints: list of string            # List of joint names for the arm joints
     gripper_joints: list of string        # List of joint names for the gripper joints
@@ -26,9 +27,9 @@ actor arm inherits robot:
 
 action arm.move_to_joint_pose:
     # Use Moveit2 to move the arm joints to specified joint positions
-    goal_pose: list of string            # list joint positions to move to
+    goal_pose: list of float            # list joint positions to move to
     move_group: move_group_type          # move group type (arm, gripper)
-    plan_only: bool = false              # if true, the action returns an executable plan in the response but does not attempt execution
+    plan_only: bool = false              # If true, the plan is calculated but not executed. The calculated plan can be visualized in RViz.
     replan: bool = true                  # if true, replan if plan becomes invalidated during execution
     tolerance: float = 0.001             # the acceptable range of variation around both the start and goal positions.
     max_velocity_scaling_factor: float = 0.1 # Scaling factors for optionally reducing the maximum joint velocities
@@ -38,8 +39,8 @@ action arm.move_to_joint_pose:
 
 action arm.move_to_pose:
     # Use moveit2 to move the end-effector to specified position
-    goal_pose: list of string            # end effector pose to move to [x, y, z, quatx, quaty, quatz, w]
-    plan_only: bool = false              # if true, the action returns an executable plan in the response but does not attempt execution
+    goal_pose: pose_3d                   # end effector pose to move to
+    plan_only: bool = false              # If true, the plan is calculated but not executed. The calculated plan can then be visualized in RViz.
     replan: bool = true                  # if true, replan if plan becomes invalidated during execution
     tolerance: float = 0.001             # the acceptable range of variation around both the start and goal positions.
     max_velocity_scaling_factor: float = 0.1 # Scaling factors for optionally reducing the maximum joint velocities

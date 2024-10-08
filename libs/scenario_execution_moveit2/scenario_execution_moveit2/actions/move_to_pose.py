@@ -15,10 +15,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from rclpy.duration import Duration
+from scenario_execution_ros.actions.common import get_pose_stamped
 from scenario_execution_ros.actions.ros_action_call import RosActionCall, ActionCallActionState
 from moveit_msgs.action import MoveGroup
 from moveit_msgs.msg import MotionPlanRequest, PlanningOptions, Constraints, PositionConstraint, OrientationConstraint, BoundingVolume
-from geometry_msgs.msg import PoseStamped
 from shape_msgs.msg import SolidPrimitive
 
 
@@ -50,15 +50,7 @@ class MoveToPose(RosActionCall):
         motion_plan_request.group_name = self.group
         motion_plan_request.max_velocity_scaling_factor = self.max_velocity_scaling_factor
 
-        target_pose = PoseStamped()
-        target_pose.header.frame_id = self.base_link  # reference_frame
-        target_pose.pose.position.x = float(self.goal_pose[0])
-        target_pose.pose.position.y = float(self.goal_pose[1])
-        target_pose.pose.position.z = float(self.goal_pose[2])
-        target_pose.pose.orientation.x = float(self.goal_pose[3])
-        target_pose.pose.orientation.y = float(self.goal_pose[4])
-        target_pose.pose.orientation.z = float(self.goal_pose[5])
-        target_pose.pose.orientation.w = float(self.goal_pose[6])
+        target_pose = get_pose_stamped(self.node.get_clock().now().to_msg(), self.goal_pose)
 
         # Create PositionConstraint
         position_constraint = PositionConstraint()

@@ -17,9 +17,8 @@
     <joint name="panda_finger_joint2_mimic" type="fixed">
         <parent link="world" />
         <child link="random" />
-        </joint>
+    </joint>
     <link name="random"/>
-    
     <link name="ground_plane_box">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>

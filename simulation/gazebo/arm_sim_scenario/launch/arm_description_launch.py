@@ -14,13 +14,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import Command, PathJoinSubstitution
 from launch.substitutions.launch_configuration import LaunchConfiguration
-from launch.conditions import IfCondition
 from launch_ros.actions import Node
 from launch_ros.descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
@@ -36,15 +33,6 @@ ARGUMENTS = [
                           description='arm base_link name'),
     DeclareLaunchArgument('virtual_joint_parent_frame', default_value='world',
                           description='virtual_joint_parent_frame name to which arm is attached to'),
-    DeclareLaunchArgument('use_rviz', default_value='false',
-                          choices=['true', 'false'],
-                          description='launches RViz if set to `true`.'),
-    DeclareLaunchArgument('rviz_config',
-                          default_value=PathJoinSubstitution([get_package_share_directory('arm_sim_scenario'),
-                                                              'config',
-                                                              'arm.rviz',
-                                                              ]),
-                          description='file path to the config file RViz should load.',),
     DeclareLaunchArgument('urdf_pkg', default_value='arm_sim_scenario',
                           description='Package where URDF/Xacro file is located (file should be inside the config dir of pkg/config/robot_name.urdf.xacro)'),
     DeclareLaunchArgument('urdf', default_value='panda.urdf.xacro',
@@ -61,9 +49,7 @@ def generate_launch_description():
     ros2_control_hardware_type = LaunchConfiguration('ros2_control_hardware_type')
     virtual_joint_child_name = LaunchConfiguration('virtual_joint_child_name')
     virtual_joint_parent_frame = LaunchConfiguration('virtual_joint_parent_frame')
-    rviz_config = LaunchConfiguration('rviz_config')
     use_sim_time = LaunchConfiguration('use_sim_time')
-    use_rviz = LaunchConfiguration('use_rviz')
 
     robot_state_publisher = Node(
         package="robot_state_publisher",
@@ -95,24 +81,9 @@ def generate_launch_description():
         output={'both': 'log'},
     )
 
-    rviz_node = Node(
-        condition=IfCondition(use_rviz),
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        arguments=[
-            '-d', rviz_config,
-        ],
-        parameters=[{
-            'use_sim_time': use_sim_time,
-        }],
-        output={'both': 'log'},
-    )
-
     # Define LaunchDescription variable
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(robot_state_publisher)
     ld.add_action(joint_state_publisher)
     ld.add_action(static_tf_node)
-    ld.add_action(rviz_node)
     return ld
