@@ -187,15 +187,15 @@ PyQtEngine works on your machine and render web pages correctly.
 
 Scenario Coverage
 -----------------
-The ``scenario_coverage`` package provides the ability to run variations of a scenario from a single scenario definition. It offers a fast and efficient method to test scenario with different attribute values, streamlining the development and testing process.
+The ``scenario_execution_coverage`` package provides the ability to run variations of a scenario from a single scenario definition. It offers a fast and efficient method to test scenario with different attribute values, streamlining the development and testing process.
 
-Below are the steps to run a scenario using ``scenario_coverage``..
+Below are the steps to run a scenario using ``scenario_execution_coverage``..
 
 First, build the packages:
 
 .. code-block:: bash
 
-   colcon build --packages-up-to scenario_coverage
+   colcon build --packages-up-to scenario_execution_coverage
    source install/setup.bash
 
 Then, generate the scenario files for each variation of scenario  using the ``scenario_variation`` executable, you can pass your own custom scenario as an input. For this exercise, we will use a scenario present in  :repo_link:`examples/example_scenario_variation/`.

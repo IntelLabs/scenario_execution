@@ -62,7 +62,7 @@ jobs:
           colcon test --packages-select \
           scenario_execution \
           scenario_execution_os \
-          scenario_coverage \
+          scenario_execution_coverage \
           scenario_execution_test \
           --event-handlers console_direct+ \
           --return-code-on-test-failure \
@@ -129,7 +129,7 @@ jobs:
         run: |
           source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
-          find . -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation|scenario_coverage|fail*|install|build" | while read -r file; do 
+          find . -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation|scenario_execution_coverage|fail*|install|build" | while read -r file; do 
             echo "$file"; 
             ros2 run scenario_execution scenario_execution "$file" -n; 
           done
@@ -581,7 +581,7 @@ jobs:
           comment_mode: always
           files: |
             downloaded-artifacts/test-scenario-execution/scenario_execution/TEST.xml
-            downloaded-artifacts/test-scenario-execution/scenario_coverage/TEST.xml
+            downloaded-artifacts/test-scenario-execution/scenario_execution_coverage/TEST.xml
             downloaded-artifacts/test-scenario-execution/libs/scenario_execution_os/TEST.xml
             downloaded-artifacts/test-scenario-execution/test/scenario_execution_test/TEST.xml
             downloaded-artifacts/test-scenario-execution-ros/scenario_execution_ros/TEST.xml
