@@ -11,6 +11,7 @@ enum move_group_type: [
 ###########
 
 actor arm inherits robot:
+    #  An articulated arm actor inheriting from the more general robot actor
     namespace: string = ''                # Namespace for the arm
     arm_joints: list of string            # List of joint names for the arm joints
     gripper_joints: list of string        # List of joint names for the gripper joints

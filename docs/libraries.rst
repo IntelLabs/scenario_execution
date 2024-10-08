@@ -1570,7 +1570,7 @@ Use MoveIt2 to move the end-effector to a specified pose, utilizing `MoveGroup a
    * - ``goal_pose``
      - ``pose_3d``
      -
-     - end effector pose to move to ``[x, y, z, quatx, quaty, quatz, w]``
+     - end effector pose to move to
    * - ``plan_only``
      - ``bool``
      - ``false``
