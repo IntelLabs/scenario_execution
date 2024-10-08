@@ -736,6 +736,11 @@ Use MoveIt2 to move the arm joints to specified joint positions, utilizing `Move
 
 Use MoveIt2 to move the end-effector to a specified pose, utilizing `MoveGroup action <https://github.com/moveit/moveit_msgs/blob/master/action/MoveGroup.action>`__ from the move_group node by specifying the desired end-effector position and orientation.
 
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
    * - Parameter
      - Type
      - Default
