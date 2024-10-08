@@ -60,10 +60,10 @@ class MoveToJointPose(RosActionCall):
         motion_plan_request.group_name = self.group
         motion_plan_request.max_velocity_scaling_factor = self.max_velocity_scaling_factor
         constraints = Constraints()
-        for joint_name, position_str in zip(self.join_names, self.goal_pose):
+        for joint_name, position in zip(self.join_names, self.goal_pose):
             joint_constraint = JointConstraint()
             joint_constraint.joint_name = joint_name
-            joint_constraint.position = float(position_str)
+            joint_constraint.position = float(position)
             joint_constraint.tolerance_above = self.tolerance
             joint_constraint.tolerance_below = self.tolerance
             joint_constraint.weight = 1.0  # Set weight (importance) of this constraint

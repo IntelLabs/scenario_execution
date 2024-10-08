@@ -1522,7 +1522,7 @@ Use MoveIt2 to move the arm joints to specified joint positions, utilizing `Move
      - Default
      - Description
    * - ``goal_pose``
-     - ``list of string``
+     - ``list of float``
      -
      - List joint positions to move to
    * - ``move_group``

@@ -26,7 +26,7 @@ actor arm inherits robot:
 
 action arm.move_to_joint_pose:
     # Use Moveit2 to move the arm joints to specified joint positions
-    goal_pose: list of string            # list joint positions to move to
+    goal_pose: list of float            # list joint positions to move to
     move_group: move_group_type          # move group type (arm, gripper)
     plan_only: bool = false              # If true, the plan is calculated but not executed. The calculated plan can be visualized in RViz.
     replan: bool = true                  # if true, replan if plan becomes invalidated during execution
