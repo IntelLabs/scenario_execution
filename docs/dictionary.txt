@@ -34,3 +34,5 @@ svg
 Kubernetes
 yaml
 absolutized
+moveit
+replan
