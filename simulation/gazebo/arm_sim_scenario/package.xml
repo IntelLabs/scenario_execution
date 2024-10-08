@@ -8,22 +8,21 @@
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
   <license>Apache-2.0</license>
 
-
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <!-- moveit2 -->
   <depend>moveit</depend>
+  <depend>moveit_resources</depend>
+  <depend>moveit_planners_chomp</depend>
   <depend>scenario_execution</depend>
   <depend>scenario_execution_moveit2</depend>
-  <depend>moveit_resources</depend>
   <depend>controller_manager</depend>
-  <depend>ompl</depend>
-  <depend>moveit_planners_chomp</depend>
   <depend>gripper_controllers</depend>
   <depend>joint_trajectory_controller</depend>
   <depend>ros2_control</depend>
+  <depend>ompl</depend>
   <depend>ros_gz_bridge</depend>
   <depend>ros_gz_sim</depend>
+
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 

@@ -1,1 +1,1 @@
-# Moveit2 Arm Simulation Scenario Execution
+# MoveIt2 Arm Simulation Scenario Execution
