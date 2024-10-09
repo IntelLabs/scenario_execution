@@ -19,3 +19,8 @@ action docker_exec:
     privileged: bool = false        # Give extended privileges to this container
     user: string = 'root'           # User to execute command as. Default: root
     workdir: string                 # Path to working directory for this exec session
+
+action docker_copy:
+    # Copy a file or folder from the container 
+    container: string               # the name or id of the container to get the file or folder from
+    file_path: string               # Path to the file or folder to retrieve

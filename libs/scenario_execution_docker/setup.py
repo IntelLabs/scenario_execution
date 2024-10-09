@@ -40,6 +40,7 @@ setup(
         'scenario_execution.actions': [
             'docker_run = scenario_execution_docker.actions.docker_run:DockerRun',
             'docker_exec = scenario_execution_docker.actions.docker_exec:DockerExec',
+            'docker_copy = scenario_execution_docker.actions.docker_copy:DockerCopy',
         ],
         'scenario_execution.osc_libraries': [
             'docker = '
