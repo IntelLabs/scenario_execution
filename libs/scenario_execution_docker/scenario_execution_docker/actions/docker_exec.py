@@ -30,7 +30,7 @@ class ExecutionStatus(Enum):
 
 class DockerExec(BaseAction):
     """
-    Run a container
+    Run a command inside a container
     """
 
     def __init__(self, container: str, command: str,
@@ -44,6 +44,7 @@ class DockerExec(BaseAction):
         self.user = user
         self.workdir = workdir
 
+        self.client = None
         self.container_object = None
         self.execution_stream = None
         self.current_state = ExecutionStatus.IDLE
@@ -71,16 +72,16 @@ class DockerExec(BaseAction):
                     user=self.user,
                     workdir=self.workdir)
                 self.current_state = ExecutionStatus.EXECUTING
-                self.feedback_message = f"Executing {self.command} in container {self.container}"  # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = f"Executing '{self.command}' in container {self.container}"  # pylint: disable= attribute-defined-outside-init
             except docker.errors.APIError as e:
-                self.feedback_message = f"Docker exec of command {self.command} failed: {e}"  # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = f"Docker exec of command '{self.command}' failed: {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE
         elif self.current_state == ExecutionStatus.EXECUTING:
             try:
                 log = next(self.execution_stream.output)
-                self.feedback_message = f"Executing {self.command} in container {self.container} with output {log}"  # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = f"Executing '{self.command}' in container {self.container} with output: {log.decode()}"  # pylint: disable= attribute-defined-outside-init
             except StopIteration:
                 self.current_state = ExecutionStatus.DONE
-                self.feedback_message = f"Finished execution of {self.command} in container {self.container}"  # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = f"Finished execution of '{self.command}' in container {self.container}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.RUNNING

@@ -48,6 +48,7 @@ class DockerRun(BaseAction):
         self.stream = stream
         self.volumes = volumes
 
+        self.client = None
         self.container = None
         self.current_state = ContainerStatus.IDLE
 
@@ -85,7 +86,7 @@ class DockerRun(BaseAction):
             if self.stream and not self.detach:
                 try:
                     log = next(self.container)
-                    self.feedback_message = f"Running container {self.image} with output {log}"  # pylint: disable= attribute-defined-outside-init
+                    self.feedback_message = f"Running container {self.image} with output: {log.decode()}"  # pylint: disable= attribute-defined-outside-init
                 except StopIteration:
                     self.current_state = ContainerStatus.DONE
                     self.feedback_message = f"Docker container {self.image} finished cleanly"  # pylint: disable= attribute-defined-outside-init
