@@ -16,6 +16,8 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
      - Helpers Library (provided with :repo_link:`scenario_execution`)
    * - ``osc.kubernetes``
      - Kubernetes Library (provided with :repo_link:`libs/scenario_execution_kubernetes`)
+   * - ``osc.moveit2``
+     - ROS Moveit2  manipulation stack Library (provided with :repo_link:`libs/scenario_execution_moveit2`)
    * - ``osc.nav2``
      - ROS Nav2 navigation stack Library (provided with :repo_link:`libs/scenario_execution_nav2`)
    * - ``osc.os``
@@ -626,6 +628,155 @@ Wait for a Kubernetes pod to reach a specified state.
      - ``bool``
      - ``false``
      - Is the specified target a regular expression
+
+
+Moveit2
+-------
+
+The library contains actions to interact with the `Moveit2 <https://moveit.picknik.ai/main/index.html>`__ manipulation stack. Import it with ``import osc.moveit2``. It is provided by the package :repo_link:`libs/scenario_execution_moveit2`.
+
+Actors
+^^^^^^
+
+``arm``
+"""""""
+An articulated arm actor inheriting from the more general ``robot`` actor
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - `` ' ' ``
+     - Namespace for the arm
+   * - ``arm_joints``
+     - ``list of string``
+     -
+     - List of joint names for the arm joints
+   * - ``gripper_joints``
+     - ``list of string``
+     -
+     - List of joint names for the gripper joints
+   * - ``arm_group``
+     - ``bool``
+     - ``false``
+     - Name of the move group controlling the arm joints
+   * - ``gripper_group``
+     - ``string``
+     - 
+     - Name of the move group controlling the gripper joints
+   * - ``end_effector``
+     - ``string``
+     -
+     - Name of the end effector component (e.g., hand or tool)
+   * - ``base_link``
+     - ``string``
+     -
+     - Name of the robot's base link for reference in kinematics
+
+``arm.move_to_joint_pose()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use MoveIt2 to move the arm joints to specified joint positions, utilizing `MoveGroup action <https://github.com/moveit/moveit_msgs/blob/master/action/MoveGroup.action>`__ from the move_group node by specifying target joint values.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_pose``
+     - ``list of float``
+     -
+     - List joint positions to move to
+   * - ``move_group``
+     - ``move_group_type``
+     -
+     - Move group type. Allowed [arm, gripper] (e.g. ``[move_group_type!arm, move_group_type!gripper]``)
+   * - ``plan_only``
+     - ``bool``
+     - ``false``
+     - If true, the plan is calculated but not executed. The calculated plan can be visualized in rviz.
+   * - ``replan``
+     - ``bool``
+     - ``true``
+     - If true, replan if plan becomes invalidated during execution
+   * - ``tolerance``
+     - ``float``
+     - ``0.001``
+     - The acceptable range of variation around both the start and goal positions.
+   * - ``max_velocity_scaling_factor``
+     - ``float``
+     - ``0.1``
+     - Scaling factors for optionally reducing the maximum joint velocities
+   * - ``namespace_override``
+     - ``string``
+     - ``false``
+     - if set, it's used as namespace (instead of the associated actor's name)
+   * - ``action_topic``
+     - ``string``
+     - ``move_action``
+     - Action name
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     - Succeed on goal acceptance
+
+``arm.move_to_pose``
+^^^^^^^^^^^^^^^^^^^^
+
+Use MoveIt2 to move the end-effector to a specified pose, utilizing `MoveGroup action <https://github.com/moveit/moveit_msgs/blob/master/action/MoveGroup.action>`__ from the move_group node by specifying the desired end-effector position and orientation.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_pose``
+     - ``pose_3d``
+     -
+     - end effector pose to move to
+   * - ``plan_only``
+     - ``bool``
+     - ``false``
+     - If true, the plan is calculated but not executed. The calculated plan can be visualized in rviz.
+   * - ``replan``
+     - ``bool``
+     - ``true``
+     - If true, replan if plan becomes invalidated during execution
+   * - ``tolerance``
+     - ``float``
+     - ``0.001``
+     - The acceptable range of variation around both the start and goal positions.
+   * - ``max_velocity_scaling_factor``
+     - ``float``
+     - ``0.1``
+     - Scaling factors for optionally reducing the maximum joint velocities
+   * - ``namespace_override``
+     - ``string``
+     - ``false``
+     - if set, it's used as namespace (instead of the associated actor's name)
+   * - ``action_topic``
+     - ``string``
+     - ``move_action``
+     - Action name
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     - Succeed on goal acceptance
 
 
 Nav2

@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<robot name="panda" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+    <xacro:arg name="ros2_control_hardware_type"                   default="${ros2_control_hardware_type}"/>
+    <xacro:property name="initial_positions_file"                  value="$(find moveit_resources_panda_moveit_config)/config/initial_positions.yaml" />
+    <xacro:property name="initial_positions"                       value="${xacro.load_yaml(initial_positions_file)['initial_positions']}"/>
+    <xacro:property name="ros2_control_hardware_type"              value="$(arg ros2_control_hardware_type)"/>
+    
+    <link name="world"/>
+    <joint name="panda_world" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 0.0" />
+        <parent link="world" />
+        <child link="panda_link0" />
+    </joint>
+    <xacro:include filename="$(find moveit_resources_panda_description)/urdf/panda.urdf.xacro" />
+    <joint name="panda_finger_joint2_mimic" type="fixed">
+        <parent link="world" />
+        <child link="random" />
+    </joint>
+    <link name="random"/>
+    <link name="ground_plane_box">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="1.0 1.0 0.5"/> 
+            </geometry>
+            <material name="Grey">
+                <color rgba="0.7 0.7 0.7 1.0"/>
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="1.0 1.0 0.5"/> 
+            </geometry>
+        </collision>
+    </link>
+    <joint name="ground_plane_box" type="fixed">
+        <parent link="world" />
+        <child link="ground_plane_box" />
+        <origin xyz="0 0 -0.25" rpy="0 0 0" />
+    </joint>
+    
+    <xacro:include filename="$(find arm_sim_scenario)/config/control.urdf.xacro" />
+</robot>
