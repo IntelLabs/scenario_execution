@@ -31,34 +31,29 @@ class CopyStatus(Enum):
     DONE = 4
 
 
-class DockerCopy(BaseAction):
+class DockerPut(BaseAction):
     """
-    Copy a file or folder from a running container
+    Copy a file or folder from the local filesystem into a running container
     """
 
-    def __init__(self, container: str, file_path: str):
+    def __init__(self, container: str, source_path: str, target_path: str):
         super().__init__()
         self.container = container
-        self.file_path = file_path
+        self.source_path = source_path
+        self.target_path = target_path
 
         self.container_object = None
         self.current_state = CopyStatus.IDLE
-        self.output_dir = None
         self.client = None
-        self.result_data = None
+        self.tar = None
 
     def setup(self, **kwargs):
         # create docker client
         self.client = docker.from_env()
 
-        # check output_dir
-        if "output_dir" not in kwargs:
-            raise ActionError("output_dir not defined.", action=self)
-
-        if kwargs['output_dir']:
-            if not os.path.exists(kwargs['output_dir']):
-                raise ActionError(f"Specified destination dir '{kwargs['output_dir']}' does not exist", action=self)
-            self.output_dir = kwargs['output_dir']
+        # check if source path exists
+        if not os.path.exists(self.source_path):
+            raise ActionError(f"The given source path {self.source_path} does not exist", action=self)
 
     def update(self) -> py_trees.common.Status:
         if self.current_state == CopyStatus.IDLE:
@@ -70,29 +65,30 @@ class DockerCopy(BaseAction):
                 return py_trees.common.Status.RUNNING
 
         elif self.current_state == CopyStatus.FOUND_CONTAINER:
+            self.tar = tempfile.NamedTemporaryFile(suffix=".tar")
             try:
-                self.result_data, _ = self.container_object.get_archive(
-                    path=self.file_path)
+                with tarfile.open(self.tar.name, 'w:') as tar:
+                    tar.add(
+                        self.source_path,
+                        arcname=os.path.basename(self.source_path))
                 self.current_state = CopyStatus.COPYING
-                self.feedback_message = f"Copying data from path {self.file_path} in container {self.container} to {self.output_dir}"  # pylint: disable= attribute-defined-outside-init
-            except docker.errors.APIError as e:
-                self.feedback_message = f"Copying of data from path {self.file_path} failed: {e}"  # pylint: disable= attribute-defined-outside-init
+            except tarfile.ReadError as e:
+                self.feedback_message = f"Compressing data to a tar file from path {self.source_path} failed: {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE
         elif self.current_state == CopyStatus.COPYING:
-            output_tar = tempfile.NamedTemporaryFile(suffix=".tar")
-            try:
-                with open(output_tar.name, 'wb') as f:
-                    for chunk in self.result_data:
-                        f.write(chunk)
-                with tarfile.open(output_tar.name, 'r') as tar:
-                    tar.extractall(self.output_dir)
+            success = self.container_object.put_archive(
+                path=self.target_path,
+                data=self.tar
+            )
+            if success:
                 self.current_state = CopyStatus.DONE
-            except tarfile.ReadError as e:
-                self.feedback_message = f"Copying of data from path {self.file_path} failed: {e}"  # pylint: disable= attribute-defined-outside-init
+                self.feedback_message = f"Copying data from path {self.source_path} to {self.target_path} inside container {self.container}"  # pylint: disable= attribute-defined-outside-init
+            else:
+                self.feedback_message = f"Copying data from path {self.source_path} to {self.target_path} inside container {self.container} failed: {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE
 
         elif self.current_state == CopyStatus.DONE:
-            self.feedback_message = f"Finished copying of data from path {self.file_path} to {self.output_dir}"  # pylint: disable= attribute-defined-outside-init
+            self.feedback_message = f"Finished copying data from path {self.source_path} to {self.target_path} inside container {self.container}"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.SUCCESS
 
         return py_trees.common.Status.RUNNING

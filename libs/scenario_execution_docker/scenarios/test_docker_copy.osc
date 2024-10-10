@@ -1,7 +1,7 @@
 import osc.docker
 import osc.helpers
 
-scenario test_docker_exec:
+scenario test_docker_copy:
     timeout(25s)
     do parallel:
         docker_run(image: 'ubuntu', command: 'sleep 20', detach: true, container_name: 'sleeping_beauty', remove: true, volumes: ['/srv/nfs4/:/data'])
