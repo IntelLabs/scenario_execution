@@ -4,7 +4,7 @@ import osc.helpers
 scenario test_docker_copy:
     timeout(25s)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 20', detach: true, container_name: 'sleeping_beauty', remove: true, volumes: ['/srv/nfs4/:/data'])
+        docker_run(image: 'ubuntu', command: 'sleep 20', detach: true, container_name: 'sleeping_beauty', remove: true)
         serial: 
             docker_exec(container: 'sleeping_beauty', command: 'mkdir -p /tmp/test_dir/')
             docker_exec(container: 'sleeping_beauty', command: 'touch /tmp/test_dir/test.txt')

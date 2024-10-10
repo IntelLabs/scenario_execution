@@ -4,6 +4,6 @@ import osc.helpers
 scenario test_docker_run:
     timeout(15s)
     do serial:
-        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, remove: true, container_name: 'sleeping_beauty', volumes: ['/srv/nfs4/:/data'])
-        docker_run(image: 'ubuntu', command: 'echo hello world', volumes: ['/srv/nfs4/:/data'])
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, remove: true, container_name: 'sleeping_beauty')
+        docker_run(image: 'ubuntu', command: 'echo hello world')
         emit end
