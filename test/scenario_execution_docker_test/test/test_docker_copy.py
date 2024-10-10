@@ -38,7 +38,6 @@ class TestDockerCopy(unittest.TestCase):
     def tearDown(self):
         self.tmp_dir.cleanup()
 
-
     def parse(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
         model = self.parser.create_internal_model(parsed_tree, self.tree, "test.osc", False)
@@ -80,4 +79,3 @@ scenario test_fail:
             docker_copy(container: 'sleeping_beauty_copy_fail', file_path:  '/tmp/test_dir/')
 """)
         self.assertFalse(self.scenario_execution.process_results())
-        

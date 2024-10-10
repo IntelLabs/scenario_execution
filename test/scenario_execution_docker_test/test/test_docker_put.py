@@ -71,4 +71,3 @@ scenario test_failure_unknown_file:
             docker_put(container: 'sleeping_beauty_put_fail', source_path: 'UNKNOWN', target_path: '/tmp/')
 """)
         self.assertFalse(self.scenario_execution.process_results())
-        
