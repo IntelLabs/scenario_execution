@@ -25,7 +25,7 @@ from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
 
-class TestCheckFileExists(unittest.TestCase):
+class TestDockerRun(unittest.TestCase):
     # pylint: disable=missing-function-docstring,missing-class-docstring
 
     def setUp(self) -> None:
