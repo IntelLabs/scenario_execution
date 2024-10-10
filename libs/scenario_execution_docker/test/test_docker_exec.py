@@ -48,8 +48,8 @@ import osc.docker
 import osc.helpers
 
 scenario test_success:
-    timeout(15s)
-    do serial:
+    timeout(30s)
+    do parallel:
         docker_run(image: 'ubuntu', command: 'sleep 10', detach: true, container_name: 'sleeping_beauty', remove: true)
         serial: 
             docker_exec(container: 'sleeping_beauty', command: 'echo hello world')
@@ -65,9 +65,9 @@ import osc.helpers
 scenario test_failure:
     timeout(15s)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 10', detach: true, container_name: 'sleeping_beauty', remove: true)
+        docker_run(image: 'ubuntu', command: 'sleep 10', detach: true, container_name: 'sleeping_beauty1', remove: true)
         serial: 
-            docker_exec(container: 'sleeping_beauty', command: 'ls UKNOWN_DIR')
+            docker_exec(container: 'sleeping_beauty1', command: 'ls UKNOWN_DIR')
 """)
         self.assertFalse(self.scenario_execution.process_results())
 
@@ -76,9 +76,9 @@ scenario test_failure:
 import osc.docker
 import osc.helpers
 
-scenario test_failure:
+scenario test_failure_container_not_running:
     timeout(3s)
     do serial: 
-        docker_exec(container: 'sleeping_beauty', command: 'echo hello world')
+        docker_exec(container: 'sleeping_beauty2', command: 'echo hello world')
 """)
         self.assertFalse(self.scenario_execution.process_results())
