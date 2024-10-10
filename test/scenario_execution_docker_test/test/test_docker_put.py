@@ -50,10 +50,10 @@ import osc.helpers
 scenario test_success:
     timeout(10s)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty', remove: true)
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty_put', remove: true)
         serial: 
-            docker_put(container: 'sleeping_beauty', source_path: '""" + self.tmp_file.name + """', target_path: '/tmp/')
-            docker_exec(container: 'sleeping_beauty', command: 'test -f """ + self.tmp_file.name + """')
+            docker_put(container: 'sleeping_beauty_put', source_path: '""" + self.tmp_file.name + """', target_path: '/tmp/')
+            docker_exec(container: 'sleeping_beauty_put', command: 'test -f """ + self.tmp_file.name + """')
             emit end
 """)
         self.assertTrue(self.scenario_execution.process_results())
@@ -66,9 +66,9 @@ import osc.helpers
 scenario test_failure_unknown_file:
     timeout(10s)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty1', remove: true)
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty_put_fail', remove: true)
         serial: 
-            docker_put(container: 'sleeping_beauty1', source_path: 'UNKNOWN', target_path: '/tmp/')
+            docker_put(container: 'sleeping_beauty_put_fail', source_path: 'UNKNOWN', target_path: '/tmp/')
 """)
         self.assertFalse(self.scenario_execution.process_results())
         

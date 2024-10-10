@@ -50,9 +50,9 @@ import osc.helpers
 scenario test_success:
     timeout(30s)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 10', detach: true, container_name: 'sleeping_beauty', remove: true)
+        docker_run(image: 'ubuntu', command: 'sleep 10', detach: true, container_name: 'sleeping_beauty_exec_success', remove: true)
         serial: 
-            docker_exec(container: 'sleeping_beauty', command: 'echo hello world')
+            docker_exec(container: 'sleeping_beauty_exec_success', command: 'echo hello world')
             emit end
 """)
         self.assertTrue(self.scenario_execution.process_results())
@@ -65,9 +65,9 @@ import osc.helpers
 scenario test_failure:
     timeout(15s)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 10', detach: true, container_name: 'sleeping_beauty1', remove: true)
+        docker_run(image: 'ubuntu', command: 'sleep 10', detach: true, container_name: 'sleeping_beauty_exec_fail', remove: true)
         serial: 
-            docker_exec(container: 'sleeping_beauty1', command: 'ls UKNOWN_DIR')
+            docker_exec(container: 'sleeping_beauty_exec_fail', command: 'ls UKNOWN_DIR')
 """)
         self.assertFalse(self.scenario_execution.process_results())
 
@@ -79,7 +79,7 @@ import osc.helpers
 scenario test_failure_container_not_running:
     timeout(3s)
     do serial: 
-        docker_exec(container: 'sleeping_beauty2', command: 'echo hello world')
+        docker_exec(container: 'sleeping_beauty', command: 'echo hello world')
 """)
         self.assertFalse(self.scenario_execution.process_results())
         

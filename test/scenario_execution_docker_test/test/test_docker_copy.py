@@ -55,12 +55,12 @@ import osc.os
 scenario test_success:
     timeout(10)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty', remove: true)
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty_copy_success', remove: true)
         serial: 
-            docker_exec(container: 'sleeping_beauty', command: 'mkdir -p /tmp/test_dir/')
-            docker_exec(container: 'sleeping_beauty', command: 'touch /tmp/test_dir/test.txt')
-            docker_exec(container: 'sleeping_beauty', command: 'touch /tmp/test_dir/test_1.txt')
-            docker_copy(container: 'sleeping_beauty', file_path:  '/tmp/test_dir/')
+            docker_exec(container: 'sleeping_beauty_copy_success', command: 'mkdir -p /tmp/test_dir/')
+            docker_exec(container: 'sleeping_beauty_copy_success', command: 'touch /tmp/test_dir/test.txt')
+            docker_exec(container: 'sleeping_beauty_copy_success', command: 'touch /tmp/test_dir/test_1.txt')
+            docker_copy(container: 'sleeping_beauty_copy_success', file_path:  '/tmp/test_dir/')
             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_dir/test.txt' + """')
             check_file_exists(file_name: '""" + self.tmp_dir.name + '/test_dir/test_1.txt' + """')
             emit end
@@ -72,12 +72,12 @@ scenario test_success:
 import osc.docker
 import osc.helpers
 
-scenario test_success:
+scenario test_fail:
     timeout(10s)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty1', remove: true)
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty_copy_fail', remove: true)
         serial: 
-            docker_copy(container: 'sleeping_beauty1', file_path:  '/tmp/test_dir/')
+            docker_copy(container: 'sleeping_beauty_copy_fail', file_path:  '/tmp/test_dir/')
 """)
         self.assertFalse(self.scenario_execution.process_results())
         

@@ -92,9 +92,9 @@ import osc.helpers
 scenario test:
     timeout(10s)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, volumes: ['""" + self.tmp_dir.name + """:/data'], container_name: 'sleeping_beauty')
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, volumes: ['""" + self.tmp_dir.name + """:/data'], container_name: 'sleeping_beauty_run_volume')
         serial:
-            docker_exec(container: 'sleeping_beauty', command: 'ls /data')
+            docker_exec(container: 'sleeping_beauty_run_volume', command: 'ls /data')
             emit end
 """)
         self.assertTrue(self.scenario_execution.process_results())
