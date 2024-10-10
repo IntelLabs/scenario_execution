@@ -53,9 +53,9 @@ import osc.helpers
 import osc.os
 
 scenario test_success:
-    timeout(25s)
+    timeout(10)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 20', detach: true, container_name: 'sleeping_beauty', remove: true)
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty', remove: true)
         serial: 
             docker_exec(container: 'sleeping_beauty', command: 'mkdir -p /tmp/test_dir/')
             docker_exec(container: 'sleeping_beauty', command: 'touch /tmp/test_dir/test.txt')
@@ -66,3 +66,18 @@ scenario test_success:
             emit end
 """)
         self.assertTrue(self.scenario_execution.process_results())
+
+    def test_failure_missing_file(self):
+        self.parse("""
+import osc.docker
+import osc.helpers
+
+scenario test_success:
+    timeout(10s)
+    do parallel:
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty1', remove: true)
+        serial: 
+            docker_copy(container: 'sleeping_beauty1', file_path:  '/tmp/test_dir/')
+""")
+        self.assertFalse(self.scenario_execution.process_results())
+        

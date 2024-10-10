@@ -67,3 +67,16 @@ scenario test:
         emit end
 """)
         self.assertTrue(self.scenario_execution.process_results())
+
+    def test_fail_unknown_command(self):
+        self.parse("""
+import osc.docker
+import osc.helpers
+
+scenario test:
+    timeout(10s)
+    do serial:
+        docker_run(image: 'ubuntu', command: 'UKNOWN', detach: true)
+        emit end
+""")
+        self.assertFalse(self.scenario_execution.process_results())
