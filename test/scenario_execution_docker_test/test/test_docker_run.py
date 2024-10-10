@@ -34,7 +34,7 @@ class TestDockerRun(unittest.TestCase):
                                                     scenario_file="test.osc", output_dir=None)
         self.tree = py_trees.composites.Sequence(name="", memory=True)
         self.tmp_dir = tempfile.TemporaryDirectory()
-    
+
     def tearDown(self):
         self.tmp_dir.cleanup()
 
@@ -98,4 +98,3 @@ scenario test:
             emit end
 """)
         self.assertTrue(self.scenario_execution.process_results())
-
