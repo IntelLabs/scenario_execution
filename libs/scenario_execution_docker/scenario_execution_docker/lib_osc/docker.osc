@@ -9,7 +9,7 @@ action docker_run:
     privileged: bool = false        # Give extended privileges to this container
     remove: bool = false            # Remove the container when it as finished running
     stream: bool = true             # If true and detach is false, return a log generator instead of a string. Ignored if detach is true.
-    volumes: list of string         # A list of strings which each one of its elements specifies a mount volume: ['/home/user1/:/mnt/vol2','/var/www:/mnt/vol1']
+    volumes: list of string         # A list of strings which each one of its elements specifies a mount volume: ['/home/user1/:/mnt/vol2','/home/user2:/mnt/vol1']
 
 action docker_exec:
     # Run a command inside a given container
@@ -26,7 +26,7 @@ action docker_copy:
     file_path: string               # Path to the file or folder to retrieve
 
 action docker_put:
-    # Copy a file or folder from the local filesystem into a running container 
+    # Copy a file or folder from the local system into a running container 
     container: string               # the name or id of the container to put the file or folder into
-    source_path: string             # Path to the file or folder in the local filesystem to copy
+    source_path: string             # Path to the file or folder in the local system to copy
     target_path: string             # Target path inside the container to put the file or folder

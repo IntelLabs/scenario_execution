@@ -10,6 +10,8 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
    
    * - Name
      - Description
+   * - ``osc.docker``
+     - Docker Library (provided with :repo_link:`libs/scenario_execution_docker`)
    * - ``osc.gazebo``
      - Gazebo Library (provided with :repo_link:`libs/scenario_execution_gazebo`)
    * - ``osc.helpers``
@@ -32,6 +34,159 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
 Additional features can be implemented by defining your own library.
 
 
+Docker
+------
+
+The library contains actions to interact with `Docker <https://www.docker.com/>`_. Import it with ``import osc.docker``. It's provided by the package :repo_link:`libs/scenario_execution_docker`.
+
+``docker_run()``
+^^^^^^^^^^^^^^^^
+
+Runs a Docker container
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``image``
+     - ``string``
+     -
+     - The image to run
+   * - ``command``
+     - ``string``
+     - 
+     - The command to run in the container
+   * - ``container_name``
+     - ``string``
+     - 
+     - The name for this container
+   * - ``detach``
+     - ``bool``
+     - false
+     - Whether to run container in the background
+   * - ``environment``
+     - ``list of string``
+     - 
+     - Environment variables to set inside the container, i.e., a list of strings in the format ["SOMEVARIABLE=xxx"].
+   * - ``network``
+     - ``string``
+     - 
+     - Name of the network this container will be connected to at creation time
+   * - ``privileged``
+     - ``bool``
+     - false
+     - Give extended privileges to this container
+   * - ``remove``
+     - ``bool``
+     - false
+     - Remove the container when it as finished running
+   * - ``stream``
+     - ``bool``
+     - true
+     - If true and detach is false, return a log generator instead of a string. Ignored if detach is true.
+   * - ``volumes``
+     - ``list of string``
+     - 
+     - A list of strings which each one of its elements specifies a mount volume: ['/home/user1/:/mount/vol2','/home/user2/:/mount/vol1']
+
+``docker_exec()``
+^^^^^^^^^^^^^^^^^
+
+Runs a command inside a given Docker container
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``container``
+     - ``string``
+     - 
+     - The name or id of the container to run the command in 
+   * - ``container``
+     - ``string``
+     - 
+     - The name or id of the container to run the command in 
+   * - ``command``
+     - ``string``
+     - 
+     - The command to run inside the container
+   * - ``environment``
+     - ``list of string``
+     - 
+     - Environment variables to set inside the container, i.e., a list of strings in the format ["SOMEVARIABLE=xxx"].
+   * - ``privileged``
+     - ``bool``
+     - false
+     - Give extended privileges to this container
+   * - ``user``
+     - ``string``
+     - root
+     - User to execute command as
+   * - ``workdir``
+     - ``string``
+     - 
+     - Path to working directory for this exec session
+
+``docker_copy()``
+^^^^^^^^^^^^^^^^^
+
+Copy a file or folder from the container 
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``container``
+     - ``string``
+     - 
+     - The name or id of the container to run the command in 
+   * - ``file_path``
+     - ``string``
+     - 
+     - Path to the file or folder inside the container to retrieve
+
+``docker_put()``
+^^^^^^^^^^^^^^^^^
+
+Copy a file or folder from the local system into a running container
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``container``
+     - ``string``
+     - 
+     - The name or id of the container to put the file or folder into 
+   * - ``source_path``
+     - ``string``
+     - 
+     - Path to the file or folder in the local system to copy
+   * - ``target_path``
+     - ``string``
+     - 
+     - Target path inside the container to put the file or folder
+    
 Gazebo
 ------
 
