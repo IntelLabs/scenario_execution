@@ -82,3 +82,4 @@ scenario test_failure_container_not_running:
         docker_exec(container: 'sleeping_beauty2', command: 'echo hello world')
 """)
         self.assertFalse(self.scenario_execution.process_results())
+        
