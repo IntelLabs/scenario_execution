@@ -25,7 +25,7 @@ from scenario_execution.utils.logging import Logger
 from antlr4.InputStream import InputStream
 
 
-class TestDockerRun(unittest.TestCase):
+class TestDockerPut(unittest.TestCase):
     # pylint: disable=missing-function-docstring,missing-class-docstring
 
     def setUp(self) -> None:
@@ -33,10 +33,7 @@ class TestDockerRun(unittest.TestCase):
         self.scenario_execution = ScenarioExecution(debug=False, log_model=False, live_tree=False,
                                                     scenario_file="test.osc", output_dir=None)
         self.tree = py_trees.composites.Sequence(name="", memory=True)
-        self.tmp_dir = tempfile.TemporaryDirectory()
-    
-    def tearDown(self):
-        self.tmp_dir.cleanup()
+        self.tmp_file = tempfile.NamedTemporaryFile()
 
     def parse(self, scenario_content):
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
@@ -45,57 +42,33 @@ class TestDockerRun(unittest.TestCase):
         self.scenario_execution.tree = self.tree
         self.scenario_execution.run()
 
-    def test_success_stream(self):
+    def test_success(self):
         self.parse("""
 import osc.docker
 import osc.helpers
 
-scenario test:
-    timeout(10s)
-    do serial:
-        docker_run(image: 'ubuntu', command: 'echo hello world')
-        emit end
-""")
-        self.assertTrue(self.scenario_execution.process_results())
-
-    def test_success_detach(self):
-        self.parse("""
-import osc.docker
-import osc.helpers
-
-scenario test:
-    timeout(10s)
-    do serial:
-        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true)
-        emit end
-""")
-        self.assertTrue(self.scenario_execution.process_results())
-
-    def test_fail_unknown_command(self):
-        self.parse("""
-import osc.docker
-import osc.helpers
-
-scenario test:
-    timeout(10s)
-    do serial:
-        docker_run(image: 'ubuntu', command: 'UKNOWN', detach: true)
-        emit end
-""")
-        self.assertFalse(self.scenario_execution.process_results())
-
-    def test_success_volume_mount(self):
-        self.parse("""
-import osc.docker
-import osc.helpers
-
-scenario test:
+scenario test_success:
     timeout(10s)
     do parallel:
-        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, volumes: ['""" + self.tmp_dir.name + """:/data'], container_name: 'sleeping_beauty')
-        serial:
-            docker_exec(container: 'sleeping_beauty', command: 'ls /data')
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty', remove: true)
+        serial: 
+            docker_put(container: 'sleeping_beauty', source_path: '""" + self.tmp_file.name + """', target_path: '/tmp/')
+            docker_exec(container: 'sleeping_beauty', command: 'test -f """ + self.tmp_file.name + """')
             emit end
 """)
         self.assertTrue(self.scenario_execution.process_results())
 
+    def test_failure_missing_file(self):
+        self.parse("""
+import osc.docker
+import osc.helpers
+
+scenario test_failure_unknown_file:
+    timeout(10s)
+    do parallel:
+        docker_run(image: 'ubuntu', command: 'sleep 5', detach: true, container_name: 'sleeping_beauty1', remove: true)
+        serial: 
+            docker_put(container: 'sleeping_beauty1', source_path: 'UNKNOWN', target_path: '/tmp/')
+""")
+        self.assertFalse(self.scenario_execution.process_results())
+        
