@@ -140,7 +140,9 @@ Runs a command inside a given Docker container
 ``docker_copy()``
 ^^^^^^^^^^^^^^^^^
 
-Copy a file or folder from the container 
+Copy a file or folder from the container.
+Note that this actions potentially blocks other action calls if the copied content is large.
+In case large files or folders need to be copied, consider mounting a volume to the container instead of this action.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -163,7 +165,9 @@ Copy a file or folder from the container
 ``docker_put()``
 ^^^^^^^^^^^^^^^^^
 
-Copy a file or folder from the local system into a running container
+Copy a file or folder from the local system into a running container.
+Note that this actions potentially blocks other action calls if the copied content is large.
+In case large files or folders need to be copied, consider mounting a volume to the container instead of this action.
 
 .. list-table:: 
    :widths: 15 15 5 65
