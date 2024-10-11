@@ -7,7 +7,7 @@ action docker_run:
     environment: list of string     # Environment variables to set inside the container, i.e., a list of strings in the format ["SOMEVARIABLE=xxx"].
     network: string                 # Name of the network this container will be connected to at creation time
     privileged: bool = false        # Give extended privileges to this container
-    remove: bool = false            # Remove the container when it as finished running
+    remove: bool = true             # Remove the container when it as finished running
     stream: bool = true             # If true and detach is false, return a log generator instead of a string. Ignored if detach is true.
     volumes: list of string         # A list of strings which each one of its elements specifies a mount volume: ['/home/user1/:/mnt/vol2','/home/user2:/mnt/vol1']
 

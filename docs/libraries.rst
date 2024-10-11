@@ -83,7 +83,7 @@ Runs a Docker container
      - Give extended privileges to this container
    * - ``remove``
      - ``bool``
-     - false
+     - true
      - Remove the container when it as finished running
    * - ``stream``
      - ``bool``
