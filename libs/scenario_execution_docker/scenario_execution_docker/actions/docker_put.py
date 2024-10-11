@@ -64,7 +64,7 @@ class DockerPut(BaseAction):
                 self.feedback_message = f"Docker container {self.container} not yet running {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.RUNNING
 
-        elif self.current_state == CopyStatus.FOUND_CONTAINER:
+        if self.current_state == CopyStatus.FOUND_CONTAINER:
             self.tar = tempfile.NamedTemporaryFile(suffix=".tar")
             try:
                 with tarfile.open(self.tar.name, 'w:') as tar:
@@ -75,7 +75,8 @@ class DockerPut(BaseAction):
             except tarfile.ReadError as e:
                 self.feedback_message = f"Compressing data to a tar file from path {self.source_path} failed: {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE
-        elif self.current_state == CopyStatus.COPYING:
+
+        if self.current_state == CopyStatus.COPYING:
             success = self.container_object.put_archive(
                 path=self.target_path,
                 data=self.tar
@@ -87,7 +88,7 @@ class DockerPut(BaseAction):
                 self.feedback_message = f"Copying data from path {self.source_path} to {self.target_path} inside container {self.container} failed: {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE
 
-        elif self.current_state == CopyStatus.DONE:
+        if self.current_state == CopyStatus.DONE:
             self.feedback_message = f"Finished copying data from path {self.source_path} to {self.target_path} inside container {self.container}"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.SUCCESS
 

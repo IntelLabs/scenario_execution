@@ -82,7 +82,8 @@ class DockerRun(BaseAction):
             self.current_state = ContainerStatus.RUNNING
             self.feedback_message = f"Running docker container {self.image}"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.RUNNING
-        elif self.current_state == ContainerStatus.RUNNING:
+
+        if self.current_state == ContainerStatus.RUNNING:
             if self.stream and not self.detach:
                 try:
                     log = next(self.container)
@@ -100,9 +101,11 @@ class DockerRun(BaseAction):
                         self.current_state = ContainerStatus.DONE
                         self.feedback_message = f"Docker container {self.image} finished cleanly"  # pylint: disable= attribute-defined-outside-init
                         return py_trees.common.Status.SUCCESS
-        elif self.current_state == ContainerStatus.DONE:
+
+        if self.current_state == ContainerStatus.DONE:
             self.feedback_message = f"Docker container {self.image} finished cleanly"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.SUCCESS
+
         return py_trees.common.Status.RUNNING
 
     def shutdown(self):

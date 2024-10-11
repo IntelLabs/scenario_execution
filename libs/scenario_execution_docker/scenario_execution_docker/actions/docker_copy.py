@@ -69,7 +69,7 @@ class DockerCopy(BaseAction):
                 self.feedback_message = f"Docker container {self.container} not yet running {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.RUNNING
 
-        elif self.current_state == CopyStatus.FOUND_CONTAINER:
+        if self.current_state == CopyStatus.FOUND_CONTAINER:
             try:
                 self.result_data, _ = self.container_object.get_archive(
                     path=self.file_path)
@@ -78,7 +78,8 @@ class DockerCopy(BaseAction):
             except docker.errors.APIError as e:
                 self.feedback_message = f"Copying of data from path {self.file_path} failed: {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE
-        elif self.current_state == CopyStatus.COPYING:
+
+        if self.current_state == CopyStatus.COPYING:
             output_tar = tempfile.NamedTemporaryFile(suffix=".tar")
             try:
                 with open(output_tar.name, 'wb') as f:
@@ -91,7 +92,7 @@ class DockerCopy(BaseAction):
                 self.feedback_message = f"Copying of data from path {self.file_path} failed: {e}"  # pylint: disable= attribute-defined-outside-init
                 return py_trees.common.Status.FAILURE
 
-        elif self.current_state == CopyStatus.DONE:
+        if self.current_state == CopyStatus.DONE:
             self.feedback_message = f"Finished copying of data from path {self.file_path} to {self.output_dir}"  # pylint: disable= attribute-defined-outside-init
             return py_trees.common.Status.SUCCESS
 
