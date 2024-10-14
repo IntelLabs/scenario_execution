@@ -85,7 +85,10 @@ class AssertTopicLatency(BaseAction):
                         self.feedback_message = f"No message received on the topic '{self.topic_name}'"  # pylint: disable= attribute-defined-outside-init
                         result = py_trees.common.Status.RUNNING
                 elif self.msg_count > 1:
-                    if self.comparison_operator(self.average_latency, self.latency):
+                    if self.comparison_operator(self.latency, time.time() - self.last_receive_time):
+                        self.feedback_message = f"Failed to receive message within the expected latency threshold ({self.latency} seconds)"  # pylint: disable= attribute-defined-outside-init
+                        result = py_trees.common.Status.FAILURE
+                    elif self.comparison_operator(self.average_latency, self.latency):
                         result = py_trees.common.Status.RUNNING
                         self.feedback_message = f'Latency within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
                     else:
