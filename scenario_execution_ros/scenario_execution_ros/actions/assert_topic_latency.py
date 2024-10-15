@@ -26,24 +26,26 @@ from scenario_execution.actions.base_action import BaseAction, ActionError
 
 class AssertTopicLatency(BaseAction):
 
-    def __init__(self, topic_name: str, topic_type: str, latency: float, comparison_operator: bool, rolling_average_count: int, wait_for_first_message: bool):
+    def __init__(self, topic_name: str, topic_type: str, wait_for_first_message: bool):
         super().__init__()
         self.topic_name = topic_name
         self.topic_type = topic_type
-        self.latency = latency
-        self.comparison_operator_feedback = comparison_operator[0]
-        self.comparison_operator = get_comparison_operator(comparison_operator)
-        self.rolling_average_count = rolling_average_count
-        self.rolling_average_count_queue = deque(maxlen=rolling_average_count)
+        self.latency = None
+        self.comparison_operator_feedback = None
+        self.comparison_operator = None
+        self.rolling_average_count = None
+        self.rolling_average_count_queue = None
         self.wait_for_first_message = wait_for_first_message
+        self.initial_wait_for_first_message = wait_for_first_message
         self.first_message_received = False
         self.node = None
         self.subscription = None
         self.last_receive_time = 0
         self.msg_count = 0
         self.average_latency = 0.
-        self.timer = 0
+        self.timer = time.time()
         self.is_topic = False
+        self.retrigger = None
 
     def setup(self, **kwargs):
         try:
@@ -59,13 +61,24 @@ class AssertTopicLatency(BaseAction):
         elif not success and not self.wait_for_first_message:
             raise ActionError("Topic type must be specified. Please provide a valid topic type.", action=self)
 
-    def execute(self):
-        if self.timer != 0:
-            raise ActionError("Action does not yet support to get retriggered", action=self)
+    def execute(self, latency: float, comparison_operator: bool, rolling_average_count: int):
+        self.latency = latency
+        self.comparison_operator_feedback = comparison_operator[0]
+        self.comparison_operator = get_comparison_operator(comparison_operator)
+        self.rolling_average_count = rolling_average_count
+        self.rolling_average_count_queue = deque(maxlen=rolling_average_count)
         self.timer = time.time()
+        self.last_receive_time = 0
+        self.msg_count = 0
+        self.average_latency = 0.
+        self.is_topic = False
+        self.retrigger = True
 
     def update(self) -> py_trees.common.Status:
         result = py_trees.common.Status.FAILURE
+        if self.retrigger:
+            self.wait_for_first_message = self.initial_wait_for_first_message
+            self.retrigger = False
         if not self.is_topic:
             self.check_topic()
             self.logger.info(f"Waiting for the topic '{self.topic_name}' to become available")
@@ -85,7 +98,10 @@ class AssertTopicLatency(BaseAction):
                         self.feedback_message = f"No message received on the topic '{self.topic_name}'"  # pylint: disable= attribute-defined-outside-init
                         result = py_trees.common.Status.RUNNING
                 elif self.msg_count > 1:
-                    if self.comparison_operator(self.average_latency, self.latency):
+                    if self.comparison_operator(self.latency, time.time() - self.last_receive_time):
+                        self.feedback_message = f"Failed to receive message within the expected latency threshold ({self.latency} seconds)"  # pylint: disable= attribute-defined-outside-init
+                        result = py_trees.common.Status.FAILURE
+                    elif self.comparison_operator(self.average_latency, self.latency):
                         result = py_trees.common.Status.RUNNING
                         self.feedback_message = f'Latency within range: expected {self.comparison_operator_feedback} {self.latency} s, actual {self.average_latency} s'  # pylint: disable= attribute-defined-outside-init
                     else:
