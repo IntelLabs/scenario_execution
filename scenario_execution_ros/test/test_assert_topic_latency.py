@@ -101,7 +101,7 @@ class TestAssertTopicLatency(unittest.TestCase):
     # Case 14: Test fails if the topic provided doesn't show up in the latency time.
 
 # 5. Retrigger
-    # Case 15: Test succeeds with timeout as action fails everytime (as recorded latency is greater than actual latency) and repeat gets triggered because fo failure_is_success modifier.
+    # Case 15: Test succeeds with timeout as action fails everytime (as recorded latency is greater than actual latency) and repeat gets triggered because of failure_is_success modifier.
 
 
     def test_case_1(self):
