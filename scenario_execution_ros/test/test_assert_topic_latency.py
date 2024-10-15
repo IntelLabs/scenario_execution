@@ -100,6 +100,9 @@ class TestAssertTopicLatency(unittest.TestCase):
     # Case 13: Test continues running if message arrives within the latency time.
     # Case 14: Test fails if the topic provided doesn't show up in the latency time.
 
+# 5. Retrigger
+    # Case 15: Test succeeds with timeout as action fails everytime (as recorded latency is greater than actual latency) and repeat gets triggered because fo failure_is_success modifier.
+
 
     def test_case_1(self):
         scenario_content = """
@@ -339,3 +342,25 @@ scenario test_assert_topic_latency:
 """
         self.execute(scenario_content)
         self.assertFalse(self.scenario_execution_ros.process_results())
+
+    def test_case_15(self):
+        scenario_content = """
+import osc.ros
+import osc.helpers
+
+scenario test_assert_topic_latency:
+    do parallel:
+        serial:
+            repeat()
+            assert_topic_latency(
+                topic_name: '/bla',
+                latency: 0.5s,
+                topic_type: 'std_msgs.msg.String') with:
+                    failure_is_success()
+        time_out: serial:
+            wait elapsed(10s)
+            emit end
+
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
