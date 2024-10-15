@@ -22,6 +22,11 @@ gets cleaned up.
 
    scenario execution in action
 
+How to cite
+-----------
+
+If you use Scenario Execution for Robotics in your scientific work, please cite our paper `Scenario Execution for Robotics: A generic, backend-agnostic library for running reproducible robotics experiments and tests <https://arxiv.org/pdf/2409.07080>`__. See :doc:`how_to_cite` for the full BibTeX reference.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

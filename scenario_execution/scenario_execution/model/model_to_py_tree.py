@@ -104,7 +104,7 @@ class TopicPublish(py_trees.behaviour.Behaviour):
 class ExpressionBehavior(BaseAction):  # py_trees.behaviour.Behaviour):
 
     def __init__(self, name: "ExpressionBehavior", expression: Expression, model, logger):
-        super().__init__()
+        super().__init__(resolve_variable_reference_arguments_in_execute=False)
         self._set_base_properities(name, model, logger)
         self.expression = expression
 
@@ -146,8 +146,7 @@ class ModelToPyTree(object):
             self.__cur_behavior.name = scenario_name
 
             self.blackboard = self.__cur_behavior.attach_blackboard_client(
-                name="ModelToPyTree",
-                namespace=scenario_name)
+                name="ModelToPyTree")
 
             super().visit_scenario_declaration(node)
 

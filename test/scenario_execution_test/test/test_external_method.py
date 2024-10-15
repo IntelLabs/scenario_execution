@@ -154,3 +154,25 @@ scenario test:
         with open(self.tmp_file.name) as f:
             result = f.read()
         self.assertEqual(result, "{'mem1': 1, 'mem2': 'bar'}")
+
+    def test_success_list_with_method_output(self):
+        scenario_content = """
+struct test_struct:
+    mem1: int = 3
+    mem2: string = "bar"
+    
+struct lib:
+    def test_dict(val: test_struct) -> int is external scenario_execution_test.external_methods.external_methods.test_dict()
+    
+action store_action:
+    file_path: string
+    value: list of string
+    
+scenario test:
+    do store_action('""" + self.tmp_file.name + """', ['test', lib.test_dict(test_struct(mem1: 1, mem2: "bar")), 'prefix' + lib.test_dict(test_struct(mem1: 2, mem2: "foo"))])
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution.process_results())
+        with open(self.tmp_file.name) as f:
+            result = f.read()
+        self.assertEqual(result, "['test', \"{'mem1': 1, 'mem2': 'bar'}\", \"prefix{'mem1': 2, 'mem2': 'foo'}\"]")

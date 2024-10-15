@@ -17,6 +17,23 @@ Upon arrival of the goal position, the scenario ends and the simulation gets cle
 
 Please find the documentation [here](https://intellabs.github.io/scenario_execution).
 
+## How to cite
+
+If you use Scenario Execution for Robotics in your scientific work, please cite our paper [Scenario Execution for Robotics: A generic, backend-agnostic library for running reproducible robotics experiments and tests](https://arxiv.org/pdf/2409.07080)
+
+```bibtex
+@Article{Pasch2024,
+  author = {Pasch, Frederik and Mirus, Florian and Zhang, Yongzhou and Scholl, Kay-Ulrich},
+  title = {Scenario Execution for Robotics: A generic, backend-agnostic library for running reproducible robotics experiments and tests},
+  journal = {Computing Research Repository (CoRR)},
+  year = {2024},
+  eprint = {2409.07080},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.RO},
+  url = {https://arxiv.org/abs/2409.07080},
+}
+```
+
 ## Setup
 
 ### Installation from source as ROS 2 workspace
@@ -52,5 +69,6 @@ source install/setup.bash
 To launch a scenario with ROS2:
 
 ```bash
-ros2 launch scenario_execution_ros scenario_launch.py scenario:=examples/example_scenario/hello_world.osc live_tree:=True
+ros2 run scenario_execution_ros scenario_execution_ros examples/example_scenario/hello_world.osc -t
 ```
+

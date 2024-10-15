@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>scenario_execution_rviz</name>
-  <version>0.0.1</version>
+  <version>1.2.0</version>
   <description>The scenario_execution_rviz package</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
-  <license file="../LICENSE">Apache-2.0</license>
-  <license file="LICENSE_MIT">MIT</license>
+  <license>Apache-2.0</license>
+  <license>MIT</license>
 
   <depend>rclcpp</depend>
   <buildtool_depend>ament_cmake</buildtool_depend>
@@ -14,6 +14,7 @@
 
   <build_depend>qtbase5-dev</build_depend>
   <build_depend>nav_msgs</build_depend>
+  <build_depend>std_srvs</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>scenario_execution_interfaces</build_depend>
   <build_depend>py_trees_ros_interfaces</build_depend>

@@ -13,12 +13,11 @@
 # and limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
-import tempfile
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess
-from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration, Command
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
 
 from launch_ros.actions import Node
@@ -53,13 +52,9 @@ def generate_launch_description():
     update_rate = LaunchConfiguration('update_rate')
     image_width = LaunchConfiguration('image_width')
     image_height = LaunchConfiguration('image_height')
-    camera_sdf = tempfile.NamedTemporaryFile(prefix='gazebo_static_camera_', suffix='.sdf', delete=False)
 
     x, y, z = LaunchConfiguration('x'), LaunchConfiguration('y'), LaunchConfiguration('z')
     roll, pitch, yaw = LaunchConfiguration('roll'), LaunchConfiguration('pitch'), LaunchConfiguration('yaw')
-
-    camera_sdf_xacro = ExecuteProcess(
-        cmd=['xacro', '-o', camera_sdf.name, ['update_rate:=', update_rate], ['image_width:=', image_width], ['image_height:=', image_height], PathJoinSubstitution([gazebo_static_camera_dir, 'models', 'camera.sdf.xacro'])])
 
     camera_bridge = Node(
         package='ros_gz_bridge',
@@ -96,12 +91,33 @@ def generate_launch_description():
                    '-R', roll,
                    '-P', pitch,
                    '-Y', yaw,
-                   '-file', camera_sdf.name],
+                   '-param', 'robot_description'],
+        parameters=[{
+            'robot_description': Command(['xacro ', 'update_rate:=', update_rate, ' image_width:=', image_width, ' image_height:=', image_height, ' camera_name:=', camera_name, ' ', PathJoinSubstitution([gazebo_static_camera_dir, "models", "camera.sdf.xacro"])])}],
         output='screen'
     )
 
+    static_transform = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_camera_transform',
+        arguments=['--x', x, '--y', y, '--z', z, '--roll', roll, '--pitch', pitch,
+                   '--yaw', yaw, '--frame-id', '/map', '--child-frame-id', camera_name],
+        remappings=[('/tf_static', 'tf_static')],
+    )
+
+    static_transform_2 = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_camera_transform_2',
+        arguments=['--x', '0', '--y', '0', '--z', '0', '--roll', "-1.57", '--pitch', "0", '--yaw',
+                   "-1.57", '--frame-id', camera_name, '--child-frame-id', [camera_name, '_optical_frame']],
+        remappings=[('/tf_static', 'tf_static')],
+    )
+
     ld = LaunchDescription(ARGUMENTS)
-    ld.add_action(camera_sdf_xacro)
     ld.add_action(camera_bridge)
     ld.add_action(spawn_camera)
+    ld.add_action(static_transform)
+    ld.add_action(static_transform_2)
     return ld

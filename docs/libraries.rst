@@ -10,12 +10,16 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
    
    * - Name
      - Description
+   * - ``osc.docker``
+     - Docker Library (provided with :repo_link:`libs/scenario_execution_docker`)
    * - ``osc.gazebo``
      - Gazebo Library (provided with :repo_link:`libs/scenario_execution_gazebo`)
    * - ``osc.helpers``
      - Helpers Library (provided with :repo_link:`scenario_execution`)
    * - ``osc.kubernetes``
      - Kubernetes Library (provided with :repo_link:`libs/scenario_execution_kubernetes`)
+   * - ``osc.moveit2``
+     - ROS Moveit2  manipulation stack Library (provided with :repo_link:`libs/scenario_execution_moveit2`)
    * - ``osc.nav2``
      - ROS Nav2 navigation stack Library (provided with :repo_link:`libs/scenario_execution_nav2`)
    * - ``osc.os``
@@ -30,6 +34,163 @@ Beside ``osc.standard`` provided by OpenSCENARIO 2 (which we divide into ``osc.s
 Additional features can be implemented by defining your own library.
 
 
+Docker
+------
+
+The library contains actions to interact with `Docker <https://www.docker.com/>`_. Import it with ``import osc.docker``. It's provided by the package :repo_link:`libs/scenario_execution_docker`.
+
+``docker_run()``
+^^^^^^^^^^^^^^^^
+
+Runs a Docker container
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``image``
+     - ``string``
+     -
+     - The image to run
+   * - ``command``
+     - ``string``
+     - 
+     - The command to run in the container
+   * - ``container_name``
+     - ``string``
+     - 
+     - The name for this container
+   * - ``detach``
+     - ``bool``
+     - false
+     - Whether to run container in the background
+   * - ``environment``
+     - ``list of string``
+     - 
+     - Environment variables to set inside the container, i.e., a list of strings in the format ["SOMEVARIABLE=xxx"].
+   * - ``network``
+     - ``string``
+     - 
+     - Name of the network this container will be connected to at creation time
+   * - ``privileged``
+     - ``bool``
+     - false
+     - Give extended privileges to this container
+   * - ``remove``
+     - ``bool``
+     - true
+     - Remove the container when it as finished running
+   * - ``stream``
+     - ``bool``
+     - true
+     - If true and detach is false, return a log generator instead of a string. Ignored if detach is true.
+   * - ``volumes``
+     - ``list of string``
+     - 
+     - A list of strings which each one of its elements specifies a mount volume: ['/home/user1/:/mount/vol2','/home/user2/:/mount/vol1']
+
+``docker_exec()``
+^^^^^^^^^^^^^^^^^
+
+Runs a command inside a given Docker container
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``container``
+     - ``string``
+     - 
+     - The name or id of the container to run the command in 
+   * - ``container``
+     - ``string``
+     - 
+     - The name or id of the container to run the command in 
+   * - ``command``
+     - ``string``
+     - 
+     - The command to run inside the container
+   * - ``environment``
+     - ``list of string``
+     - 
+     - Environment variables to set inside the container, i.e., a list of strings in the format ["SOMEVARIABLE=xxx"].
+   * - ``privileged``
+     - ``bool``
+     - false
+     - Give extended privileges to this container
+   * - ``user``
+     - ``string``
+     - root
+     - User to execute command as
+   * - ``workdir``
+     - ``string``
+     - 
+     - Path to working directory for this exec session
+
+``docker_copy()``
+^^^^^^^^^^^^^^^^^
+
+Copy a file or folder from the container.
+Note that this actions potentially blocks other action calls if the copied content is large.
+In case large files or folders need to be copied, consider mounting a volume to the container instead of this action.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``container``
+     - ``string``
+     - 
+     - The name or id of the container to run the command in 
+   * - ``file_path``
+     - ``string``
+     - 
+     - Path to the file or folder inside the container to retrieve
+
+``docker_put()``
+^^^^^^^^^^^^^^^^^
+
+Copy a file or folder from the local system into a running container.
+Note that this actions potentially blocks other action calls if the copied content is large.
+In case large files or folders need to be copied, consider mounting a volume to the container instead of this action.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``container``
+     - ``string``
+     - 
+     - The name or id of the container to put the file or folder into 
+   * - ``source_path``
+     - ``string``
+     - 
+     - Path to the file or folder in the local system to copy
+   * - ``target_path``
+     - ``string``
+     - 
+     - Target path inside the container to put the file or folder
+    
 Gazebo
 ------
 
@@ -283,6 +444,47 @@ Be depressed, always fail.
 """"""""""""""""""""""""
 
 The tickling never ends...
+
+
+
+``decrement()``
+^^^^^^^^^^^^^^^
+
+Decrement the value of a variable.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target_variable``
+     - ``variable``
+     -
+     - Variable to decrement
+
+
+``increment()``
+^^^^^^^^^^^^^^^
+
+Increment the value of a variable.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``target_variable``
+     - ``variable``
+     -
+     - Variable to increment
 
 
 ``log()``
@@ -587,6 +789,155 @@ Wait for a Kubernetes pod to reach a specified state.
      - Is the specified target a regular expression
 
 
+Moveit2
+-------
+
+The library contains actions to interact with the `Moveit2 <https://moveit.picknik.ai/main/index.html>`__ manipulation stack. Import it with ``import osc.moveit2``. It is provided by the package :repo_link:`libs/scenario_execution_moveit2`.
+
+Actors
+^^^^^^
+
+``arm``
+"""""""
+An articulated arm actor inheriting from the more general ``robot`` actor
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``namespace``
+     - ``string``
+     - `` ' ' ``
+     - Namespace for the arm
+   * - ``arm_joints``
+     - ``list of string``
+     -
+     - List of joint names for the arm joints
+   * - ``gripper_joints``
+     - ``list of string``
+     -
+     - List of joint names for the gripper joints
+   * - ``arm_group``
+     - ``bool``
+     - ``false``
+     - Name of the move group controlling the arm joints
+   * - ``gripper_group``
+     - ``string``
+     - 
+     - Name of the move group controlling the gripper joints
+   * - ``end_effector``
+     - ``string``
+     -
+     - Name of the end effector component (e.g., hand or tool)
+   * - ``base_link``
+     - ``string``
+     -
+     - Name of the robot's base link for reference in kinematics
+
+``arm.move_to_joint_pose()``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use MoveIt2 to move the arm joints to specified joint positions, utilizing `MoveGroup action <https://github.com/moveit/moveit_msgs/blob/master/action/MoveGroup.action>`__ from the move_group node by specifying target joint values.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_pose``
+     - ``list of float``
+     -
+     - List joint positions to move to
+   * - ``move_group``
+     - ``move_group_type``
+     -
+     - Move group type. Allowed [arm, gripper] (e.g. ``[move_group_type!arm, move_group_type!gripper]``)
+   * - ``plan_only``
+     - ``bool``
+     - ``false``
+     - If true, the plan is calculated but not executed. The calculated plan can be visualized in rviz.
+   * - ``replan``
+     - ``bool``
+     - ``true``
+     - If true, replan if plan becomes invalidated during execution
+   * - ``tolerance``
+     - ``float``
+     - ``0.001``
+     - The acceptable range of variation around both the start and goal positions.
+   * - ``max_velocity_scaling_factor``
+     - ``float``
+     - ``0.1``
+     - Scaling factors for optionally reducing the maximum joint velocities
+   * - ``namespace_override``
+     - ``string``
+     - ``false``
+     - if set, it's used as namespace (instead of the associated actor's name)
+   * - ``action_topic``
+     - ``string``
+     - ``move_action``
+     - Action name
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     - Succeed on goal acceptance
+
+``arm.move_to_pose``
+^^^^^^^^^^^^^^^^^^^^
+
+Use MoveIt2 to move the end-effector to a specified pose, utilizing `MoveGroup action <https://github.com/moveit/moveit_msgs/blob/master/action/MoveGroup.action>`__ from the move_group node by specifying the desired end-effector position and orientation.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table  
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``goal_pose``
+     - ``pose_3d``
+     -
+     - end effector pose to move to
+   * - ``plan_only``
+     - ``bool``
+     - ``false``
+     - If true, the plan is calculated but not executed. The calculated plan can be visualized in rviz.
+   * - ``replan``
+     - ``bool``
+     - ``true``
+     - If true, replan if plan becomes invalidated during execution
+   * - ``tolerance``
+     - ``float``
+     - ``0.001``
+     - The acceptable range of variation around both the start and goal positions.
+   * - ``max_velocity_scaling_factor``
+     - ``float``
+     - ``0.1``
+     - Scaling factors for optionally reducing the maximum joint velocities
+   * - ``namespace_override``
+     - ``string``
+     - ``false``
+     - if set, it's used as namespace (instead of the associated actor's name)
+   * - ``action_topic``
+     - ``string``
+     - ``move_action``
+     - Action name
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     - Succeed on goal acceptance
+
+
 Nav2
 ----
 
@@ -653,6 +1004,10 @@ Use nav2 to navigate through poses.
      - ``string``
      - ``navigate_through_poses``
      - Action name
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     -  succeed on goal acceptance
 
 ``differential_drive_robot.nav_to_pose()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -680,12 +1035,33 @@ Use nav2 to navigate to goal pose.
      - ``string``
      - ``navigate_to_pose``
      - Action name
-
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     -  succeed on goal acceptance
 
 OS
 --
 
 The library contains actions to interact with the operating system. Import it with ``import osc.os``. It is provided by the package :repo_link:`libs/scenario_execution_os`.
+
+External Methods
+^^^^^^^^^^^^^^^^
+
+.. list-table:: 
+   :widths: 30 70
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - External Method
+     - Description
+   * - ``abspath(path: string)``
+     - Return a normalized absolutized version of the path-name ``path``.
+   * - ``basename(p: string)``
+     - Return the base name of path-name ``p``.
+   * - ``dirname(p: string)``
+     - Return the directory name of path-name ``p``.
+
 
 ``check_file_exists()``
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -759,6 +1135,10 @@ Call a ROS action and wait for the result.
      - ``string``
      - 
      - Call content (e.g. ``{\"order\": 3}``)
+   * - ``success_on_acceptance``
+     - ``bool``
+     - ``false``
+     -  succeed on goal acceptance
 
 ``assert_lifecycle_state()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -883,6 +1263,80 @@ Check the latency of the specified topic (in system time). If the check with ``c
      - Class of message type, only required when 'wait_for_first_message' is set to false (e.g. ``std_msgs.msg.String``)
 
 
+``bag_play()``
+^^^^^^^^^^^^^^^
+
+Play back a ROS bag.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``source``
+     - ``string``
+     - 
+     - path to ROS bag directory, either absolute or relative to scenario-file directory
+   * - ``topics``
+     - ``list of string``
+     - 
+     - topics to publish, if empty all topics are published
+   * - ``publish_clock``
+     - ``bool``
+     - ``false``
+     - whether to publish to /clock
+   * - ``publish_clock_rate``
+     - ``float``
+     - ``1.0``
+     - if ``publish_clock`` is true, publish to ``/clock`` at the specified frequency in Hz, to act as a ROS Time Source.
+   * - ``start_offset``
+     - ``float``
+     - ``0.0``
+     - start the playback this many seconds into the bag file
+
+
+``bag_record()``
+^^^^^^^^^^^^^^^^
+
+Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: ``.``). If ``topics`` is specified, this action waits for all topics to be subscribed until it returns with success otherwise it immediately returns. The recording is active until the end of the scenario.
+
+A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree. When replaying the bag-file, this allows to visualize the current state of the scenario in RViz, using the ``scenario_execution_rviz`` plugin.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``topics``
+     - ``list of string``
+     - 
+     - List of topics to capture
+   * - ``timestamp_suffix``
+     - ``bool``
+     - ``true``
+     - Add a timestamp suffix to output directory name
+   * - ``hidden_topics``
+     - ``bool``
+     - ``false``
+     - Whether to record hidden topics
+   * - ``storage``
+     - ``string``
+     - ``''``
+     - Storage type to use (empty string: use ROS bag record default)
+   * - ``use_sim_time``
+     - ``bool``
+     - ``false``
+     - Use simulation time for message timestamps by subscribing to the /clock topic
+
+
 ``check_data()``
 ^^^^^^^^^^^^^^^^
 
@@ -933,6 +1387,55 @@ Compare received topic messages using the given ``comparison_operator``, against
      - ``bool``
      - ``true``
      - start checking with the first received message after action execution. If false, the check is executed on the last received message.
+
+
+``check_data_external()``
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Compare received topic messages using an external python function ``function_name`` defined in python file ``file_path`` relative to the scenario-file.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``topic_name``
+     - ``string``
+     - 
+     - Name of the topic to connect to
+   * - ``topic_type``
+     - ``string``
+     - 
+     - Class of the message type (e.g. ``std_msgs.msg.String``)
+   * - ``qos_profile``
+     - ``qos_preset_profiles``
+     - ``qos_preset_profiles!system_default``
+     - QoS Preset Profile for the subscriber
+   * - ``file_path``
+     - ``string``
+     - 
+     - Path to python file containing the external check function
+   * - ``function_name``
+     - ``string``
+     - 
+     - python function to be called. The function is expected to have the signature: ``def function_name(msg) -> bool``
+   * - ``fail_if_no_data``
+     - ``bool``
+     - ``false``
+     - return failure if there is no data yet
+   * - ``fail_if_bad_comparison``
+     - ``bool``
+     - ``true``
+     - return failure if comparison failed
+   * - ``wait_for_first_message``
+     - ``bool``
+     - ``true``
+     - start checking with the first received message after action execution. If false, the check is executed on the last received message.
+
 
 ``differential_drive_robot.odometry_distance_traveled()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1014,43 +1517,6 @@ Wait for specific output in ROS log (i.e. ``/rosout`` topic). If any of the entr
      - ``list of string``
      - 
      - list of strings (in python syntax, e.g. "[\'foo\', \'bar\']")
-
-``record_bag()``
-^^^^^^^^^^^^^^^^
-
-Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: '.').
-
-A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree. When replaying the bag-file, this allows to visualize the current state of the scenario in RViz, using the ``scenario_execution_rviz`` plugin.
-
-.. list-table:: 
-   :widths: 15 15 5 65
-   :header-rows: 1
-   :class: tight-table   
-   
-   * - Parameter
-     - Type
-     - Default
-     - Description
-   * - ``topics``
-     - ``list of string``
-     - 
-     - List of topics to capture
-   * - ``timestamp_suffix``
-     - ``bool``
-     - ``true``
-     - Add a timestamp suffix to output directory name
-   * - ``hidden_topics``
-     - ``bool``
-     - ``false``
-     - Whether to record hidden topics
-   * - ``storage``
-     - ``string``
-     - ``''``
-     - Storage type to use (empty string: use ROS bag record default)
-   * - ``use_sim_time``
-     - ``bool``
-     - ``false``
-     - Use simulation time for message timestamps by subscribing to the /clock topic
 
 ``ros_launch()``
 ^^^^^^^^^^^^^^^^

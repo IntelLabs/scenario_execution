@@ -16,6 +16,7 @@
 # @author Roni Kreinin (rkreinin@clearpathrobotics.com)
 
 
+import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
@@ -37,6 +38,11 @@ ARGUMENTS = [
                           description='Robot name'),
     DeclareLaunchArgument('namespace', default_value=LaunchConfiguration('robot_name'),
                           description='Robot namespace'),
+    DeclareLaunchArgument(
+        'control_config',
+        default_value=os.path.join(get_package_share_directory("irobot_create_control"), 'config', 'control.yaml'),
+        description='Path to the control YAML file.'
+    )
 ]
 
 
@@ -46,6 +52,7 @@ def generate_launch_description():
                                        'urdf',
                                        'turtlebot4.urdf.xacro'])
     namespace = LaunchConfiguration('namespace')
+    control_config = LaunchConfiguration('control_config')
 
     robot_state_publisher = Node(
         package='robot_state_publisher',
@@ -57,7 +64,8 @@ def generate_launch_description():
             {'robot_description': ParameterValue(Command([
                 'xacro', ' ', xacro_file, ' ',
                 'gazebo:=ignition', ' ',
-                'namespace:=', namespace]), value_type=str)},
+                'namespace:=', namespace, ' ',
+                'control_config:=', control_config]), value_type=str)},
         ],
         remappings=[
             ('/tf', 'tf'),
