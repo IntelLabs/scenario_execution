@@ -26,10 +26,11 @@ from scenario_execution.actions.base_action import BaseAction, ActionError
 
 class AssertTopicLatency(BaseAction):
 
-    def __init__(self, topic_name: str, topic_type: str, wait_for_first_message: bool):
+    def __init__(self, topic_name: str, topic_type: str, wait_for_first_message: bool, type_check: bool):
         super().__init__()
         self.topic_name = topic_name
         self.topic_type = topic_type
+        self.type_check = type_check
         self.latency = None
         self.comparison_operator_feedback = None
         self.comparison_operator = None
@@ -112,32 +113,36 @@ class AssertTopicLatency(BaseAction):
         return result
 
     def check_topic(self):
-        if self.wait_for_first_message:
-            available_topics = self.node.get_topic_names_and_types()
-            for name, topic_type in available_topics:
-                if name == self.topic_name:
-                    topic_type = topic_type[0].replace('/', '.')
-                    if self.topic_type:
-                        if self.topic_type == topic_type:
-                            self.call_subscriber()
-                            self.is_topic = True
-                            return True
-                        else:
-                            return False  # Invalid topic or type speficied.
-                    else:
-                        self.topic_type = topic_type
-                        self.call_subscriber()
-                        self.is_topic = True  # 'topic_type' is not specified, the process will continue with the found one
-                        return True
-            # Topic not available wait....
-            return True
-        else:
+        result = True
+        if not self.wait_for_first_message:
             if not self.topic_type:
-                return False  # Topic type must be specified. (wait_for_first_message == False)
+                result = False  # Topic type must be specified. (wait_for_first_message == False)
             else:
                 self.call_subscriber()
                 self.is_topic = True  # wait_for_first_message' is set to false, the process will proceed with the specified topic and type
-                return True
+        else:
+            available_topics = self.node.get_topic_names_and_types()
+            topic_found = False
+            for name, topic_types in available_topics:
+                if name == self.topic_name:
+                    topic_found = True
+                    if not topic_types:
+                        result = False
+                        break
+                    current_topic_type = topic_types[0].replace('/', '.')
+                    if not self.topic_type:
+                        self.topic_type = current_topic_type  # 'topic_type' is not specified, the process will continue with the found one
+                        self.call_subscriber()
+                        self.is_topic = True
+                    elif self.type_check and self.topic_type != current_topic_type:
+                        result = False
+                    else:
+                        self.call_subscriber()
+                        self.is_topic = True
+                    break
+            if not topic_found:
+                pass  # Topic not available wait....
+        return result
 
     def call_subscriber(self):
         datatype_in_list = self.topic_type.split(".")
