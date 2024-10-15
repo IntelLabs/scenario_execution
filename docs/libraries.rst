@@ -1102,6 +1102,10 @@ Check the latency of the specified topic (in system time). If the check with ``c
      - ``string``
      - 
      - Class of message type, only required when 'wait_for_first_message' is set to false (e.g. ``std_msgs.msg.String``)
+   * - ``type_check``
+     - ``bool``
+     - ``true``
+     - If False, the action will not verify that the topic type matches the specified type.
 
 
 ``bag_play()``
