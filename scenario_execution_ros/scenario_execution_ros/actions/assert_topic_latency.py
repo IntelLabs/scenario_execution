@@ -18,19 +18,18 @@
 from collections import deque
 import py_trees  # pylint: disable=import-error
 from rclpy.node import Node
-import importlib
 import time
 from scenario_execution_ros.actions.conversions import get_comparison_operator, get_qos_preset_profile
 from scenario_execution.actions.base_action import BaseAction, ActionError
+from rosidl_runtime_py.utilities import get_message
 
 
 class AssertTopicLatency(BaseAction):
 
-    def __init__(self, topic_name: str, topic_type: str, wait_for_first_message: bool, type_check: bool):
+    def __init__(self, topic_name: str, topic_type: str, wait_for_first_message: bool):
         super().__init__()
         self.topic_name = topic_name
         self.topic_type = topic_type
-        self.type_check = type_check
         self.latency = None
         self.comparison_operator_feedback = None
         self.comparison_operator = None
@@ -129,12 +128,11 @@ class AssertTopicLatency(BaseAction):
                     if not topic_types:
                         result = False
                         break
-                    current_topic_type = topic_types[0].replace('/', '.')
                     if not self.topic_type:
-                        self.topic_type = current_topic_type  # 'topic_type' is not specified, the process will continue with the found one
+                        self.topic_type = topic_types[0]  # 'topic_type' is not specified, the process will continue with the found one
                         self.call_subscriber()
                         self.is_topic = True
-                    elif self.type_check and self.topic_type != current_topic_type:
+                    elif self.topic_type != topic_types[0]:
                         result = False
                     else:
                         self.call_subscriber()
@@ -145,17 +143,16 @@ class AssertTopicLatency(BaseAction):
         return result
 
     def call_subscriber(self):
-        datatype_in_list = self.topic_type.split(".")
-        topic_type = getattr(
-            importlib.import_module(".".join(datatype_in_list[:-1])),
-            datatype_in_list[-1]
-        )
-
+        topic_type = self.topic_type.replace('.', '/')
+        message_class = get_message(topic_type)
+        if message_class is None:
+            raise ValueError(f"Message type '{topic_type}' could not be found.")
         self.subscription = self.node.create_subscription(
-            msg_type=topic_type,
+            msg_type=message_class,
             topic=self.topic_name,
             callback=self._callback,
-            qos_profile=get_qos_preset_profile(['sensor_data']))
+            qos_profile=get_qos_preset_profile(['sensor_data'])
+        )
 
     def _callback(self, msg):
         self.first_message_received = True
