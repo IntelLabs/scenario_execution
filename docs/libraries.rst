@@ -1103,6 +1103,7 @@ Check the latency of the specified topic (in system time). If the check with ``c
      - 
      - Class of message type, only required when 'wait_for_first_message' is set to false (e.g. ``std_msgs.msg.String``)
 
+
 ``bag_play()``
 ^^^^^^^^^^^^^^^
 
