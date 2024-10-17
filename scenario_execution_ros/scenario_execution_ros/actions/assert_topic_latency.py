@@ -128,11 +128,12 @@ class AssertTopicLatency(BaseAction):
                     if not topic_types:
                         result = False
                         break
+                    current_topic_type = topic_types[0].replace('/', '.')
                     if not self.topic_type:
-                        self.topic_type = topic_types[0]  # 'topic_type' is not specified, the process will continue with the found one
+                        self.topic_type = current_topic_type  # 'topic_type' is not specified, the process will continue with the found one
                         self.call_subscriber()
                         self.is_topic = True
-                    elif self.topic_type != topic_types[0]:
+                    elif self.topic_type != current_topic_type:
                         result = False
                     else:
                         self.call_subscriber()
