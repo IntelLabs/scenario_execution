@@ -53,7 +53,7 @@ class KubernetesWaitForPodStatus(BaseAction):
         self.monitoring_thread = threading.Thread(target=self.watch_pods, daemon=True)
         self.monitoring_thread.start()
 
-    def execute(self, target: str, regex: bool, status: tuple, ):
+    def execute(self, target: str, regex: bool, status: tuple):
         self.target = target
         if not isinstance(status, tuple) or not isinstance(status[0], str):
             raise ValueError("Status expected to be enum.")
