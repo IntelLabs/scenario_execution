@@ -22,3 +22,11 @@ def seed(seed_value: int = 0):
 
 def get_float(min_val: dict, max_val: float):
     return rd.uniform(min_val, max_val)  # nosec B311
+
+def get_int(min_val: int, max_val: int):
+    return rd.randint(min_val, max_val) # nosec B311
+
+def get_random_string(string_list: list):
+    if not string_list:
+        return None  # Return None if the list is empty
+    return rd.choice(string_list) # nosec B311
