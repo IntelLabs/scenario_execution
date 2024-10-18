@@ -32,10 +32,10 @@ class KubernetesWaitForPodStatusState(Enum):
 
 class KubernetesWaitForPodStatus(BaseAction):
 
-    def __init__(self, within_cluster: bool):
+    def __init__(self, within_cluster: bool, namespace: str):
         super().__init__()
         self.target = None
-        self.namespace = None
+        self.namespace = namespace
         self.expected_status = None
         self.within_cluster = within_cluster
         self.regex = None
@@ -53,13 +53,13 @@ class KubernetesWaitForPodStatus(BaseAction):
         self.monitoring_thread = threading.Thread(target=self.watch_pods, daemon=True)
         self.monitoring_thread.start()
 
-    def execute(self, target: str, regex: bool, status: tuple, namespace: str):
+    def execute(self, target: str, regex: bool, status: tuple, ):
         self.target = target
-        self.namespace = namespace
         if not isinstance(status, tuple) or not isinstance(status[0], str):
             raise ValueError("Status expected to be enum.")
         self.expected_status = status[0]
         self.regex = regex
+        self.update_queue = queue.Queue()
         self.current_state = KubernetesWaitForPodStatusState.MONITORING
 
     def update(self) -> py_trees.common.Status:
@@ -89,8 +89,7 @@ class KubernetesWaitForPodStatus(BaseAction):
             for event in w.stream(self.client.list_namespaced_pod, namespace=self.namespace):
                 pod_name = event['object'].metadata.name
                 pod_status = event['object'].status.phase
-                if self.current_state == KubernetesWaitForPodStatusState.MONITORING:
-                    self.update_queue.put((pod_name, pod_status))
+                self.update_queue.put((pod_name, pod_status))
         except ApiException as e:
             self.logger.error(f"Error accessing kubernetes: {e}")
             self.update_queue.put(())
