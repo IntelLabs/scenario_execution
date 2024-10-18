@@ -33,6 +33,7 @@ class RunProcess(BaseAction):
         self.wait_for_shutdown = None
         self.shutdown_timeout = None
         self.shutdown_signal = None
+        self.executed = False
         self.process = None
         self.log_stdout_thread = None
         self.log_stderr_thread = None
