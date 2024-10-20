@@ -44,6 +44,7 @@ class RunProcess(BaseAction):
         self.wait_for_shutdown = wait_for_shutdown
         self.shutdown_timeout = shutdown_timeout
         self.shutdown_signal = shutdown_signal[1]
+        self.executed = False
 
     def update(self) -> py_trees.common.Status:
         """
