@@ -8,7 +8,7 @@ Installation with ROS 2
 Prerequisites
 ^^^^^^^^^^^^^
 
-Install ROS2 following the `installation inscrutions <https://docs.ros.org/en/jazzy/Installation.html>`_ for your distribution `$ROS_DISTRO`.
+Install ROS2 following the `installation instructions <https://docs.ros.org/en/jazzy/Installation.html>`_ for your distribution `$ROS_DISTRO`.
 
 Scenario execution currently supports the ROS 2 distributions `Humble <https://docs.ros.org/en/humble/index.html>`_ and `Jazzy <https://docs.ros.org/en/jazzy/index.html>`_.
 
