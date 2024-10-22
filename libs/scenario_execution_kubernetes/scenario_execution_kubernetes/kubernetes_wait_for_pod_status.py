@@ -66,7 +66,6 @@ class KubernetesWaitForPodStatus(BaseAction):
             else:
                 if not re.search(self.target, item[0]):
                     continue
-            # self.feedback_message = f"The pod '{self.target}' is currently in '{item[1].lower()}' status."  # pylint: disable= attribute-defined-outside-init
             if item[1].lower() == self.expected_status:
                 self.is_pod = True
                 self.feedback_message = f"Pod '{item[0]}' changed to expected status '{item[1].lower()}'."  # pylint: disable= attribute-defined-outside-init
