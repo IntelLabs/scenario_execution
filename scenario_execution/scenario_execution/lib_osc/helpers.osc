@@ -32,7 +32,7 @@ struct random:
     def seed(seed_value: int = 0) is external scenario_execution.external_methods.random.seed()
     def get_float(min_val: float, max_val: float) -> float is external scenario_execution.external_methods.random.get_float()
     def get_int(min_val: int, max_val: int) -> int is external scenario_execution.external_methods.random.get_int()
-    def get_random_string(elemets_list: list of string) -> string is external scenario_execution.external_methods.random.get_random_list_element()
+    def get_random_string(elements_list: list of string) -> string is external scenario_execution.external_methods.random.get_random_list_element()
 
 #########################
 # Common modifiers

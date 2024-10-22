@@ -28,7 +28,7 @@ def get_int(min_val: int, max_val: int):
     return rd.randint(min_val, max_val)  # nosec B311
 
 
-def get_random_list_element(elemets_list: list):
-    if not elemets_list:
+def get_random_list_element(elements_list: list):
+    if not elements_list:
         return None  # Return None if the list is empty
-    return rd.choice(elemets_list)  # nosec B311
+    return rd.choice(elements_list)  # nosec B311
