@@ -22,3 +22,13 @@ def seed(seed_value: int = 0):
 
 def get_float(min_val: dict, max_val: float):
     return rd.uniform(min_val, max_val)  # nosec B311
+
+
+def get_int(min_val: int, max_val: int):
+    return rd.randint(min_val, max_val)  # nosec B311
+
+
+def get_random_list_element(elements_list: list):
+    if not elements_list:
+        return None  # Return None if the list is empty
+    return rd.choice(elements_list)  # nosec B311
