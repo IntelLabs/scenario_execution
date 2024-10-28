@@ -1,11 +1,22 @@
 ###########
-# Standard: OpenSCENARIO 2.0 domain model
-# Copyright: ASAM 2021-2022
-# Version:
-# Standard Publication Date:
-# Publication Reference Document:
-# Reference Document Date:
+# ASAM OpenSCENARIO(R) DSL V2.1.0
+#
+# (C) 2024 ASAM e.V.
+#
+# Domain model library
+# This file is informative. The normative definitions are published in the specification.
+#
+# Any use is limited to the scope described in the ASAM license terms.
+# See http://www.asam.net/license.html for further details.
+# In alteration to the regular license terms, ASAM allows unrestricted distribution of this standard.
+# §2 (1) of ASAM's regular license terms is therefore substituted by the following clause:
+# "The licensor grants everyone a basic, non-exclusive and unlimited license to use the standard ASAM OpenSCENARIO DSL".
 ###########
+
+
+namespace stdtypes
+
+export *
 
 ########################
 # Scalar types and units
@@ -78,24 +89,24 @@ unit mipspsps            of jerk is SI(m: 1, s: -3, factor: 1609.344)
 
 # tag::library-physical-angle[]
 type angle is SI(rad: 1)
-unit degree of angle is SI(rad: 1, factor: 57.295779513)
-unit deg    of angle is SI(rad: 1, factor: 57.295779513)
+unit degree of angle is SI(rad: 1, factor: 0.01745329252)
+unit deg    of angle is SI(rad: 1, factor: 0.01745329252)
 unit radian of angle is SI(rad: 1, factor: 1)
 unit rad    of angle is SI(rad: 1, factor: 1)
 # end::library-physical-angle[]
 
 # tag::library-physical-angular_rate[]
 type angular_rate is SI(rad: 1, s: -1)
-unit degree_per_sec of angular_rate is SI(rad: 1, s: -1, factor: 57.295779513)
-unit degps          of angular_rate is SI(rad: 1, s: -1, factor: 57.295779513)
+unit degree_per_sec of angular_rate is SI(rad: 1, s: -1, factor: 0.01745329252)
+unit degps          of angular_rate is SI(rad: 1, s: -1, factor: 0.01745329252)
 unit radian_per_sec of angular_rate is SI(rad: 1, s: -1, factor: 1)
 unit radps             of angular_rate is SI(rad: 1, s: -1, factor: 1)
 # end::library-physical-angular_rate[]
 
 # tag::library-physical-angular_acceleration[]
 type angular_acceleration is SI(rad: 1, s: -2)
-unit degree_per_sec_sqr of angular_acceleration is SI(rad: 1, s: -2, factor: 57.295779513)
-unit degpsps            of angular_acceleration is SI(rad: 1, s: -2, factor: 57.295779513)
+unit degree_per_sec_sqr of angular_acceleration is SI(rad: 1, s: -2, factor: 0.01745329252)
+unit degpsps            of angular_acceleration is SI(rad: 1, s: -2, factor: 0.01745329252)
 unit radian_per_sec_sqr of angular_acceleration is SI(rad: 1, s: -2, factor: 1)
 unit radpsps            of angular_acceleration is SI(rad: 1, s: -2, factor: 1)
 # end::library-physical-angular_acceleration[]
@@ -163,32 +174,26 @@ unit mol  of amount_of_substance is SI(mol: 1, factor: 1)
 # Structs
 ###########
 
-# tag::library-position_3d[]
-struct position_3d:
-    x: length = 0.0m
-    y: length = 0.0m
-    z: length = 0.0m
-    #def norm() -> length is undefined
-# end::library-position_3d[]
+struct position
 
-# tag::library-celestial_position_2d[]
-struct celestial_position_2d:
-    azimuth: angle = 0.0rad
-    elevation: angle = 0.0rad
-# end::library-celestial_position_2d[]
+struct position_3d inherits position:
+    x: length
+    y: length
+    z: length
+    def norm() -> length is undefined
 
-# tag::library-geodetic_position_2d[]
-struct geodetic_position_2d:
-    latitude: angle = 0.0rad
-    longitude: angle = 0.0rad
-# end::library-geodetic_position_2d[]
+struct celestial_position_2d inherits position:
+    azimuth: angle
+    elevation: angle
 
-# tag::library-orientation_3d[]
+struct geodetic_position_2d inherits position:
+    latitude: angle
+    longitude: angle
+
 struct orientation_3d:
-    roll: angle = 0.0rad
-    pitch: angle = 0.0rad
-    yaw: angle = 0.0rad
-# end::library-orientation_3d[]
+    roll: angle
+    pitch: angle
+    yaw: angle
 
 # tag::library-pose_3d[]
 struct pose_3d:
@@ -198,18 +203,16 @@ struct pose_3d:
 
 # tag::library-translational_velocity_3d[]
 struct translational_velocity_3d:
-    x: speed = 0.0mps
-    y: speed = 0.0mps
-    z: speed = 0.0mps
-#    def norm() -> speed is undefined
-# end::library-translational_velocity_3d[]
+    x: speed
+    y: speed
+    z: speed
+    def norm() -> speed is undefined
 
 # tag::library-orientation_rate_3d[]
 struct orientation_rate_3d:
-    roll: angular_rate = 0.0radps
-    pitch: angular_rate = 0.0radps
-    yaw: angular_rate = 0.0radps
-# end::library-orientation_rate_3d[]
+    roll: angular_rate
+    pitch: angular_rate
+    yaw: angular_rate
 
 # tag::library-velocity_6d[]
 struct velocity_6d:
@@ -219,18 +222,16 @@ struct velocity_6d:
 
 # tag::library-translational_acceleration_3d[]
 struct translational_acceleration_3d:
-    x: acceleration = 0.0mpsps
-    y: acceleration = 0.0mpsps
-    z: acceleration = 0.0mpsps
-#    def norm() -> acceleration is undefined
-# end::library-translational_acceleration_3d[]
+    x: acceleration
+    y: acceleration
+    z: acceleration
+    def norm() -> acceleration is undefined
 
 # tag::library-orientation_acceleration_3d[]
 struct orientation_acceleration_3d:
-    roll: angular_acceleration = 0.0radpsps
-    pitch: angular_acceleration = 0.0radpsps
-    yaw: angular_acceleration = 0.0radpsps
-# end::library-orientation_acceleration_3d[]
+    roll: angular_acceleration
+    pitch: angular_acceleration
+    yaw: angular_acceleration
 
 # tag::library-acceleration_6d[]
 struct acceleration_6d:

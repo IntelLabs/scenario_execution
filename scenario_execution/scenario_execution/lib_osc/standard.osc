@@ -1,10 +1,16 @@
 ###########
-# Standard: OpenSCENARIO 2.0 domain model
-# Copyright: ASAM 2021-2022
-# Version:
-# Standard Publication Date:
-# Publication Reference Document:
-# Reference Document Date:
+# ASAM OpenSCENARIO(R) DSL V2.1.0
+#
+# (C) 2024 ASAM e.V.
+#
+# Domain model library
+# This file is informative. The normative definitions are published in the specification.
+#
+# Any use is limited to the scope described in the ASAM license terms.
+# See http://www.asam.net/license.html for further details.
+# In alteration to the regular license terms, ASAM allows unrestricted distribution of this standard.
+# §2 (1) of ASAM's regular license terms is therefore substituted by the following clause:
+# "The licensor grants everyone a basic, non-exclusive and unlimited license to use the standard ASAM OpenSCENARIO DSL".
 ###########
 
 # ATTENTION: This file is modified to be compatible with
@@ -12,18 +18,22 @@
 
 import osc.standard.base
 
+namespace std use stdtypes
+
+export *
+
 struct axle:
-    max_steering: angle               # Mandatory: Maximum steering angle for the wheels on the axle.
-    wheel_diameter: length            # Mandatory: Diameter for the wheels on this axle
-    track_width: length               # Mandatory: Distance between the centerline of the outer wheels on opposing sides of the axle
-    position_x: length                # Mandatory: Longitudinal position of the axle in the x-axis of the vehicle. For a 2-axle vehicle, the rear axle must have position_x = 0m
-    position_z: length                # Mandatory: Vertical position of the axle in the vehicle's z-axis
-    number_of_wheels: uint            # Mandatory: Number of wheels on the axle.
+    max_steering:     angle   # Mandatory: Maximum steering angle for the wheels on the axle
+    wheel_diameter:   length  # Mandatory: Diameter for the wheels on this axle
+    track_width:      length  # Mandatory: Distance between the centerline of the outer wheels on opposing sides of the axle
+    position_x:       length  # Mandatory: Longitudinal position of the axle in the x-axis of the vehicle. For a 2-axle vehicle, the rear axle must have position_x = 0m
+    position_z:       length  # Mandatory: Vertical position of the axle in the z-axis of the vehicle
+    number_of_wheels: uint    # Mandatory: Number of wheels on the axle
 
 struct crossing_type:
-    marking: crossing_marking         # Optional: Define the type of markings on the crossing
-    use: crossing_use                 # Optional: Define the type of use for the crossing
-    elevation: crossing_elevation     # Optional: Define the type of elevation for the crossing
+    marking:   crossing_marking    # Optional:  Define the type of markings on the crossing
+    use:       crossing_use        # Optional:  Define the type of use for the crossing
+    elevation: crossing_elevation  # Optional:  Define the type of elevation for the crossing
 
 
 #########################
@@ -31,110 +41,110 @@ struct crossing_type:
 #########################
 
 enum path_interpolation: [
-    straight_line,          # Join the points with straight lines
-    smooth]                 # Join the points with a smooth line
+    straight_line,  # Join the points with straight lines 
+    smooth]         # Join the points with a smooth line 
 
-struct route:                                   # Object of map
-    length: length                              # Optional: Nominal length of the route, measured along the s-axis of the route. Does not apply to route_point
-    directionality: directionality              # Mandatory: Directionality for movement of traffic_participant actors on the route
-    min_lanes: uint                             # Optional: Minimum number of drivable lanes along this route. Applies only to these children: road, lane_section
-    max_lanes: uint                             # Optional: Maximum number of drivable lanes along this route. Applies only to these children: road, lane_section
-    anchors: list of string                     # Optional: The strings in here can be matched to unique items in the map files specified in file_name
-#    def start_point() -> route_point is undefined
-#    def end_point() -> route_point is undefined
+struct route:
+    length:         length          # Optional:  Nominal length of the route, measured along the s-axis of the route. Does not apply to route_point
+    directionality: directionality  # Mandatory: Directionality for movement of traffic_participant actors on the route
+    min_lanes:      uint            # Optional:  Minimum number of drivable lanes along this route. Applies only to these children: road, lane_section
+    max_lanes:      uint            # Optional:  Maximum number of drivable lanes along this route. Applies only to these children: road, lane_section
+    anchors:        list of string  # Optional:  The strings in here can be matched to unique items in the map files specified in file_name
+    #def start_point() -> route_point is undefined
+    #def end_point() -> route_point is undefined
 
 struct route_point inherits route_element:
-    route: route                      # Mandatory: route in which this point is located
-    #s: length = 0.0m                    # Optional: Coordinate along the s-axis of the corresponding route #TODO: s gets misinterpreted
-    t: length = 0.0m                    # Optional: Coordinate along the t-axis of the corresponding route
+    route: route   # Mandatory: route in which this point is located
+    #s:     length  # Optional:  Coordinate along the s-axis of the corresponding route
+    t:     length  # Optional:  Coordinate along the t-axis of the corresponding route
 
 struct xyz_point inherits route_element:
-    position: position_3d                # Optional: Position in Cartesian (xyz) coordinates
+    position: position_3d  # Optional:  Position in Cartesian x-y-z-coordinates
 
 struct odr_point inherits route_element:
-    road_id: string                      # Mandatory: ASAM OpenDRIVE identifier for the road
-    lane_id: string                      # Optional: ASAM OpenDRIVE identifier for the lane. If specified, the t-coordinate is measured from the lane centerline. If not specified, the t-coordinate is measured from the ASAM OpenDRIVE reference line
-#    s: length = 0.0m                    # Optional: Coordinate along the ASAM OpenDRIVE s-axis
-    t: length = 0.0m                     # Optional: Coordinate along the ASAM OpenDRIVE t-axis
+    road_id: string  # Mandatory: ASAM OpenDRIVE identifier for the road
+    lane_id: string  # Optional:  ASAM OpenDRIVE identifier for the lane. If specified, the t-coordinate is measured from the lane centerline. If not specified, the t-coordinate is measured from the ASAM OpenDRIVE reference line
+    #s:       length  # Optional:  Coordinate along the ASAM OpenDRIVE s-axis
+    t:       length  # Optional:  Coordinate along the ASAM OpenDRIVE t-axis
 
 # tag::library-path[]
-struct path inherits route:
-    points: list of pose_3d           # Mandatory: List of points in world x-y-z-coordinates. The individual pose_3d elements can have unconstrained coordinates.
-    interpolation: path_interpolation # Mandatory: Choose how to join the points of the path.
+struct path inherits route_element:
+    points:        list of pose_3d     # Mandatory: List of points in world x-y-z-coordinates. The individual pose_3d elements can have unconstrained coordinates.
+    interpolation: path_interpolation  # Mandatory: Choose how to join the points of the path.
 
 struct relative_path:
-    interpolation: path_interpolation # Mandatory: Choose how to join the points of the path.
+    interpolation: path_interpolation  # Mandatory: Choose how to join the points of the path.
 
 struct relative_path_pose_3d inherits relative_path:
-    points: list of pose_3d          # Mandatory: List of points in world x-y-z-coordinates. The individual pose_3d elements can have unconstrained coordinates.
+    points: list of pose_3d  # Mandatory: List of points in world x-y-z-coordinates. The individual pose_3d elements can have unconstrained coordinates.
 
 struct relative_path_st inherits relative_path:
-    points: list of route_point       # Mandatory: Sequence of route_point that form the relative path
+    points: list of route_point  # Mandatory: Sequence of route_point that form the relative path
 
 struct relative_path_odr inherits relative_path:
-    points: list of odr_point         # Mandatory: Sequence of odr_point that form the relative path
+    points: list of odr_point  # Mandatory: Sequence of odr_point that form the relative path
 # end::library-path[]
 
 # tag::library-trajectory[]
 struct trajectory:
-    points: list of pose_3d           # Mandatory: List of points in world x-y-z-coordinates. The individual pose_3d elements can have unconstrained coordinates.
-    time_stamps: list of time         # Mandatory: Time stamps for each element in points. The lists time_stamps and points must have the same length
-    interpolation: path_interpolation # Mandatory: Choose how to join the points of the trajectory.
+    points:        list of pose_3d     # Mandatory: List of points in world x-y-z-coordinates. The individual pose_3d elements can have unconstrained coordinates.
+    time_stamps:   list of time        # Mandatory: Time stamps for each element in points. The lists time_stamps and points must have the same length.
+    interpolation: path_interpolation  # Mandatory: Choose how to join the points of the trajectory.
 
 struct relative_trajectory:
-    time_stamps: list of time         # Mandatory: Time stamps for each element in points. The lists time_stamps and points must have the same length
-    interpolation: path_interpolation # Mandatory: Choose how to join the points of the trajectory.
+    time_stamps:   list of time        # Mandatory: Time stamps for each element in points. The lists time_stamps and points must have the same length
+    interpolation: path_interpolation  # Mandatory: Choose how to join the points of the trajectory.
 
 struct relative_trajectory_pose_3d inherits relative_trajectory:
-    points: list of pose_3d           # Mandatory: List of points in world x-y-z-coordinates. The individual pose_3d elements can have unconstrained coordinates.
+    points: list of pose_3d  # Mandatory: List of points in world x-y-z-coordinates. The individual pose_3d elements can have some unspecified coordinates.
 
 struct relative_trajectory_st inherits relative_trajectory:
-    points: list of route_point       # Mandatory: Sequence of route_point that form the relative trajectory
+    points: list of route_point  # Mandatory: Sequence of route_point that form the relative trajectory
 
 struct relative_trajectory_odr inherits relative_trajectory:
-    points: list of odr_point         # Mandatory: Sequence of odr_point that form the relative trajectory
+    points: list of odr_point  # Mandatory: Sequence of odr_point that form the relative trajectory
 # end::library-trajectory[]
 
 # tag::library-shape-any[]
 struct any_shape
-#    def duration() -> time is undefined
+    #def duration() -> time is undefined
 
 struct any_acceleration_shape inherits any_shape
-#    def compute(time: time) -> acceleration is undefined
+    #def compute(time: time) -> acceleration is undefined
 
 struct any_speed_shape inherits any_shape
-#    def compute(time: time) -> speed is undefined
+    #def compute(time: time) -> speed is undefined
 
 struct any_position_shape inherits any_shape
-#    def compute(time: time) -> length is undefined
+    #def compute(time: time) -> length is undefined
 
 struct any_lateral_shape inherits any_shape
-#    def compute(time: time) -> length is undefined
+    #def compute(time: time) -> length is undefined
 # end::library-shape-any[]
 
 # tag::library-shape-common[]
 struct common_acceleration_shape inherits any_acceleration_shape:
     rate_profile: dynamic_profile
-    rate_peak: jerk = 0.0mpspsps
-    target: acceleration = 0.0mpsps
+    rate_peak: jerk
+    target: acceleration
 
 struct common_speed_shape inherits any_speed_shape:
     rate_profile: dynamic_profile
-    rate_peak: acceleration = 0.0mpsps
-    target: speed = 0.0mps
+    rate_peak: acceleration
+    target: speed
 
 struct common_position_shape inherits any_position_shape:
     rate_profile: dynamic_profile
-    rate_peak: speed = 0.0mps
-    target: length = 0.0m
+    rate_peak: speed
+    target: length
 
 struct common_lateral_shape inherits any_lateral_shape:
     rate_profile: dynamic_profile
-    rate_peak: speed = 0.0mps
-    target: length = 0.0m
+    rate_peak: speed
+    target: length
 # end::library-shape-common[]
 
-struct bm_engine                        # Reference to an object representing the bm_engine, whose content is implementation-dependent.
+struct bm_engine                        # Reference to an object representing the bm_engine, whose content is implementation-specific.
     # Fields to be defined by the user or implementation
 
 struct behavioral_model:
@@ -145,369 +155,581 @@ struct behavioral_model:
 ###########
 
 enum color: [
-    white,                    # RGB(255,255,255)
-    silver,                   # RGB(192,192,192)
-    gray,                     # RGB(128,128,128)
-    black,                    # RGB(0,0,0)
-    red,                      # RGB(255,0,0)
-    maroon,                   # RGB(128,0,0)
-    yellow,                   # RGB(255,255,0)
-    olive,                    # RGB(128,128,0)
-    lime,                     # RGB(0,255,0)
-    green,                    # RGB(0,128,0)
-    aqua,                     # RGB(0,255,255)
-    teal,                     # RGB(0,128,128)
-    blue,                     # RGB(0,0,255)
-    navy,                     # RGB(0,0,128)
-    fuchsia,                  # RGB(255,255,0)
-    purple]                   # RGB(255,0,255)
+    white,    # RGB(255,255,255) 
+    silver,   # RGB(192,192,192) 
+    gray,     # RGB(128,128,128) 
+    black,    # RGB(0,0,0) 
+    red,      # RGB(255,0,0) 
+    maroon,   # RGB(128,0,0) 
+    yellow,   # RGB(255,255,0) 
+    olive,    # RGB(128,128,0) 
+    lime,     # RGB(0,255,0) 
+    green,    # RGB(0,128,0) 
+    aqua,     # RGB(0,255,255) 
+    teal,     # RGB(0,128,128) 
+    blue,     # RGB(0,0,255) 
+    navy,     # RGB(0,0,128) 
+    fuchsia,  # RGB(255,0,255) 
+    purple,   # RGB(128,0,128) 
+    violet,   # RGB(238,130,238) 
+    orange,   # RGB(255,165,0) 
+    brown,    # RGB(165,42,42) 
+    other]    # Other (unspecified but known) color 
 
 enum intended_infrastructure: [
-    driving,                  # OpenDRIVE: "normal" drivable road, which is not one of the other types
-    sidewalk,                 # OpenDRIVE: Lane on which pedestrians can walk safely
-    biking,                   # OpenDRIVE: Lane reserved for Cyclists
-    rail,                     # OpenDRIVE: Lane reserved for trains
-    tram,                     # OpenDRIVE: Lane reserved for trams
-    bus,                      # OpenDRIVE: Lane reserved for bus
-    taxi,                     # OpenDRIVE: Lane reserved for taxi
-    hov]                      # OpenDRIVE: Lane reserved for High Occupancy Vehicles (HOV)
+    driving,   # Taken from ASAM OpenDRIVE: "Normal" drivable road that is not one of the other types 
+    sidewalk,  # Taken from ASAM OpenDRIVE: Lane reserved for pedestrians 
+    biking,    # Taken from ASAM OpenDRIVE: Lane reserved for cyclists 
+    rail,      # Taken from ASAM OpenDRIVE: Lane reserved for trains 
+    tram,      # Taken from ASAM OpenDRIVE: Lane reserved for trams 
+    bus,       # Taken from ASAM OpenDRIVE: Lane reserved for buses 
+    taxi,      # Taken from ASAM OpenDRIVE: Lane reserved for taxis 
+    hov]       # Taken from ASAM OpenDRIVE: Lane reserved for High Occupancy Vehicles (HOVs) 
 
 enum vehicle_category: [
-    car,                     # Power-driven vehicle with maximum mass not exceeding 3.5 t having at least four wheels comprising not more than eight seats in addition to the driver seat.  (UN category L7,M1,N1)
-    bus,                     # Power-driven vehicle having at least four wheels comprising more than eight seats in addition to the driver seat.(UN category M2,M3)
-    truck,                   # Power-driven vehicle with maximum mass exceeding 3.5t having at least four wheels. Designed for the carriage of goods. (UN category N2,N3)
-    trailer,                 # Vehicle designed to be towed by another vehicle. Non-permanently connected to towing vehicle, meaning it can be separated by an operation without involving facilities normally only found in workshop.
-    vru_vehicle,             # Vehicle without a crash-resistant passenger cell intended for one to few passengers or small goods transport. With its occupant it results in a vulnerable road user. (UN category L1-L6 plus bicycles, pedelecs, e-bicycles, personal mobility devices, wheelchairs, mobility scooters and so on.)
-    other]                   # Unspecified but known type of vehicle (for example, stroller, shopping cart, etc)
+    car,                                                                           # Power-driven vehicle with maximum mass not exceeding 3.5 t having at least four wheels comprising not more than eight seats in addition to the driver seat. Designed for the carriage of passengers or small goods. (UN category L7,M1,N1) 
+    bus,                                                                           # Power-driven vehicle having at least four wheels comprising more than eight seats in addition to the driver seat.(UN category M2,M3) 
+    truck,                                                                         # Power-driven vehicle with maximum mass exceeding 3.5t having at least four wheels. Designed for the carriage of goods. (UN category N2,N3) 
+    trailer,                                                                       # Vehicle designed to be towed by another vehicle. Non-permanently connected to towing vehicle, meaning it can be separated by an operation without involving facilities normally only found in workshop. 
+    vru_vehicle,                                                                   # Vehicle without a crash-resistant passenger cell intended for one to few passengers or small goods transport. With its occupant it results in a vulnerable road user. (UN category L1-L6 plus bicycles, pedelecs, e-bicycles, personal mobility devices, wheelchairs, mobility scooters and so on.) 
+    other]                                                                         # Unspecified but known type of vehicle (for example, stroller, shopping cart, ...) 
 
 enum driving_rule: [
-    left_hand_traffic,       # Traffic drives on the left side of the road
-    right_hand_traffic]      # Traffic drives on the right side of the road
+    left_hand_traffic,   # Traffic drives on the left side of the road 
+    right_hand_traffic]  # Traffic drives on the right side of the road 
 
 enum directionality: [
-    uni_direction,           # A traffic_participant can move legally in only one direction along the s-axis.
-    longitudinal,            # Usually applies to lane_type driving and vru_vehicles
-    bi_direction,            # A traffic_participant can move legally in both directions along the longitudinal s-axis. Usually applies to lane_type driving and vru_vehicles
-    split,                   # Applies for multi-lane elements: there are lanes with opposing uni_direction traffic flow within the route
-    free,                    # A traffic_participant can legally move in any direction (longitudinal or lateral). Usually applies to lane_type pedestrian or lane_use mix_traffic_vru
-    none,                    # No expected traffic flow. Usually applies to lane_type non_driving
-    other]                   # Other type of directionality
+    uni_direction,  # A traffic_participant can move legally in only one direction along the longitudinal s-axis. Usually applies to lane_type driving and vru_vehicles 
+    bi_direction,   # A traffic_participant can move legally in both directions along the longitudinal s-axis. Usually applies to lane_type driving and vru_vehicles 
+    split,          # Applies for multi-lane elements: there are lanes with opposing uni_direction traffic flow within the route 
+    free,           # A traffic_participant can legally move in any direction (longitudinal or lateral). Usually applies to lane_type pedestrian or lane_use mix_traffic_vru 
+    none,           # No expected traffic flow. Usually applies to lane_type non_driving 
+    other]          # Other type of directionality 
 
 enum lane_type: [
-    driving,                 # Driving lane for road vehicles. See the driving_lane_use subtype
-    non_driving,             # Non-driving lanes in road vehicles infrastructure. See the non_driving_lane_use subtype
-    vru_vehicles,            # Lanes designated for VRU vehicles. See the vru_vehicles_lane_use subtype
-    pedestrian,              # Lanes for pedestrians. See the pedestrian_lane_use subtype
-    other]                   # If the lane has another type
+    driving,       # Driving lane for road vehicles. See the driving_lane_use subtype 
+    non_driving,   # Non-driving lanes in road vehicles infrastructure. See the non_driving_lane_use subtype 
+    vru_vehicles,  # Lanes designated for VRU vehicles. See the vru_vehicles_lane_use subtype 
+    pedestrian,    # Lanes for pedestrians. See the pedestrian_lane_use subtype 
+    other]         # If the lane has another type 
 
 enum lane_use: [
-    normal,                  # A normal driving lane for road vehicles (OSI). Should be used in combination with lane_type == driving.
-    exit,                    # A deceleration lane in parallel to the main road (OSI). Should be used in combination with lane_type == driving.
-    entry,                   # An acceleration lane in parallel to the main road (OSI). Should be used in combination with lane_type == driving.
-    on_ramp,                 # A ramp from rural or urban roads joining a motorway (OSI). Should be used in combination with lane_type == driving.
-    off_ramp,                # A ramp leading off a motorway onto rural or urban roads (OSI). Should be used in combination with lane_type == driving.
-    connecting_ramp,         # A ramp that connects two motorways (OSI). Should be used in combination with lane_type == driving.
-    hov,                     # A lane for High Occupancy Vehicles (HOV), usually in highways. Should be used in combination with lane_type == driving.
-    bus,                     # A lane restricted for use only by busses. Should be used in combination with lane_type == driving.
-    mixed_traffic_vru,       # A lane for mixed car and vru (vehicle and pedestrian) traffic, normally in urban areas. Should be used in combination with lane_type == driving or vru_vehicles.
-    parking,                 # A lane with parking spaces (OSI). Should be used in combination with lane_type == non_driving.
-    stop,                    # A hard shoulder on motorways for emergency stops (OSI). Should be used in combination with lane_type == non_driving.
-    restricted,              # A lane on which road vehicles should not drive (OSI). Should be used in combination with lane_type == non_driving.
-    border,                  # A hard border on the edge of a road (OSI). Should be used in combination with lane_type == non_driving.
-    shoulder,                # A soft border on the edge of a road (OSI). Should be used in combination with lane_type == non_driving.
-    curb,                    # An elevated surface with different height compared to the drivable lanes. Should be used in combination with lane_type == non_driving.
-    median,                  # An inaccessible lane for road vehicles and pedestrians. Typically used to separate the traffic. Should be used in combination with lane_type == non_driving.
-    bicycle,                 # A lane that is designated for bicycles (OSI). Should be used in combination with lane_type == vru_vehicles.
-    motorcycle,              # A lane that is designated for motorcycles. Should be used in combination with lane_type == vru_vehicles.
-    sidewalk,                # A lane that is designated for pedestrians (OSI). Should be used in combination with lane_type == pedestrian.
-    protected_sidewalk,      # A lane for pedestrians with a barrier to separate it from road traffic. Should be used in combination with lane_type == pedestrian.
-    none,                    # The lane has no use.
-    other]                   # The lane has another use.
+    normal,              # A normal driving lane for road vehicles (OSI). Should be used in combination with lane_type == driving. 
+    exit,                # A deceleration lane in parallel to the main road (OSI). Should be used in combination with lane_type == driving. 
+    entry,               # An acceleration lane in parallel to the main road (OSI). Should be used in combination with lane_type == driving. 
+    on_ramp,             # A ramp from rural or urban roads joining a motorway (OSI). Should be used in combination with lane_type == driving. 
+    off_ramp,            # A ramp leading off a motorway onto rural or urban roads (OSI). Should be used in combination with lane_type == driving. 
+    connecting_ramp,     # A ramp that connects two motorways (OSI). Should be used in combination with lane_type == driving. 
+    hov,                 # A lane for High Occupancy Vehicles (HOV), usually in highways. Should be used in combination with lane_type == driving. 
+    bus,                 # A lane restricted for use only by busses. Should be used in combination with lane_type == driving. 
+    mixed_traffic_vru,   # A lane for mixed car and vru (vehicle and pedestrian) traffic, normally in urban areas. Should be used in combination with lane_type == driving or vru_vehicles. 
+    parking,             # A lane with parking spaces (OSI). Should be used in combination with lane_type == non_driving. 
+    stop,                # A hard shoulder on motorways for emergency stops (OSI). Should be used in combination with lane_type == non_driving. 
+    restricted,          # A lane on which road vehicles should not drive (OSI). Should be used in combination with lane_type == non_driving. 
+    border,              # A hard border on the edge of a road (OSI). Should be used in combination with lane_type == non_driving. 
+    shoulder,            # A soft border on the edge of a road (OSI). Should be used in combination with lane_type == non_driving. 
+    curb,                # An elevated surface with different height compared to the drivable lanes. Should be used in combination with lane_type == non_driving. 
+    median,              # An inaccessible lane for road vehicles and pedestrians. Typically used to separate the traffic. Should be used in combination with lane_type == non_driving. 
+    bicycle,             # A lane that is designated for bicycles (OSI). Should be used in combination with lane_type == vru_vehicles. 
+    motorcycle,          # A lane that is designated for motorcycles. Should be used in combination with lane_type == vru_vehicles. 
+    sidewalk,            # A lane that is designated for pedestrians (OSI). Should be used in combination with lane_type == pedestrian. 
+    protected_sidewalk,  # A lane for pedestrians with a barrier to separate it from road traffic. Should be used in combination with lane_type == pedestrian. 
+    none,                # The lane has no use. 
+    other]               # The lane has another use. 
 
 enum side_left_right: [
-    left,
-    right]
+    left,   # On the left side of the lane 
+    right]  # On the right side of the lane 
 
-enum crossing_marking: [     # Has connection to crossing_type
-    unmarked,                # No crossing-markings on the road
-    marked,                  # The road or walking surface has markings that indicate a crossing
-    zebra,                   # Common type of marked crossing with thick zebra stripes
-    other]                   # Other type of markings for the crossing
+enum crossing_marking: [
+    unmarked,  # No crossing-markings on the road 
+    marked,    # The road or walking surface has markings that indicate a crossing 
+    zebra,     # Common type of marked crossing with thick zebra stripes 
+    other]     # Other type of markings for the crossing 
 
-enum crossing_use: [         # Has connection to crossing_type
-    pedestrian,              # Crossing is used by pedestrians (person, animal) and/or vehicles that usually move on sidewalks (wheelchair, stroller)
-    animal,                  # Animal crossing. For example, on a rural road or highway
-    bicycle,                 # Crossing for bicycles
-    rail_road,               # Crossing for rail vehicles (train, subway, tram, ...)
-    other]                   # Other use for crossing
+enum crossing_use: [
+    pedestrian,  # Crossing is used by pedestrians (person, animal) and/or vehicles that usually move on sidewalks (wheelchair, stroller) 
+    animal,      # Animal crossing. For example, on a rural road or highway 
+    bicycle,     # Crossing for bicycles 
+    rail_road,   # Crossing for rail vehicles (train, subway, tram, ...) 
+    other]       # Other use for crossing 
 
+enum lon_lat: [
+    longitudinal,  # Refers to longitudinal direction 
+    lateral]       # Refers to lateral direction 
 enum crossing_elevation: [
-    road_level,              # Crossing is at same level as driving surface
-    curb_level,              # Crossing is elevated from driving surface, often at the same level as a walking surface (sidewalk) or curb
-    refuge_island,           # Along the crossing, the elevation may change between road and curb levels. For example, with refuge island(s) in the middle
-    other]                   # Another elevation type
+    road_level,     # Crossing is at same level as driving surface 
+    curb_level,     # Crossing is elevated from driving surface, often at the same level as a walking surface (sidewalk) or curb 
+    refuge_island,  # Along the crossing, the elevation may change between road and curb levels. For example, with refuge island(s) in the middle 
+    other]          # Another elevation type 
 
 enum junction_direction: [
-    straight,                # The out_road is 0deg relative to the in_road
-    right,                   # The out_road is 90deg relative to the in_road
-    u_turn,                  # The out_road is 180deg relative to the in_road
-    left,                    # The out_road is 270deg relative to the in_road
-    other]                   # If none of the above apply
+    straight,  # The out_road is 0deg relative to the in_road 
+    right,     # The out_road is 90deg relative to the in_road 
+    u_turn,    # The out_road is 180deg relative to the in_road 
+    left,      # The out_road is 270deg relative to the in_road 
+    other]     # If none of the above apply 
 
 enum route_overlap_kind: [
-    equal,                   # Both routes have the same length, and coincide at the start and end points
-    start,                   # Both routes coincide at their start points
-    end,                     # Both routes coincide at their end points
-    inside,                  # The first route is fully inside the second route. Their start and end points do not have to coincide
-    any,                     # Any part of the first route overlaps with any part of the second route
-    other]                   # If none of the above apply
+    equal,   # Both routes have the same length, and coincide at the start and end points 
+    start,   # Both routes coincide at their start points 
+    end,     # Both routes coincide at their end points 
+    inside,  # The first route is fully inside the second route. Their start and end points do not have to coincide 
+    any,     # Any part of the first route overlaps with any part of the second route 
+    other]   # If none of the above apply 
 
 enum lateral_overlap_kind: [
-    never,                   # The two routes never overlap laterally. They never share a common lane.
-    sometimes,               # In some segments of the route, the two routes can share a common lane.
-    always ]                 # The always routes share a common lane.
+    never,      # The two routes never overlap laterally. They never share a common lane. 
+    sometimes,  # In some segments of the route, the two routes can share a common lane. 
+    always]     # The routes always share a common lane. 
 
 enum dynamic_profile: [
-    none,                    # No specific dynamic profile
-    constant,                # Use constant first derivative
-    smooth,                  # Use smooth first derivative
-    asap]                    # Reach value as soon as possible
+    none,      # No specific dynamic profile 
+    constant,  # Use constant first derivative 
+    smooth,    # Use smooth first derivative 
+    asap]      # Reach value as soon as possible 
 
 enum lane_change_side: [
-    left,                    # Lane to the left of the reference entity
-    right,                   # Lane to the right of the reference entity
-    inside,                  # Lane to the inside of the reference entity
-    outside,                 # Lane to the outside of the reference entity
-    same]                    # Same lane as the reference entity
+    left,     # Lane to the left of the reference entity 
+    right,    # Lane to the right of the reference entity 
+    inside,   # Lane to the inside of the reference entity 
+    outside,  # Lane to the outside of the reference entity 
+    same]     # Same lane as the reference entity 
 
 enum gap_direction: [
-    ahead,                   # Gap in the positive direction of the s-axis, with respect to the reference entity
-    behind,                  # Gap in the negative direction of the s-axis, with respect to the reference entity
-    left,                    # Gap in the positive direction of the t-axis, with respect to the reference entity
-    right,                   # Gap in the negative direction of the t-axis, with respect to the reference entity
-    inside,                  # Gap in the direction pointing towards opposing traffic
-    outside]                 # Gap in the direction pointing away from opposing traffic
+    ahead,    # Gap in the positive direction of the s-axis, with respect to the reference entity 
+    behind,   # Gap in the negative direction of the s-axis, with respect to the reference entity 
+    left,     # Gap in the positive direction of the t-axis, with respect to the reference entity 
+    right,    # Gap in the negative direction of the t-axis, with respect to the reference entity 
+    inside,   # Gap in the direction pointing towards opposing traffic 
+    outside]  # Gap in the direction pointing away from opposing traffic 
 
 enum headway_direction: [
-    ahead,                   # Headway in the positive direction of the s-axis, with respect to the reference entity
-    behind]                  # Headway in the negative direction of the s-axis, with respect to the reference entity
+    ahead,   # Headway in the positive direction of the s-axis, with respect to the reference entity 
+    behind]  # Headway in the negative direction of the s-axis, with respect to the reference entity 
 
 enum lat_measure_by: [
-    left_to_left,
-    left_to_center,
-    left_to_right,
-    center_to_left,
-    center_to_right,
-    right_to_left,
-    right_to_center,
-    right_to_right,
-    closest]
+    left_to_left,     # From actor left to physical_object left. 
+    left_to_center,   # From actor left to physical_object center. 
+    left_to_right,    # From actor left to physical_object right. 
+    center_to_left,   # From actor center to physical_object left. 
+    center_to_right,  # From actor center to physical_object right. 
+    right_to_left,    # From actor right to physical_object left. 
+    right_to_center,  # From actor right to physical_object center. 
+    right_to_right,   # From actor right to physical_object right. 
+    closest]          # Closest lateral distance between object and physical_object. 
 
 enum yaw_measure_by: [
-    length_to_length,
-    length_to_width,
-    width_to_length,
-    width_to_width,
-    relative_to_north,
-    relative_to_road]
+    length_to_length,   # From actor length to physical_object length. 
+    length_to_width,    # From actor length to physical_object width. 
+    width_to_length,    # From actor width to physical_object length. 
+    width_to_width,     # From actor width to physical_object width. 
+    relative_to_north,  # Actor yaw relative to geographic North. 
+    relative_to_road]   # Actor yaw relative to road s-axis. 
 
 enum orientation_measured_by: [
-    absolute,
-    relative_to_reference,
-    relative_to_road]
+    absolute,               # Measure orientation in world coordinates. 
+    relative_to_reference,  # Measure orientation relative to a reference physical_object. 
+    relative_to_road]       # Measure orientation relative to road coordinates. 
 
 enum movement_options: [
-    prefer_physical,        # Perform the movement physical if possible
-    prefer_non_physical,    # Perform the non physical way if the implementation allows that. For example, a test track may ignore this request.
-    must_be_physical]       # An error message is issued, if this action cannot be physically performed for any reason.
+    prefer_physical,      # Perform the movement physical if possible. 
+    prefer_non_physical,  # Perform the non physical way if the implementation allows that. For example, a test track may ignore this request. 
+    must_be_physical]     # An error message is issued, if this action cannot be physically performed for any reason. 
 
 enum connect_route_points: [
-    road,                   # Use the road element that contains this point
-    lane_section,           # Use the lane_section element that contains this point
-    lane,                   # Use the lane element that contains this point
-    crossing,               # Use the crossing element that contains this point
-    waypoint]               # Use the point itself. The route must pass exactly through this point
+    road,                                                                 # Use the road element that contains this point 
+    lane_section,                                                         # Use the lane_section element that contains this point 
+    lane,                                                                 # Use the lane element that contains this point 
+    crossing,                                                             # Use the crossing element that contains this point 
+    waypoint]                                                             # Use the point itself. The route must pass exactly through this point 
 
 enum at: [
-    start,
-    end,
-    all]
+    start,  # This constraint holds at the start of the phase. 
+    end,    # This constraint holds at the end of the phase. 
+    all]    # This constraint holds throughout this phase (default). 
 
 enum movement_mode: [
-    monotonous,            # This movement mode adheres to the laws of physics. On top of that it limits the level of surprise that a movement may have.
-    other]                 # Not necessarily monotonous. This is the default.
+    monotonous,  # This movement mode adheres to the laws of physics. On top of that it limits the level of surprise that a movement may have. 
+    other]       # Not necessarily monotonous. This is the default. 
 
 enum track: [
-    actual,                # Actual or projected. The default is actual, meaning that the vehicle reacts to the behavior of the referenced vehicle.
-    projected]             #
+    actual,     # Track the actual movement of the reference vehicle. This is the default. 
+    projected]  # Track the "projected" movement of the reference vehicle, as it would have been if it kept the speed and direction at the start of the action. 
 
 enum distance_direction: [
-    longitudinal,          # Measure distance in the x-coordinate. Positive means that the `reference` is in front of the `physical_object` that calls the method.
-    lateral]               # Measure distance in the y-coordinate. Positive means that the `reference` is to the left of the `physical_object` that calls the method.
+    longitudinal,  # Measure distance in the x-coordinate. Positive means that the `reference` is in front of the `physical_object` that calls the method. 
+    lateral,       # Measure distance in the y-coordinate. Positive means that the `reference` is to the left of the `physical_object` that calls the method. 
+    vertical,      # Measure distance in the z-coordinate. Positive means that the `reference` is to the above the `physical_object` that calls the method. 
+    euclidean]     # Measure distance in a Eucledian (or straight-line) way. Result is always positive. 
 
 enum distance_mode: [
-    reference_points,      # Measures the distance between the reference points.
-    bounding_boxes]        # Measures the distance between the bounding boxes.
+    reference_points,  # Measures the distance between the reference points. 
+    bounding_boxes]    # Measures the distance between the bounding boxes. 
 
 enum relative_transform: [
-    world_relative,
-    object_relative,
-    road_relative,
-    lane_relative
-]
+    world_relative,   # Use the global coordinate system axes 
+    object_relative,  # Use the reference object local coordinate system axes 
+    road_relative,    # Use the s-t coordinate system of the road where the reference object is located 
+    lane_relative]    # Use the s-t coordinate system of the lane where the reference object is located 
 
-enum on_route_type: [ on_road, on_lane_section, on_lane, on_crossing ]
+enum on_route_type: [
+    on_road,          # Use the `road` s/t coordinates 
+    on_lane_section,  # Use the `lane_section` s/t coordinates 
+    on_lane,          # Use the `lane` s/t coordinates 
+    on_crossing]      # Use the `crossing` s/t coordinates 
 
-enum route_distance_enum: [ from_start, from_end ]
+enum route_distance_enum: [
+    from_start,  # Measure distance from the start of the route. 
+    from_end]    # Measure distance from the end of the route. 
+
+enum trailer_category: [
+    semi_trailer,          # A towed vehicle in which the axle(s) is (are) positioned behind the centre of gravity of the vehicle (when uniformly loaded), and which is equipped with a connecting device permitting horizontal and vertical forces to be transmitted to the towing vehicle. One or more of the axles may be driven by the towing vehicle. 
+    full_trailer,          # A towed vehicle that has at least two axles and is equipped with a towing device that can move vertically (in relation to the trailer) and controls the direction of the front axle(s), but that transmits no significant static load to the towing vehicle. One or more of the axles may be driven by the towing vehicle. 
+    central_axle_trailer]  # A towed vehicle, equipped with a towing device that cannot move vertically (in relation to the trailer) and in which the axle(s) is (are) positioned close to the centre of gravity of the vehicle (when uniformly loaded) such that only a small static vertical load - not exceeding 10 percent of that corresponding to the maximum mass of the trailer or a load of 1,000 daN (whichever is the lesser) - is transmitted to the towing vehicle. One or more of the axles may be driven by the towing vehicle. 
+
+enum hitch_type: [
+    ball,         # Standard ball and coupler (including gooseneck) connector. 
+    pintle,       # Pintle and hook connector. 
+    fifth_wheel,  # Fifth wheel connector with jaws and kingpin. 
+    other,        # Other type. 
+    none]         # There is no hitch connector. Default value for all vehicles. 
+
+enum traffic_participant_role: [
+    civil,               # The entity role is civil (for example, a "normal" vehicle). 
+    ambulance,           # The entity role is ambulance. 
+    fire,                # The entity role is fire fighting (for example, a fire engine). 
+    military,            # The entity role is military (for example, a camouflaged truck). 
+    police,              # The entity role is police. 
+    public_transport,    # The entity role is public transport (for example, a school bus). 
+    road_assistance,     # The entity role is roadside assistance (for example, a tow truck). 
+    garbage_collection,  # The entity role is garbage collection, (for example, a garbage truck or sweeper). 
+    road_construction,   # The entity role is road construction (for example, an excavator or a tipper truck). 
+    other]               # The entity has another unspecified but known role. 
+
+
+enum road_distance_direction: [
+    longitudinal,  # Measure distance in the s-coordinate. Positive means that the `reference` is in front of the `physical_object` that calls the method. 
+    lateral]       # Measure distance in the t-coordinate. Positive means that the `reference` is to the left of the `physical_object` that calls the method. 
+
+enum bulb_icon: [
+    unknown,                # Unknown icon 
+    circle,                 # OpenDRIVE Type 1000020, 1000001, 1000008, 1000012 
+    pedestrian_walking,     # OpenDRIVE Type 1000002-20 (a walking pedestrian) 
+    pedestrian_standing,    # OpenDRIVE Type 1000002-10 (a pedestrian in standing position) 
+    tram,                   # OpenDRIVE Type 1000014 (tram) 
+    bus,                    # OpenDRIVE Type 1000015 (bus) 
+    bicycle,                # OpenDRIVE Type 1000013-20 (bicycle) 
+    horse_rider,            # OpenDRIVE Type 1000015 (a person riding a horse) 
+    person_bicycle,         # OpenDRIVE Type 1000015 (a person riding a bicylce) 
+    bicycle_left,           # OpenDRIVE Type 1000013-50 (a bicycle as seen driving to the left) 
+    bicycle_right,          # OpenDRIVE Type 1000013-80 (a bicycle as seen driving to the right) 
+    arrow_left,             # OpenDRIVE Type 1000020-10 (an arrow pointing left) 
+    arrow_right,            # OpenDRIVE Type 1000020-20 (an arrow pointing right) 
+    arrow_straight,         # OpenDRIVE Type 1000020-30 (an arrow pointing straight ahead) 
+    arrow_left_straight,    # OpenDRIVE Type 1000020-40 
+    arrow_right_straight,   # OpenDRIVE Type 1000020-50 
+    arrow_diagonal_left,    # OpenDRIVE Type 1000020-60 
+    arrow_diagonal_right,   # OpenDRIVE Type 1000020-70 
+    arrow_u_turn_left,      # OpenDRIVE Type 1000008-80 (an arrow indicating a u-turn to the left) 
+    arrow_u_turn_right,     # OpenDRIVE Type 1000008-90 (an arrow indicating a u-turn to the left) 
+    arrow_left_right,       # OpenDRIVE Type 1000012-100 
+    lane_arrow_down,        # OpenDRIVE Type 1000021 
+    lane_arrow_down_right,  # OpenDRIVE Type 1000022-10 
+    lane_arrow_down_left,   # OpenDRIVE Type 1000022-20 
+    lane_cross,             # OpenDRIVE Type 1000022-23 
+    txt_walk,               # A textual description meaning "walk" 
+    txt_dont_walk,          # A textual description meaning "do not walk" 
+    countdown,              # Numbers for counting down 
+    pt_horizontal_bar,      # Public transportation OpenDRIVE Type F-0 
+    pt_vertical_bar,        # Public transportation OpenDRIVE Type F-1 
+    pt_slash_bar,           # Public transportation OpenDRIVE Type F-2 
+    pt_backslash_bar,       # Public transportation OpenDRIVE Type F-3 
+    pt_small_circle,        # Public transportation OpenDRIVE Type F-4 
+    pt_triangle,            # Public transportation OpenDRIVE Type F-5 
+    switch_x,               # Public transportation OpenDRIVE Type W-0 
+    switch_v_flipped,       # Public transportation OpenDRIVE Type W-1 
+    switch_v_left,          # Public transportation OpenDRIVE Type W-2 
+    switch_v_right,         # Public transportation OpenDRIVE Type W-3 
+    switch_t,               # Public transportation OpenDRIVE Type A-1 
+    switch_a,               # Public transportation OpenDRIVE Type A-X 
+    switch_bar_v,           # Public transportation OpenDRIVE Type W-14 
+    switch_bar_v_flipped,   # Public transportation OpenDRIVE Type W-11 
+    switch_bar_v_right,     # Public transportation OpenDRIVE Type W-12 
+    switch_bar_v_left,      # Public transportation OpenDRIVE Type W-13 
+    switch_dotted_circle]   # Public transportation OpenDRIVE Type A-2B 
+
+enum bulb_color: [
+    unknown,  # Unknown color 
+    red,      # Red color 
+    yellow,   # Yellow color 
+    green,    # Green color 
+    blue,     # Blue color 
+    white]    # White color 
+
+enum bulb_state: [
+    unknown,      # Unknown state 
+    is_off,       # Bulb is off 
+    is_on,        # Bulb is on 
+    is_flashing]  # Bulb is flashing 
+
+enum semantic_traffic_light_state: [
+    off,             # Traffic light is turned off 
+    stop,            # Stop motion 
+    attention,       # Traffic signal is going to change to go 
+    caution,         # Obeying traffic may pass the signal but must yield to other traffic 
+    stop_attention,  # Traffic signal is going to switch to stop 
+    go,              # Obeying traffic is allowed to drive 
+    go_exclusive,    # Obeying traffic has exclusive rights to pass. Other crossing traffic members have semantic state stop. 
+    non_functional]  # Non-functional traffic light. Can be used when a traffic light is in an unrecognizable state (for example, when red and green lights are on together). 
+
+enum stop_line_marking: [
+    none,    # No line drawn on the ground. 
+    solid,   # Stop line is a solid line. 
+    broken]  # Stop line is a broken (dashed) line. 
 
 ###########
 # Actor
 ###########
 
+actor osc_actor
+
 actor physical_object inherits osc_actor:
-    bounding_box: bounding_box                               # Mandatory: See bounding_box struct
-    color: color                                             # Optional: See color enum
-    geometry_reference: string                               # Optional: Opaque reference of an associated 3D geometry model of the physical object. It is implementation-specific how model references are resolved to 3D models.
-    center_of_gravity: position_3d                           # Mandatory: Center of gravity of the object. If unknown, the center of the bounding box may be used instead.
-    var pose: pose_3d                                        # Position and orientation measured in world coordinates with world system as reference.
-#    def object_distance(reference: physical_object, direction: distance_direction, mode: distance_mode = reference_points) -> length is undefined
-#    def get_s_coord(route_type: on_route_type = on_road) -> length is undefined
-#    def get_t_coord(route_type: on_route_type= on_road) -> length is undefined
-#    def get_route_point(route_type: on_route_type = on_road) -> route_point is undefined
+    bounding_box:       bounding_box  # Mandatory: See bounding_box
+    color:              color         # Optional:  See color
+    geometry_reference: string        # Optional:  Opaque reference of an associated 3D geometry model of the physical object. It is implementation-specific how model references are resolved to 3D models.
+    center_of_gravity:  position_3d   # Mandatory: Center of gravity of the object. If unknown, the center of the bounding box may be used instead.
+
+    var pose: pose_3d # Position and orientation measured in world coordinates with world system as reference.
+
+    #def object_distance(reference: physical_object, direction: distance_direction, mode: distance_mode = reference_points) -> length is undefined
+    #def road_distance(reference: physical_object, direction: road_distance_direction, mode: distance_mode = reference_points, route_type: on_route_type = on_road) -> length is undefined
+    #def distance_to_xyz_point(point: xyz_point, direction: distance_direction, mode: distance_mode = reference_points) -> length is undefined
+    #def distance_to_route_point(point: route_point, direction: road_distance_direction, mode: distance_mode = reference_points, route_type: on_route_type = on_road) -> length is undefined
+    #def distance_to_odr_point(point: odr_point, direction: road_distance_direction, mode: distance_mode = reference_points, route_type: on_route_type = on_road) -> length is undefined
+    #def get_s_coord(route_type: on_route_type = on_road) -> length is undefined
+    #def get_t_coord(route_type: on_route_type = on_road) -> length is undefined
+    #def get_route_point(route_type: on_route_type = on_road) -> route_point is undefined
+    #def set_bm(behavioral_model : behavioral_model) is undefined
 
 actor stationary_object inherits physical_object
 
 actor movable_object inherits physical_object:
-#    def distance_along_route(route: route, from: route_distance_enum = from_start) -> length is undefined
-    var velocity: velocity_6d                                 # Mandatory: Translational and rotational velocity measured in object coordinates with world system as reference.
-    var acceleration: acceleration_6d                         # Mandatory: Translational and rotational acceleration measured in object coordinates with world system as reference.
-    var speed: speed                                          # Mandatory: Speed in center_of_gravity defined as sqrt(velocity.translational.x^2 + velocity.translational.y^2) * sign(velocity.translational.x)
+    #def distance_along_route(route: route, from: route_distance_enum = from_start) -> length is undefined
+    var velocity: velocity_6d # Translational and rotational velocity measured in object coordinates with world system as reference.
+    var acceleration: acceleration_6d # Translational and rotational acceleration measured in object coordinates with world system as reference.
+    var speed: speed # Speed in center_of_gravity defined as sqrt(velocity.translational.x² + velocity.translational.y²) * sign(velocity.translational.x)
 
 actor traffic_participant inherits movable_object:
-    intended_infrastructure: list of intended_infrastructure            # Mandatory: See intended_infrastructure for definition. Intended usage is for further specification of an entity. For example, together with vehicle_category or to provide hints for implemenations where to spawn and / or auto-route entities. Note that multiple types of infrastructure can be assigned because of the list character of this type.
-#    def time_to_collision(reference: physical_object) -> time is undefined
-#    def time_headway(reference: physical_object) -> time is undefined
-#    def space_gap(reference: physical_object, direction: distance_direction) -> length is undefined
+    intended_infrastructure: list of intended_infrastructure  # Mandatory: See intended_infrastructure for definition. Intended usage is for further specification of an entity. For example, together with vehicle_category or to provide hints for implemenations where to spawn and / or auto-route entities. Note that multiple types of infrastructure can be assigned because of the list character of this type.
+    #role:                    traffic_participant_role         # Optional:  See traffic_participant_role enum. Role for the traffic participant.
+
+    #def time_to_collision(reference: physical_object) -> time is undefined
+    #def time_headway(reference: physical_object) -> time is undefined
+    #def time_gap(reference: physical_object, direction: road_distance_direction) -> time is undefined
+    #def space_gap(reference: physical_object, direction: road_distance_direction) -> length is undefined
+    #def space_headway(reference: physical_object) -> length is undefined
 
 actor vehicle inherits traffic_participant:
-    vehicle_category: vehicle_category                        # Mandatory: See vehicle_category
-    axles: list of axle                                       # Mandatory: See axle
-    rear_overhang: length                                     # Mandatory: Rear overhang of the vehicle or more explicitly the horizontal distance between the end of the bounding_box and the center of the rear axle.
+    vehicle_category: vehicle_category  # Mandatory: See vehicle_category
+    axles:            list of axle      # Mandatory: See axle
+    rear_overhang:    length            # Mandatory: Rear overhang of the vehicle or more explicitly the horizontal distance between the end of the bounding_box and the center of the rear axle.
+    trailer_receiver: hitch_receiver    # Optional:  Receiver part of the hitch that acts as mounting point for connecting a trailer. If not specified, the vehicle does not have a receiver hitching device for trailers.
 
 actor person inherits traffic_participant
 
 actor animal inherits traffic_participant
 
+actor trailer inherits vehicle:
+    trailer_category: trailer_category  # Mandatory: Specify trailer category.
+    coupler:          hitch_coupler     # Mandatory: Coupler part of the hitch that acts as mounting point to connect this trailer to the tow vehicle.
+
+    var tow_vehicle: vehicle # Reference to the vehicle that is towing this trailer. The tow vehicle can also be another trailer. If not specified, the trailer is not towable.
+
+actor traffic_light_controller inherits osc_actor
+
 ###########
 # environment (an Actor)
 ###########
 struct weather:
-    air: air                             # Optional: See struct air
-    rain: precipitation                  # Optional: Liquid water in form of droplets falling under gravity.
-    snow: precipitation                  # Optional: Frozen water in delicately-crystalline flakes falling under gravity.
-    wind: wind                           # Optional: See struct wind
-    fog: fog                             # Optional: See struct fog
-    clouds: clouds                       # Optional: See struct clouds
+    air:    air            # Optional:  See definition of 'air'.
+    rain:   precipitation  # Optional:  Liquid water in form of droplets falling under gravity.
+    snow:   precipitation  # Optional:  Frozen water in delicately-crystalline flakes falling under gravity.
+    wind:   wind           # Optional:  See definition of 'wind'.
+    fog:    fog            # Optional:  See definition of 'fog'.
+    clouds: clouds         # Optional:  See definition of 'clouds'.
 
 actor environment inherits osc_actor:
-    geodetic_position: geodetic_position_2d # Optional: Geodetic position of world coordinate frame regarding WGS84. Regarding usage for determination of angle of celestial light sources see remark above.
-    datetime: time                       # Optional: Date and time at start of scenario as Unix time, i.e. Number of seconds that have elapsed since January 1, 1970 (midnight UTC/GMT), not counting leap seconds. Regarding usage for determination of angle of celestial light sources see remark above.
-    var weather: weather                 # Optional: See struct weather
-    sun: celestial_light_source          # Optional: Sun as instance of celestial_light_source.
-    moon: celestial_light_source         # Optional: Moon as instance of celestial_light_source.
-#    def local_to_unix_time(year: uint, month: uint, day: uint, hour: uint, minute: uint, second: uint, time_zone: float) -> time is undefined
+    geodetic_position: geodetic_position_2d    # Optional:  Geodetic position of world coordinate frame regarding WGS84. Regarding usage for determination of angle of celestial light sources see remark above.
+    datetime:          time                    # Optional:  Date and time at start of scenario as Unix time, i.e. Number of seconds that have elapsed since January 1, 1970 (midnight UTC/GMT), not counting leap seconds. Regarding usage for determination of angle of celestial light sources see remark above.
+    sun:               celestial_light_source  # Optional:  Sun as instance of celestial_light_source.
+    moon:              celestial_light_source  # Optional:  Moon as instance of celestial_light_source.
+    var weather: weather # See struct weather
+    #def local_to_unix_time(year: uint, month: uint, day: uint, hour: uint, minute: uint, second: uint, time_zone: float) -> time is undefined
 
 struct air:
-    temperature: temperature = 25.0celsius            # Optional: Temperature on ground level.
-    atmospheric_pressure: pressure = 101325pascal   # Optional: Atmospheric pressure on ground level.
-    relative_humidity: float = 0.0                  # Optional: Relative humidity on ground level.
+    temperature:       temperature  # Optional:  Temperature on ground level.
+    pressure:          pressure     # Optional:  Atmospheric pressure on ground level.
+    relative_humidity: float        # Optional:  Relative humidity on ground level.
 
 struct precipitation:
-    intensity: speed = 0.0mps              # Optional: Global intensity of precipitation given as volumetric flux. In case of (partially) solid precipitation, the equivalent melted volume shall be considered. Note that volumetric flux is describing a volume flow across an area, but after reduction the unit results in the same unit as for speeds. As of now it is not possible in
+    intensity: speed  # Optional:  Global intensity of precipitation given as volumetric flux. In case of (partially) solid precipitation, the equivalent melted volume shall be considered. Note that volumetric flux is describing a volume flow across an area in units of mmph or millimeter_per_hour. After reduction, the unit results in the same unit as for speed. As of now, it is not possible to define multiple physical types with the same unit. Therefore, the speed type is used for volumetrix flux as well.
 
 struct wind:
-    speed: speed                         # Mandatory: The expected value of wind speed. To estimate the expected value, rolling mean value over a specific short interval (for example, 3s) can be used.
-    direction: angle                     # Mandatory: The origin direction of the wind (not target direction) in the ground/x-y-plane with clockwise increasing values to match common definitions. This results in 0 deg for a wind blowing from the North 90 deg for a wind blowing from the East 90 deg, if x-axis and y-axis are mapped to East and North.
+    speed:     speed  # Mandatory: The expected value of wind speed. To estimate the expected value, rolling mean value over a specific short interval (for example, 3s) can be used.
+    direction: angle  # Mandatory: The origin direction of the wind (not target direction) in the ground/x-y-plane with clockwise increasing values to match common definitions. This results in 0 deg for a wind blowing from the North 90 deg for a wind blowing from the East 90 deg, if x-axis and y-axis are mapped to East and North.
 
 struct fog:
-    visual_range: length                 # Mandatory: Value of optical range of visible light in the standard setting, which corresponds to a certain density of fog.
+    visual_range: length  # Mandatory: Value of optical range of visible light in the standard setting, which corresponds to a certain density of fog.
 
 struct clouds:
-    cloudiness: uint                     # Mandatory: Using okta scale to define which portion of the sky is covered with clouds. Ranging from 0 for completely clear sky to 8 for a completely overcast sky. Values above 8 shall not be used.
+    cloudiness: uint  # Mandatory: Using okta scale to define which portion of the sky is covered with clouds. Ranging from 0 for completely clear sky to 8 for a completely overcast sky. The value 9 indicates an obscured sky, e.g. in dense fog. Values above 9 shall not be used.
 
 struct celestial_light_source:
-    var position: celestial_position_2d  # Mandatory: Position of the light source, see definition of physical type celestial_position_2d.
+    var position: celestial_position_2d # Position of the light source, see definition of physical type celestial_position_2d.
 
 ###########
 # Map (an Actor)
 ###########
 
 actor map inherits osc_actor:
-    map_file: string
-    routes: list of route
-    junctions: list of junction
-    driving_rule: driving_rule
-#    def odr_to_route_point(road_id: string, lane_id: string, s: length, t: length) -> route_point is undefined
-#    def xyz_to_route_point(x: length, y: length, z: length) -> route_point is undefined
-#    def route_point_to_xyz(route_point: route_point) -> xyz_point is undefined
-#    def outer_side() -> side_left_right is undefined
-#    def inner_side() -> side_left_right is undefined
-#    def create_route(routes: list of route, connect_points_by: connect_route_points, legal_route: bool) -> compound_route is undefined
-#    def create_route_point(route: route, s: length, t: length) -> route_point is undefined
-#    def create_xyz_point(x: length, y: length, z: length) -> xyz_point is undefined
-#    def create_odr_point(road_id: string, lane_id: string, s: length, t: length) -> odr_point is undefined
-#    def create_path(points: list of pose_3d, interpolation: path_interpolation) -> path is undefined
-#    def create_path_odr_points(points: list of odr_point, interpolation: path_interpolation, on_road_network: bool) -> path is undefined
-#    def create_path_route_points(points: list of route_point, interpolation: path_interpolation, on_road_network: bool) -> path is undefined
-#    def create_trajectory(points: list of pose_3d, time_stamps: list of time,interpolation: path_interpolation) -> trajectory is undefined
-#    def create_trajectory_odr_points(points: list of odr_point, time_stamps: list of time, interpolation: path_interpolation, on_road_network: bool) -> trajectory is undefined
-#    def create_trajectory_route_points(points: list of route_point, time_stamps: list of time, interpolation: path_interpolation, on_road_network: bool) -> trajectory is undefined
-#    def resolve_relative_path(relative_path: relative_path, reference: physical_object, transform: relative_transform) -> path is undefined
-#    def resolve_relative_trajectory(relative_trajectory: relative_trajectory, reference: physical_object, transform: relative_transform) -> trajectory is undefined
-#    def get_map_file() -> string is undefined           #from map.map_file
+    map_file:              string                       # Optional:  Name of the external map file
+    routes:                list of route                # Mandatory: The list of routes that are part of the abstract road network
+    junctions:             list of junction             # Mandatory: The list of junctions that are part of the abstract road network
+    driving_rule:          driving_rule                 # Mandatory: Specify on which side of the road the vehicles drive
+    traffic_light_groups:  list of traffic_light_group  # Optional:  All the traffic lights in the map
+    traffic_light_control: list of traffic_light_cycle  # Optional:  The traffic light cycle for traffic light groups. It does not necessarily contain control plans for all elements in traffic light groups and may also be empty.
+    #def odr_to_route_point(road_id: string, lane_id: string, s: length, t: length) -> route_point is undefined
+    #def xyz_to_route_point(x: length, y: length, z: length) -> route_point is undefined
+    #def route_point_to_xyz(route_point: route_point) -> xyz_point is undefined
+    #def outer_side() -> side_left_right is undefined
+    #def inner_side() -> side_left_right is undefined
+    #def create_route(routes: list of route, connect_points_by: connect_route_points, legal_route: bool) -> compound_route is undefined
+    #def create_route_point(route: route, s: length, t: length) -> route_point is undefined
+    #def create_xyz_point(x: length, y: length, z: length) -> xyz_point is undefined
+    #def create_odr_point(road_id: string, lane_id: string, s: length, t: length) -> odr_point is undefined
+    #def create_path(points: list of pose_3d, interpolation: path_interpolation) -> path is undefined
+    #def create_path_odr_points(points: list of odr_point, interpolation: path_interpolation, on_road_network: bool) -> path is undefined
+    #def create_path_route_points(points: list of route_point, interpolation: path_interpolation, on_road_network: bool) -> path is undefined
+    #def create_trajectory(points: list of pose_3d, time_stamps: list of time,interpolation: path_interpolation) -> trajectory is undefined
+    #def create_trajectory_odr_points(points: list of odr_point, time_stamps: list of time, interpolation: path_interpolation, on_road_network: bool) -> trajectory is undefined
+    #def create_trajectory_route_points(points: list of route_point, time_stamps: list of time, interpolation: path_interpolation, on_road_network: bool) -> trajectory is undefined
+    #def resolve_relative_path(relative_path: relative_path, reference: physical_object, transform: relative_transform) -> path is undefined
+    #def resolve_relative_trajectory(relative_trajectory: relative_trajectory, reference: physical_object, transform: relative_transform) -> trajectory is undefined
+    #def get_map_file() -> string is undefined
 
-struct route:                                   # Object of map
-    length: length                              # Optional: Nominal length of the route, measured along the s-axis of the route. Does not apply to route_point
-    directionality: directionality              # Mandatory: Directionality for movement of traffic_participant actors on the route
-    min_lanes: uint                             # Optional: Minimum number of drivable lanes along this route. Applies only to these children: road, lane_section
-    max_lanes: uint                             # Optional: Maximum number of drivable lanes along this route. Applies only to these children: road, lane_section
-    anchors: list of string                     # Optional: The strings in here can be matched to unique items in the map files specified in file_name
-#    def start_point() -> route_point is undefined
-#    def end_point() -> route_point is undefined
+struct route:
+    length:         length          # Optional:  Nominal length of the route, measured along the s-axis of the route. Does not apply to route_point
+    directionality: directionality  # Mandatory: Directionality for movement of traffic_participant actors on the route
+    min_lanes:      uint            # Optional:  Minimum number of drivable lanes along this route. Applies only to these children: road, lane_section
+    max_lanes:      uint            # Optional:  Maximum number of drivable lanes along this route. Applies only to these children: road, lane_section
+    anchors:        list of string  # Optional:  The strings in here can be matched to unique items in the map files specified in file_name
+    #def start_point() -> route_point is undefined
+    #def end_point() -> route_point is undefined
 
-struct route_element inherits route             # Interface Class (of route)
+struct route_element inherits route
 
 struct road inherits route_element:
-    s_positive: list of lane_section            # Mandatory: List of lane_section elements that flow in the positive direction of the road s-axis
-    s_negative: list of lane_section            # Optional: List of lane_section elements that flow in the negative direction of the road s-axis
-
-struct lane_section inherits route_element:
-    road: road                                  # Mandatory: Where the lane_section resides
-    lanes: list of lane                         # Mandatory: List of lanes that compose the lane_section
-    s_axis: lane                                # Mandatory: Choose, which lane is used to determine the s-axis of the lane_section. Must be a member of it.lanes
+    s_positive: list of lane_section  # Mandatory: List of lane_section elements that flow in the positive direction of the road s-axis
+    s_negative: list of lane_section  # Optional:  List of lane_section elements that flow in the negative direction of the road s-axis
 
 struct lane inherits route_element:
-    lane_section: lane_section                  # Mandatory: Where the lane resides
-    lane_type: lane_type                        # Mandatory: Type of lane
-    lane_use: lane_use                          # Mandatory: A subtype of the lane_type. Use compatible pairs of lane_type and lane_use
-    width: length                               # Optional: Nominal width of the lane
+    lane_section: lane_section  # Mandatory: Where the lane resides
+    lane_type:    lane_type     # Mandatory: Type of lane
+    lane_use:     lane_use      # Mandatory: A subtype of the lane_type. Use compatible pairs of lane_type and lane_use
+    width:        length        # Optional:  Nominal width of the lane
+
+struct lane_section inherits route_element:
+    road:   road          # Mandatory: Where the lane_section resides
+    lanes:  list of lane  # Mandatory: List of lanes that compose the lane_section
+    s_axis: lane          # Mandatory: Choose, which lane is used to determine the s-axis of the lane_section. Must be a member of it.lanes
 
 struct crossing inherits route_element:
-    start_lane: lane                            # Mandatory: Crossing starts on this lane
-    end_lane: lane                              # Mandatory: Crossing ends on this lane
-    start_s_coord: length                       # Mandatory: On the starts_from lane, the crossing connects at this point in the lane s-axis (and zero in the t-axis)
-    end_s_coord: length                         # Mandatory: On the ends_on lane, the crossing connects at this point in the lane s-axis (and zero in the t-axis)
-    width: length                               # Mandatory: Nominal width of the crossing, measured perpendicular to the crossing s-axis
-    crossing_type: crossing_type                # Mandatory: Type of crossing
+    start_lane:    lane           # Mandatory: Crossing starts on this lane
+    end_lane:      lane           # Mandatory: Crossing ends on this lane
+    start_s_coord: length         # Mandatory: On the starts_from lane, the crossing connects at this point in the lane s-axis (and zero in the t-axis)
+    end_s_coord:   length         # Mandatory: On the ends_on lane, the crossing connects at this point in the lane s-axis (and zero in the t-axis)
+    width:         length         # Mandatory: Nominal width of the crossing, measured perpendicular to the crossing s-axis
+    crossing_type: crossing_type  # Mandatory: Type of crossing
 
 struct junction:
-    roads: list of road                         # Mandatory: A list of road
+    roads: list of road  # Mandatory: List of road elements that are connected to this junction
 
 struct compound_route inherits route:
-    route_elements: list of route_element       # Mandatory: A list of route_element.
+    route_elements: list of route_element  # Mandatory: A list of route_element.
 
 struct compound_lane inherits route:
-    lanes: list of lane                         # Mandatory: A list of lane
+    lanes: list of lane  # Mandatory: A list of lane
+
+struct geodetic_point inherits route_element:
+    latitude:  angle   # Mandatory: The latitude of a point on the surface of the earth is the angle between the equatorial plane and the straight line that passes through that point and through the center of the earth. Range: [-90deg..90deg]
+    longitude: angle   # Mandatory: The longitude of a point on the surface of the earth is the angle east or west of a reference meridian to another meridian that passes through that point. Range: [-180deg..180deg]
+    altitude:  length  # Optional:  Altitude is the earth gravity-related vertical distance from the target position, specified horizontally by its Longitude/Latitude coordinates, to the closest point on the underlying road surface. When calculating the closest point, it is accounted for an elevation of the road, an entire road super-elevation, or, in more complex cases, a road lateral shape profile that are specified in the road network definition (external to the OpenSCENARIO). Missing value is interpreted as 0. Range: [0m..inf[
+
+struct hitch_receiver:
+    hitch_type:   hitch_type with:  # Mandatory: Type of hitch connector. Default: none, for vehicles that do not have a hitch receiver.
+        keep(default it == none)
+    position_x:   length            # Mandatory: Position of the `hitch_receiver` on the x-axis of the tow vehicle.
+    position_z:   length            # Mandatory: Position of the `hitch_receiver` on the z-axis of the tow vehicle.
+    max_rotation: angle             # Optional:  Maximum relative rotation between the tow vehicle and the trailer.
+    max_tilt:     angle             # Optional:  Maximum relative tilt (pitch, roll) between the towing vehicle and the trailer.
+
+    var is_towing: bool # Indicates if tow vehicle and trailer are connected (true) or disconnected (false).
+
+struct hitch_coupler:
+    hitch_type: hitch_type  # Mandatory: Type of hitch connector. There is no default type for the hitch coupler.
+    position_x: length      # Mandatory: Position of the `hitch_coupler` on the x-axis of the trailer.
+    position_z: length      # Mandatory: Position of the `hitch_coupler` on the z-axis of the trailer.
+
+    var is_towed: bool # Indicates if tow vehicle and trailer are connected (true) or disconnected (false).
+
+struct traffic_light_stop_line inherits route_element:
+    traffic_light_group:         traffic_light_group  # Mandatory: Group of traffic lights that is related to the stop line
+    route:                       route                # Mandatory: Route on which the stop line is located
+    rightmost_lane:              uint                 # Mandatory: The lane index for the rightmost relevant lane controlled by `traffic_light_group`
+    leftmost_lane:               uint                 # Mandatory: The lane index for the leftmost relevant lane controlled by the `traffic_light_group`
+    offset:                      length               # Mandatory: The position of the stop line in s-coordinates along the route
+    secondary_stop_offset:       length               # Mandatory: The position of the secondary stop line in s-coordinates along the route. By default, only one stop line per traffic_light_group exists, and `secondary_stop_offset` == `offset`
+    primary_stop_line_marking:   stop_line_marking    # Mandatory: Type of stop line marking
+    secondary_stop_line_marking: stop_line_marking    # Mandatory: Type of stop line marking for secondary stop line. By default, only one stop line per traffic_light_group exists, and `secondary_stop_line_marking` == `primary_stop_line_marking`
+
+struct traffic_light_bulb:
+    map_id:        string      # Optional:  Unique identifier of the traffic light bulb in the context of the map actor
+    icon:          bulb_icon   # Mandatory: The type of traffic light bulb icon
+    color:         bulb_color  # Mandatory: The color of the traffic light bulb
+    icon_positive: bool        # Mandatory: True if icon is illuminated (and background is dark), false if icon is dark (and background is illuminated).
+
+    var state: bulb_state # State of the traffic light bulb
+
+struct traffic_light:
+    map_id: string                      # Optional:  Unique identifier of the traffic light box in the context of the map actor
+    bulbs:  list of traffic_light_bulb  # Mandatory: List of traffic light bulbs that are contained in the traffic light box
+    pose:   pose_3d                     # Mandatory: The physical position and orientation of the traffic light box
+    height: length                      # Mandatory: Height of the traffic light box
+    width:  length                      # Mandatory: Width of the traffic light box
+    group:  traffic_light_group         # Mandatory: The traffic light group the traffic light box belongs to
+
+    def state_equal(bulbs: list of traffic_light_bulb)-> bool is undefined
+    def semantic_state_to_state(state: semantic_traffic_light_state)-> list of traffic_light_bulb is undefined
+    def state_to_semantic_state(bulbs: list of traffic_light_bulb)-> semantic_traffic_light_state is undefined
+
+struct traffic_light_group:
+    map_id:         string                      # Optional:  Unique identifier of the traffic light group in the context of the map actor
+    bulbs:          list of traffic_light_bulb  # Mandatory: Union of all traffic light bulbs that are contained in all traffic light boxes of the group
+    traffic_lights: list of traffic_light       # Mandatory: List of traffic lights in the traffic light group
+    cycle:          traffic_light_cycle         # Mandatory: Activation_cycle may be null if not specified by the provided control plan (see map.set_traffic_lights_control_file)
+
+    def state_equal(bulbs: list of traffic_light_bulb)-> bool is undefined
+
+struct traffic_light_phase:
+    group:       traffic_light_group         # Mandatory: Traffic light group that is addressed by the phase
+    bulbs_state: list of traffic_light_bulb  # Mandatory: List of traffic light bulbs that should be set for the specific group
+    duration:    time                        # Mandatory: Duration of the phase in seconds
+
+struct traffic_light_cycle:
+    phases:                   list of traffic_light_phase  # Mandatory: The different phases of the cycle in chronological order
+    synchronization_group_id: uint                         # Mandatory: Identifier used to synchronize different traffic light groups. All traffic light groups with the same `synchronization_group_id` shall be synchronized, for example in a crossing: If traffic in one direction has a green light, the traffic in the perpendicular direction must have a red light
+    start_offset:             time                         # Mandatory: Temporal offset of the start of the cycle
 
 ###########
 # Action - movable_object
@@ -522,87 +744,90 @@ action movable_object.move inherits movable_object.action_for_movable_object
 action movable_object.remain_stationary inherits movable_object.action_for_movable_object
 
 action movable_object.assign_position inherits movable_object.action_for_movable_object:
-    position: position_3d                       # Optional: Desired 3-dimensional position assigned by the user
-    route_point: route_point                    # Optional: Desired route_point assigned by the user
-    odr_point: odr_point                        # Optional: Desired odr_point assigned by the user
+    position:    position_3d  # Optional:  Desired position assigned by the user
+    route_point: route_point  # Optional:  Desired route_point assigned by the user
+    odr_point:   odr_point    # Optional:  Desired odr_point assigned by the user
 
 action movable_object.assign_orientation inherits movable_object.action_for_movable_object:
-    target: orientation_3d                      # Mandatory: Desired 3-dimensional orientation assigned by the user
+    orientation: orientation_3d  # Mandatory: Desired 3-dimensional orientation assigned by the user
 
 action movable_object.assign_speed inherits movable_object.action_for_movable_object:
-    target: speed                               # Mandatory: Desired (scalar) speed assigned by the user
+    speed: speed  # Mandatory: Desired (scalar) speed assigned by the user
 
 action movable_object.assign_acceleration inherits movable_object.action_for_movable_object:
-    target: acceleration                        # Mandatory: Desired (scalar) acceleration assigned by the user
+    acceleration: acceleration  # Mandatory: Desired (scalar) acceleration assigned by the user
 
 action movable_object.replay_path inherits movable_object.action_for_movable_object:
-    absolute: path                              # Mandatory: Absolute path. Includes a list of points
-    relative: relative_path                     # Mandatory: Relative path. Includes a list of points
-#    reference: physical_object with:            # Optional: Use with relative paths. Specify the reference entity that defines the origin for the point coordinates. Default: the actor itself
-#        keep(default it == actor)
-#    transform: relative_transform with:         # Optional: Use with relative paths. Coordinates of the points are relative to the reference entity. Default = object_relative
-#        keep(default it == object_relative)
-#    start_offset: length with:                  # Optional: Offset at which to begin following the path, measured from the path's start. Default = 0m
-#        keep(default it == 0m)
-#    end_offset: length with:                    # Optional: Offset at which to end following the path, measured from the path's end. Default = 0m
-#        keep(default it == 0m)
+    absolute:     path                      # Mandatory: Absolute path. Includes a list of points
+    relative:     relative_path             # Mandatory: Relative path. Includes a list of points
+    #reference:    physical_object with:     # Optional:  Use with relative paths. Specify the reference entity that defines the origin for the point coordinates. Default: the actor itself
+        #keep(default it == actor)
+    #transform:    relative_transform with:  # Optional:  Use with relative paths. Coordinates of the points are relative to the reference entity. Default = object_relative
+        #keep(default it == object_relative)
+    #start_offset: length with:              # Optional:  Offset at which to begin following the path, measured from the start of the path. Default = 0m
+        #keep(default it == 0m)
+    #end_offset:   length with:              # Optional:  Offset at which to end following the path, measured from the end of the path. Default = 0m
+        #keep(default it == 0m)
 
 action movable_object.replay_trajectory inherits movable_object.action_for_movable_object:
-    absolute: trajectory                        # Mandatory: Absolute trajectory. Includes a list of points and a list of corresponding time stamps
-    relative: relative_trajectory               # Mandatory: Relative trajectory. Includes a list of points and a list of corresponding time stamps
-#    reference: physical_object with:            # Optional: Use with relative trajectories. Specify the reference entity that defines the origin for the point coordinates. Default: the actor itself
-#        keep(default it == actor)
-#    transform: relative_transform with:         # Optional: Use with relative trajectories. Coordinates of the points are relative to the reference entity. Default = object_relative
-#        keep(default it == object_relative)
-#    start_offset: length with:                  # Optional: Offset at which to begin following the trajectory, measured from the trajectory's start. Default = 0m
-#        keep(default it == 0m)
-#    end_offset: length with:                    # Optional: Offset at which to end following the trajectory, measured from the trajectory's end. Default = 0m
-#        keep(default it == 0m)
+    absolute:     trajectory                # Mandatory: Absolute trajectory. Includes a list of points and a list of corresponding time stamps
+    relative:     relative_trajectory       # Mandatory: Relative trajectory. Includes a list of points and a list of corresponding time stamps
+    reference:    physical_object with:     # Optional:  Use with relative trajectories. Specify the reference entity that defines the origin for the point coordinates. Default: the actor itself
+        keep(default it == actor)
+    transform:    relative_transform with:  # Optional:  Use with relative trajectories. Coordinates of the points are relative to the reference entity. Default = object_relative
+        keep(default it == object_relative)
+    start_offset: length with:              # Optional:  Offset at which to begin following the trajectory, measured from the start of the trajectory. Default = 0m
+        keep(default it == 0m)
+    end_offset:   length with:              # Optional:  Offset at which to end following the trajectory, measured from the end of the trajectory. Default = 0m
+        keep(default it == 0m)
 
 action movable_object.change_position inherits movable_object.action_for_movable_object:
-    target: position_3d                         # Mandatory: Target value for the position at the end of the action
-    interpolation: path_interpolation           # Mandatory: The interpolation method used to join the start and end points
-    on_road_network: bool                       # Mandatory: The action takes place completely on the road network of the scenario
+    target_position: position            # Mandatory: Target position at the end of the action
+    target_st:       route_point         # Mandatory: Target value for the position at the end of the action in s-t-coordinates
+    target_odr:      odr_point           # Mandatory: Target value for the position at the end of the action in odr coordinates
+    target_xyz:      position_3d         # Mandatory: Target value for the position at the end of the action in x-y-z-coordinates. Deprecated, use target_position instead
+    interpolation:   path_interpolation  # Mandatory: The interpolation method used to join the start and end points
+    on_road_network: bool                # Mandatory: The action takes place completely on the road network of the scenario
 
 action movable_object.change_speed inherits movable_object.action_for_movable_object:
-    target: speed                               # Mandatory: Target value for the speed at the end of the action
-#     rate_profile: dynamic_profile with:         # Optional: Assign a shape for the change of the speed variable. This profile affects the acceleration during action execution
-#         keep(default it == none)
-    rate_peak: acceleration = 0.0mpsps            # Optional: Target value for the peak acceleration that must be achieved during the action
+    target:       speed                  # Mandatory: Target value for the speed at the end of the action
+    #rate_profile: dynamic_profile with:  # Optional:  Assign a shape for the change of the speed variable. This profile affects the acceleration during action execution
+        #keep(default it == none)
+    rate_peak:    acceleration           # Optional:  Target value for the peak acceleration that must be achieved during the action
 
-# action movable_object.keep_speed inherits movable_object.action_for_movable_object
+#action movable_object.keep_speed inherits movable_object.action_for_movable_object
 
 action movable_object.change_acceleration inherits movable_object.action_for_movable_object:
-    target: acceleration                        # Mandatory: Target value for the scalar acceleration at the end of the action
-#    rate_profile: dynamic_profile with:         # Optional: Assign a shape for the change of the speed variable. This profile affects the jerk during action execution
-#        keep(default it == none)
-    rate_peak: jerk = 0.0mpspsps                  # Optional: Target value for the peak jerk that must be achieved during the action
+    target:       acceleration           # Mandatory: Target value for the scalar acceleration at the end of the action
+    #rate_profile: dynamic_profile with:  # Optional:  Assign a shape for the change of the speed variable. This profile affects the jerk during action execution
+        #keep(default it == none)
+    rate_peak:    jerk                   # Optional:  Target value for the peak jerk that must be achieved during the action
 
 action movable_object.keep_acceleration inherits movable_object.action_for_movable_object
 
 action movable_object.follow_path inherits movable_object.action_for_movable_object:
-    absolute: path                                # Mandatory: Absolute path. Includes a list of points
-    relative: relative_path                       # Mandatory: Relative path. Includes a list of points
-#    reference: physical_object with:              # Optional: Use with relative paths. Specify the reference entity that defines the origin for the point coordinates. Default: the actor itself
-#        keep(default it == actor)
-#    transform: relative_transform with:           # Optional: Use with relative paths. Coordinates of the points are relative to the reference entity. Default = object_relative
-#        keep(default it == object_relative)
-#    start_offset: length with:                    # Optional: Offset at which to begin following the path, measured from the path's start. Default = 0m
-#        keep(default it == 0m)
-#    end_offset: length with:                      # Optional: Offset at which to end following the path, measured from the path's end. Default = 0m
-#        keep(default it == 0m)
+    absolute:     path                      # Mandatory: Absolute path. Includes a list of points
+    relative:     relative_path             # Mandatory: Relative path. Includes a list of points
+    #reference:    physical_object with:     # Optional:  Use with relative paths. Specify the reference entity that defines the origin for the point coordinates. Default: the actor itself
+        #keep(default it == actor)
+    #transform:    relative_transform with:  # Optional:  Use with relative paths. Coordinates of the points are relative to the reference entity. Default = object_relative
+        #keep(default it == object_relative)
+    #start_offset: length with:              # Optional:  Offset at which to begin following the path, measured from the start of the path. Default = 0m
+        #keep(default it == 0m)
+    #end_offset:   length with:              # Optional:  Offset at which to end following the path, measured from the end of the path. Default = 0m
+        #keep(default it == 0m)
 
 action movable_object.follow_trajectory inherits movable_object.action_for_movable_object:
-    absolute: trajectory                          # Mandatory: Absolute trajectory. Includes a list of points and a list of corresponding time stamps
-    relative: relative_trajectory                 # Mandatory: Relative trajectory. Includes a list of points and a list of corresponding time stamps
-#    reference: physical_object with:              # Optional: Use with relative trajectories. Specify the reference entity that defines the origin for the point coordinates. Default: the actor itself
-#        keep(default it == actor)
-#    transform: relative_transform with:           # Optional: Use with relative trajectories. Coordinates of the points are relative to the reference entity. Default = object_relative
-#        keep(default it == object_relative)
-#    start_offset: length with:                    # Optional: Offset at which to begin following the trajectory, measured from the trajectory's start. Default = 0m
-#        keep(default it == 0m)
-#    end_offset: length with:                      # Optional: Offset at which to end following the trajectory, measured from the trajectory's end. Default = 0m
-#        keep(default it == 0m)
+    absolute:     trajectory                # Mandatory: Absolute trajectory. Includes a list of points and a list of corresponding time stamps
+    relative:     relative_trajectory       # Mandatory: Relative trajectory. Includes a list of points and a list of corresponding time stamps
+    #reference:    physical_object with:     # Optional:  Use with relative trajectories. Specify the reference entity that defines the origin for the point coordinates. Default: the actor itself
+        #keep(default it == actor)
+    #transform:    relative_transform with:  # Optional:  Use with relative trajectories. Coordinates of the points are relative to the reference entity. Default = object_relative
+        #keep(default it == object_relative)
+    #start_offset: length with:              # Optional:  Offset at which to begin following the trajectory, measured from the start of the trajectory. Default = 0m
+        #keep(default it == 0m)
+    #end_offset:   length with:              # Optional:  Offset at which to end following the trajectory, measured from the end of the trajectory. Default = 0m
+        #keep(default it == 0m)
 
 ###########
 # Action - vehicle
@@ -613,43 +838,64 @@ action vehicle.action_for_vehicle inherits movable_object.action_for_movable_obj
 action vehicle.drive inherits vehicle.action_for_vehicle
 
 action vehicle.follow_lane inherits vehicle.action_for_vehicle:
-#     offset: length with:                                        # Optional: Default=0.0. Offset from center of the lane for the actor to follow, using the t-axis of the lane
-#         keep(default it == 0.0m)
-#     rate_profile: dynamic_profile with:                         # Optional: Assign a shape for the change of the lateral position variable (t-axis). This profile affects the lateral velocity during action execution
-#         keep(default it == none)
-    rate_peak: speed = 0.0mps                                     # Optional: Target value for the peak lateral velocity that must be achieved during the action
-    target: lane                                                # Optional: The actor must be in this lane at the start, throughout, and the end of the action. If this argument is ignored, the actor follows the current lane when the action is invoked
+    #offset:       length with:           # Optional:  Default=0.0. Offset from center of the lane for the actor to follow, using the t-axis of the lane
+        #keep(default it == 0m)
+    #rate_profile: dynamic_profile with:  # Optional:  Assign a shape for the change of the lateral position variable (t-axis). This profile affects the lateral velocity during action execution
+        #keep(default it == none)
+    rate_peak:    speed                  # Optional:  Target value for the peak lateral velocity that must be achieved during the action
+    target:       lane                   # Optional:  The actor must be in this lane at the start, throughout, and the end of the action. If this argument is ignored, the actor follows the current lane when the action is invoked
 
 action vehicle.change_lane inherits vehicle.action_for_vehicle:
-#     num_of_lanes: int with:                                     # Optional: The target lane is "num_of_lanes" to the side of the reference entity. Use in conjunction with "side"
-#         keep(default it == 1)
-    side: lane_change_side                                      # Optional: Select on which side of the reference entity
-#     reference: physical_object with:                            # Optional: Default=it.actor. Reference to the entity that is used to determine the target lane. If this argument is omitted, the actor itself is used as reference
-#         keep(default it == actor)
-#     offset: length with:                                        # Optional: Default=0.0. Target offset from center of the target lane that the actor follows at the end of the action
-#         keep(default it == 0.0m)
-#     rate_profile: dynamic_profile with:                         # Optional: Assign a shape for the change of the lateral position variable (t-axis). This profile affects the lateral velocity during action execution '/
-#         keep(default it == none)
-    rate_peak: speed = 0.0mps                                     # Optional: Target value for the peak lateral velocity that must be achieved during the action
-    target: lane                                                # Mandatory: The actor starts and finishes the action in the target lane
+    #num_of_lanes: uint with:             # Optional:  The target lane is "num_of_lanes" to the side of the reference entity. Use in conjunction with "side"
+        keep(default it == 1)
+    side:         lane_change_side       # Optional:  Select on which side of the reference entity
+    #reference:    physical_object with:  # Optional:  Default=it.actor. Reference to the entity that is used to determine the target lane. If this argument is omitted, the actor itself is used as reference
+        #keep(default it == actor)
+    #offset:       length with:           # Optional:  Default=0.0. Target offset from center of the target lane that the actor follows at the end of the action
+        #keep(default it == 0m)
+    #rate_profile: dynamic_profile with:  # Optional:  Assign a shape for the change of the lateral position variable (t-axis). This profile affects the lateral velocity during action execution
+        #keep(default it == none)
+    rate_peak:    speed                  # Optional:  Target value for the peak lateral velocity that must be achieved during the action
+    target:       lane                   # Optional:  The actor finishes the action in the target lane
 
 action vehicle.change_space_gap inherits vehicle.action_for_vehicle:
-    target: length                                              # Mandatory: Target distance between the actor and the reference entity. Distance is measured according to the space_gap() method
-    direction: gap_direction                                    # Mandatory: Placement of the actor with respect to the reference entity. [ahead, behind] means distance is measured in the s-axis. [left, right, inside, outside] means distance is measured in the t-axis
-    reference: physical_object                                  # Mandatory: The actor reaches the driving distance to this reference entity
+    target:    length           # Mandatory: Target distance between the actor and the reference entity. Distance is measured according to the space_gap() method
+    direction: gap_direction    # Mandatory: Placement of the actor with respect to the reference entity. [ahead, behind] means distance is measured in the s-axis. [left, right, inside, outside] means distance is measured in the t-axis
+    reference: physical_object  # Mandatory: The actor reaches the driving distance to this reference entity
 
 action vehicle.keep_space_gap inherits vehicle.action_for_vehicle:
-    reference: physical_object                                  # Mandatory: The actor keeps the driving distance to this reference entity
-    direction: distance_direction                        # Mandatory: Direction in which the space gap is kept with respect to the reference entity. [longitudinal] to keep distance in the s-axis. [lateral] to keep distance in the t-axis
+    reference: physical_object          # Mandatory: The actor keeps the driving distance to this reference entity
+    direction: road_distance_direction  # Mandatory: Direction in which the space gap is kept with respect to the reference entity. [longitudinal] to keep distance in the s-axis. [lateral] to keep distance in the t-axis
 
 action vehicle.change_time_headway inherits vehicle.action_for_vehicle:
-    target: time                                                # Mandatory: Target time headway between the actor and the reference entity. Time headway is measured according to the time_headway() method
-    direction: headway_direction                                # Mandatory: Placement of the actor with respect to the reference entity
-    reference: physical_object                                  # Mandatory: The actor reaches the time headway to this reference entity
+    target:    time               # Mandatory: Target time headway between the actor and the reference entity. Time headway is measured according to the time_headway() method
+    direction: headway_direction  # Mandatory: Placement of the actor with respect to the reference entity
+    reference: physical_object    # Mandatory: The actor reaches the time headway to this reference entity
 
 action vehicle.keep_time_headway inherits vehicle.action_for_vehicle:
-    reference: physical_object                                  # Mandatory: The actor keeps the driving distance to this reference entity
-    direction: headway_direction                                # Mandatory: Direction in which the space gap is kept with respect to the reference entity. [longitudinal] to keep distance in the s-axis. [lateral] to keep distance in the t-axis
+    reference: physical_object  # Mandatory: The actor keeps the time headway to this reference entity
+
+action vehicle.change_space_headway inherits vehicle.action_for_vehicle:
+    target:    length             # Mandatory: Target space headway between the actor and the reference entity. Space headway is measured according to the space_headway() method
+    direction: headway_direction  # Mandatory: Placement of the actor with respect to the reference entity
+    reference: physical_object    # Mandatory: The actor reaches the space headway to this reference entity
+
+action vehicle.keep_space_headway inherits vehicle.action_for_vehicle:
+    reference: physical_object  # Mandatory: The actor keeps the space headway to this reference entity
+
+action vehicle.change_time_gap inherits vehicle.action_for_vehicle:
+    target:    time             # Mandatory: Target time gap between the actor and the reference entity. Distance is measured according to the time_gap() method
+    direction: gap_direction    # Mandatory: Placement of the actor with respect to the reference entity. [ahead, behind] means time gap is measured in the s-axis. [left, right, inside, outside] means time gap is measured in the t-axis
+    reference: physical_object  # Mandatory: The actor reaches the time gap distance to this reference entity
+
+action vehicle.keep_time_gap inherits vehicle.action_for_vehicle:
+    reference: physical_object          # Mandatory: The actor keeps the driving distance to this reference entity
+    direction: road_distance_direction  # Mandatory: Direction in which the time gap is kept with respect to the reference entity. [longitudinal] to keep tiem gap in the s-axis. [lateral] to keep time gap in the t-axis
+
+action vehicle.connect_trailer inherits vehicle.action_for_vehicle:
+    trailer: trailer  # Mandatory: Reference to the trailer that will be connected
+
+action vehicle.disconnect_trailer inherits vehicle.action_for_vehicle
 
 ###########
 # Action - person
@@ -666,325 +912,378 @@ action person.walk inherits person.action_for_person
 action environment.action_for_environment inherits osc_actor.osc_action
 
 action environment.air inherits environment.action_for_environment:
-    temperature: temperature = 25.0celsius
-    pressure: pressure = 101325pascal
-    relative_humidity: float = 0.0
+    temperature:       temperature  # Optional:  See definition of 'air'.
+    pressure:          pressure     # Optional:  See definition of 'air'.
+    relative_humidity: float        # Optional:  See definition of 'air'.
 
 action environment.rain inherits environment.action_for_environment:
-    intensity: speed = 0.0mps
+    intensity: speed  # Optional:  See definition of precipitation struct.
 
 action environment.snow inherits environment.action_for_environment:
-    intensity: speed = 0.0mps
+    intensity: speed  # Optional:  See definition of precipitation struct.
 
 action environment.wind inherits environment.action_for_environment:
-    speed: speed = 0.0mps
-    direction: angle = 0.0rad
+    speed:     speed  # Optional:  See definition of 'wind'.
+    direction: angle  # Optional:  See definition of 'wind'.
 
 action environment.fog inherits environment.action_for_environment:
-    visual_range: length = 0.0m
+    visual_range: length  # Optional:  See definition of 'fog'.
 
-action environment.cloud inherits environment.action_for_environment:
-    cloudiness: uint = 0
+action environment.clouds inherits environment.action_for_environment:
+    cloudiness: uint  # Optional:  See definition of 'clouds'.
 
 action environment.assign_celestial_position inherits environment.action_for_environment:
-    light_source: celestial_light_source
-    azimuth: angle
-    elevation: angle
+    light_source: celestial_light_source  # Mandatory: Celestial light source whose position will be assigned.
+    azimuth:      angle                   # Optional:  See definition of 'celestial_position_2d'.
+    elevation:    angle                   # Optional:  See definition of 'celestial_position_2d'.
+
+###########
+# Action - traffic light_controller
+##########
+
+action traffic_light_controller.set_bulb_state:
+    traffic_light: traffic_light  # Optional:  The traffic light to which the bulb belongs. Some bulbs can be independent of traffic lights
+    bulb_color:    bulb_color     # Mandatory: Color of the bulb
+    bulb_kind:     bulb_icon      # Mandatory: Icon type of the bulb
+    bulb_state:    bulb_state     # Mandatory: Bulb state to be set
+    sync:          bool with:     # Mandatory: If true, bulb states of all traffic lights in the same synchronization group are set to a bulb state that is consistent according to map.traffic_light_control
+        keep(default it == false)
+
+action traffic_light_controller.set_state:
+    traffic_light: traffic_light       # Mandatory: The traffic light affected by the action
+    state:         list of bulb_state  # Mandatory: List of bulb states to be set by the action
+    sync:          bool with:          # Mandatory: If true, states of all traffic lights in the same synchronization group are set to a state that is consistent according to map.traffic_light_control
+        keep(default it == false)
+
+action traffic_light_controller.set_semantic_state:
+    traffic_light: traffic_light                 # Mandatory: The traffic light affected by the action
+    state:         semantic_traffic_light_state  # Mandatory: Semantic state to be set by the action
+    sync:          bool with:                    # Mandatory: If true, states of all traffic lights in the same synchronization group are set to a state that is consistent according to map.traffic_light_control
+        keep(default it == false)
+
+action traffic_light_controller.set_group_bulb_state:
+    traffic_light: traffic_light  # Mandatory: The traffic light group affected by the action
+    bulb_color:    bulb_color     # Mandatory: Color of the bulb
+    bulb_kind:     bulb_icon      # Mandatory: Icon type of the bulb
+    bulb_state:    bulb_state     # Mandatory: Bulb state to be set
+    sync:          bool with:     # Mandatory: If true, states of all traffic lights in the same synchronization group are set to a state that is consistent according to map.traffic_light_control
+        keep(default it == false)
+
+action traffic_light_controller.set_group_state:
+    group: traffic_light_group  # Mandatory: The traffic light group affected by the action
+    state: list of bulb_state   # Mandatory: List of bulb states to be set by the action
+    sync:  bool with:           # Mandatory: If true, states of all traffic lights in the same synchronization group are set to a state that is consistent according to map.traffic_light_control
+        keep(default it == false)
+
+action traffic_light_controller.set_group_semantic_state:
+    traffic_light_group: traffic_light_group           # Mandatory: The traffic light group affected by the action
+    state:               semantic_traffic_light_state  # Mandatory: List of semantic states to be set by the action
+    sync:                bool with:                    # Mandatory: If true, states of all traffic lights in the same synchronization group are set to a state that is consistent according to map.traffic_light_control
+        keep(default it == false)
+
+action traffic_light_controller.play_cycles:
+    cycles: list of traffic_light_cycle  # Mandatory: list of traffic light cycles to be executed
 
 #####################################
 # Modifier - location based modifiers
 #####################################
 
-# modifier position of movable_object.action_for_movable_object:
-#     distance: length                                        # Mandatory: A value with a distance unit.
-#     time: time with:                                        # Mandatory: A value with a time unit.
-#         keep(default it == 0sec)
-#     ahead_of, behind: physical_object                       # Optional: A named instance of the vehicle actor example: example, vehicle2
+#modifier position of movable_object.action_for_movable_object:
+    #distance: length                                        # Mandatory: A value with a distance unit.
+    #time: time with:                                        # Mandatory: A value with a time unit.
+        #keep(default it == 0sec)
+    #ahead_of, behind: physical_object                       # Optional : A named instance of the vehicle actor example: example, vehicle2
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+    #at: at with:                                            # Optional : uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                      # Optional : uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                      # Optional : uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                        # Optional : uses struct any_shape
 
-# modifier distance of movable_object.action_for_movable_object:
-#     distance: length                                        # Mandatory: The distance the actor should travel in the current movement.
+#modifier keep_position of movable_object.action_for_movable_object:
+    #shape: any_shape                                         # Optional: uses struct any_shape
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+    #at: at with:                                             # Optional: uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
 
-# modifier lane of movable_object.action_for_movable_object:
-#     lane: uint with:                                          # Mandatory: An integer indicating a required lane for a drive
-#         keep(default it == 1)
-#     same_as: physical_object
-#     side_of: physical_object
-#     side: side_left_right
-#     from: side_left_right
+#modifier distance of movable_object.action_for_movable_object:
+    #distance: length                                        # Mandatory: The distance the actor should travel in the current movement.
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+    #at: at with:                                             # Optional: uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                         # Optional: uses struct any_shape
 
-# modifier keep_lane of movable_object.action_for_movable_object:
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+#modifier lane of movable_object.action_for_movable_object:
+    #lane: uint with:                                          # Mandatory: An integer indicating a required lane for a drive
+        #keep(default it == 1)
+    #same_as: physical_object
+    #side_of: physical_object
+    #side: side_left_right
+    #from: side_left_right
 
-# modifier lateral of movable_object.action_for_movable_object:
-#     distance: length with:                                  # Mandatory: The offset from reference line. The default is [-10.0..10.0]centimeter.
-#         keep(default it in [-10.0cm..10.0cm])
-#     left_of, right_of, same_as, side_of: physical_object    # Optional:
-#     side: side_left_right                                   # Optional:
-#     measure_by: lat_measure_by with:                        # Optional: This parameter specifies the measurement start and end points.
-#         keep(default it == closest)
+    #at: at with:                                             # Optional : uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                       # Optional : uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                       # Optional : uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                         # Optional : uses struct any_shape
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+#modifier lateral of movable_object.action_for_movable_object:
+    #distance: length with:                                  # Mandatory: The offset from reference line. The default is [-10.0cm..10.0cm].
+        #keep(default it in [-10.0cm..10.0cm])
+    #left_of, right_of, same_as, side_of: physical_object    # Optional:
+    #side: side_left_right                                   # Optional:
+    #measure_by: lat_measure_by with:                        # Optional: This parameter specifies the measurement start and end points.
+        #keep(default it == closest)
 
-# modifier yaw of movable_object.action_for_movable_object:
-#     angle: angle                                            # Mandatory: A value with an angle unit. This parameter is mandatory
-#     relative_to: physical_object                            # Optional: A named instance of the vehicle actor example: example, vehicle2
-#     measure_by: yaw_measure_by with:                        # Optional: Defines reference lines of the context and referenced objects, where width is an x-axis and long is a y-axis.
-#         keep(default it == relative_to_road)
+    #at: at with:                                            # Optional: uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                      # Optional: uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                      # Optional: uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                        # Optional: uses struct any_shape
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+#modifier yaw of movable_object.action_for_movable_object:
+    #angle: angle                                            # Mandatory: A value with an angle unit. This parameter is mandatory
+    #relative_to: physical_object                            # Optional : A named instance of the vehicle actor example: example, vehicle2
+    #measure_by: yaw_measure_by with:                        # Optional : Defines reference lines of the context and referenced objects, where width is an x-axis and long is a y-axis.
+        #keep(default it == relative_to_road)
 
-# modifier orientation of movable_object.action_for_movable_object:
-#     yaw: angle                                              # Mandatory: A value with an angle unit. This parameter is mandatory for either yaw, pitch and roll
-#     pitch: angle                                            # Mandatory: A value with an angle unit. This parameter is mandatory for either yaw, pitch and roll
-#     roll: angle                                             # Mandatory: A value with an angle unit. This parameter is mandatory for either yaw, pitch and roll
-#     relative_to: physical_object                            # Optional: A named instance of the vehicle actor example: example, vehicle2
-#     measured_by: orientation_measured_by with:              # Optional: defines how to measure the desired orientation. Values include absolute, relative_to_reference, relative_to_road. the default is relative_to_road
-#         keep(default it == relative_to_road)
+    #at: at with:                                            # Optional : uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                      # Optional : uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                      # Optional : uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                        # Optional : uses struct any_shape
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+#modifier orientation of movable_object.action_for_movable_object:
+    #yaw: angle                                              # Mandatory: A value with an angle unit. This parameter is mandatory for either yaw, pitch and roll
+    #pitch: angle                                            # Mandatory: A value with an angle unit. This parameter is mandatory for either yaw, pitch and roll
+    #roll: angle                                             # Mandatory: A value with an angle unit. This parameter is mandatory for either yaw, pitch and roll
+    #relative_to: physical_object                            # Optional : A named instance of the vehicle actor example: example, vehicle2
+    #measured_by: orientation_measured_by with:              # Optional : defines how to measure the desired orientation. Values include absolute, relative_to_reference, relative_to_road. the default is relative_to_road
+        #keep(default it == relative_to_road)
+
+    #at: at with:                                            # Optional : uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                      # Optional : uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                      # Optional : uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                        # Optional : uses struct any_shape
 
 #modifier along of movable_object.action_for_movable_object:
-#    route: route                                            # Mandatory: The route to move on.
-#    start_offset: length with:                              # Optional: Offset at which to begin following the route, measured from the route's start. Default = 0m
-#        keep(default it == 0m)
-#    end_offset: length                                      # Optional: Offset at which to end following the route, measured from the route's end. Default = 0m
-#        keep(default it == 0m)
+    #route: route                                            # Mandatory: The route to move on.
+    #start_offset: length with:                              # Optional : Offset at which to begin following the route, measured from the start of the route. Default = 0m
+        #keep(default it == 0m)
+    #end_offset: length with:                                # Optional : Offset at which to end following the route, measured from the end of the route. Default = 0m
+        #keep(default it == 0m)
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
-
-# modifier keep_position of movable_object.action_for_movable_object:
-#     shape: any_shape                                         # Optional: uses struct any_shape
-
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
+    #at: at with:                                            # Optional : uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                      # Optional : uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                      # Optional : uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                        # Optional : uses struct any_shape
 
 #modifier along_trajectory of movable_object.action_for_movable_object:
-#    trajectory: trajectory                                   # The trajectory to move along.
-#    start_offset: length with:                               # Offset at which to begin following the trajectory, measured from the trajectory's start. Default = 0m
-#        keep(default it == 0m)
-#    end_offset: length with:                                 # Offset at which to end following the trajectory, measured from the trajectory's end. Default = 0m
-#        keep(default it == 0m)
+    #trajectory: trajectory                                   # The trajectory to move along.
+    #start_offset: length with:                               # Offset at which to begin following the trajectory, measured from the start of the trajectory. Default = 0m
+        #keep(default it == 0m)
+    #end_offset: length with:                                 # Offset at which to end following the trajectory, measured from the end of the trajectory. Default = 0m
+        #keep(default it == 0m)
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
+    #at: at with:                                             # Optional: uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
 
-# modifier stationary_object.location:
-#     pose: pose_3d                                      # Mandatory. Location of the stationary object for the whole scenario.
+#modifier stationary_object.location:
+    #pose: pose_3d                                      # Mandatory. Location of the stationary object for the whole scenario.
 
 ###########################################
 # Modifier - rate of change based modifiers
 ###########################################
 
-# modifier speed of movable_object.action_for_movable_object:
-#     speed: speed                                            # Mandatory: The vehicle's desired speed.
-#     faster_than, slower_than, same_as: physical_object      # Optional: A named instance of the actor example: example, vehicle2
+#modifier speed of movable_object.action_for_movable_object:
+    #speed: speed                                            # Mandatory: The vehicle's desired speed.
+    #faster_than, slower_than, same_as: physical_object      # Optional : A named instance of the actor example: example, vehicle2
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+    #at: at with:                                            # Optional : uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                      # Optional : uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                      # Optional : uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                        # Optional : uses struct any_shape
+    #factor: float with:                                     # Optional : A factor to apply to the referenced speed of the named actor instance
+        #keep(default it == 1.0)
 
-# modifier acceleration of movable_object.action_for_movable_object:
-#     acceleration: acceleration                              # A value appended with an acceleration unit.
-#     faster_than, slower_than, same_as: physical_object      # Optional: A named instance of the actor example: example, vehicle2
+#modifier change_speed of movable_object.action_for_movable_object:
+    #speed: speed                                            # Mandatory: The desired speed for the vehicle.
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+    #at: at with:                                            # Optional : uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                      # Optional : uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                      # Optional : uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                        # Optional : uses struct any_shape
 
-# modifier keep_speed of movable_object.action_for_movable_object:
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+#modifier keep_speed of movable_object.action_for_movable_object:
+    #at: at with:                                             # Optional: uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                         # Optional: uses struct any_shape
 
-# modifier change_speed of movable_object.action_for_movable_object:
-#     speed: speed                                            # Mandatory: The vehicle's desired speed.
+#modifier acceleration of movable_object.action_for_movable_object:
+    #acceleration: acceleration                              # A value appended with an acceleration unit.
+    #faster_than, slower_than, same_as: physical_object      # Optional: A named instance of the actor example: example, vehicle2
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+    #at: at with:                                            # Optional: uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                      # Optional: uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                      # Optional: uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                        # Optional: uses struct any_shape
 
-# modifier physical_movement of movable_object.action_for_movable_object:
-#     option: movement_options
+#odifier change_lane of movable_object.action_for_movable_object:
+    #lane: uint with:
+        #keep(default it == 1)                                # Mandatory: The number of lanes to change from. The default is 1.
+    #side: side_left_right                                    # Optional : Left or right. The side is randomized if not specified.
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+    #at: at with:                                             # Optional : uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                       # Optional : uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                       # Optional : uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                         # Optional : uses struct any_shape
 
-# modifier avoid_collisions of movable_object.action_for_movable_object:
-#     avoid: bool                                              # Mandatory: Either true or false.
+#modifier keep_lane of movable_object.action_for_movable_object:
+    #at: at with:                                             # Optional: uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                         # Optional: uses struct any_shape
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+#modifier physical_movement of movable_object.action_for_movable_object:
+    #option: movement_options
 
-# modifier change_lane of movable_object.action_for_movable_object:
-#     lane: uint with:
-#         keep(default it == 1)                                # Mandatory: The number of lanes to change from. The default is 1.
-#     side: side_left_right                                    # Optional: Left or right. The side is randomized if not specified.
+    #at: at with:                                             # Optional: uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                         # Optional: uses struct any_shape
 
-#     at: at with:                                             # Optional: uses enum at to support: start | end | all (default: all)
-#         keep(default it == all)
-#     movement_mode: movement_mode with:                       # Optional: uses enum movement_mode: monotonous | other (default: other)
-#         keep(default it == other)
-#     track: track with:                                       # Optional: uses enum track: actual | projected (default: actual)
-#         keep(default it == actual)
-#     shape: any_shape                                         # Optional: uses struct any_shape
+#modifier avoid_collisions of movable_object.action_for_movable_object:
+    #avoid: bool                                              # Mandatory: Either true or false.
+
+    #at: at with:                                             # Optional : uses enum at: start | end | all (default: all)
+        #keep(default it == all)
+    #movement_mode: movement_mode with:                       # Optional : uses enum movement_mode: monotonous | other (default: other)
+        #keep(default it == other)
+    #track: track with:                                       # Optional : uses enum track: actual | projected (default: actual)
+        #keep(default it == actual)
+    #shape: any_shape                                         # Optional : uses struct any_shape
 
 # ################################
 # # Modifier - map based modifiers
 # ################################
 
-# modifier map.number_of_lanes:
-#     route: route                                            # Mandatory: The route that has these constraints
-#     num_of_lanes: uint                                      # Mandatory: The desired number of lanes
-#     lane_type: lane_type with:                              # Optional: Apply the constraint to the number of lanes with this type.
-#         keep(default it == driving)
-#     lane_use: lane_use with:                                # Optional: Apply the constraint to the number of lanes with this use.
-#         keep(default it == normal)
-#     directionality: directionality with:                    # Optional: Apply the constraint to the number of lanes with this directionality.
-#         keep(default it == uni_direction)
+#modifier map.number_of_lanes:
+    #route: route                                            # Mandatory: The route that has these constraints
+    #num_of_lanes: uint                                      # Mandatory: The desired number of lanes
+    #lane_type: lane_type with:                              # Optional: Apply the constraint to the number of lanes with this type.
+        #keep(default it == driving)
+    #lane_use: lane_use with:                                # Optional: Apply the constraint to the number of lanes with this use.
+        #keep(default it == normal)
+    #directionality: directionality with:                    # Optional: Apply the constraint to the number of lanes with this directionality.
+        #keep(default it == uni_direction)
 
-# modifier map.routes_are_in_sequence:
-#     preceding: route                                        # The first route
-#     succeeding: route                                       # The second route, which follows after the first route.
-#     road: road                                              # Optional: The road that will contain this sequence of routes.
+#modifier map.routes_are_in_sequence:
+    #preceding: route                                        # The first route
+    #succeeding: route                                       # The second route, which follows after the first route.
+    #road: road                                              # Optional: The road that will contain this sequence of routes.
 
-# modifier map.roads_follow_in_junction:
-#     junction: junction                                      # The junction to be used.
-#     in_road: road                                           # The chosen road that leads into the junction.
-#     out_road: road                                          # The chosen road that leads away from the junction.
-#     direction: junction_direction                           # Indicates the direction of the out_road relative to the in_road.
-#     clockwise_count: uint                                  # out_road is clockwise_count roads from in_road, counting clockwise.
-#     number_of_roads: uint                                   # Total number of in_roads connected to the junction.
-#     in_lane: lane                                           # The chosen lane within in_road.
-#     out_lane: lane                                          # The chosen lane within out_road.
-#     junction_route: route                                   # The element(s) that connect the in_lane or in_road to the out_lane or out_road within the junction.
-#     resulting_route: route                                  # The route going from in_lane or in_road to the out_lane or out_road.
+#modifier map.roads_follow_in_junction:
+    #junction: junction                                      # The junction to be used.
+    #in_road: road                                           # The chosen road that leads into the junction.
+    #out_road: road                                          # The chosen road that leads away from the junction.
+    #direction: junction_direction                           # Indicates the direction of the out_road relative to the in_road.
+    #clockwise_count: uint                                  # out_road is clockwise_count roads from in_road, counting clockwise.
+    #number_of_roads: uint                                   # Total number of in_roads connected to the junction.
+    #in_lane: lane                                           # The chosen lane within in_road.
+    #out_lane: lane                                          # The chosen lane within out_road.
+    #junction_route: route                                   # The element(s) that connect the in_lane or in_road to the out_lane or out_road within the junction.
+    #resulting_route: route                                  # The route going from in_lane or in_road to the out_lane or out_road.
 
-# modifier map.routes_overlap:
-#     route1: route                                           # Mandatory: The first of the overlapping routes.
-#     route2: route                                           # Mandatory: The second of the overlapping routes.
-#     overlap_kind: route_overlap_kind                        # Mandatory: The type of expected overlap. Notice route1 is considered the first route to interpret the values of the enum.
+#modifier map.routes_overlap:
+    #route1: route                                           # Mandatory: The first of the overlapping routes.
+    #route2: route                                           # Mandatory: The second of the overlapping routes.
+    #overlap_kind: route_overlap_kind                        # Mandatory: The type of expected overlap. Notice route1 is considered the first route to interpret the values of the enum.
 
-# modifier map.lane_side:
-#     lane1: lane                                             # Mandatory: The first lane.
-#     side: side_left_right                                   # Mandatory: Locate lane1 on this side of lane2.
-#     lane2: lane                                             # Mandatory: The second lane.
-#     count: uint                                             # Mandatory: How far is lane1 from lane2?
-#     lane_section: lane_section                              # Optional: lane_section where the lanes reside.
+#modifier map.lane_side:
+    #lane1: lane                                             # Mandatory: The first lane.
+    #side: side_left_right                                   # Mandatory: Locate lane1 on this side of lane2.
+    #lane2: lane                                             # Mandatory: The second lane.
+    #count: uint                                             # Mandatory: How far is lane1 from lane2?
+    #lane_section: lane_section                              # Optional: lane_section where the lanes reside.
 
-# modifier map.compound_lane_side:
-#     lane1: compound_lane                                    # Mandatory: The first compound_lane
-#     side: side_left_right                                   # Mandatory: Locate lane1 on this side of lane2
-#     lane2: compound_lane                                    # Mandatory: The second compound_lane
-#     count: uint                                             # Mandatory: number of from lane1 from lane2
-#     route: route                                            # Optional: The route where the compound lanes reside
+#modifier map.compound_lane_side:
+    #lane1: compound_lane                                    # Mandatory: The first compound_lane
+    #side: side_left_right                                   # Mandatory: Locate lane1 on this side of lane2
+    #lane2: compound_lane                                    # Mandatory: The second compound_lane
+    #count: uint                                             # Mandatory: number of from lane1 from lane2
+    #route: route                                            # Optional: The route where the compound lanes reside
 
-# modifier map.end_lane:
-#     lane: lane                                              # Mandatory: This lane ends in its current lane_section
+#modifier map.end_lane:
+    #lane: lane                                              # Mandatory: This lane ends in its current lane_section
 
-# modifier map.start_lane:
-#     lane: lane                                              # Mandatory: This lane starts in its current lane_section
+#modifier map.start_lane:
+    #lane: lane                                              # Mandatory: This lane starts in its current lane_section
 
-# modifier map.crossing_connects:
-#     crossing: crossing                                      # Mandatory: The crossing that is connected to the specified lanes
-#     start_lane: lane                                        # Mandatory: The lane where crossing starts (starting from the centerline of the lane)
-#     end_lane: lane                                          # Mandatory: The destination lane where the crossing ends (ending on the centerline of the lane).
-#     start_s_coord: length                                   # Mandatory: The crossing origin derived from a s-position along the centerline of start_lane.
-#     start_angle: angle with:                                # Optional: The angle at which the straight centerline of the crossing originates from the start lane. Default is perpendicular.
-#         keep(default it == 90deg)
+#modifier map.crossing_connects:
+    #crossing: crossing                                      # Mandatory: The crossing that is connected to the specified lanes
+    #start_lane: lane                                        # Mandatory: The lane where crossing starts (starting from the centerline of the lane)
+    #end_lane: lane                                          # Mandatory: The destination lane where the crossing ends (ending on the centerline of the lane).
+    #start_s_coord: length                                   # Mandatory: The crossing origin derived from a s-position along the centerline of start_lane.
+    #start_angle: angle with:                                # Optional: The angle at which the straight centerline of the crossing originates from the start lane. Default is perpendicular.
+        #keep(default it == 90deg)
 
-# modifier map.routes_are_opposite:
-#     route1: route                                           # Mandatory: The first uni-directional route.
-#     route2: route                                           # Mandatory: The second uni-directional route.
-#     containing_road: road                                   # Mandatory: The road to which both routes belong.
-#     lateral_overlap: lateral_overlap_kind                   # Mandatory: Specifies if the routes overlap lateral, meaning they become a single two-way lane.
+#modifier map.routes_are_opposite:
+    #route1: route                                           # Mandatory: The first uni-directional route.
+    #route2: route                                           # Mandatory: The second uni-directional route.
+    #containing_road: road                                   # Mandatory: The road to which both routes belong.
+    #lateral_overlap: lateral_overlap_kind                   # Mandatory: Specifies if the routes overlap lateral, meaning they become a single two-way lane.
 
-# modifier map.set_map_file:
-#     file: string                                            # Mandatory: The path and file name for the map file.
+#modifier map.set_map_file:
+    #file: string                                            # Mandatory: The path and file name for the map file.
+
+#modifier map.set_traffic_lights_control_file:
+    #file: string                                            # Mandatory: The path and file name for the traffic lights control file.
+
