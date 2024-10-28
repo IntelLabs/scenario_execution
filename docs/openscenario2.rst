@@ -1,17 +1,16 @@
-OpenSCENARIO 2
-==============
+OpenSCENARIO DSL
+================
 
 General
 -------
 
-This tool supports a subset of the `OpenSCENARIO
-2 <https://www.asam.net/project-detail/asam-openscenario-v20-1/>`__ standard.
+This tool supports a subset of the `OpenSCENARIO DSL <https://www.asam.net/standards/detail/openscenario-dsl/>`__ standard.
 
 The official documentation is available
-`here <https://www.asam.net/static_downloads/public/asam-openscenario/2.0.0/welcome.html>`__.
+`here <https://publications.pages.asam.net/standards/ASAM_OpenSCENARIO/ASAM_OpenSCENARIO_DSL/latest/index.html>`__.
 
 The `standard library of
-OSC2 <https://www.asam.net/static_downloads/public/asam-openscenario/2.0.0/domain-model/standard_library.html>`__
+OSC2 <https://publications.pages.asam.net/standards/ASAM_OpenSCENARIO/ASAM_OpenSCENARIO_DSL/latest/domain-model/_attachments/ASAM_OpenSCENARIO_DSL_v2.1.0_Domain_model_library.zip>`__
 was adapted to be usable by the current parsing support of scenario execution.
 
 
@@ -46,7 +45,7 @@ Mapping to py-trees
 Supported features
 ------------------
 
-In the following the OpenSCENARIO 2 keywords are listed with their current support status.
+In the following the OpenSCENARIO DSL keywords are listed with their current support status.
 
 
 ======================= ==================== =============================
