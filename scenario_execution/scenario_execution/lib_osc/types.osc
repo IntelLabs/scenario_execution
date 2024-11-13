@@ -156,7 +156,7 @@ struct position_3d inherits position:
     x: length = 0.0m
     y: length = 0.0m
     z: length = 0.0m
-    def norm() -> length is undefined
+    # def norm() -> length is undefined
 
 struct celestial_position_2d inherits position:
     azimuth: angle = 0.0rad
@@ -179,7 +179,7 @@ struct translational_velocity_3d:
     x: speed = 0.0mps
     y: speed = 0.0mps
     z: speed = 0.0mps
-    def norm() -> speed is undefined
+    # def norm() -> speed is undefined
 
 struct orientation_rate_3d:
     roll: angular_rate = 0.0radps
@@ -194,7 +194,7 @@ struct translational_acceleration_3d:
     x: acceleration = 0.0mpsps
     y: acceleration = 0.0mpsps
     z: acceleration = 0.0mpsps
-    def norm() -> acceleration is undefined
+    # def norm() -> acceleration is undefined
 
 struct orientation_acceleration_3d:
     roll: angular_acceleration = 0.0radpsps
