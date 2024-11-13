@@ -64,10 +64,6 @@ class KubernetesWaitForPodStatus(BaseAction):
         self.last_state = None
 
     def update(self) -> py_trees.common.Status:
-        print('que started.....')
-        for item in list(self.update_queue.queue):
-            print(item)
-        print('que end.....')
         while not self.update_queue.empty():
             item = self.update_queue.get()
             if len(item) != 2:
@@ -98,7 +94,6 @@ class KubernetesWaitForPodStatus(BaseAction):
                 pod_status = pod.status.phase
                 self.update_queue.put((pod_name, pod_status))
             for event in w.stream(self.client.list_namespaced_pod, namespace=self.namespace):
-                print('Thread is runnnin.....')
                 pod_name = event['object'].metadata.name
                 pod_status = event['object'].status.phase
                 if self.current_state == KubernetesWaitForPodStatusState.MONITORING:
