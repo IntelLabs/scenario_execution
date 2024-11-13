@@ -182,9 +182,9 @@ struct translational_velocity_3d:
     def norm() -> speed is undefined
 
 struct orientation_rate_3d:
-    roll: angular_rate
-    pitch: angular_rate
-    yaw: angular_rate
+    roll: angular_rate = 0.0radps
+    pitch: angular_rate = 0.0radps
+    yaw: angular_rate = 0.0radps
 
 struct velocity_6d:
     translational: translational_velocity_3d
@@ -197,9 +197,9 @@ struct translational_acceleration_3d:
     def norm() -> acceleration is undefined
 
 struct orientation_acceleration_3d:
-    roll: angular_acceleration
-    pitch: angular_acceleration
-    yaw: angular_acceleration
+    roll: angular_acceleration = 0.0radpsps
+    pitch: angular_acceleration = 0.0radpsps
+    yaw: angular_acceleration = 0.0radpsps
 
 struct acceleration_6d:
     translational: translational_acceleration_3d
