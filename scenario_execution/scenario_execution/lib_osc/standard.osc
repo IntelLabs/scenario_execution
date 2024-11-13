@@ -13,14 +13,18 @@
 # "The licensor grants everyone a basic, non-exclusive and unlimited license to use the standard ASAM OpenSCENARIO DSL".
 ###########
 
+###########
 # ATTENTION: This file is modified to be compatible with
 #            the feature set of scenario execution.
+# - namespace disabled
+###########
 
-import osc.standard.base
+import osc.types
 
-namespace std use stdtypes
+# TODO: enable once namespaces are supported
+# namespace std use stdtypes
 
-export *
+# export *
 
 struct axle:
     max_steering:     angle   # Mandatory: Maximum steering angle for the wheels on the axle

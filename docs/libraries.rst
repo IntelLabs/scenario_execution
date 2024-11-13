@@ -1,7 +1,7 @@
 Libraries
 =========
 
-Beside ``osc.standard`` provided by OpenSCENARIO DSL (which we divide into ``osc.standard`` and ``osc.standard_base``), multiple libraries are provided with scenario execution.
+Beside ``osc.standard`` and ``osc.types`` provided by OpenSCENARIO DSL, multiple libraries are provided with scenario execution.
 
 .. list-table:: 
    :widths: 40 60
