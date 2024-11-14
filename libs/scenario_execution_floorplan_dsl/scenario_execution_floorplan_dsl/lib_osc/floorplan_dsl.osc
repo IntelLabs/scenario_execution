@@ -1,4 +1,4 @@
-import osc.standard.base
+import osc.types
 
 actor floorplan_generator:
     result: string

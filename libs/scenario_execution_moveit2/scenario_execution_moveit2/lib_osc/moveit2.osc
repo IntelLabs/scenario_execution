@@ -1,4 +1,4 @@
-import osc.standard.base
+import osc.types
 import osc.robotics
 
 enum move_group_type: [
