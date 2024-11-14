@@ -1,4 +1,4 @@
-import osc.standard.base
+import osc.types
 
 enum signal: [
     sighup = 1,

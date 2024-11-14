@@ -1,4 +1,4 @@
-import osc.standard.base
+import osc.types
 import osc.robotics
 
 actor simulation_pybullet
