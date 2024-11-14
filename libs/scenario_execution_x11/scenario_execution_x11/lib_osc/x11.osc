@@ -1,4 +1,4 @@
-import osc.standard.base
+import osc.types
 
 action capture_screen:
     # Capture the screen content within a video

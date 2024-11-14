@@ -43,6 +43,6 @@ import osc.standard
 
     def test_standard_common_osc(self):
         scenario_content = """
-import osc.standard.base
+import osc.types
 """
         model = self.parse(scenario_content)

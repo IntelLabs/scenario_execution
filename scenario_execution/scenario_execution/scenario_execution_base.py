@@ -92,13 +92,15 @@ class ScenarioExecution(object):
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_period: float = 0.1,
                  scenario_parameter_file=None,
-                 logger=None) -> None:
+                 logger=None,
+                 register_signal=True) -> None:
 
         def signal_handler(sig, frame):
             self.on_scenario_shutdown(False, "Aborted")
 
-        signal.signal(signal.SIGHUP, signal_handler)
-        signal.signal(signal.SIGTERM, signal_handler)
+        if register_signal:
+            signal.signal(signal.SIGHUP, signal_handler)
+            signal.signal(signal.SIGTERM, signal_handler)
 
         self.current_scenario_start = None
         self.current_scenario = None

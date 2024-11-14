@@ -26,5 +26,5 @@ def get_standard_library():
     return 'scenario_execution', 'standard.osc'
 
 
-def get_standard_base_library():
-    return 'scenario_execution', 'standard_base.osc'
+def get_types_library():
+    return 'scenario_execution', 'types.osc'

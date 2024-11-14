@@ -3,7 +3,7 @@ Scenario Execution
 ==================
 
 Scenario Execution for Robotics is a backend- and middleware-agnostic library, that enables the robotics community to perform reproducible experiments at scale and allows a seamless transition from simulation to real-world experiments.
-Scenario Execution is written in Python and builds upon the generic scenario description language `OpenScenario2 <https://www.asam.net/static_downloads/public/asam-openscenario/2.0.0/welcome.html>`__ and `pytrees <https://py-trees.readthedocs.io/en/devel/>`__.  
+Scenario Execution is written in Python and builds upon the generic scenario description language `OpenSCENARIO DSL <https://www.asam.net/standards/detail/openscenario-dsl/>`__ and `pytrees <https://py-trees.readthedocs.io/en/devel/>`__.  
 
 Scenario Execution reads a scenario definition from a file, translates it to a py-trees behavior tree and then executes it. This separation of the scenario definition from the implementation massively reduces the manual efforts of (robotics) scenario creation.
 Although Scenario Execution can be used as a pure Python library, it is mainly targeted to be used with the `Robot Operating System (ROS2) <https://www.ros.org/>`__. The backend-agnostic implementation allows Scenario Execution to be used with both, robotics simulators such as `Gazebo <https://gazebosim.org/>`__ and physical robots, with minimal adaptations necessary in the scenario description file. 
@@ -37,5 +37,5 @@ If you use Scenario Execution for Robotics in your scientific work, please cite 
    architecture
    libraries
    development
-   openscenario2
+   openscenarioDSL
    how_to_cite
