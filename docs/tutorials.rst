@@ -8,13 +8,13 @@ Code for all tutorials is available in :repo_link:`examples`.
 Define and Execute Scenario
 ---------------------------
 
-To create a scenario in OpenSCENARIO 2 syntax, first create a file
+To create a scenario in OpenSCENARIO DSL syntax, first create a file
 with the extension ``.osc``. Input the following code in the file.
 
 .. code-block::
 
    # import the libraries with import expression
-   import osc.standard.base
+   import osc.types
    import osc.helpers
 
    # declare the scenario by the syntax: "scenario scenario_name:"
@@ -25,17 +25,17 @@ with the extension ``.osc``. Input the following code in the file.
            wait elapsed(3s)   # wait three seconds
            log("Good Bye!")         # log another message
 
-The first two lines ``import osc.standard.base`` and ``import osc.helpers`` will import the named libraries that provide required definitions. In this example ``helpers`` library provides the ``log`` action and ``standard.base`` provides the definition of the `s` unit to specify seconds.
+The first two lines ``import osc.types`` and ``import osc.helpers`` will import the named libraries that provide required definitions. In this example ``helpers`` library provides the ``log`` action and ``types`` provides the definition of the `s` unit to specify seconds.
 
 .. note::
-   Comments in OpenSCENARIO 2 always start with ``#``.
+   Comments in OpenSCENARIO DSL always start with ``#``.
 
 Then, a scenario with the name ``hello_world`` get declared. The following colon states that all following and indented lines
 are part of it. The single top-level action of the scenario is defined in the ``do`` directive.
 The term ``serial`` states that the included actions will be executed in sequence.
 
 .. note::
-   OpenSCENARIO 2 supports the following compositions:
+   OpenSCENARIO DSL supports the following compositions:
 
    * ``parallel``: execute actions in parallel, continue afterwards
    * ``serial``: execute actions, one after the other
@@ -70,11 +70,11 @@ Create Scenario Library
 -----------------------
 
 To add new features to scenario execution, extensions libraries can be created. An extension library typically provides one or more
-OpenSCENARIO 2 definition files and might additionally provide action implementations.
+OpenSCENARIO DSL definition files and might additionally provide action implementations.
 
 To show how to create such a library for scenario execution, we will add a ``custom_action`` action as an example.
 
-First, we need to define the ``custom_action`` in a OpenSCENARIO 2 file.
+First, we need to define the ``custom_action`` in a OpenSCENARIO DSL file.
 
 .. code-block::
 
@@ -417,7 +417,7 @@ It is possible to call external python methods and use their return value within
 
 .. code-block::
 
-    import osc.standard.base
+    import osc.types
     import osc.helpers
 
     struct lib:
