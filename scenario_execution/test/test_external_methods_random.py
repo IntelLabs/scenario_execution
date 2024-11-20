@@ -51,7 +51,7 @@ import osc.helpers
 
 scenario test_success:
     do serial:
-        wait elapsed(random.get_int(0, 10))
+        wait elapsed(random.get_int(0, 5))
         emit end
 """
         parsed_tree = self.parser.parse_input_stream(InputStream(scenario_content))
@@ -65,7 +65,7 @@ scenario test_success:
         self.assertTrue(self.scenario_execution.process_results())
 
         delta = end_time - start_time
-        self.assertLess(delta.total_seconds(), 10.)
+        self.assertLess(delta.total_seconds(), 5.)
 
     def test_get_random_string(self):
         scenario_content = """
