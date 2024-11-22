@@ -4,7 +4,7 @@ project(scenario_execution_rviz)
 set(CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 14)
 
-add_compile_options(-Wall -Wextra -Werror -flto -fvisibility=hidden -z noexecstac -fPIC -D_FORTIFY_SOURCE=2 -Wl,-z,relro,-z,now -fstack-protector-strong)
+add_compile_options(-Wall -Wextra -Werror -flto -fvisibility=hidden -z noexecstac -fPIC -Wl,-z,relro,-z,now -fstack-protector-strong)
 
 find_package(ament_cmake REQUIRED)
 find_package(rviz_common REQUIRED)

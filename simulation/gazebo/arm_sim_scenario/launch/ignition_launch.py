@@ -53,7 +53,7 @@ def generate_launch_description():
 
     # Ignition Gazebo Launch
     ignition_gazebo = ExecuteProcess(
-        cmd=['ign', 'gazebo', world, '-r', '-v', '4'],
+        cmd=['gz', 'sim', world, '-r', '-v', '4'],
         output='screen',
         additional_env=env,
         on_exit=Shutdown(),

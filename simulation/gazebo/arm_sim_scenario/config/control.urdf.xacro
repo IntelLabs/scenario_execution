@@ -82,7 +82,7 @@
 
     <xacro:if value="${ros2_control_hardware_type == 'ignition'}">
       <gazebo>
-        <plugin filename="libign_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
+        <plugin filename="libgz_ros2_control-system.so" name="ign_ros2_control::IgnitionROS2ControlPlugin">
           <robot_param>robot_description</robot_param>
           <robot_param_node>robot_state_publisher</robot_param_node>
           <parameters>$(find moveit_resources_panda_moveit_config)/config/ros2_controllers.yaml</parameters>

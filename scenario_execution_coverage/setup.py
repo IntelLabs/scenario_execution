@@ -32,7 +32,7 @@ setup(
     ],
     install_requires=[
         'setuptools',
-        'pexpect==4.8.0',
+        'pexpect==4.9',
         'defusedxml==0.7.1',
     ],
     zip_safe=True,
