@@ -25,7 +25,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           git clone https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation.git
           cd nav2_minimal_turtlebot_simulation
           git checkout f4eefd049359b3f0becabd7a0870005f4140ec08
@@ -55,7 +55,7 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
@@ -92,7 +92,7 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
@@ -127,7 +127,7 @@ jobs:
       - name: Test Scenario Files
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           find . -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation|scenario_execution_coverage|fail*|install|build" | while read -r file; do 
             echo "$file"; 
@@ -150,7 +150,7 @@ jobs:
       - name: Test Example Scenario
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           #shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario --ignore-process-return-value -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
@@ -177,7 +177,7 @@ jobs:
       - name: Test Example Library
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_library/scenarios -o test_example_library --ignore-process-return-value -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
@@ -204,7 +204,7 @@ jobs:
       - name: Test Example Variation
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
           # shellcheck disable=SC1083
@@ -232,7 +232,7 @@ jobs:
       - name: Test Example Nav2
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -265,7 +265,7 @@ jobs:
       - name: Test Example Simulation
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -298,7 +298,7 @@ jobs:
       - name: Test Example Multirobot
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -318,7 +318,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source /rosbag2_to_video/install/setup.bash
           ros2 bag to_video  -t /static_camera/image_raw -o test_example_multirobot/example_multi_robot/example-multi-robot.mp4  test_example_multirobot/example_multi_robot/rosbag2_* --fps 5 --codec mp4v
       - name: Upload video
@@ -350,7 +350,7 @@ jobs:
       - name: Test Example External Method
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
@@ -379,7 +379,7 @@ jobs:
       - name: Test Example Moveit2
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -413,7 +413,7 @@ jobs:
       - name: Test Scenario Execution Gazebo
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -446,7 +446,7 @@ jobs:
       - name: Test Scenario Execution Nav2
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -465,7 +465,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source /rosbag2_to_video/install/setup.bash
           ros2 bag to_video  -t /static_camera/image_raw -o test_scenario_execution_nav2/test_scenario_execution_nav2/example_nav2.mp4  test_scenario_execution_nav2/test_scenario_execution_nav2/rosbag2_* --fps 5 --codec mp4v
       - name: Upload video
@@ -492,7 +492,7 @@ jobs:
       - name: Test Scenario Execution PyBullet
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -522,7 +522,7 @@ jobs:
       - name: Test Scenario Execution X11
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}/setup.bash
           source install/setup.bash
           sudo apt -y install mesa-utils
           Xvfb :1 -screen 0 800x600x16 &

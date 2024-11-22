@@ -65,7 +65,7 @@ jobs:
     name: License check
     runs-on: intellabs-01
     container:
-      image: osrf/ros:humble-desktop
+      image: osrf/ros:jazzy-desktop
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
