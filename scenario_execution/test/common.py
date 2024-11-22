@@ -27,6 +27,13 @@ class DebugLogger(BaseLogger):
         self.logs_warning = []
         self.logs_error = []
 
+    def reset(self):
+        self.logs = []
+        self.logs_info = []
+        self.logs_debug = []
+        self.logs_warning = []
+        self.logs_error = []
+
     def info(self, msg: str) -> None:
         self.logs.append(msg)
         self.logs_info.append(msg)
