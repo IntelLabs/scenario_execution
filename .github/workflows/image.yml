@@ -47,7 +47,7 @@ jobs:
         push: true
         tags: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref || steps.extract_branch.outputs.branch }}
         build-args: |
-          ROS_DISTRO=${{ github.ref == 'refs/heads/main' && 'humble' || github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}
+          ROS_DISTRO=${{ github.ref == 'refs/heads/main' && 'jazzy' || github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}
   test-devcontainer:
     runs-on: intellabs-01
     permissions:
@@ -68,4 +68,4 @@ jobs:
         file: .devcontainer/Dockerfile
         push: false
         build-args: |
-          ROS_DISTRO=${{ github.ref == 'refs/heads/main' && 'humble' || github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}
+          ROS_DISTRO=${{ github.ref == 'refs/heads/main' && 'jazzy' || github.event.pull_request.base.ref == 'main' && 'jazzy' || github.event.pull_request.base.ref }}

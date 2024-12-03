@@ -40,10 +40,10 @@ def generate_launch_description():
         }],
         arguments=[
             [robot_name,
-             '/cmd_vel' + '@geometry_msgs/msg/Twist' + '[ignition.msgs.Twist'],
+             '/cmd_vel' + '@geometry_msgs/msg/Twist' + '[gz.msgs.Twist'],
             ['/model/', robot_name, '/cmd_vel' +
              '@geometry_msgs/msg/Twist' +
-             ']ignition.msgs.Twist']
+             ']gz.msgs.Twist']
         ],
         remappings=[
             (['/model/', robot_name, '/cmd_vel'], [robot_name, '/cmd_vel'])

@@ -898,7 +898,7 @@ Use MoveIt2 to move the end-effector to a specified pose, utilizing `MoveGroup a
 .. list-table:: 
    :widths: 15 15 5 65
    :header-rows: 1
-   :class: tight-table  
+   :class: tight-table   
    
    * - Parameter
      - Type

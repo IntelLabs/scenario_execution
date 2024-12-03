@@ -43,9 +43,9 @@ class GazeboDeleteActor(RunProcess):
         self.current_state = DeleteActionState.IDLE
 
     def execute(self, associated_actor, entity_name: str, world_name: str):  # pylint: disable=arguments-differ
-        self.set_command(["ign", "service", "-s", "/world/" + world_name + "/remove",
-                          "--reqtype", "ignition.msgs.Entity",
-                          "--reptype", "ignition.msgs.Boolean",
+        self.set_command(["gz", "service", "-s", "/world/" + world_name + "/remove",
+                          "--reqtype", "gz.msgs.Entity",
+                          "--reptype", "gz.msgs.Boolean",
                           "--timeout", "1000", "--req", "name: \"" + entity_name + "\" type: MODEL"])
 
     def on_executed(self):

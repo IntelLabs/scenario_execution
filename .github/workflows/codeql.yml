@@ -13,7 +13,7 @@ jobs:
     name: Analyze (${{ matrix.language }})
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     container:
-      image:  osrf/ros:humble-desktop-full
+      image:  osrf/ros:jazzy-desktop-full
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       # required for all workflows
@@ -47,12 +47,12 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
-        source /opt/ros/humble/setup.bash
+        source /opt/ros/jazzy/setup.bash
         colcon build --packages-up-to scenario_execution_interfaces
         source install/setup.bash
         apt update
-        rosdep update --rosdistro=humble
-        rosdep install --rosdistro=humble --from-paths scenario_execution_rviz --ignore-src -r -y;
+        rosdep update --rosdistro=jazzy
+        rosdep install --rosdistro=jazzy --from-paths scenario_execution_rviz --ignore-src -r -y;
         mkdir build_rviz
         cd build_rviz
         cmake ../scenario_execution_rviz

@@ -30,7 +30,7 @@ setup(
     ],
     install_requires=[
         'setuptools',
-        'transforms3d==0.3.1',
+        'transforms3d==0.4.1',
         'defusedxml==0.7.1',
     ],
     zip_safe=True,

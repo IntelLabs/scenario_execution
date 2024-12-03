@@ -16,9 +16,8 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess
-from launch.substitutions.launch_configuration import LaunchConfiguration
-from launch.substitutions import PathJoinSubstitution
-from launch.conditions import LaunchConfigurationNotEquals
+from launch.substitutions import PathJoinSubstitution, EqualsSubstitution, LaunchConfiguration
+from launch.conditions import IfCondition
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -40,7 +39,7 @@ def generate_launch_description():
     pkg_controller_config = FindPackageShare(LaunchConfiguration('ros2_control_config_pkg'))
     arm_group_controller = LaunchConfiguration('arm_group_controller')
     gripper_group_controller = LaunchConfiguration('gripper_group_controller')
-
+    ros2_control_hardware_type = LaunchConfiguration('ros2_control_hardware_type')
     ros2_controllers_path = PathJoinSubstitution([
         pkg_controller_config,
         "config",
@@ -55,9 +54,7 @@ def generate_launch_description():
             ("/controller_manager/robot_description", "/robot_description"),
         ],
         output="screen",
-        condition=LaunchConfigurationNotEquals(
-            "ros2_control_hardware_type", "ignition"
-        ),
+        condition=IfCondition(EqualsSubstitution(ros2_control_hardware_type, "mock_components"))
     )
 
     joint_state_broadcaster = ExecuteProcess(
