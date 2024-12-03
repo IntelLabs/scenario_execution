@@ -74,7 +74,7 @@ jobs:
         run: |
           apt update
           apt install -y python3-pip
-          pip3 install ros-license-toolkit==1.2.2
+          pip3 install --break-system-packages ros-license-toolkit==1.2.2
           apt install -y golang-go
           go version
           go install github.com/google/addlicense@v1.1.1
