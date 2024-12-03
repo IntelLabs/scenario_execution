@@ -10,7 +10,6 @@ permissions: read-all
 jobs:
   lint:
     name: 'Super-linter'
-    runs-on: intellabs-01
     container: 'ghcr.io/github/super-linter:v5.0.0'
     permissions:
       contents: read
@@ -39,7 +38,6 @@ jobs:
           FILTER_REGEX_EXCLUDE: .*/pull_request_template.md
   trivy:
     name: Trivy
-    runs-on: intellabs-01
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
@@ -52,7 +50,6 @@ jobs:
           vuln-type: 'os,library'
   bandit:
     name: Bandit
-    runs-on: intellabs-01
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
@@ -63,7 +60,6 @@ jobs:
           bandit -c .github/bandit.yaml -r .
   license:
     name: License check
-    runs-on: intellabs-01
     container:
       image: osrf/ros:humble-desktop
     steps:
