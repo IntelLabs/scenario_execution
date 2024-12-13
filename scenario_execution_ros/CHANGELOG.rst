@@ -2,6 +2,10 @@
 Changelog for package scenario_execution_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update jazzy latency topic
+
 1.2.0 (2024-10-02)
 ------------------
 * check_data_external: add action to check with custom python function
