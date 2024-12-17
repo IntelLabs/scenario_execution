@@ -15,20 +15,20 @@
 //  SPDX-License-Identifier: Apache-2.0
 
 #include <geometry_msgs/msg/transform_stamped.hpp>
-#include <ignition/msgs/pose_v.pb.h>
-#include <ignition/transport/Node.hh>
+#include <gz/msgs/pose_v.pb.h>
+#include <gz/transport/Node.hh>
 #include <rclcpp/rclcpp.hpp>
 #include <tf2_msgs/msg/tf_message.hpp>
 
 class GazeboTFPublisher : public rclcpp::Node {
-  std::shared_ptr<ignition::transport::Node> mSimNode;
+  std::shared_ptr<gz::transport::Node> mSimNode;
   rclcpp::Publisher<tf2_msgs::msg::TFMessage>::SharedPtr mPublisher;
   std::string gz_pose_topic;
   std::string base_frame_id;
   std::vector<unsigned int> robot_frame_ids;
   std::string previous_frame_id;
 
-  void simulationCallback(const ignition::msgs::Pose_V &poses);
+  void simulationCallback(const gz::msgs::Pose_V &poses);
 
 public:
   GazeboTFPublisher();
@@ -36,7 +36,7 @@ public:
 
 GazeboTFPublisher::GazeboTFPublisher() : Node("gazebo_tf_publisher") {
   mPublisher = this->create_publisher<tf2_msgs::msg::TFMessage>("tf", 10);
-  mSimNode = std::make_shared<ignition::transport::Node>();
+  mSimNode = std::make_shared<gz::transport::Node>();
   declare_parameter("gz_pose_topic", "/world/name/dynamic_pose/info");
   gz_pose_topic = get_parameter("gz_pose_topic").as_string();
   declare_parameter("base_frame_id", "base_link");
@@ -45,8 +45,7 @@ GazeboTFPublisher::GazeboTFPublisher() : Node("gazebo_tf_publisher") {
                       this);
 }
 
-void GazeboTFPublisher::simulationCallback(
-    const ignition::msgs::Pose_V &poses) {
+void GazeboTFPublisher::simulationCallback(const gz::msgs::Pose_V &poses) {
   auto tf_msg = std::make_shared<tf2_msgs::msg::TFMessage>();
   auto ros2_clock = get_clock()->now();
   for (int i = 0; i < poses.pose_size(); i++) {
@@ -70,9 +69,9 @@ void GazeboTFPublisher::simulationCallback(
       if (poses.pose(i).id() == robot_frame_id) {
         geometry_msgs::msg::TransformStamped tf_frame;
         tf_frame.header.stamp = ros2_clock;
-        const ignition::msgs::Pose *pp = &poses.pose(i);
-        const ignition::msgs::Vector3d *previous_pv = &pp->position();
-        const ignition::msgs::Quaternion *previous_pq = &pp->orientation();
+        const gz::msgs::Pose *pp = &poses.pose(i);
+        const gz::msgs::Vector3d *previous_pv = &pp->position();
+        const gz::msgs::Quaternion *previous_pq = &pp->orientation();
         tf_frame.header.frame_id = "map";
         tf_frame.child_frame_id =
             pp->name() + "_" + base_frame_id +

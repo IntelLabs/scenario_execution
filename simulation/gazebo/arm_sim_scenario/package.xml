@@ -18,6 +18,7 @@
   <depend>controller_manager</depend>
   <depend>gripper_controllers</depend>
   <depend>joint_trajectory_controller</depend>
+  <depend>gz_ros2_control</depend>
   <depend>ros2_control</depend>
   <depend>ompl</depend>
   <depend>ros_gz_bridge</depend>

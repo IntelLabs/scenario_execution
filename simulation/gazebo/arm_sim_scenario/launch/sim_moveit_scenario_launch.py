@@ -18,9 +18,9 @@ from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition, LaunchConfigurationEquals
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, EqualsSubstitution
 
 
 ARGUMENTS = [
@@ -80,10 +80,7 @@ def generate_launch_description():
 
     ignition = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([arm_sim_scenario_dir, 'launch', 'ignition_launch.py'])]),
-        condition=LaunchConfigurationEquals(
-            launch_configuration_name='arg_ros2_control_hardware_type',
-            expected_value='ignition'
-        ),
+        condition=IfCondition(EqualsSubstitution(ros2_control_hardware_type, 'ignition')),
         launch_arguments={
             'use_sim_time': use_sim_time,
         }.items()

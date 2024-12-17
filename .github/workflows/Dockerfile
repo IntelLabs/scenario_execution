@@ -19,7 +19,7 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
     rm -rf /var/lib/apt/lists/*
 
 RUN --mount=type=bind,source=.,target=/scenario_execution \
-    pip3 install  --no-cache-dir -r /scenario_execution/libs/scenario_execution_pybullet/requirements.txt
+    pip3 install  --no-cache-dir -r /scenario_execution/libs/scenario_execution_pybullet/requirements.txt --break-system-packages
 
 # install rosbag2_to_video used within github actions
 WORKDIR /rosbag2_to_video/src
