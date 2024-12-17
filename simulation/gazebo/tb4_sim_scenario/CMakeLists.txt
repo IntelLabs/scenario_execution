@@ -9,7 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY config launch params worlds urdf maps
+  DIRECTORY config launch worlds urdf maps
   DESTINATION share/${PROJECT_NAME}
 )
 
