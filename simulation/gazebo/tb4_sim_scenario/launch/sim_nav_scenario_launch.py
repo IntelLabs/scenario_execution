@@ -31,7 +31,6 @@ def generate_launch_description():
     scenario_execution_dir = get_package_share_directory('scenario_execution_ros')
     gazebo_tf_publisher_dir = get_package_share_directory('gazebo_tf_publisher')
     tf_to_pose_publisher_dir = get_package_share_directory('tf_to_pose_publisher')
-    nav2_minimal_tb4_sim_dir = get_package_share_directory('nav2_minimal_tb4_sim')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
 
     scenario = LaunchConfiguration('scenario')
@@ -48,14 +47,11 @@ def generate_launch_description():
     map_conf = LaunchConfiguration('map')
     arg_map = DeclareLaunchArgument('map', default_value=os.path.join(tb4_sim_scenario_dir, 'maps', 'maze.yaml'),
                                     description='Full path to map yaml file to load')
-    params_file = LaunchConfiguration('params_file')
-    arg_params_file = DeclareLaunchArgument('params_file', default_value=PathJoinSubstitution([nav2_bringup_dir, 'params', 'nav2_params.yaml']),
-                                            description='nav2 parameter file')
     x, y, z = LaunchConfiguration('x'), LaunchConfiguration('y'), LaunchConfiguration('z')
     yaw = LaunchConfiguration('yaw')
 
-    simulation = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([nav2_minimal_tb4_sim_dir, 'launch', 'simulation.launch.py'])]),
+    nav2_bringup = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([PathJoinSubstitution([nav2_bringup_dir, 'launch', 'tb4_simulation_launch.py'])]),
         launch_arguments={
             'world': [PathJoinSubstitution([tb4_sim_scenario_dir, 'worlds', 'maze.sdf'])],
             'x_pose': x,
@@ -63,14 +59,7 @@ def generate_launch_description():
             'z_pose': z,
             'yaw': yaw,
             'rviz_config_file': [PathJoinSubstitution([tb4_sim_scenario_dir, 'config', 'tb4_sim_scenario.rviz'])],
-        }.items()
-    )
-
-    nav2_bringup = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'nav2', 'bringup_launch.py'])]),
-        launch_arguments={
             'use_sim_time': 'True',
-            'params_file': params_file,
             'map': map_conf,
         }.items()
     )
@@ -98,13 +87,11 @@ def generate_launch_description():
         arg_scenario,
         arg_scenario_execution,
         arg_world_name,
-        arg_params_file,
         arg_map
     ])
 
     for pose_element in ['x', 'y', 'z', 'yaw']:
         ld.add_action(DeclareLaunchArgument(pose_element, default_value='0.0', description=f'{pose_element} component of the robot pose.'))
-    ld.add_action(simulation)
     ld.add_action(nav2_bringup)
     ld.add_action(groundtruth_publisher)
     ld.add_action(scenario_exec)
