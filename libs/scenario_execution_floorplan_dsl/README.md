@@ -16,7 +16,7 @@ git checkout 34bd70bc89b285173226e27add6f4f5589de106a
 docker build . --tag floorplan:latest
 
 # build scenario execution and dependencies
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 colcon build --packages-up-to scenario_execution_floorplan_dsl scenario_execution_ros scenario_execution_gazebo scenario_execution_nav2 tb4_sim_scenario
 source install/setup.bash
 ```

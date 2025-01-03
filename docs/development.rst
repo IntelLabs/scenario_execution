@@ -63,7 +63,7 @@ Create an `.env` file by executing:
 
 .. code-block:: bash
 
-   source /opt/ros/humble/setup.bash
+   source /opt/ros/jazzy/setup.bash
    source install/setup.bash
    echo PYTHONPATH=$PYTHONPATH > .env
    echo HOME=$HOME >> .env
