@@ -4,8 +4,11 @@
   <name>scenario_execution_py_trees_ros</name>
   <version>1.2.0</version>
   <description>Fixes in py-trees-ros not yet release</description>
-  <author email="scenario-execution@intel.com">Intel Labs</author>
-  <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
+  <author>Intel Labs</author>
+  <author email="fred-labs@mailbox.org">Frederik Pasch</author>
+  <author email="florian.mirus@gmx.net">Florian Mirus</author>
+  <maintainer email="fred-labs@mailbox.org">Frederik Pasch</maintainer>
+  <maintainer email="florian.mirus@gmx.net">Florian Mirus</maintainer>
   <license>BSD-3-Clause</license>
 
   <exec_depend>py_trees_ros</exec_depend>

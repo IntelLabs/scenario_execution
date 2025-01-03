@@ -11,9 +11,9 @@ permissions: read-all
 jobs:
   build:
     #TODO model dependency to image-workflow. Workaround: retrigger run after image-workflow finished.
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -40,9 +40,9 @@ jobs:
           key: ${{ runner.os }}-build-${{ github.run_number }}
   test-scenario-execution:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -77,9 +77,9 @@ jobs:
           path: ./**/TEST.xml
   test-scenario-execution-ros:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -112,9 +112,9 @@ jobs:
           path: ./**/TEST.xml
   scenario-files-validation:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -135,9 +135,9 @@ jobs:
           done
   test-example-scenario:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -162,9 +162,9 @@ jobs:
           path: test_example_scenario/test.xml
   test-example-library:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -189,9 +189,9 @@ jobs:
           path: test_example_library/test.xml
   test-example-variation:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -217,9 +217,9 @@ jobs:
           path: test_example_variation/test.xml
   test-example-nav2:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -250,9 +250,9 @@ jobs:
           path: test_example_nav2/test.xml
   test-example-simulation:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -283,9 +283,9 @@ jobs:
           path: test_example_simulation/test.xml
   test-example-multirobot:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -335,9 +335,9 @@ jobs:
           path: test_example_multirobot/**/rosbag*
   test-example-external-method:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -364,9 +364,9 @@ jobs:
           path: test_example_external_method/test.xml
   test-example-moveit2:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -397,10 +397,10 @@ jobs:
           path: test_example_moveit2/test.xml
   test-scenario-execution-gazebo:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -430,10 +430,10 @@ jobs:
           path: test_scenario_execution_gazebo/test.xml
   test-scenario-execution-nav2:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -476,10 +476,10 @@ jobs:
           path: test_scenario_execution_nav2/test_scenario_execution_nav2/example_nav2.mp4
   test-scenario-execution-pybullet:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -506,10 +506,10 @@ jobs:
           path: test_scenario_execution_pybullet/test.xml
   test-scenario-execution-x11:
     needs: [build]
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     timeout-minutes: 3
     container:
-      image: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -558,7 +558,7 @@ jobs:
     - test-scenario-execution-nav2
     - test-scenario-execution-pybullet
     - test-scenario-execution-x11
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     if: ${{ always() }}
     permissions:
       checks: write

@@ -9,6 +9,7 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         python3-pip \
+        pipx golang-go\
         xvfb \
         tk \
         libgl1 && \
@@ -18,6 +19,11 @@ RUN --mount=type=bind,source=.,target=/scenario_execution \
     rosdep install --rosdistro=${ROS_DISTRO} --from-paths /scenario_execution/ --ignore-src -r -y && \
     rm -rf /var/lib/apt/lists/*
 
+# install dependencies for license check
+RUN PIPX_HOME="" PIPX_BIN_DIR="/python_bin" pipx install -v ros-license-toolkit==1.2.2 && \
+    GOPATH=/go go install github.com/google/addlicense@v1.1.1
+
+# install pybullet dependencies
 RUN --mount=type=bind,source=.,target=/scenario_execution \
     pip3 install  --no-cache-dir -r /scenario_execution/libs/scenario_execution_pybullet/requirements.txt --break-system-packages
 

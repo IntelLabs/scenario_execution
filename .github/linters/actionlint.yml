@@ -1,4 +1,4 @@
 ---
 self-hosted-runner:
   labels:
-    - intellabs-01
+    - ubuntu-latest

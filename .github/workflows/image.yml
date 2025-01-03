@@ -21,7 +21,7 @@ concurrency:
 permissions: read-all
 jobs:
   build-and-push:
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     permissions:
       packages: write
     steps:
@@ -45,11 +45,11 @@ jobs:
         context: .
         file: .github/workflows/Dockerfile
         push: true
-        tags: ghcr.io/intellabs/scenario-execution:${{ github.event.pull_request.base.ref || steps.extract_branch.outputs.branch }}
+        tags: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref || steps.extract_branch.outputs.branch }}
         build-args: |
           ROS_DISTRO=${{ github.ref == 'refs/heads/main' && 'humble' || github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}
   test-devcontainer:
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     permissions:
       packages: write
     steps:

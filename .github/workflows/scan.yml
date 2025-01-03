@@ -10,7 +10,7 @@ permissions: read-all
 jobs:
   lint:
     name: 'Super-linter'
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container: 'ghcr.io/github/super-linter:v5.0.0'
     permissions:
       contents: read
@@ -39,7 +39,7 @@ jobs:
           FILTER_REGEX_EXCLUDE: .*/pull_request_template.md
   trivy:
     name: Trivy
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
@@ -52,7 +52,7 @@ jobs:
           vuln-type: 'os,library'
   bandit:
     name: Bandit
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
@@ -63,29 +63,21 @@ jobs:
           bandit -c .github/bandit.yaml -r .
   license:
     name: License check
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
-      image: osrf/ros:humble-desktop
+      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
-      - name: Prepare System
-        shell: bash
-        run: |
-          apt update
-          apt install -y python3-pip
-          pip3 install ros-license-toolkit==1.2.2
-          apt install -y golang-go
-          go version
-          go install github.com/google/addlicense@v1.1.1
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 #v4.2.2
       - name: Check for license tags
         shell: bash
         run: |
-            find . -type f \( -name "*.py" -o -name "*.cpp" -o -name "*.h" \) -exec "$HOME"/go/bin/addlicense -check {} +
+            find . -type f \( -name "*.py" -o -name "*.cpp" -o -name "*.h" \) -exec /go/bin/addlicense -check {} +
       - name: Run ros_license_toolkit for each Package
         shell: bash
         run: |
-            git config --global --add safe.directory /__w/scenario_execution/scenario_execution
+            git config --global --add safe.directory /__w/scenario-execution/scenario-execution
+            git config --global --add safe.directory /venvs/ros-license-toolkit
             find . -name "package.xml" | while IFS= read -r pkg_file; do
               pkg_dir=$(dirname "$pkg_file")
               pkg_name=$(basename "$pkg_dir")
@@ -94,6 +86,6 @@ jobs:
                 continue
               fi
               echo "Processing package at $pkg_dir"
-              ros_license_toolkit "$pkg_dir"
+              /python_bin/ros_license_toolkit "$pkg_dir"
             done
             

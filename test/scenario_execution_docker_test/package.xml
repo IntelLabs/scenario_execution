@@ -4,8 +4,11 @@
   <name>scenario_execution_docker_test</name>
   <version>1.2.0</version>
   <description>Tests for Scenario Execution library for Docker</description>
-  <author email="scenario-execution@intel.com">Intel Labs</author>
-  <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
+  <author>Intel Labs</author>
+  <author email="fred-labs@mailbox.org">Frederik Pasch</author>
+  <author email="florian.mirus@gmx.net">Florian Mirus</author>
+  <maintainer email="fred-labs@mailbox.org">Frederik Pasch</maintainer>
+  <maintainer email="florian.mirus@gmx.net">Florian Mirus</maintainer>
   <license>Apache-2.0</license>
   
   <exec_depend>scenario_execution_docker</exec_depend>

@@ -5,7 +5,8 @@
   <version>1.2.0</version>
   <description>Example Multi Robot</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
-  <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
+  <maintainer email="fred-labs@mailbox.org">Frederik Pasch</maintainer>
+  <maintainer email="florian.mirus@gmx.net">Florian Mirus</maintainer>
   <license>Apache-2.0</license>
 
   <exec_depend>rclpy</exec_depend>

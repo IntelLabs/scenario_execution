@@ -20,7 +20,7 @@ permissions: read-all
 jobs:
   build_docs:
     name: 'Build Docs'
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
       image: ghcr.io/sphinx-doc/sphinx:7.1.2
       volumes:
@@ -46,7 +46,7 @@ jobs:
     name: 'Deploy to GitHub Pages'
     needs: build_docs
     if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
-    runs-on: intellabs-01
+    runs-on: ubuntu-latest
     container:
       image: ghcr.io/sphinx-doc/sphinx:7.1.2
     environment:

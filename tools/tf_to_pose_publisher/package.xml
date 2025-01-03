@@ -4,8 +4,11 @@
   <name>tf_to_pose_publisher</name>
   <version>1.2.0</version>
   <description>Publish a tf transform to a pose topic</description>
-  <author email="scenario-execution@intel.com">Intel Labs</author>
-  <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
+  <author>Intel Labs</author>
+  <author email="fred-labs@mailbox.org">Frederik Pasch</author>
+  <author email="florian.mirus@gmx.net">Florian Mirus</author>
+  <maintainer email="fred-labs@mailbox.org">Frederik Pasch</maintainer>
+  <maintainer email="florian.mirus@gmx.net">Florian Mirus</maintainer>
   <license>Apache-2.0</license>
 
   <depend>rclpy</depend>

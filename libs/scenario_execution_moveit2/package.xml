@@ -4,8 +4,11 @@
   <name>scenario_execution_moveit2</name>
   <version>1.2.0</version>
   <description>Scenario Execution library for moveIt2</description>
-  <author email="scenario-execution@intel.com">Intel Labs</author>
-  <maintainer email="scenario-execution@intel.com">Intel Labs</maintainer>
+  <author>Intel Labs</author>
+  <author email="fred-labs@mailbox.org">Frederik Pasch</author>
+  <author email="florian.mirus@gmx.net">Florian Mirus</author>
+  <maintainer email="fred-labs@mailbox.org">Frederik Pasch</maintainer>
+  <maintainer email="florian.mirus@gmx.net">Florian Mirus</maintainer>
   <license>Apache-2.0</license>
 
   <depend>scenario_execution_ros</depend>
