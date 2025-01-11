@@ -21,7 +21,7 @@
   <depend>geometry_msgs</depend>
   <depend>tf2_msgs</depend>
   <depend>py_trees_ros_interfaces</depend>
-
+  <depend>gz_transport_vendor</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
