@@ -445,7 +445,7 @@ composition : compositionOperator (OPEN_PAREN argumentList? CLOSE_PAREN)?':' NEW
 	doMember+ DEDENT (behaviorWithDeclaration)?;
 
 compositionOperator 
-	: 'serial' | 'one_of' | 'parallel';
+	: 'serial' | 'one_of' | 'parallel' | 'serial_no_memory' | 'selector' | 'selector_no_memory';
 
 behaviorInvocation 
 	: (actorExpression '.')? behaviorName OPEN_PAREN (argumentList)? CLOSE_PAREN (behaviorWithDeclaration | NEWLINE);

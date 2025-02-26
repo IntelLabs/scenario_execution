@@ -161,6 +161,13 @@ class ModelToPyTree(object):
                 behavior = py_trees.composites.Parallel(name=name, policy=py_trees.common.ParallelPolicy.SuccessOnAll())
             elif composition_operator == "one_of":
                 behavior = py_trees.composites.Parallel(name=name, policy=py_trees.common.ParallelPolicy.SuccessOnOne())
+            # support for composites not available in osc2
+            elif composition_operator == "selector":
+                behavior = py_trees.composites.Selector(name=name, memory=True)
+            elif composition_operator == "selector_no_memory":
+                behavior = py_trees.composites.Selector(name=name, memory=False)
+            elif composition_operator == "serial_no_memory":
+                behavior = py_trees.composites.Sequence(name=name, memory=False)
             else:
                 raise NotImplementedError(f"scenario operator {composition_operator} not yet supported.")
 
