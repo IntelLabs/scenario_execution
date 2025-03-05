@@ -15,7 +15,7 @@
 
   <!-- Turtlebot4 -->
   <depend>gazebo_tf_publisher</depend>
-  <depend>scenario_execution</depend>
+  <depend>scenario_execution_ros</depend>
   <depend>message_modification</depend>
   <depend>tf_to_pose_publisher</depend>
   <depend>nav2_minimal_tb4_sim</depend>
