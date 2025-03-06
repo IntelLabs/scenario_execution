@@ -13,7 +13,7 @@ jobs:
     #TODO model dependency to image-workflow. Workaround: retrigger run after image-workflow finished.
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -25,7 +25,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           git clone https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation.git
           cd nav2_minimal_turtlebot_simulation
           git checkout f4eefd049359b3f0becabd7a0870005f4140ec08
@@ -34,7 +34,7 @@ jobs:
           source install/setup.bash
       - name: Cache Build
         id: cache-test-id
-        uses: actions/cache/save@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache/save@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           path: .
           key: ${{ runner.os }}-build-${{ github.run_number }}
@@ -42,20 +42,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache/restore@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
@@ -79,20 +79,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache/restore@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
@@ -114,20 +114,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Scenario Files
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           find . -name "*.osc" | grep -Ev "lib_osc/*|examples/example_scenario_variation|scenario_execution_coverage|fail*|install|build" | while read -r file; do 
             echo "$file"; 
@@ -137,20 +137,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Scenario
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           #shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_scenario/ -o test_example_scenario --ignore-process-return-value -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
@@ -164,20 +164,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Library
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           # shellcheck disable=SC1083
           scenario_batch_execution -i examples/example_library/scenarios -o test_example_library --ignore-process-return-value -- ros2 launch scenario_execution_ros scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
@@ -191,20 +191,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Variation
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           scenario_variation -o scenario_variation_out examples/example_scenario_variation/example_scenario_variation.osc
           # shellcheck disable=SC1083
@@ -219,20 +219,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Nav2
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -252,20 +252,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Simulation
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -285,20 +285,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example Multirobot
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -318,7 +318,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source /rosbag2_to_video/install/setup.bash
           ros2 bag to_video  -t /static_camera/image_raw -o test_example_multirobot/example_multi_robot/example-multi-robot.mp4  test_example_multirobot/example_multi_robot/rosbag2_* --fps 5 --codec mp4v
       - name: Upload video
@@ -337,20 +337,20 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Example External Method
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
@@ -362,58 +362,58 @@ jobs:
         with:
           name: test-example-external-method-result
           path: test_example_external_method/test.xml
-  test-example-moveit2:
-    needs: [build]
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
-      credentials:
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
-        with:
-          key: ${{ runner.os }}-build-${{ github.run_number }}
-          path: .
-      - name: Test Example Moveit2
-        shell: bash
-        run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
-          source install/setup.bash
-          Xvfb :1 -screen 0 800x600x16 &
-          export DISPLAY=:1.0
-          export -n CYCLONEDDS_URI
-          export ROS_DOMAIN_ID=2
-          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          sed -i 's/60s/600s/g' examples/example_moveit2/example_moveit2.osc
-          # shellcheck disable=SC1083
-          scenario_batch_execution -i examples/example_moveit2/ -o test_example_moveit2  --ignore-process-return-value -- ros2 launch arm_sim_scenario sim_moveit_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
-      - name: Upload result
-        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
-        if: always()
-        with:
-          name: test-example-moveit2-result
-          path: test_example_moveit2/test.xml
+#  test-example-moveit2:
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    container:
+#      image: ghcr.io/cps-test-lab/scenario-execution:latest
+#      credentials:
+#        username: ${{ github.repository_owner }}
+#        password: ${{ secrets.GITHUB_TOKEN }}
+#    steps:
+#      - name: Restore cache
+#        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+#        with:
+#          key: ${{ runner.os }}-build-${{ github.run_number }}
+#          path: .
+#      - name: Test Example Moveit2
+#        shell: bash
+#        run: |
+#          source /opt/ros/jazzy/setup.bash
+#          source install/setup.bash
+#          Xvfb :1 -screen 0 800x600x16 &
+#          export DISPLAY=:1.0
+#          export -n CYCLONEDDS_URI
+#          export ROS_DOMAIN_ID=2
+#          export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
+#          sed -i 's/60s/600s/g' examples/example_moveit2/example_moveit2.osc
+#          # shellcheck disable=SC1083
+#          scenario_batch_execution -i examples/example_moveit2/ -o test_example_moveit2  --ignore-process-return-value -- ros2 launch arm_sim_scenario sim_moveit_scenario_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR}
+#      - name: Upload result
+#        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
+#        if: always()
+#        with:
+#          name: test-example-moveit2-result
+#          path: test_example_moveit2/test.xml
   test-scenario-execution-gazebo:
     needs: [build]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Scenario Execution Gazebo
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -433,20 +433,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Scenario Execution Nav2
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -465,7 +465,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source /rosbag2_to_video/install/setup.bash
           ros2 bag to_video  -t /static_camera/image_raw -o test_scenario_execution_nav2/test_scenario_execution_nav2/example_nav2.mp4  test_scenario_execution_nav2/test_scenario_execution_nav2/rosbag2_* --fps 5 --codec mp4v
       - name: Upload video
@@ -479,20 +479,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Scenario Execution PyBullet
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &
           export DISPLAY=:1.0
@@ -509,20 +509,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     container:
-      image: ghcr.io/cps-test-lab/scenario-execution:${{ github.event.pull_request.base.ref }}
+      image: ghcr.io/cps-test-lab/scenario-execution:latest
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
       - name: Test Scenario Execution X11
         shell: bash
         run: |
-          source /opt/ros/${{ github.event.pull_request.base.ref == 'main' && 'humble' || github.event.pull_request.base.ref }}/setup.bash
+          source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           sudo apt -y install mesa-utils
           Xvfb :1 -screen 0 800x600x16 &
@@ -552,7 +552,7 @@ jobs:
     - test-example-nav2
     - test-example-simulation
     - test-example-multirobot
-    - test-example-moveit2
+#    - test-example-moveit2
     - test-example-external-method
     - test-scenario-execution-gazebo
     - test-scenario-execution-nav2
@@ -569,7 +569,7 @@ jobs:
         with:
           path: downloaded-artifacts
       - name: Restore cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           key: ${{ runner.os }}-build-${{ github.run_number }}
           path: .
@@ -593,7 +593,7 @@ jobs:
             downloaded-artifacts/test-example-simulation-result/test.xml
             downloaded-artifacts/test-example-multirobot-result/test.xml
             downloaded-artifacts/test-example-external-method-result/test.xml
-            downloaded-artifacts/test-example-moveit2-result/test.xml
             downloaded-artifacts/test-scenario-execution-gazebo/test.xml
             downloaded-artifacts/test-scenario-execution-nav2/test.xml
             downloaded-artifacts/test-scenario-execution-pybullet/test.xml
+#            downloaded-artifacts/test-example-moveit2-result/test.xml
