@@ -1340,7 +1340,7 @@ A common topic to record is ``/scenario_execution/snapshots`` which publishes ch
 ``check_data()``
 ^^^^^^^^^^^^^^^^
 
-Compare received topic messages using the given ``comparison_operator``, against the specified value. Either the whole message gets compared or a member defined by ``member_name``.
+Compare received topic messages using the given ``comparison_operator``, against the specified value. Either the whole message gets compared or a member defined by ``member_name``. If the ``expected_value`` is a string, set ``eval_expected_value`` to ``true``.
 
 .. list-table:: 
    :widths: 15 15 5 65
@@ -1359,6 +1359,14 @@ Compare received topic messages using the given ``comparison_operator``, against
      - ``string``
      - 
      - Class of the message type (e.g. ``std_msgs.msg.String``)
+   * - ``expected_value``
+     - ``string``
+     - 
+     - Expected value
+   * - ``eval_expected_value``
+     - ``bool``
+     - ``true``
+     - Should the expected value get evaluated (using ``ast.literal_eval()``). Set to ``false`` if expected value is a string
    * - ``qos_profile``
      - ``qos_preset_profiles``
      - ``qos_preset_profiles!system_default``
@@ -1367,10 +1375,6 @@ Compare received topic messages using the given ``comparison_operator``, against
      - ``string``
      - ``''``
      - Name of the type member to check. If empty, the whole type is checked
-   * - ``expected_value``
-     - ``string``
-     - 
-     - Expected value
    * - ``comparison_operator``
      - ``comparison_operator``
      - ``comparison_operator!eq``

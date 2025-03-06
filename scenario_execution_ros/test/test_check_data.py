@@ -91,6 +91,33 @@ scenario test:
         self.execute(scenario_content)
         self.assertTrue(self.scenario_execution_ros.process_results())
 
+    def test_success_member_string(self):
+        scenario_content = """
+import osc.ros
+
+scenario test:
+    do parallel:
+        test: serial:
+            wait elapsed(1s)
+            topic_publish(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.String',
+                value: '{\\\"data\\\": \\\"hello\\\"}')
+        receive: serial:
+            check_data(
+                topic_name: '/bla',
+                topic_type: 'std_msgs.msg.String',
+                member_name: 'data',
+                expected_value: 'hello',
+                eval_expected_value: false)
+            emit end
+        time_out: serial:
+            wait elapsed(10s)
+            emit fail
+"""
+        self.execute(scenario_content)
+        self.assertTrue(self.scenario_execution_ros.process_results())
+
     def test_fail_unknown_type(self):
         scenario_content = """
 import osc.ros

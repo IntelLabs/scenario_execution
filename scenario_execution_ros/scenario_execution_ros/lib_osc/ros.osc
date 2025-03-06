@@ -91,9 +91,10 @@ action check_data:
     # Compare received topic messages using the given comparison_operator, against the specified value. Either the whole message gets compared or a member defined by member_name.
     topic_name: string                   # name of the topic to connect to
     topic_type: string                   # class of the message type (e.g. std_msgs.msg.String)
+    expected_value: string               # expected value of the variable
+    eval_expected_value: bool = true     # should the expected value get evaluated (using ast.literal_eval). Set to false for string
     qos_profile: qos_preset_profiles = qos_preset_profiles!system_default # qos profile for the subscriber
     member_name: string = ""             # name of the member to check, if empty the whole message is checked
-    expected_value: string               # expected value of the variable
     comparison_operator: comparison_operator = comparison_operator!eq # one from the python `operator module`_
     fail_if_no_data: bool = false        # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if there is no data on action execution
     fail_if_bad_comparison: bool = false # py_trees.common.Status.FAILURE instead of py_trees.common.Status.RUNNING if comparison failed
