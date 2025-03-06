@@ -161,32 +161,26 @@ and control it with Nav2, can be found in :repo_link:`examples/example_nav2/exam
 This scenario files looks as follows:
 
 ::
-
+    import osc.helpers
     import osc.ros
+    import osc.nav2
 
-    scenario nav2_simulation_nav_to_pose:
+    scenario example_nav2:
+        timeout(60s)
         robot: differential_drive_robot
-        do parallel:
-            test_drive: serial:
-                robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
-                robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
-                robot.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
-                emit end
-            time_out: serial:
-                wait elapsed(120s)
-                emit fail
+        do serial:
+            robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+            robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
+
 
 Let’s break down the individual components of the scenario. The
 following snippet defines the turtlebot4 amr-object.
 
 .. code-block::
 
-   turtlebot4: differential_drive_robot:            # define turtlebot4 robot
+   robot: differential_drive_robot
 
-The ``do parallel`` runs the actual test drive and a time-out in
-parallel. In case something goes wrong, the time-out prevents the
-scenario from running indefinitely by canceling it after 2 minutes and
-marking it as failed.
+The ``do serial`` runs the actual test drive. A modifier is used to specify a timeout. If the scenario takes longer than 60 seconds, it will be marked as failed.
 
 
 Before being able to navigate, nav2 needs to be initialized. This
@@ -195,7 +189,7 @@ includes setting the initial pose of the Nav2 localization module
 
 .. code-block::
 
-   turtlebot4.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))                        # initialize Nav2
+   robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
 
 Finally, the following snippet calls the Nav2 `NavigateToPose
 action <https://github.com/ros-planning/navigation2/blob/main/nav2_msgs/action/NavigateToPose.action>`__
@@ -204,59 +198,39 @@ starting position
 
 .. code-block::
 
-    turtlebot4.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
-    turtlebot4.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+    robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
 
-Once the robot reached the final goal pose ``emit end`` finishes the
-scenario and marks it as successful.
+Once the robot reached the final goal pose the scenario is marked as successful and the execution ends.
 
 To try this example, run
 
 .. code-block:: bash
 
-   ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_nav2/example_nav2.osc headless:=False
+   ros2 launch example_nav2 example_nav2_launch.py
 
-and you should see something like this
-
-.. figure:: images/tb4_scenario.gif
-   :alt: turtlebot4 nav2 scenario
-
-   Turtlebot4 NAV2 scenario
 
 In case you want to run the navigation with SLAM instead of AMCL, update
 the above described scenario by setting the ``use_initial_pose`` to ``False``:
 
 ::
-
+    import osc.helpers
     import osc.ros
+    import osc.nav2
 
-    scenario nav2_simulation_nav_to_pose:
+    scenario example_nav2:
+        timeout(60s)
         robot: differential_drive_robot
-        do parallel:
-            test_drive: serial:
-                robot.init_nav2(
-                    initial_pose: pose_3d(position_3d(x: 0.0m, y: 0.0m)),
-                    use_initial_pose: false)
-                robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
-                robot.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
-                emit end
-            time_out: serial:
-                wait elapsed(120s)
-                emit fail
+        do serial:
+            robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)), use_initial_pose: false)
+            robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
 
 
 Then, run:
 
 .. code-block:: bash
 
-   ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_nav2/example_nav2.osc headless:=false slam:=True
+   ros2 launch example_nav2 example_nav2_launch.py slam:=False
 
-and you should see something like this
-
-.. figure:: images/tb4_scenario_slam.PNG
-   :alt: turtlebot4 nav2 scenario SLAM
-
-   Turtlebot4 NAV2 scenario SLAM
 
 Create Navigation Scenario with Obstacle
 ----------------------------------------
