@@ -446,6 +446,34 @@ Be depressed, always fail.
 The tickling never ends...
 
 
+``compare()``
+^^^^^^^^^^^^^
+
+Compare two values. If the comparison is true, the action is successful.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``left_value``
+     - ``string``
+     -
+     - Left value of comparison
+   * - ``operator``
+     - ``string``
+     -
+     - Possible operator string values: ``==``, ``!=``, ``<``, ``<=``, ``>``, ``>=``
+   * - ``right_value``
+     - ``string``
+     -
+     - Right value of comparison
+
+
 
 ``decrement()``
 ^^^^^^^^^^^^^^^

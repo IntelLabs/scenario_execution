@@ -239,9 +239,9 @@ jobs:
           export -n CYCLONEDDS_URI
           export ROS_DOMAIN_ID=2
           export IGN_PARTITION=${HOSTNAME}:${GITHUB_RUN_ID}
-          sed -i 's/60s/600s/g' examples/example_nav2/example_nav2.osc
+          sed -i 's/60s/600s/g' examples/example_nav2/scenarios/example_nav2.osc
           # shellcheck disable=SC1083
-          scenario_batch_execution -i examples/example_nav2/ -o test_example_nav2 --ignore-process-return-value -- ros2 launch example_nav2 example_nav2_launch.py output_dir:={OUTPUT_DIR} headless:=True use_rviz:=False
+          scenario_batch_execution -i examples/example_nav2/scenarios/ -o test_example_nav2 --ignore-process-return-value -- ros2 launch example_nav2 example_nav2_launch.py scenario:={SCENARIO} output_dir:={OUTPUT_DIR} headless:=True use_rviz:=False
       - name: Upload result
         uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         if: always()

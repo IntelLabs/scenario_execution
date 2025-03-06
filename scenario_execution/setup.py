@@ -70,6 +70,7 @@ setup(
             'scenario_execution = scenario_execution.scenario_execution_base:main',
         ],
         'scenario_execution.actions': [
+            'compare = scenario_execution.actions.compare:Compare',
             'increment = scenario_execution.actions.increment:Increment',
             'decrement = scenario_execution.actions.decrement:Decrement',
             'log = scenario_execution.actions.log:Log',
