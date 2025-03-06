@@ -410,10 +410,10 @@ Modifier to set a timeout for a sub-tree.
      - Type
      - Default
      - Description
-   * - ``count``
-     - ``int``
+   * - ``duration``
+     - ``time``
      - 
-     - Maximum number of permitted failures
+     - Time to wait
 
 ``failure_is_running()``
 """"""""""""""""""""""""
