@@ -9,6 +9,12 @@ enum signal: [
     sigterm = 15
 ]
 
+action compare:
+    # Compare two values. If the comparison is true, the action is successful.
+    left_value: string                   # left value of comparison
+    operator: string                     # comparison operator
+    right_value: string                  # right value of comparison
+
 action increment:
     # Increment the value of a variable
     target_variable: string              # variable to increment
