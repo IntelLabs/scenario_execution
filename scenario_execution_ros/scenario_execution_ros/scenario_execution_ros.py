@@ -17,7 +17,7 @@
 """ Main entry for scenario_execution_ros """
 import sys
 import rclpy  # pylint: disable=import-error
-import scenario_execution_py_trees_ros
+import py_trees_ros
 from py_trees_ros_interfaces.srv import OpenSnapshotStream
 from scenario_execution import ScenarioExecution, ShutdownHandler
 from .logging_ros import RosLogger
@@ -92,9 +92,9 @@ class ROSScenarioExecution(ScenarioExecution):
             tree [py_trees.behaviour.Behaviour]: root of the behaviour tree
 
         return:
-            scenario_execution_py_trees_ros.trees.BehaviourTreeKwargs
+            py_trees_ros.trees.BehaviourTree
         """
-        return scenario_execution_py_trees_ros.trees.BehaviourTreeKwargs(tree)
+        return py_trees_ros.trees.BehaviourTree(tree)
 
     def post_setup(self):
         request = OpenSnapshotStream.Request()

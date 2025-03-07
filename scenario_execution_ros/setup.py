@@ -37,6 +37,7 @@ setup(
     install_requires=[
         'setuptools',
         'transforms3d==0.4.1',
+        'py-trees-ros==2.3.0',
     ],
     zip_safe=True,
     maintainer='Intel Labs',

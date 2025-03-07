@@ -16,7 +16,6 @@
   <exec_depend>py_trees</exec_depend>
   <exec_depend>py_trees_ros</exec_depend>
   <exec_depend>py_trees_ros_interfaces</exec_depend>
-  <exec_depend>scenario_execution_py_trees_ros</exec_depend>
   <exec_depend>visualization_msgs</exec_depend>
   <exec_depend>xacro</exec_depend>
   <exec_depend>rcl_interfaces</exec_depend>
