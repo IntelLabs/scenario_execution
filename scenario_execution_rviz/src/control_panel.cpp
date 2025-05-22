@@ -42,7 +42,7 @@
 #include "rviz_common/display_context.hpp"
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
-#include <OgreVector3.h>
+#include <Ogre.h>
 #include <rviz_common/view_manager.hpp>
 
 #include "control_panel.h"
