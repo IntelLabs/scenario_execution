@@ -19,13 +19,13 @@ To install scenario execution together with all its libraries, run
 
 .. code-block:: bash
 
-   sudo apt update && sudo apt install -y ros-$ROS_DISTRO-scenario_execution*
+   sudo apt update && sudo apt install -y ros-$ROS_DISTRO-scenario-execution*
 
 To install just the core packages of scenario execution, run
 
 .. code-block:: bash
 
-   sudo apt update && sudo apt install -y ros-$ROS_DISTRO-scenario_execution ros-$ROS_DISTRO-scenario_execution_ros ros-$ROS_DISTRO-scenario_execution_rviz  
+   sudo apt update && sudo apt install -y ros-$ROS_DISTRO-scenario-execution ros-$ROS_DISTRO-scenario-execution-ros ros-$ROS_DISTRO-scenario-execution-rviz  
 
 
 Developer Installation (from source as ROS 2 workspace)
