@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>scenario_execution_rviz</name>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
   <description>The scenario_execution_rviz package</description>
   <author>Intel Labs</author>
   <author email="fred-labs@mailbox.org">Frederik Pasch</author>

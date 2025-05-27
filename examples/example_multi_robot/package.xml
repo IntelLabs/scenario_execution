@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>example_multi_robot</name>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
   <description>Example Multi Robot</description>
   <author email="scenario-execution@intel.com">Intel Labs</author>
   <maintainer email="fred-labs@mailbox.org">Frederik Pasch</maintainer>

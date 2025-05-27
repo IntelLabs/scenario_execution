@@ -23,7 +23,7 @@ PACKAGE_NAME = 'scenario_execution_test'
 
 setup(
     name=PACKAGE_NAME,
-    version='1.2.0',
+    version='1.2.1',
     packages=find_namespace_packages(),
     data_files=[
         ('share/ament_index/resource_index/packages',
