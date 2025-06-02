@@ -19,9 +19,9 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rviz_common/display_context.hpp"
 #include "rviz_common/ros_integration/ros_node_abstraction_iface.hpp"
+#include <Ogre.h>
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
-#include <OgreVector3.h>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDebug>

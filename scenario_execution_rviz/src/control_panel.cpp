@@ -40,9 +40,9 @@
 #include <tf2/utils.h>
 
 #include "rviz_common/display_context.hpp"
+#include <Ogre.h>
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
-#include <OgreVector3.h>
 #include <rviz_common/view_manager.hpp>
 
 #include "control_panel.h"
