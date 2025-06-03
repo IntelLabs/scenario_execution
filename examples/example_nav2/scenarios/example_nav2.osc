@@ -6,5 +6,5 @@ scenario example_nav2:
     timeout(60s)
     robot: differential_drive_robot
     do serial:
-        robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+        robot.init_nav2(pose_3d(position_3d(x: 0.0m, y: 0.0m)), wait_for_amcl: false)
         robot.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))

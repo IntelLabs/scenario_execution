@@ -78,6 +78,7 @@ class InitNav2(BaseAction):
         self.navigator_state = None
         self.tf_buffer = None
         self.tf_listener = None
+        self.wait_for_amcl = None
         if namespace_override:
             self.namespace = namespace_override
 
@@ -118,10 +119,11 @@ class InitNav2(BaseAction):
                                                                    amcl_pose_qos,
                                                                    callback_group=ReentrantCallbackGroup())
 
-    def execute(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool):
+    def execute(self, associated_actor, initial_pose: list, base_frame_id: str, wait_for_initial_pose: bool, use_initial_pose: bool, wait_for_amcl: bool):
         self.initial_pose = initial_pose
         self.base_frame_id = base_frame_id
         self.wait_for_initial_pose = wait_for_initial_pose
+        self.wait_for_amcl = wait_for_amcl
         self.use_initial_pose = use_initial_pose
         self.namespace = associated_actor["namespace"]
 
@@ -132,7 +134,7 @@ class InitNav2(BaseAction):
         self.logger.debug(f"Current State {self.current_state}")
         result = py_trees.common.Status.FAILURE
         if self.current_state == InitNav2State.IDLE:
-            if self.use_initial_pose:
+            if self.wait_for_amcl:
                 self.current_state = InitNav2State.LOCALIZER_STATE_REQUESTED
                 if self.retry_count is None:
                     self.retry_count = 1000
@@ -150,8 +152,7 @@ class InitNav2(BaseAction):
                     self.future.add_done_callback(self._get_state_done_callback)
                     result = py_trees.common.Status.RUNNING
             else:
-                self.current_state = InitNav2State.WAIT_FOR_MAP_BASELINK_TF
-                self.feedback_message = f"Not using initial pose (probably because we localize with slam), waiting for map --> base transform"  # pylint: disable= attribute-defined-outside-init
+                self.current_state = InitNav2State.LOCALIZER_STATE_ACTIVE
                 result = py_trees.common.Status.RUNNING
         elif self.current_state == InitNav2State.LOCALIZER_STATE_REQUESTED:
             timeout = timedelta(seconds=1)
@@ -168,14 +169,18 @@ class InitNav2(BaseAction):
                 self.current_state = InitNav2State.IDLE
             result = py_trees.common.Status.RUNNING
         elif self.current_state == InitNav2State.LOCALIZER_STATE_ACTIVE:
-            self.current_state = InitNav2State.WAIT_FOR_INITIAL_POSE
+            self.current_state = InitNav2State.WAIT_FOR_MAP_BASELINK_TF
             if self.wait_for_initial_pose:
                 self.feedback_message = f"Waiting for externally set initial pose."  # pylint: disable= attribute-defined-outside-init
-            else:
+                self.current_state = InitNav2State.WAIT_FOR_INITIAL_POSE
+            elif self.use_initial_pose:
                 initial_pose = get_pose_stamped(
                     self.nav.get_clock().now().to_msg(), self.initial_pose)
                 self.feedback_message = f"Set initial pose."  # pylint: disable= attribute-defined-outside-init
                 self.nav.setInitialPose(initial_pose)
+
+                if self.wait_for_amcl:
+                    self.current_state = InitNav2State.WAIT_FOR_INITIAL_POSE
             result = py_trees.common.Status.RUNNING
         elif self.current_state == InitNav2State.WAIT_FOR_INITIAL_POSE:
             result = py_trees.common.Status.RUNNING

@@ -8,6 +8,7 @@ action differential_drive_robot.init_nav2:
     use_initial_pose: bool = true        # if false, no initial_pose is needed (useful when using slam instead of amcl for localization)
     namespace_override: string = ''      # if set, it's used as namespace (instead of the associated actor's name)
     wait_for_initial_pose: bool = false  # if true the initial pose needs to be set externally (e.g. manually through rviz)
+    wait_for_amcl: bool = true           # if true, wait for amcl localizer to be ready (if using amcl for localization)
 
 action differential_drive_robot.nav_through_poses:
     # Use nav2 to navigate through poses.
