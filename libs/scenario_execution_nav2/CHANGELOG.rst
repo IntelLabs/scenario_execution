@@ -2,6 +2,10 @@
 Changelog for package scenario_execution_nav2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* example_nav2: use loopback navigation
+
 1.2.1 (2025-05-27)
 ------------------
 * update py-trees dependency

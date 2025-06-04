@@ -2,6 +2,9 @@
 Changelog for package scenario_execution_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.2.1 (2025-05-27)
 ------------------
 * update py-trees dependency

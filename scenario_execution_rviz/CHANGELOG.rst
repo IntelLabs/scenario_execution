@@ -2,6 +2,10 @@
 Changelog for package scenario_execution_rviz
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Cleanup
+
 1.2.1 (2025-05-27)
 ------------------
 * update py-trees dependency

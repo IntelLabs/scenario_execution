@@ -2,6 +2,11 @@
 Changelog for package scenario_execution
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add ros examples and new actions
+* update run_process action to send signals to whole process group. add ros_run action
+
 1.2.1 (2025-05-27)
 ------------------
 * update py-trees dependency
