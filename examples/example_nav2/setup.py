@@ -23,7 +23,7 @@ PACKAGE_NAME = 'example_nav2'
 
 setup(
     name=PACKAGE_NAME,
-    version='1.2.1',
+    version='1.3.0',
     packages=[PACKAGE_NAME],
     data_files=[
         ('share/ament_index/resource_index/packages',
