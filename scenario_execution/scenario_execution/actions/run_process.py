@@ -20,6 +20,7 @@ from threading import Thread
 from collections import deque
 import signal
 from scenario_execution.actions.base_action import BaseAction
+import os
 
 
 class RunProcess(BaseAction):
@@ -57,7 +58,11 @@ class RunProcess(BaseAction):
             self.executed = True
             try:
                 self.process = subprocess.Popen(
-                    self.command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    self.command,
+                    start_new_session=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
             except Exception as e:  # pylint: disable=broad-except
                 self.logger.error(str(e))
                 return py_trees.common.Status.FAILURE
@@ -76,7 +81,8 @@ class RunProcess(BaseAction):
                     out.close()
                 except ValueError:
                     pass
-
+                except Exception as e:  # pylint: disable=broad-except
+                    self.logger.error(f"Error while logging output: {e}")
             self.log_stdout_thread = Thread(target=log_output, args=(
                 self.process.stdout, self.get_logger_stdout(), self.output))
             self.log_stdout_thread.daemon = True  # die with the program
@@ -156,10 +162,12 @@ class RunProcess(BaseAction):
         if ret is None:
             # kill running process
             self.logger.info(f'Sending {signal.Signals(self.shutdown_signal).name} to process...')
-            self.process.send_signal(self.shutdown_signal)
-            self.process.wait(self.shutdown_timeout)
-            if self.process.poll() is None:
+            pgid = os.getpgid(self.process.pid)
+            os.killpg(pgid, self.shutdown_signal)
+            if self.process.poll():
+                self.logger.info(f"Waiting {self.shutdown_timeout}s for process to finish...")
+                self.process.wait(self.shutdown_timeout)
                 self.logger.info('Sending SIGKILL to process...')
-                self.process.send_signal(signal.SIGKILL)
+                os.killpg(pgid, signal.SIGKILL)
                 self.process.wait()
             self.logger.info('Process finished.')

@@ -46,6 +46,7 @@ class RosTopicCheckData(BaseAction):
         self.wait_for_first_message = None
         self.last_msg = None
         self.found = None
+        self.comparison_text = ""
 
     def setup(self, **kwargs):
         """
@@ -108,7 +109,7 @@ class RosTopicCheckData(BaseAction):
         if self.found is True:
             self.feedback_message = f"Found expected value in received message."
         else:
-            self.feedback_message = f"Received message does not contain expected value."
+            self.feedback_message = f"Received message does not contain expected value. Check: {self.comparison_text}"
 
     def check_data(self, msg):
         if msg is None or self.member_name is None or self.expected_value is None:
@@ -122,6 +123,7 @@ class RosTopicCheckData(BaseAction):
                 value = check_attr(msg)
             except AttributeError:
                 self.feedback_message = f"Member name not found {self.member_name}"
+        self.comparison_text = f"{value} {self.comparison_operator.__name__} {self.expected_value}"
         self.found = self.comparison_operator(value, self.expected_value)
 
     def set_expected_value(self, expected_value_string, eval_expected_value):

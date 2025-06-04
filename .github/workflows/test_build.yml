@@ -232,7 +232,6 @@ jobs:
       - name: Test Example Nav2
         shell: bash
         run: |
-          apt install ros-jazzy-nav2-loopback-sim -y # TODO: remove workaround
           source /opt/ros/jazzy/setup.bash
           source install/setup.bash
           Xvfb :1 -screen 0 800x600x16 &

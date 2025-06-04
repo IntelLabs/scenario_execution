@@ -1589,6 +1589,38 @@ Execute a ROS launch file.
      - ``10s``
      - (Only used ``if wait_for_shutdown`` is ``false``) Time to wait between ``SIGINT`` and ``SIGKILL`` getting sent, if process is still running on scenario shutdown
 
+
+``ros_run()``
+^^^^^^^^^^^^^^^^
+
+Run a package specific executable.
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``package_name``
+     - ``string``
+     - 
+     - package that contains the executable
+   * - ``executable_name``
+     - ``string``
+     - 
+     - name of executable
+   * - ``wait_for_shutdown``
+     - ``bool``
+     - ``true``
+     - If true, the action waits until the execution is finished
+   * - ``shutdown_timeout``
+     - ``time``
+     - ``10s``
+     - (Only used ``if wait_for_shutdown`` is ``false``) Time to wait between ``SIGINT`` and ``SIGKILL`` getting sent, if process is still running on scenario shutdown
+
 ``service_call()``
 ^^^^^^^^^^^^^^^^^^
 

@@ -137,6 +137,13 @@ action ros_launch:
     wait_for_shutdown: bool = true       # if true, the action waits until the execution has finished
     shutdown_timeout: time = 10s         # (only used if wait_for_shutdown is false) time to wait between SIGINT and SIGKILL getting sent, if process is still running on scenario shutdown
 
+action ros_run:
+    # Run a package specific executable
+    package_name: string                 # package that contains the executable
+    executable_name: string              # name of executable
+    wait_for_shutdown: bool = true       # if true, the action waits until the execution has finished
+    shutdown_timeout: time = 10s         # (only used if wait_for_shutdown is false) time to wait between SIGINT and SIGKILL getting sent, if process is still running on scenario shutdown
+
 action service_call:
     # Call a ROS service and wait for the reply.
     service_name: string                 # name of the service to connect to

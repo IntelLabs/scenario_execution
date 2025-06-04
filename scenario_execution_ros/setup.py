@@ -63,6 +63,7 @@ setup(
             'differential_drive_robot.tf_close_to = scenario_execution_ros.actions.tf_close_to:TfCloseTo',
             'log_check = scenario_execution_ros.actions.ros_log_check:RosLogCheck',
             'ros_launch = scenario_execution_ros.actions.ros_launch:RosLaunch',
+            'ros_run = scenario_execution_ros.actions.ros_run:RosRun',
             'service_call = scenario_execution_ros.actions.ros_service_call:RosServiceCall',
             'set_node_parameter = scenario_execution_ros.actions.ros_set_node_parameter:RosSetNodeParameter',
             'topic_monitor = scenario_execution_ros.actions.ros_topic_monitor:RosTopicMonitor',
