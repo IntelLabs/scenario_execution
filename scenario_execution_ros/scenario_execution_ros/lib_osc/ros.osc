@@ -15,7 +15,8 @@ enum qos_preset_profiles: [
     sensor_data,
     services_default,
     system_default,
-    system_default_reliable
+    system_default_reliable,
+    system_default_transient_local
 ]
 
 enum lifecycle_state: [
@@ -39,6 +40,8 @@ action action_call:
     data: string                         # call content
     success_on_acceptance: bool = false  # succeed on goal acceptance
     transient_local: bool = false
+    result_variable: string = ""         # variable to store the response in
+    result_member_name: string = ""      # if not empty, only the value of the member is stored within the variable
 
 action assert_lifecycle_state:
     # Checks for the state of a lifecycle-managed node.
@@ -150,6 +153,8 @@ action service_call:
     service_type: string                 # class of the message type (e.g. std_srvs.msg.Empty)
     data: string                         # call content
     transient_local: bool = false
+    response_variable: string = ""       # variable to store the response in
+    response_member_name: string = ""    # if not empty, only the value of the member is stored within the variable
 
 action set_node_parameter:
     # Set a parameter of a node.
@@ -181,6 +186,25 @@ action wait_for_data:
 action wait_for_nodes:
     # Wait for nodes to get available.
     nodes: list of string                # list of nodes to wait for
+
+action wait_for_service_server:
+    # Wait for service to be provided by node
+    service: string                      # service to wait for
+    node_name: string                    # node name that provides the service
+
+action wait_for_services:
+    # Wait for services to get available (i.e. service gets available).
+    services: list of string             # list of services to wait for
+
+action wait_for_topic_publisher:
+    # Wait for a specific node to create a publisher for a topic
+    topic: string                        # topic, the node will publish on
+    node_name: string                    # node name 
+
+action wait_for_topic_subscription:
+    # Wait for a node to subscribe to a topic
+    topic: string                        # topic, the node is subscribed to
+    node_name: string                    # node name 
 
 action wait_for_topics:
     # Wait for topics to get available (i.e. publisher gets available).

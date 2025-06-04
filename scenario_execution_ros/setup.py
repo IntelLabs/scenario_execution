@@ -70,6 +70,10 @@ setup(
             'topic_publish = scenario_execution_ros.actions.ros_topic_publish:RosTopicPublish',
             'wait_for_data = scenario_execution_ros.actions.ros_topic_wait_for_data:RosTopicWaitForData',
             'wait_for_nodes = scenario_execution_ros.actions.ros_wait_for_nodes:RosWaitForNodes',
+            'wait_for_service_server = scenario_execution_ros.actions.ros_service_wait_for_service_server:RosServiceWaitForServiceServer',
+            'wait_for_services = scenario_execution_ros.actions.ros_service_wait_for_services:RosServiceWaitForServices',
+            'wait_for_topic_publisher = scenario_execution_ros.actions.ros_topic_wait_for_topic_publisher:RosTopicWaitForTopicPublisher',
+            'wait_for_topic_subscription = scenario_execution_ros.actions.ros_topic_wait_for_topic_subscription:RosTopicWaitForTopicSubscription',
             'wait_for_topics = scenario_execution_ros.actions.ros_topic_wait_for_topics:RosTopicWaitForTopics',
         ],
         'scenario_execution.osc_libraries': [

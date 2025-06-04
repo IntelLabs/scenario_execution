@@ -1,4 +1,4 @@
-# Copyright (C) 2024 Intel Corporation
+# Copyright (C) 2025 Frederik Pasch
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,17 +19,15 @@ from rclpy.node import Node
 from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
-class RosTopicWaitForTopics(BaseAction):
+class RosTopicWaitForTopicPublisher(BaseAction):
     """
-    Class to check if ROS topic are available
+    Class to check if a specific node publishes on a ROS topic
     """
 
-    def __init__(self, topics: list):
+    def __init__(self, topic: str, node_name: str):
         super().__init__()
-        if not isinstance(topics, list):
-            raise TypeError(f'Topics needs to be list of strings, got {type(topics)}.')
-        else:
-            self.topics = topics
+        self.topic = topic
+        self.node_name = node_name
         self.node = None
 
     def setup(self, **kwargs):
@@ -41,10 +39,10 @@ class RosTopicWaitForTopics(BaseAction):
             raise ActionError(error_message, action=self) from e
 
     def update(self) -> py_trees.common.Status:
-        available_topics = self.node.get_topic_names_and_types()
-        available_topics = [seq[0] for seq in available_topics]
-        result = all(elem in available_topics for elem in self.topics)
-        if result:
+        publishers_info = self.node.get_publishers_info_by_topic(self.topic)
+        publisher_node_names = [info.node_name for info in publishers_info]
+
+        if self.node_name in publisher_node_names:
             return py_trees.common.Status.SUCCESS
         else:
             return py_trees.common.Status.RUNNING

@@ -1,0 +1,18 @@
+import osc.types
+import osc.helpers
+import osc.ros
+
+# Test for specific value on topic
+scenario test_subscriber:
+    do serial:
+        timeout(10)
+        parallel:
+            ros_run('examples_rclpy_minimal_subscriber', 'subscriber_lambda')
+            serial:
+                wait_for_topic_subscription('/topic', 'minimal_subscriber')
+                topic_publish(topic_name: "/topic",
+                              topic_type: "std_msgs.msg.String",
+                              value: '{\"data\": \"test message\"}')
+            serial:
+                log_check('minimal_subscriber', ["I heard: \"test message\""])
+                emit end

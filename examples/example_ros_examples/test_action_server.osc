@@ -1,0 +1,19 @@
+import osc.types
+import osc.helpers
+import osc.ros
+
+# Test actions server
+scenario test_service_call:
+    var result: int
+    do serial:
+        timeout(10)
+        parallel:
+            ros_run('examples_rclpy_minimal_action_server', 'server')
+            action_call(action_name: '/fibonacci',
+                        action_type: 'example_interfaces.action.Fibonacci',
+                        data: '{\"order\": 2}',
+                        result_variable: result,
+                        result_member_name: 'sequence')
+            serial:
+                wait result == [0, 1, 1]
+                emit end

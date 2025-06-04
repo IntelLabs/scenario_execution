@@ -1,3 +1,4 @@
+# Copyright (C) 2025 Frederik Pasch
 # Copyright (C) 2024 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,21 +19,24 @@
 
 import operator
 import importlib
-from rclpy.qos import QoSPresetProfiles, ReliabilityPolicy
-
+from rclpy.qos import QoSPresetProfiles, ReliabilityPolicy, DurabilityPolicy
+from array import array
 
 def get_ros_message_type(message_type_string):
     if not message_type_string:
         raise ValueError("Empty message type.")
-
-    datatype_in_list = message_type_string.split(".")
+    if '.' in message_type_string and '/' in message_type_string:
+        raise ValueError("Either use '.' or '/' as separator")
+    if '/' in message_type_string:
+        message_type_string.replace('/', '.')
+    datatype_in_list = message_type_string.split('.')
     try:
         return getattr(importlib.import_module(".".join(datatype_in_list[0:-1])), datatype_in_list[-1])
     except (ModuleNotFoundError, ValueError) as e:
         raise ValueError(f"Could not find message type {message_type_string}: {e}") from e
 
 
-def get_qos_preset_profile(qos_profile):
+def get_qos_preset_profile(qos_profile): # pylint: disable=too-many-return-statements
     """
     Get qos preset for enum value
     """
@@ -49,6 +53,10 @@ def get_qos_preset_profile(qos_profile):
     elif qos_profile[0] == 'system_default_reliable':
         profile = QoSPresetProfiles.SYSTEM_DEFAULT.value
         profile.reliability = ReliabilityPolicy.RELIABLE
+        return profile
+    elif qos_profile[0] == 'system_default_transient_local':
+        profile = QoSPresetProfiles.SYSTEM_DEFAULT.value
+        profile.durability = DurabilityPolicy.TRANSIENT_LOCAL
         return profile
     else:
         raise ValueError(f"Invalid qos_profile: {qos_profile}")
@@ -72,3 +80,12 @@ def get_comparison_operator(operator_val):  # pylint: disable=too-many-return-st
         return operator.gt
     else:
         raise ValueError(f"Invalid comparison_operator: {operator_val}")
+
+def set_variable_if_available(msg, target_variable, member_name):
+    if target_variable is not None:
+        val = msg
+        if member_name:
+            val = getattr(msg, member_name)
+            if isinstance(val, array):
+                val = val.tolist()
+        target_variable.set_value(val)

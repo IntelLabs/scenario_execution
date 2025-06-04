@@ -1801,7 +1801,6 @@ class ModelBuilder(OpenSCENARIO2Listener):  # pylint: disable=too-many-public-me
             node = BoolLiteral(value)
         elif ctx.StringLiteral():
             value = ctx.StringLiteral().getText()
-            value = value.strip('"')
             node = StringLiteral(value)
 
         if node is not None:

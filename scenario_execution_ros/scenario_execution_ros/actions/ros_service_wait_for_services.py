@@ -1,4 +1,4 @@
-# Copyright (C) 2024 Intel Corporation
+# Copyright (C) 2025 Frederik Pasch
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,17 +19,17 @@ from rclpy.node import Node
 from scenario_execution.actions.base_action import BaseAction, ActionError
 
 
-class RosTopicWaitForTopics(BaseAction):
+class RosServiceWaitForServices(BaseAction):
     """
-    Class to check if ROS topic are available
+    Class to check if ROS services are available
     """
 
-    def __init__(self, topics: list):
+    def __init__(self, services: list):
         super().__init__()
-        if not isinstance(topics, list):
-            raise TypeError(f'Topics needs to be list of strings, got {type(topics)}.')
+        if not isinstance(services, list):
+            raise TypeError(f'Services needs to be list of strings, got {type(services)}.')
         else:
-            self.topics = topics
+            self.services = services
         self.node = None
 
     def setup(self, **kwargs):
@@ -41,9 +41,9 @@ class RosTopicWaitForTopics(BaseAction):
             raise ActionError(error_message, action=self) from e
 
     def update(self) -> py_trees.common.Status:
-        available_topics = self.node.get_topic_names_and_types()
-        available_topics = [seq[0] for seq in available_topics]
-        result = all(elem in available_topics for elem in self.topics)
+        available_services = self.node.get_service_names_and_types()
+        available_services = [seq[0] for seq in available_services]
+        result = all(elem in available_services for elem in self.services)
         if result:
             return py_trees.common.Status.SUCCESS
         else:
