@@ -13,8 +13,8 @@
   
   <exec_depend>rclpy</exec_depend>
   <exec_depend>scenario_execution_nav2</exec_depend>
-  <exec_depend>tb4_sim_scenario</exec_depend>
-  <exec_depend>gazebo_static_camera</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>nav2_loopback_sim</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

@@ -12,7 +12,7 @@ scenario test:
         floorplan_gen.generate_floorplan(file_path: "room.floorplan")        
         floorplan_gen.generate_gazebo_world("world.sdf.xacro", [key_value("mesh_file", floorplan_gen.generated_floorplan_mesh_path)])
         ros_launch('tb4_sim_scenario', 'sim_nav_scenario_launch.py', [ 
-            key_value(key: 'scenario_execution', value: 'False'),
+            key_value(key: 'scenario_execution', value: 'false'),
             key_value(key: 'scenario', value: 'NA'),
             key_value(key: 'world', value: floorplan_gen.generated_gazebo_world_path),
             key_value(key: 'map_yaml', value: floorplan_gen.generated_floorplan_map_path)],

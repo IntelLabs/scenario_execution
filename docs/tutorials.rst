@@ -232,58 +232,58 @@ Then, run:
    ros2 launch example_nav2 example_nav2_launch.py slam:=False
 
 
-Create Navigation Scenario with Obstacle
-----------------------------------------
+.. Create Navigation Scenario with Obstacle
+.. ----------------------------------------
 
-In this section, we’ll extend the previous example and use the :repo_link:`scenario_execution/actions/tf_close_to.py`.
-to spawn a static obstacle in front of the robot once it reaches a
-user-specified reference point. The corresponding scenario can be found
-in :repo_link:`examples/example_simulation/scenarios/example_simulation.osc`.
+.. In this section, we’ll extend the previous example and use the :repo_link:`scenario_execution/actions/tf_close_to.py`.
+.. to spawn a static obstacle in front of the robot once it reaches a
+.. user-specified reference point. The corresponding scenario can be found
+.. in :repo_link:`examples/example_simulation/scenarios/example_simulation.osc`.
 
-This scenario only differs from the previous scenario regarding the
-definition of the obstacle itself and the condition, when to spawn it.
-Here, we’ll only look at the differences to the previous scenario. At
-the beginning, we define a box, which will be needed as static obstacle
-during the scenario
+.. This scenario only differs from the previous scenario regarding the
+.. definition of the obstacle itself and the condition, when to spawn it.
+.. Here, we’ll only look at the differences to the previous scenario. At
+.. the beginning, we define a box, which will be needed as static obstacle
+.. during the scenario
 
-.. code-block::
+.. .. code-block::
 
-    box: osc_object
+..     box: osc_object
 
-Next, we’ll have a look at how to spawn the box when the robot reaches a
-certain location. The following scenario snippet shows, how this is
-done.
+.. Next, we’ll have a look at how to spawn the box when the robot reaches a
+.. certain location. The following scenario snippet shows, how this is
+.. done.
 
-.. code-block::
+.. .. code-block::
 
-    parallel:
-        serial:
-            turtlebot4.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
-            turtlebot4.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
-        serial:
-            turtlebot4.tf_close_to(
-                reference_point: position_3d(x: 1.5m, y: -1.5m),
-                threshold: 0.4m,
-                robot_frame_id: 'turtlebot4_base_link_gt')
-            box.spawn(
-                spawn_pose: pose_3d(
-                    position: position_3d(x: 2.0m, y: -2.0m, z: 0.1m),
-                    orientation: orientation_3d(yaw: 0.0rad)),
-                model: 'example_simulation://models/box.sdf')
+..     parallel:
+..         serial:
+..             turtlebot4.nav_to_pose(pose_3d(position_3d(x: 3.0m, y: -3.0m)))
+..             turtlebot4.nav_to_pose(pose_3d(position_3d(x: 0.0m, y: 0.0m)))
+..         serial:
+..             turtlebot4.tf_close_to(
+..                 reference_point: position_3d(x: 1.5m, y: -1.5m),
+..                 threshold: 0.4m,
+..                 robot_frame_id: 'turtlebot4_base_link_gt')
+..             box.spawn(
+..                 spawn_pose: pose_3d(
+..                     position: position_3d(x: 2.0m, y: -2.0m, z: 0.1m),
+..                     orientation: orientation_3d(yaw: 0.0rad)),
+..                 model: 'example_simulation://models/box.sdf')
 
-First, we wrap the navigation part in the first branch of a parallel
-statement. This is necessary, as the condition if the robot reached the
-reference-point needs to happen continuously in parallel to the
-navigation action. This condition is checked with the ``tf_close_to``
-action. Once the robot reaches the reference point, the box is spawned
-as unmapped static obstacle in the robot’s way such that the navigation
-stack needs to avoid it to reach its goal.
+.. First, we wrap the navigation part in the first branch of a parallel
+.. statement. This is necessary, as the condition if the robot reached the
+.. reference-point needs to happen continuously in parallel to the
+.. navigation action. This condition is checked with the ``tf_close_to``
+.. action. Once the robot reaches the reference point, the box is spawned
+.. as unmapped static obstacle in the robot’s way such that the navigation
+.. stack needs to avoid it to reach its goal.
 
-To try this example, run
+.. To try this example, run
 
-.. code-block:: bash
+.. .. code-block:: bash
 
-    ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_simulation/scenarios/example_simulation.osc headless:=False
+..     ros2 launch tb4_sim_scenario sim_nav_scenario_launch.py scenario:=examples/example_simulation/scenarios/example_simulation.osc headless:=False
 
 Create Scenarios with Variations
 --------------------------------

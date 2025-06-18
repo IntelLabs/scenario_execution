@@ -34,8 +34,12 @@ def generate_launch_description():
     nav2_minimal_tb4_sim_dir = get_package_share_directory('nav2_minimal_tb4_sim')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
 
+    navigation = LaunchConfiguration('navigation')
     scenario = LaunchConfiguration('scenario')
     scenario_execution = LaunchConfiguration('scenario_execution')
+    arg_navigation = DeclareLaunchArgument('navigation', default_value='true',
+                                           choices=['true', 'false'],
+                                           description='Whether to start navigation')
     arg_scenario = DeclareLaunchArgument('scenario',
                                          description='Scenario file to execute')
     arg_scenario_execution = DeclareLaunchArgument(
@@ -68,6 +72,7 @@ def generate_launch_description():
 
     nav2_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([tb4_sim_scenario_dir, 'launch', 'nav2', 'bringup_launch.py'])]),
+        condition=IfCondition(navigation),
         launch_arguments={
             'use_sim_time': 'True',
             'params_file': params_file,
@@ -92,9 +97,11 @@ def generate_launch_description():
 
     tf_to_pose = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([tf_to_pose_publisher_dir, 'launch', 'tf_to_pose_launch.py'])]),
+        condition=IfCondition(navigation),
     )
 
     ld = LaunchDescription([
+        arg_navigation,
         arg_scenario,
         arg_scenario_execution,
         arg_world_name,
