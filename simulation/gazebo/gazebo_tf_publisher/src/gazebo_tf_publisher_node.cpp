@@ -37,7 +37,7 @@ public:
 GazeboTFPublisher::GazeboTFPublisher() : Node("gazebo_tf_publisher") {
   mPublisher = this->create_publisher<tf2_msgs::msg::TFMessage>("tf", 10);
   mSimNode = std::make_shared<gz::transport::Node>();
-  declare_parameter("gz_pose_topic", "/world/name/dynamic_pose/info");
+  declare_parameter("gz_pose_topic", "/world/default/dynamic_pose/info");
   gz_pose_topic = get_parameter("gz_pose_topic").as_string();
   declare_parameter("base_frame_id", "base_link");
   base_frame_id = get_parameter("base_frame_id").as_string();

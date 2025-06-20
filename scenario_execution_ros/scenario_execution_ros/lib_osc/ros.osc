@@ -137,8 +137,8 @@ action log_check:
 
 action ros_launch:
     # Execute a ros launch file
-    package_name: string                 # package that contains the launch file
-    launch_file: string                  # launch file name
+    package_name: string                 # package that contains the launch file, or empty if the launch file is specified as a path
+    launch_file: string                  # launch file name, if the package_name is empty the launch_file is used as a path (either an absolute path or relative to the scenario file) 
     arguments: list of key_value         # ros arguments (get forwarded as key:=value pairs)
     wait_for_shutdown: bool = true       # if true, the action waits until the execution has finished
     shutdown_timeout: time = 10s         # (only used if wait_for_shutdown is false) time to wait between SIGINT and SIGKILL getting sent, if process is still running on scenario shutdown

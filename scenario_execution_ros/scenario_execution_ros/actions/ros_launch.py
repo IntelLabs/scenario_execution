@@ -16,14 +16,22 @@
 
 from scenario_execution.actions.base_action import ActionError
 from scenario_execution.actions.run_process import RunProcess
+from scenario_execution.scenario_execution_base import ScenarioExecutionConfig
 import signal
+import os
 
 
 class RosLaunch(RunProcess):
 
     def execute(self, package_name: str, launch_file: str, arguments: list, wait_for_shutdown: bool, shutdown_timeout: float):  # pylint: disable=arguments-differ
         super().execute(None, wait_for_shutdown, shutdown_timeout, shutdown_signal=("", signal.SIGINT))
-        self.command = ["ros2", "launch", package_name, launch_file]
+
+        if not package_name:
+            if not os.path.isabs(launch_file):
+                launch_file = os.path.join(ScenarioExecutionConfig().scenario_file_directory, launch_file)
+            self.command = ["ros2", "launch", launch_file]
+        else:
+            self.command = ["ros2", "launch", package_name, launch_file]
         if isinstance(arguments, list):
             for arg in arguments:
                 if 'key' not in arg or 'value' not in arg:

@@ -1590,7 +1590,7 @@ Execute a ROS launch file.
    * - ``launch_file``
      - ``string``
      - 
-     - Launch file name
+     - launch file name, if the package_name is empty the launch_file is used as a path (either an absolute path or relative to the scenario file)
    * - ``arguments``
      - ``list of key_value``
      -
