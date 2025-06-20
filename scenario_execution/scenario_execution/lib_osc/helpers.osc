@@ -34,6 +34,10 @@ action run_process:
     shutdown_signal: signal = signal!sigterm # (only used if wait_for_shutdown is false) signal that is sent if a process is still running on scenario shutdown
     shutdown_timeout: time = 10s         # (only used if wait_for_shutdown is false) time to wait between shutdown_signal and SIGKILL getting sent if process is still running on scenario shutdown
 
+struct common:
+    def get_scenario_file_directory() -> string is external scenario_execution.external_methods.common.get_scenario_file_directory() # Returns the absolute path to the directory where the scenario file is located in.
+    def get_output_directory() -> string is external scenario_execution.external_methods.common.get_output_directory() # Returns the absolute path to the output directory
+
 struct random:
     def seed(seed_value: int = 0) is external scenario_execution.external_methods.random.seed()
     def get_float(min_val: float, max_val: float) -> float is external scenario_execution.external_methods.random.get_float()

@@ -353,6 +353,21 @@ Helpers
 
 The library contains basic helper methods. Import it with ``import osc.helpers``.
 
+External Methods
+^^^^^^^^^^^^^^^^
+
+.. list-table:: 
+   :widths: 30 70
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - External Method
+     - Description
+   * - ``get_scenario_file_directory()``
+     - Return the absolute path to the directory where the scenario file is located in.
+   * - ``get_output_directory()``
+     - Returns the absolute path to the output directory.
+
 Modifiers
 ^^^^^^^^^
 
