@@ -1586,11 +1586,11 @@ Execute a ROS launch file.
    * - ``package_name``
      - ``string``
      - 
-     - Package that contains the launch file
+     - Package that contains the launch file, or empty if the launch file is specified as a path
    * - ``launch_file``
      - ``string``
      - 
-     - Launch file name
+     - launch file name, if the package_name is empty the launch_file is used as a path (either an absolute path or relative to the scenario file)
    * - ``arguments``
      - ``list of key_value``
      -
