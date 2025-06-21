@@ -28,7 +28,7 @@ from dataclasses import dataclass
 from xml.sax.saxutils import escape  # nosec B406 # escape is only used on an internally generated error string
 from timeit import default_timer as timer
 import yaml
-
+import subprocess
 
 class ScenarioExecutionConfig:
     _instance = None
@@ -103,6 +103,7 @@ class ScenarioExecution(object):
                  setup_timeout=py_trees.common.Duration.INFINITE,
                  tick_period: float = 0.1,
                  scenario_parameter_file=None,
+                 post_run=None,
                  logger=None,
                  register_signal=True) -> None:
 
@@ -124,7 +125,15 @@ class ScenarioExecution(object):
         ScenarioExecutionConfig().output_directory = os.path.abspath(output_dir) if output_dir else None
         self.dry_run = dry_run
         self.render_dot = render_dot
+        self.post_run = post_run
+        if self.post_run:
+            if not os.path.isfile(self.post_run):
+                raise ValueError(f"Post-run command '{self.post_run}' does not exist.")
+            if not os.access(self.post_run, os.X_OK):
+                raise ValueError(f"Post-run command '{self.post_run}' is not executable.")
+            self.post_run = os.path.abspath(self.post_run)  
         if self.output_dir and not self.dry_run:
+            self.output_dir = os.path.abspath(self.output_dir)
             if not os.path.isdir(self.output_dir):
                 try:
                     os.mkdir(self.output_dir)
@@ -332,6 +341,15 @@ class ScenarioExecution(object):
                 except Exception as e:  # pylint: disable=broad-except
                     # use print, as logger might not be available during shutdown
                     print(f"Could not write results to '{self.output_dir}': {e}")
+        
+                # Run post-run if specified
+                if self.post_run:
+                    try:
+                        self.logger.info(f"Running post-run: {self.post_run} {self.output_dir}")
+                        subprocess.run([self.post_run, self.output_dir], check=True)
+                    except subprocess.CalledProcessError as e:
+                        print(f"post-run failed: {e}")
+                        result = False
         return result
 
     def pre_tick_handler(self, behaviour_tree):
@@ -395,6 +413,7 @@ class ScenarioExecution(object):
         parser.add_argument('-s', '--step-duration', type=float, help='Duration between the behavior tree step executions', default=0.1)
         parser.add_argument('--scenario-parameter-file', type=str,
                             help='File specifying scenario parameter. These will override default values.')
+        parser.add_argument('--post-run', type=str, help='Command to run after scenario execution (expected commandline: <command> <output_dir>)')
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
         args, _ = parser.parse_known_args(args)
         return args
@@ -414,7 +433,8 @@ def main():
                                                dry_run=args.dry_run,
                                                render_dot=args.dot,
                                                tick_period=args.step_duration,
-                                               scenario_parameter_file=args.scenario_parameter_file)
+                                               scenario_parameter_file=args.scenario_parameter_file,
+                                               post_run=args.post_run)
     except ValueError as e:
         print(f"Error while initializing: {e}")
         sys.exit(1)
@@ -422,6 +442,7 @@ def main():
     if result and not args.dry_run:
         scenario_execution.run()
     result = scenario_execution.process_results()
+
     if result:
         sys.exit(0)
     else:
