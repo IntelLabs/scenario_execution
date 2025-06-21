@@ -1,4 +1,3 @@
-
 How to run
 ==========
 
@@ -29,6 +28,8 @@ Runtime Parameters
      - Parameter definition used to override default scenario parameter definitions. See `Override scenario parameters`_ for details.
    * - ``-t`` ``--live-tree``
      - (For debugging) Show current state of py tree
+   * - ``--post-run POST_RUN_COMMAND``
+     - Command or script to run after scenario execution. The command will be called as ``<command> <output_dir>``. Example: ``--post-run ./post.sh``
 
 
 Run locally with ROS2
