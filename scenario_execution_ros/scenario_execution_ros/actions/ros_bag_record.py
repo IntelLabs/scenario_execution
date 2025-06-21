@@ -67,6 +67,10 @@ class RosBagRecord(RunProcess):
 
         if timestamp_suffix:
             self.bag_dir += '_' + datetime.now().strftime("%Y_%m_%d-%H_%M_%S")
+        else:
+            if os.path.exists(self.bag_dir):
+                self.logger.info(f"Bag directory {self.bag_dir} already exists. Removing it.")
+                shutil.rmtree(self.bag_dir)
 
         self.topics = topics
         self.command = ["ros2", "bag", "record"]

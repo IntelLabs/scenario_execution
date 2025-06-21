@@ -1349,7 +1349,10 @@ Play back a ROS bag.
 ``bag_record()``
 ^^^^^^^^^^^^^^^^
 
-Record a ROS bag, stored in directory ``output_dir`` defined by command-line parameter (default: ``.``). If ``topics`` is specified, this action waits for all topics to be subscribed until it returns with success otherwise it immediately returns. The recording is active until the end of the scenario.
+Record a ROS bag, stored in directory ``output_dir``, defined by command-line parameter (default: ``.``). 
+If ``timestamp_suffix`` is set to ``true``, the ROS bag directory ``rosbag2`` will be suffixed with a timestamp. If ``timestamp_suffix`` is set to ``false``, the ROS bag directory might get overwritten.
+
+If ``topics`` is specified, this action waits for all topics to be subscribed until it returns with success otherwise it immediately returns. The recording is active until the end of the scenario.
 
 A common topic to record is ``/scenario_execution/snapshots`` which publishes changes within the behavior tree. When replaying the bag-file, this allows to visualize the current state of the scenario in RViz, using the ``scenario_execution_rviz`` plugin.
 
