@@ -36,7 +36,10 @@ class ROSScenarioExecution(ScenarioExecution):
 
         # parse from commandline
         args_without_ros = rclpy.utilities.remove_ros_args(sys.argv[1:])
-        args = ScenarioExecution.parse_args(args_without_ros)
+        arg_parser = ScenarioExecution.get_arg_parser()
+        arg_parser.add_argument('--snapshot-period', type=float, help='How often to publish behavior tree snapshots (default: only on status change)', default=sys.float_info.max)
+        args, _ = arg_parser.parse_known_args(args_without_ros)
+
         debug = args.debug
         log_model = args.log_model
         live_tree = args.live_tree
@@ -46,6 +49,7 @@ class ROSScenarioExecution(ScenarioExecution):
         self.render_dot = args.dot
         self.scenario_parameter_file = args.scenario_parameter_file
         self.post_run = args.post_run
+        self.snapshot_period = args.snapshot_period
 
         # override commandline by ros parameters
         self.node.declare_parameter('debug', False)
@@ -57,6 +61,7 @@ class ROSScenarioExecution(ScenarioExecution):
         self.node.declare_parameter('dot', False)
         self.node.declare_parameter('scenario_parameter_file', "")
         self.node.declare_parameter('post_run', "")
+        self.node.declare_parameter('snapshot_period', 1.0)
 
         if self.node.get_parameter('debug').value:
             debug = self.node.get_parameter('debug').value
@@ -76,6 +81,8 @@ class ROSScenarioExecution(ScenarioExecution):
             self.scenario_parameter_file = self.node.get_parameter('scenario_parameter_file').value
         if self.node.get_parameter('post_run').value:
             self.post_run = self.node.get_parameter('post_run').value
+        if self.node.get_parameter('snapshot_period').value:
+            self.snapshot_period = self.node.get_parameter('snapshot_period').value
         self.logger = RosLogger('scenario_execution_ros', debug)
         super().__init__(debug=debug,
                          log_model=log_model,
@@ -104,7 +111,7 @@ class ROSScenarioExecution(ScenarioExecution):
     def post_setup(self):
         request = OpenSnapshotStream.Request()
         request.topic_name = "/scenario_execution/snapshots"
-        request.parameters.snapshot_period = sys.float_info.max
+        request.parameters.snapshot_period = self.snapshot_period
         request.parameters.blackboard_data = True
         response = OpenSnapshotStream.Response()
         self.behaviour_tree._open_snapshot_stream(request, response)  # pylint: disable=protected-access

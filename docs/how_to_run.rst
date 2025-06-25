@@ -30,7 +30,8 @@ Runtime Parameters
      - (For debugging) Show current state of py tree
    * - ``--post-run POST_RUN_COMMAND``
      - Command or script to run after scenario execution. The command will be called as ``<command> <output_dir>``. Example: ``--post-run ./post.sh``
-
+   * - ``--snapshot-period SNAPSHOT_PERIOD``
+     - How often (in seconds) to publish behavior tree snapshots to ``/scenario_execution/snapshots``. Default: only on status change. Set to a float value (e.g. ``--snapshot-period 1.0`` for every second).
 
 Run locally with ROS2
 ---------------------

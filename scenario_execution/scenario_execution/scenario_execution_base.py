@@ -400,7 +400,7 @@ class ScenarioExecution(object):
                                            failure_output=failure_output))
 
     @staticmethod
-    def parse_args(args):
+    def get_arg_parser():
         parser = argparse.ArgumentParser()
         parser.add_argument('-d', '--debug', action='store_true', help='debugging output')
         parser.add_argument('-l', '--log-model', action='store_true',
@@ -415,15 +415,14 @@ class ScenarioExecution(object):
                             help='File specifying scenario parameter. These will override default values.')
         parser.add_argument('--post-run', type=str, help='Command to run after scenario execution (expected commandline: <command> <output_dir>)')
         parser.add_argument('scenario', type=str, help='scenario file to execute', nargs='?')
-        args, _ = parser.parse_known_args(args)
-        return args
+        return parser
 
 
 def main():
     """
     main function
     """
-    args = ScenarioExecution.parse_args(sys.argv[1:])
+    args, _ = ScenarioExecution.get_arg_parser().parse_known_args(sys.argv[1:])
     try:
         scenario_execution = ScenarioExecution(debug=args.debug,
                                                log_model=args.log_model,
