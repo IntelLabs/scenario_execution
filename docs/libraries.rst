@@ -324,6 +324,36 @@ Spawn an actor within simulation.
 
     If the file ending is ``.xacro`` the model is forwarded to `xacro <https://wiki.ros.org/xacro>`__ before getting spawned.
 
+``spawn_multiple()``
+^^^^^^^^^^^^^^^^^^^^
+
+Spawn multiple actors within simulation at once.
+Each ``spawn_entity`` in the ``entities`` list has the following structure:
+    
+    - ``entity_name``: Name of the entity in simulation (string)
+    - ``pose``: Position and orientation where the object gets spawned (pose_3d)
+    - ``model``: Model definition (string) - supports the same formats as ``osc_object.spawn()``
+    - ``xacro_arguments``: Optional comma-separated list of argument key:=value pairs (string)
+
+
+.. list-table:: 
+   :widths: 15 15 5 65
+   :header-rows: 1
+   :class: tight-table   
+   
+   * - Parameter
+     - Type
+     - Default
+     - Description
+   * - ``entities``
+     - ``list of spawn_entity``
+     -
+     - List of entities to spawn, where each ``spawn_entity`` contains ``entity_name`` (string), ``pose`` (pose_3d), ``model`` (string), and optional ``xacro_arguments`` (string)
+   * - ``world_name``
+     - ``string``
+     - ``default``
+     - Gazebo world name
+
 ``wait_for_sim()``
 ^^^^^^^^^^^^^^^^^^
 

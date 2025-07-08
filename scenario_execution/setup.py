@@ -49,8 +49,8 @@ setup(
     ],
     zip_safe=True,
     include_package_data=True,
-    maintainer='Intel Labs',
-    maintainer_email='scenario-execution@intel.com',
+    maintainer='Frederik Pasch',
+    maintainer_email='fred-labs@mailbox.org',
     url='https://github.com/IntelLabs/scenario_execution',
     project_urls={
         "Homepage": "https://github.com/IntelLabs/scenario_execution",

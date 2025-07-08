@@ -27,6 +27,17 @@ action osc_actor.spawn:
     world_name: string = 'default'      # simulation world name
     xacro_arguments: string = ''        # comma-separated list of argument key:=value pairs
 
+struct spawn_entity:
+    entity_name: string                 # name of entity in simulation
+    pose: pose_3d                       # position at which the object gets spawned
+    model: string                       # model definition
+    xacro_arguments: string = ''        # comma-separated list of argument key:=value pairs
+
+action spawn_multiple:
+    # Spawn multiple simulation entities.
+    entities: list of spawn_entity      # entities to spawn
+    world_name: string = 'default'      # simulation world name
+    
 action wait_for_sim:
     # Wait for simulation to become active
     timeout: time = 60s                 # time to wait for the simulation. return failure afterwards.

@@ -35,8 +35,8 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='Intel Labs',
-    maintainer_email='scenario-execution@intel.com',
+    maintainer='Frederik Pasch',
+    maintainer_email='fred-labs@mailbox.org',
     description='Scenario Execution Control',
     license='Apache License 2.0',
     entry_points={

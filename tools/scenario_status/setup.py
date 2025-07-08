@@ -34,8 +34,8 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='Intel Labs',
-    maintainer_email='scenario-execution@intel.com',
+    maintainer='Frederik Pasch',
+    maintainer_email='fred-labs@mailbox.org',
     description='Simple node to call a service to publish the py-trees-\
         behaviour tree to a topic, then subscribe to that topic and publish \
         changes in behaviour states as strings at the time they are \

@@ -1,5 +1,6 @@
 // MIT License
 
+// Copyright (c) 2025 Frederik Pasch
 // Copyright (c) 2018 CARLA
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -149,7 +150,7 @@ def atStartOfInput(self):
 //----------------------------------------
 // Parser rules
 /*Top-Level structure*/
-osc_file : preludeStatement* oscDeclaration* EOF; 
+osc_file : preludeStatement* oscDeclaration* NEWLINE* EOF; 
 
 preludeStatement : importStatement  ;
 

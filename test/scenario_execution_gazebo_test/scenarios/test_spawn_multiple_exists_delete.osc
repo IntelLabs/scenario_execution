@@ -1,0 +1,34 @@
+import osc.gazebo
+import osc.helpers
+
+scenario test_spawn_and_exists:
+    timeout(30s)
+    do parallel:
+        spawn_multiple([
+            spawn_entity(
+                entity_name: 'object1',
+                spawn_pose: pose_3d(
+                    position: position_3d(x: -3.0m, y: 0.0m, z: 1.0m),
+                    orientation: orientation_3d(yaw: 0.0rad)),
+                model: 'scenario_execution_gazebo_test://models/box.sdf'
+            ),
+            spawn_entity(
+                entity_name: 'object2',
+                spawn_pose: pose_3d(
+                    position: position_3d(x: -3.0m, y: 0.0m, z: 3.0m),
+                    orientation: orientation_3d(yaw: 0.0rad)),
+                model: 'scenario_execution_gazebo_test://models/box.sdf'
+            ),
+            spawn_entity(
+                entity_name: 'object3',
+                spawn_pose: pose_3d(
+                    position: position_3d(x: -3.0m, y: 0.0m, z: 5.0m),
+                    orientation: orientation_3d(yaw: 0.0rad)),
+                model: 'scenario_execution_gazebo_test://models/box.sdf'
+            )
+        ])
+        test_case: serial:
+            wait elapsed(10s)
+            actor_exists('object1')
+            actor_exists('object2')
+            actor_exists('object3')

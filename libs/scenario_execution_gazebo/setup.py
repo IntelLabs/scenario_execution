@@ -34,8 +34,8 @@ setup(
         'defusedxml==0.7.1',
     ],
     zip_safe=True,
-    maintainer='Intel Labs',
-    maintainer_email='scenario-execution@intel.com',
+    maintainer='Frederik Pasch',
+    maintainer_email='fred-labs@mailbox.org',
     description='Scenario Execution library for Gazebo',
     license='Apache License 2.0',
     tests_require=['pytest'],
@@ -46,6 +46,7 @@ setup(
             'osc_actor.spawn = scenario_execution_gazebo.actions.gazebo_spawn_actor:GazeboSpawnActor',
             'actor_exists = scenario_execution_gazebo.actions.gazebo_actor_exists:GazeboActorExists',
             'osc_actor.delete = scenario_execution_gazebo.actions.gazebo_delete_actor:GazeboDeleteActor',
+            'spawn_multiple = scenario_execution_gazebo.actions.gazebo_spawn_multiple:GazeboSpawnMultiple',
             'wait_for_sim = scenario_execution_gazebo.actions.gazebo_wait_for_sim:GazeboWaitForSim',
         ],
         'scenario_execution.osc_libraries': [
