@@ -29,7 +29,7 @@ action osc_actor.spawn:
 
 struct spawn_entity:
     entity_name: string                 # name of entity in simulation
-    pose: pose_3d                       # position at which the object gets spawned
+    spawn_pose: pose_3d                 # position at which the object gets spawned
     model: string                       # model definition
     xacro_arguments: string = ''        # comma-separated list of argument key:=value pairs
 

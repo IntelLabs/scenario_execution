@@ -331,7 +331,7 @@ Spawn multiple actors within simulation at once.
 Each ``spawn_entity`` in the ``entities`` list has the following structure:
     
     - ``entity_name``: Name of the entity in simulation (string)
-    - ``pose``: Position and orientation where the object gets spawned (pose_3d)
+    - ``spawn_pose``: Position and orientation where the object gets spawned (pose_3d)
     - ``model``: Model definition (string) - supports the same formats as ``osc_object.spawn()``
     - ``xacro_arguments``: Optional comma-separated list of argument key:=value pairs (string)
 

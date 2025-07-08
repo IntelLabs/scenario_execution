@@ -272,6 +272,15 @@ class OpenScenario2Parser(object):
 
                             self.create_override_value_function_application(funct_app, type_def, list(
                                 param_override_val.keys()), param_override_val)
+                        elif val is None and isinstance(param_override_val, str):
+                            literal = StringLiteral(param_override_val)
+                            arg.set_children(literal)
+                        elif val is None and isinstance(param_override_val, float):
+                            literal = FloatLiteral(param_override_val)
+                            arg.set_children(literal)
+                        elif val is None and isinstance(param_override_val, int):
+                            literal = IntegerLiteral("int", param_override_val)
+                            arg.set_children(literal)
                         else:
                             raise ValueError(f"Parameter {param.name} does not match override {param_override_val}")
 
