@@ -28,7 +28,6 @@ from scenario_execution.model.model_to_py_tree import create_py_tree
 from scenario_execution.model.model_resolver import resolve_internal_model
 from scenario_execution.model.model_blackboard import create_py_tree_blackboard
 import py_trees
-import copy
 
 
 class OpenScenario2Parser(object):
@@ -82,7 +81,9 @@ class OpenScenario2Parser(object):
 
     def apply_parameter_overrides(self, model, scenario_parameter_overrides):
         keys = list(scenario_parameter_overrides.keys())
+        print("Applying parameter overrides for scenarios:", keys)
         for scenario in model.find_children_of_type(ScenarioDeclaration):
+            print(f"Applying parameter overrides for scenario: {scenario}")
             if scenario.name in keys:
                 keys.remove(scenario.name)
                 if scenario_parameter_overrides[scenario.name] is None:
@@ -250,16 +251,26 @@ class OpenScenario2Parser(object):
                         self.set_override_value_list_entries(list_expr, param_type, param_override_val)
                     else:
                         if isinstance(val, (BoolLiteral, FloatLiteral, IntegerLiteral, FloatLiteral, StringLiteral)):
-                            literal = copy.deepcopy(val)
-                            literal.value = self.check_and_convert_override_value_literal_type(val, param_override_val)
+                            # Create new literal instead of deepcopy to avoid circular reference issues
+                            new_value = self.check_and_convert_override_value_literal_type(val, param_override_val)
+                            if isinstance(val, BoolLiteral):
+                                literal = BoolLiteral("true" if new_value else "false")
+                            elif isinstance(val, FloatLiteral):
+                                literal = FloatLiteral(new_value)
+                            elif isinstance(val, IntegerLiteral):
+                                literal = IntegerLiteral("int", new_value)
+                            elif isinstance(val, StringLiteral):
+                                literal = StringLiteral(new_value)
                             arg.set_children(literal)
                         elif isinstance(val, PhysicalLiteral):
-                            literal = copy.deepcopy(val)
-                            val_literal = literal.find_first_child_of_type((FloatLiteral, IntegerLiteral))
+                            # Create new PhysicalLiteral instead of deepcopy to avoid circular reference issues
+                            val_literal = val.find_first_child_of_type((FloatLiteral, IntegerLiteral))
                             if isinstance(val_literal, FloatLiteral) and isinstance(param_override_val, (int, float)):
-                                val_literal.value = float(param_override_val)
+                                literal = PhysicalLiteral(val.unit, float(param_override_val))
+                                literal.set_children(FloatLiteral(float(param_override_val)))
                             elif isinstance(val_literal, IntegerLiteral) and isinstance(param_override_val, int):
-                                val_literal.value = param_override_val
+                                literal = PhysicalLiteral(val.unit, param_override_val)
+                                literal.set_children(IntegerLiteral("int", param_override_val))
                             else:
                                 raise ValueError(f"Invalid physical literal.")
                             arg.set_children(literal)
