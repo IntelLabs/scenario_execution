@@ -1,4 +1,4 @@
-This repository will be archived. For a new version with updates, please visit: https://github.com/cps-test-lab/scenario-execution
+This repository will be archived. Future development will continue in https://github.com/cps-test-lab/scenario-execution
 
 # Scenario Execution
 
