@@ -1,4 +1,8 @@
-This repository will be archived. Future development will continue in https://github.com/cps-test-lab/scenario-execution
+# :warning: Project Archived
+
+**This repository is now archived.**
+
+**Future development will continue in https://github.com/cps-test-lab/scenario-execution**
 
 # Scenario Execution
 
