@@ -1,3 +1,5 @@
+This repository will be archieved. For a new version with updates, please visit: https://github.com/cps-test-lab/scenario-execution
+
 # Scenario Execution
 
 [![Super-Linter](https://github.com/IntelLabs/Scenario_Execution/actions/workflows/scan.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
